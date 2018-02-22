@@ -1,16 +1,16 @@
-# lfts
+# lovefield-ts
 
 Lovefield Typescript port and modernization.
 
-# Building and development instructions
+## Building and development instructions
 
-## Development set up
+### Development set up
 
 * Install Chrome
 * Install Node 9+
 * `npm install`
 
-## Development flow
+### Development flow
 
 Run `gulp` to see the commands.
 
@@ -20,9 +20,9 @@ related tests), and these tests will be named *_spec.ts.
 We have no intention to support legacy browsers and technologies. Please
 assume ES6 throughout.
 
-## Directory structures
+### Directory structures
 
-`lib`: Lovefield main library source code
-`tests`: Tests for Lovefield main library
-`out`: Temporary directory used to store intermediate files from toolchain
-`coverage`: Code coverage report
+* `lib`: Lovefield main library source code
+* `tests`: Tests for Lovefield main library
+* `out`: Temporary directory used to store intermediate files from toolchain
+* `coverage`: Code coverage report

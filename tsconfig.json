@@ -16,6 +16,7 @@
     "outDir": "out",
     "removeComments": true,
     "sourceMap": true,
+    "strict": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es5",
     "types": [

@@ -120,7 +120,7 @@ gulp.task('test', () => {
     configFile: path.join(__dirname, 'karma_config.js'),
     singleRun: true
   });
-  
+
   server.on('run_complete', () => {
     karma.stopper.stop();
   });
@@ -141,14 +141,14 @@ gulp.task('qtest', ['build'], () => {
 gulp.task('format', () => {
   return getProject()
       .src()
-      .pipe(format.format())
-      .pipe(gulp.desc('.'));
+      .pipe(format.format('file'))
+      .pipe(gulp.dest('.'));
 });
 
 gulp.task('check', ['lint'], () => {
   return getProject()
       .src()
-      .pipe(format.format())
+      .pipe(format.format('file'))
       .pipe(checkFormat());
 });
 

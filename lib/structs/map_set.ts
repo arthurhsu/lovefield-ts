@@ -97,7 +97,7 @@ export class MapSet<K, V> {
     return didRemove;
   }
 
-  public get(key: K): V[] {
+  public get(key: K): V[]|null {
     let valueSet = this.map.get(key) || null;
     return valueSet === null ? null : Array.from(valueSet);
   }

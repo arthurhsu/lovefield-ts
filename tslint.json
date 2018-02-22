@@ -16,7 +16,6 @@
     "no-debugger": true,
     "no-inferrable-types": true,
     "no-internal-module": true,
-    "no-namespace": [true, "allow-declarations"],
     "no-reference": true,
     "no-require-imports": true,
     "no-trailing-whitespace": true,
