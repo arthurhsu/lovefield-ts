@@ -1,0 +1,65 @@
+{
+  "rules": {
+    "class-name": true,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "forin": true,
+    "indent": [true, "spaces"],
+    "jsdoc-format": true,
+    "label-position": true,
+    "linebreak-style": [true, "LF"],
+    "new-parens": true,
+    "no-angle-bracket-type-assertion": true,
+    "no-construct": true,
+    "no-debugger": true,
+    "no-inferrable-types": true,
+    "no-internal-module": true,
+    "no-namespace": [true, "allow-declarations"],
+    "no-reference": true,
+    "no-require-imports": true,
+    "no-trailing-whitespace": true,
+    "no-unused-expression": true,
+    "no-unused-variable": true,
+    "no-use-before-declare": true,
+    "no-var-keyword": true,
+    "one-line": [
+      true,
+      "check-open-brace",
+      "check-whitespace"
+    ],
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape"
+    ],
+    "semicolon": true,
+    "typedef-whitespace": [
+      true, {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      }
+    ],
+    "switch-default": true,
+    "use-isnan": true,
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "allow-trailing-underscore",
+      "ban-keywords",
+      "check-format"
+    ],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type"
+    ]
+  }
+}
