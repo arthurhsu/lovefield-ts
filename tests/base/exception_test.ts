@@ -73,4 +73,11 @@ describe('Exception', () => {
     assert.equal('999|a|b|c|d', e.message);
     Flags.EXCEPTION_URL = origUrl;
   });
+
+  it('getMessage', () => {
+    const debug = Flags.DEBUG;
+    const e = new Exception(ErrorCode.SIMULATED_ERROR);
+    assert.equal('Simulated error', e.toString());
+    Flags.DEBUG = debug;
+  });
 });
