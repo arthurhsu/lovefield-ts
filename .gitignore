@@ -1,4 +1,5 @@
 coverage/
+lib/gen/
 node_modules/
 out/
 package-lock.json

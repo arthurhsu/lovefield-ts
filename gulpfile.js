@@ -24,6 +24,7 @@ const format = require('gulp-clang-format');
 const sourcemaps = require('gulp-sourcemaps');
 const tslint = require('gulp-tslint');
 const tsc = require('gulp-typescript');
+const yaml = require('js-yaml');
 const karma = require('karma');
 const nopt = require('nopt');
 const path = require('path');
@@ -81,23 +82,70 @@ function checkFormat() {
   return stream;
 }
 
+function isQuickMode() {
+  let knownOpts = { 'quick': Boolean };
+  let opts = nopt(knownOpts, null, process.argv, 2);
+  return opts.quick || false;
+}
+
 function getGrepPattern() {
   let knownOpts = { 'grep': String };
   let opts = nopt(knownOpts, null, process.argv, 2);
-  return opts.grep ? opts.grep : undefined;
+  return opts.grep;
+}
+
+function genFlags() {
+  let flags = yaml.safeLoad(fs.readFileSync('flags.yaml', 'utf8'));
+
+  let knownOpts = { 'flag': Array };
+  let opts = nopt(knownOpts, null, process.argv, 2);
+  if (opts.flag) {
+    opts.flag.forEach(line => {
+      let index = line.indexOf(':');
+      if (index != -1) {
+        let key = line.substring(0, index);
+        let value = line.substring(index + 1);
+        if (value == 'true') {
+          value = true;
+        } else if (value == 'false') {
+          value = false;
+        }
+        flags.Flags[key] = value;
+      }
+    });
+  }
+
+  let contents = 'export class Flags {\n';
+  for (let key in flags.Flags) {
+    let value = flags.Flags[key];
+    let quote = '\'';
+    if (value == 'true' || value == 'false') {
+      quote = '';
+    }
+    // We do not use readonly so that tests can modify them, esp. DEBUG.
+    contents += `  static ${key} = ${quote}${value}${quote};\n`;
+  }
+  contents += '}  // class Flags\n';
+  fs.ensureDirSync('lib/gen');
+  fs.writeFileSync('lib/gen/flags.ts', contents, {encoding: 'utf-8'});
 }
 
 gulp.task('default', () => {
   let log = console.log;
-  log('Usage:');
-  log('gulp build: build all libraries and tests');
-  log('gulp clean: remove all intermediate files');
-  log('gulp test: run mocha tests');
-  log('gulp format: format files using clang-format');
-  log('gulp check: lint and format check files');
+  log('gulp tasks:');
+  log('  build: build all libraries and tests');
+  log('  clean: remove all intermediate files');
+  log('  test: run mocha tests (quick mode only)');
+  log('  format: format files using clang-format');
+  log('  check: lint and format check files');
+  log('options:');
+  log('  --quick, -q: Quick test only');
+  log('  --grep, -g: Mocha grep pattern');
+  log('  --flag <KEY:VALUE>: Override flags');
 });
 
 gulp.task('build', () => {
+  genFlags();
   return getProject()
       .src()
       .pipe(sourcemaps.init())
@@ -115,27 +163,28 @@ gulp.task('lint', () => {
       }));
 });
 
-gulp.task('test', () => {
-  let server = new karma.Server({
-    configFile: path.join(__dirname, 'karma_config.js'),
-    singleRun: true
-  });
+gulp.task('test', ['build'], () => {
+  if (isQuickMode()) {
+    let mochaOptions = {
+      reporter: 'spec',
+      require: ['source-map-support/register'],
+      grep: getGrepPattern()
+    };
+  
+    gulp.src('out/tests/**/*.js', {read: false})
+        .pipe(mocha(mochaOptions));  
+  } else {
+    let server = new karma.Server({
+      configFile: path.join(__dirname, 'karma_config.js'),
+      singleRun: true,
+      mocha: { grep: getGrepPattern() }
+    });
 
-  server.on('run_complete', () => {
-    karma.stopper.stop();
-  });
-  server.start();
-});
-
-gulp.task('qtest', ['build'], () => {
-  let mochaOptions = {
-    reporter: 'spec',
-    require: ['source-map-support/register'],
-    grep: getGrepPattern()
-  };
-
-  gulp.src('out/tests/**/*.js', {read: false})
-      .pipe(mocha(mochaOptions));
+    server.on('run_complete', () => {
+      karma.stopper.stop();
+    });
+    server.start();
+  }
 });
 
 gulp.task('format', () => {
@@ -155,4 +204,5 @@ gulp.task('check', ['lint'], () => {
 gulp.task('clean', () => {
   fs.removeSync(getProject().options.outDir);
   fs.removeSync('coverage');
+  fs.removeSync('lib/gen');
 });

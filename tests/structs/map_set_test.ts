@@ -22,7 +22,7 @@ const assert = chai.assert;
 
 describe('MapSet', () => {
   function getSampleMapSet(): MapSet<number, number> {
-    let mapSet = new MapSet<number, number>();
+    const mapSet = new MapSet<number, number>();
     mapSet.set(10, 11);
     mapSet.set(10, 12);
     mapSet.set(20, 21);
@@ -32,7 +32,7 @@ describe('MapSet', () => {
   }
 
   it('set', () => {
-    let mapSet = new MapSet<number, number>();
+    const mapSet = new MapSet<number, number>();
     assert.isFalse(mapSet.has(10));
     mapSet.set(10, 11);
     assert.equal(1, mapSet.size);
@@ -48,7 +48,7 @@ describe('MapSet', () => {
   });
 
   it('delete', () => {
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
 
     assert.isTrue(mapSet.delete(10, 12));
     assert.equal(4, mapSet.size);
@@ -70,7 +70,7 @@ describe('MapSet', () => {
   });
 
   it('get', () => {
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
 
     assert.deepEqual([11, 12], mapSet.get(10));
     assert.deepEqual([21, 25], mapSet.get(20));
@@ -79,10 +79,10 @@ describe('MapSet', () => {
   });
 
   it('size', () => {
-    let emptyMapSet = new MapSet<number, number>();
+    const emptyMapSet = new MapSet<number, number>();
     assert.equal(0, emptyMapSet.size);
 
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
     assert.equal(5, mapSet.size);
     mapSet.delete(10, 11);
     assert.equal(4, mapSet.size);
@@ -97,7 +97,7 @@ describe('MapSet', () => {
   });
 
   it('clear', () => {
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
     assert.equal(5, mapSet.size);
 
     mapSet.clear();
@@ -105,34 +105,34 @@ describe('MapSet', () => {
   });
 
   it('keys', () => {
-    let emptyMapSet = new MapSet<number, number>();
+    const emptyMapSet = new MapSet<number, number>();
     assert.deepEqual([], emptyMapSet.keys());
 
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
     assert.deepEqual([10, 20, 30], mapSet.keys());
   });
 
   it('values', () => {
-    let emptyMapSet = new MapSet<number, number>();
+    const emptyMapSet = new MapSet<number, number>();
     assert.deepEqual([], emptyMapSet.values());
 
-    let mapSet = getSampleMapSet();
+    const mapSet = getSampleMapSet();
     assert.deepEqual([11, 12, 21, 25, 39], mapSet.values());
   });
 
   it('merge_empty', () => {
-    let m1 = new MapSet<number, number>();
-    let m2 = new MapSet<number, number>();
-    let merged = m1.merge(m2);
+    const m1 = new MapSet<number, number>();
+    const m2 = new MapSet<number, number>();
+    const merged = m1.merge(m2);
     assert.equal(merged, m1);
     assert.equal(0, m1.size);
   });
 
   it('merge', () => {
-    let mapSet1 = getSampleMapSet();
-    let origMapSet1Size = mapSet1.size;
+    const mapSet1 = getSampleMapSet();
+    const origMapSet1Size = mapSet1.size;
     assert.equal(5, origMapSet1Size);
-    let mapSet2 = new MapSet<number, number>();
+    const mapSet2 = new MapSet<number, number>();
     mapSet2.set(10, 100);
     mapSet2.set(20, 200);
     mapSet2.set(40, 400);

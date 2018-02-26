@@ -1,4 +1,12 @@
 {
+  "extends": "tslint:latest",
+  "linterOptions": {
+    "exclude": [
+      "lib/gen/*.ts",
+      "node_modules",
+      "out"
+    ]
+  },
   "rules": {
     "class-name": true,
     "comment-format": [

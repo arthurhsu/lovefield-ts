@@ -25,7 +25,9 @@
     ]
   },
   "include": [
-    "**/*.ts"
+    "gen/flags.ts",
+    "lib/**/*.ts",
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"
