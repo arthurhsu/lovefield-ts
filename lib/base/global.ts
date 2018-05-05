@@ -45,6 +45,7 @@ export class Global {
   public getService<T>(serviceId: ServiceId<T>): T {
     const service = this.services.get(serviceId.toString());
     if (!service) {
+      // 7: Service {0} not registered.
       throw new Exception(ErrorCode.SERVICE_NOT_FOUND, serviceId.toString());
     }
     return service as any as T;

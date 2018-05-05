@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-// suppress TS6133: 'T' is declared but its value is never read.
-// @ts-ignore
 export class ServiceId<T> {
   private serviceId: string;
   constructor(serviceId: string) {
@@ -25,5 +23,10 @@ export class ServiceId<T> {
 
   public toString(): string {
     return this.serviceId;
+  }
+
+  // Dummy method to please the compiler (need to use <T> somewhere).
+  public getAsType(): T {
+    return {} as any as T;
   }
 }

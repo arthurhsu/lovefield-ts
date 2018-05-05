@@ -35,20 +35,21 @@ describe('Global', () => {
 
   it('returnSameInstance', () => {
     const global2 = Global.get();
-    assert.equal(global, global2);
+    assert.strictEqual(global, global2);
   });
 
   it('getService', () => {
     const serviceId = new ServiceId<object>('whatever');
+    const serviceId2 = new ServiceId<object>('foo');
     const service = {};
     global.registerService(serviceId, service);
     const serviceFromGlobal = global.getService(serviceId);
-    assert.equal(service, serviceFromGlobal);
-    const cache = new ServiceId('cache');
-    assert.isFalse(global.isRegistered(cache));
+    assert.strictEqual(service, serviceFromGlobal);
+    assert.isTrue(global.isRegistered(serviceId));
+    assert.isFalse(global.isRegistered(serviceId2));
 
     TestUtil.assertThrowsError(ErrorCode.SERVICE_NOT_FOUND, () => {
-      global.getService(cache);
+      global.getService(serviceId2);
     });
   });
 
