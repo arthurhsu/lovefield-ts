@@ -19,6 +19,7 @@ const chalk = require('chalk');
 const diff = require('diff');
 const fs = require('fs-extra');
 const gulp = require('gulp');
+const guppy = require('git-guppy')(gulp);
 const mocha = require('gulp-mocha');
 const format = require('gulp-clang-format');
 const sourcemaps = require('gulp-sourcemaps');
@@ -128,6 +129,9 @@ function genFlags() {
   contents += '}  // class Flags\n';
   fs.ensureDirSync('lib/gen');
   fs.writeFileSync('lib/gen/flags.ts', contents, {encoding: 'utf-8'});
+  gulp.src('lib/gen/flags.ts')
+      .pipe(format.format())
+      .pipe(gulp.dest('lib/gen'));
 }
 
 gulp.task('default', () => {
@@ -185,6 +189,19 @@ gulp.task('test', ['build'], () => {
     });
     server.start();
   }
+});
+
+gulp.task('pre-commit', ['build', 'lint', 'fastcheck'], () => {
+});
+
+gulp.task('fastcheck', () => {
+  return getProject()
+      .src()
+      .pipe(format.checkFormat('file'))
+      .on('warning', e => {
+        gulp.debug(e.message);
+        process.exit(1);
+      });
 });
 
 gulp.task('format', () => {
