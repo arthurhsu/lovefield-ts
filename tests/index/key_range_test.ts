@@ -99,17 +99,13 @@ describe('KeyRange', () => {
     assert.equal('[unbound, 20),(20, unbound]', complementKeyRanges.join(','));
 
     const keyRange2 = SingleKeyRange.only(40);
-    complementKeyRanges = SingleKeyRange.complement(
-        [keyRange1, keyRange2]);
+    complementKeyRanges = SingleKeyRange.complement([keyRange1, keyRange2]);
     assert.equal(
-        '[unbound, 20),(20, 40),(40, unbound]',
-        complementKeyRanges.join(','));
+        '[unbound, 20),(20, 40),(40, unbound]', complementKeyRanges.join(','));
 
-    complementKeyRanges = SingleKeyRange.complement(
-        [keyRange2, keyRange1]);
+    complementKeyRanges = SingleKeyRange.complement([keyRange2, keyRange1]);
     assert.equal(
-        '[unbound, 20),(20, 40),(40, unbound]',
-        complementKeyRanges.join(','));
+        '[unbound, 20),(20, 40),(40, unbound]', complementKeyRanges.join(','));
   });
 
   it('isOnly', () => {
@@ -126,24 +122,24 @@ describe('KeyRange', () => {
 
   it('reverse', () => {
     let keyRange = SingleKeyRange.only(20);
-    assert.equal('[20, 20]' , keyRange.toString());
+    assert.equal('[20, 20]', keyRange.toString());
     assert.equal('[20, 20]', keyRange.reverse().toString());
 
     keyRange = SingleKeyRange.upperBound(20);
-    assert.equal('[unbound, 20]' , keyRange.toString());
-    assert.equal('[20, unbound]' , keyRange.reverse().toString());
+    assert.equal('[unbound, 20]', keyRange.toString());
+    assert.equal('[20, unbound]', keyRange.reverse().toString());
 
     keyRange = SingleKeyRange.lowerBound(20);
-    assert.equal('[20, unbound]' , keyRange.toString());
-    assert.equal('[unbound, 20]' , keyRange.reverse().toString());
+    assert.equal('[20, unbound]', keyRange.toString());
+    assert.equal('[unbound, 20]', keyRange.reverse().toString());
 
     keyRange = SingleKeyRange.all();
-    assert.equal('[unbound, unbound]' , keyRange.toString());
-    assert.equal('[unbound, unbound]' , keyRange.reverse().toString());
+    assert.equal('[unbound, unbound]', keyRange.toString());
+    assert.equal('[unbound, unbound]', keyRange.reverse().toString());
 
     keyRange = new SingleKeyRange(20, 50, false, true);
-    assert.equal('[20, 50)' , keyRange.toString());
-    assert.equal('(50, 20]' , keyRange.reverse().toString());
+    assert.equal('[20, 50)', keyRange.toString());
+    assert.equal('(50, 20]', keyRange.reverse().toString());
   });
 
   it('contains', () => {
@@ -179,14 +175,12 @@ describe('KeyRange', () => {
   });
 
   it('equals', () => {
-    assert.isTrue(SingleKeyRange.all().equals(
-        SingleKeyRange.all()));
-    assert.isTrue(SingleKeyRange.only(1).equals(
-        SingleKeyRange.only(1)));
-    assert.isTrue(new SingleKeyRange(1, 2, true, false).equals(
-        new SingleKeyRange(1, 2, true, false)));
-    assert.isFalse(new SingleKeyRange(1, 2, false, false).equals(
-        new SingleKeyRange(1, 2, true, false)));
+    assert.isTrue(SingleKeyRange.all().equals(SingleKeyRange.all()));
+    assert.isTrue(SingleKeyRange.only(1).equals(SingleKeyRange.only(1)));
+    assert.isTrue(new SingleKeyRange(1, 2, true, false)
+                      .equals(new SingleKeyRange(1, 2, true, false)));
+    assert.isFalse(new SingleKeyRange(1, 2, false, false)
+                       .equals(new SingleKeyRange(1, 2, true, false)));
   });
 
   it('xor', () => {
@@ -227,10 +221,15 @@ describe('KeyRange', () => {
 
     const cases = [
       r.all,
-      r.upTo1, r.upTo1Ex,
-      r.atLeast1, r.atLeast1Ex,
+      r.upTo1,
+      r.upTo1Ex,
+      r.atLeast1,
+      r.atLeast1Ex,
       r.only1,
-      r.r1, r.r2, r.r3, r.r4,
+      r.r1,
+      r.r2,
+      r.r3,
+      r.r4,
     ];
     cases.forEach((s) => assert.equal(Favor.TIE, c(s, s), s.toString()));
 
@@ -263,10 +262,15 @@ describe('KeyRange', () => {
 
     const cases = [
       r.all,
-      r.upTo1, r.upTo1Ex,
-      r.atLeast1, r.atLeast1Ex,
+      r.upTo1,
+      r.upTo1Ex,
+      r.atLeast1,
+      r.atLeast1Ex,
       r.only1,
-      r.r1, r.r2, r.r3, r.r4,
+      r.r1,
+      r.r2,
+      r.r3,
+      r.r4,
     ];
     cases.forEach((range) => {
       assert.isTrue(range.overlaps(range), range.toString());
@@ -323,11 +327,13 @@ describe('KeyRange', () => {
     const r = generateTestRanges();
     const check =
         (expected: SingleKeyRange, r1: SingleKeyRange, r2: SingleKeyRange) => {
-      assert.isTrue(expected.equals(
-          SingleKeyRange.getBoundingRange(r1, r2)), expected.toString());
-      assert.isTrue(expected.equals(
-          SingleKeyRange.getBoundingRange(r2, r1)), expected.toString());
-    };
+          assert.isTrue(
+              expected.equals(SingleKeyRange.getBoundingRange(r1, r2)),
+              expected.toString());
+          assert.isTrue(
+              expected.equals(SingleKeyRange.getBoundingRange(r2, r1)),
+              expected.toString());
+        };
 
     // Self and or with r.all.
     check(r.all, r.all, r.all);
@@ -379,11 +385,11 @@ describe('KeyRange', () => {
     const r = generateTestRanges();
     const check =
         (expected: SingleKeyRange, r1: SingleKeyRange, r2: SingleKeyRange) => {
-      assert.isTrue(
-          expected.equals(SingleKeyRange.and(r1, r2)), expected.toString());
-      assert.isTrue(
-          expected.equals(SingleKeyRange.and(r2, r1)), expected.toString());
-    };
+          assert.isTrue(
+              expected.equals(SingleKeyRange.and(r1, r2)), expected.toString());
+          assert.isTrue(
+              expected.equals(SingleKeyRange.and(r2, r1)), expected.toString());
+        };
 
     // Self and or with r.all.
     check(r.all, r.all, r.all);

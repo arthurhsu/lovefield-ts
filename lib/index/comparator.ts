@@ -21,7 +21,7 @@
  */
 export enum Favor {
   RHS = -1,  // favors right hand side, i.e. lhs < rhs
-  TIE = 0,  // no favorite, i.e. lhs == rhs
+  TIE = 0,   // no favorite, i.e. lhs == rhs
   LHS = 1,   // favors left hand side, i.e. lhs > rhs
 }
 
@@ -55,9 +55,9 @@ export interface Comparator<KeyType, RangeType> {
 
   /**
    * Whether the key's first dimension is in range's first dimension or not.
-   * For example, a key pair is [3, 5] and the range is [gt(3), gt(2)]. The B-Tree
-   * shall stop looping when the first key is out of range since the tree is
-   * sorted by first dimension.
+   * For example, a key pair is [3, 5] and the range is [gt(3), gt(2)]. The
+   * B-Tree shall stop looping when the first key is out of range since the tree
+   * is sorted by first dimension.
    */
   isFirstKeyInRange(key: KeyType, range: RangeType): boolean;
 
@@ -67,8 +67,8 @@ export interface Comparator<KeyType, RangeType> {
   getAllRange(): RangeType;
 
   /**
-   * Binds unbound values to given key ranges, and sorts them so that these ranges
-   * will be in the order from left to right.
+   * Binds unbound values to given key ranges, and sorts them so that these
+   * ranges will be in the order from left to right.
    */
   sortKeyRanges(keyRanges: RangeType[]): RangeType[];
 

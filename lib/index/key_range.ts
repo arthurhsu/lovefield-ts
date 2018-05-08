@@ -17,8 +17,8 @@
 
 import {Favor} from './comparator';
 
-export type SingleKey = string | number;
-export type Key = SingleKey | SingleKey[];
+export type SingleKey = string|number;
+export type Key = SingleKey|SingleKey[];
 
 // Unbound is used to denote an unbound key range boundary.
 export class UnboundKey {}
@@ -27,7 +27,7 @@ export class UnboundKey {}
 export class SingleKeyRange {
   public static UNBOUND_VALUE: UnboundKey = new UnboundKey();
 
-  public static isUnbound(value: SingleKey | UnboundKey): boolean {
+  public static isUnbound(value: SingleKey|UnboundKey): boolean {
     return value === SingleKeyRange.UNBOUND_VALUE;
   }
 
@@ -159,11 +159,8 @@ export class SingleKeyRange {
   private static EMPTY_RANGE: SingleKeyRange[] = [];
 
   private static compareKey(
-      l: SingleKey | UnboundKey,
-      r: SingleKey | UnboundKey,
-      isLeftHandSide: boolean,
-      excludeL = false,
-      excludeR = false): Favor {
+      l: SingleKey|UnboundKey, r: SingleKey|UnboundKey, isLeftHandSide: boolean,
+      excludeL = false, excludeR = false): Favor {
     const flip = (favor: Favor) =>
         isLeftHandSide ? favor : (favor === Favor.LHS) ? Favor.RHS : Favor.LHS;
 
@@ -184,10 +181,8 @@ export class SingleKeyRange {
   public readonly excludeUpper: boolean;
 
   constructor(
-      readonly from: SingleKey | UnboundKey,
-      readonly to: SingleKey | UnboundKey,
-      excludeLower: boolean,
-      excludeUpper: boolean) {
+      readonly from: SingleKey|UnboundKey, readonly to: SingleKey|UnboundKey,
+      excludeLower: boolean, excludeUpper: boolean) {
     this.excludeLower =
         !SingleKeyRange.isUnbound(this.from) ? excludeLower : false;
     this.excludeUpper =
@@ -305,8 +300,9 @@ export class SingleKeyRange {
   }
 
   public equals(range: SingleKeyRange): boolean {
-    return this.from === range.from && this.excludeLower === range.excludeLower &&
-        this.to === range.to && this.excludeUpper === range.excludeUpper;
+    return this.from === range.from &&
+        this.excludeLower === range.excludeLower && this.to === range.to &&
+        this.excludeUpper === range.excludeUpper;
   }
 }
 

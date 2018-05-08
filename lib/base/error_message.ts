@@ -19,7 +19,7 @@ import {Flags} from '../gen/flags';
 import {ErrorCode} from './exception';
 
 class ErrorMessages {
-  public static get(code: ErrorCode): string | undefined {
+  public static get(code: ErrorCode): string|undefined {
     return ErrorMessages.getInstance().getMessage(code);
   }
 
@@ -35,12 +35,12 @@ class ErrorMessages {
     this.messages = setupMap();
   }
 
-  private getMessage(code: ErrorCode): string | undefined {
+  private getMessage(code: ErrorCode): string|undefined {
     return this.messages.get(code);
   }
 }
 
-export function getErrorMessage(code: ErrorCode): string | undefined {
+export function getErrorMessage(code: ErrorCode): string|undefined {
   return Flags.DEBUG ? ErrorMessages.get(code) : code.toString();
 }
 
@@ -98,7 +98,8 @@ function setupMap(): Map<ErrorCode, string> {
   m.set(ec.IDB_NOT_PROVIDED, 'IndexedDB is not supported by platform.');
   m.set(ec.WEBSQL_NOT_PROVIDED, 'WebSQL is not supported by platform.');
   m.set(
-      ec.CANT_OPEN_WEBSQL_DB, 'Unable to open WebSQL database. {0}. See ' +
+      ec.CANT_OPEN_WEBSQL_DB,
+      'Unable to open WebSQL database. {0}. See ' +
           'https://github.com/google/lovefield/blob/master/docs/FAQ.md ' +
           'for possible explanation.');
   m.set(
@@ -110,7 +111,8 @@ function setupMap(): Map<ErrorCode, string> {
   m.set(ec.LS_NOT_PROVIDED, 'LocalStorage is not supported by platform.');
   m.set(ec.NOT_IMPLEMENTED, 'Not implemented yet.');
   m.set(
-      ec.CANT_OPEN_IDB, 'Unable to open IndexedDB database: {0}, {1}. See ' +
+      ec.CANT_OPEN_IDB,
+      'Unable to open IndexedDB database: {0}, {1}. See ' +
           'https://github.com/google/lovefield/blob/master/docs/FAQ.md ' +
           'for possible explanation.');
 
