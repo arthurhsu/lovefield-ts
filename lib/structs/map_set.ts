@@ -34,21 +34,8 @@ export class MapSet<K, V> {
     return this.map.has(key);
   }
 
-  /**
-   * Returns a set for a given key. If the key does not exist in the map,
-   * a new Set will be created.
-   */
-  private getSet(key: K): Set<V> {
-    let valueSet = this.map.get(key) || null;
-    if (valueSet === null) {
-      valueSet = new Set<V>();
-      this.map.set(key, valueSet);
-    }
-    return valueSet;
-  }
-
   public set(key: K, value: V): MapSet<K, V> {
-    let valueSet = this.getSet(key);
+    const valueSet = this.getSet(key);
     if (!valueSet.has(value)) {
       valueSet.add(value);
       this.count++;
@@ -57,7 +44,7 @@ export class MapSet<K, V> {
   }
 
   public setMany(key: K, values: V[]): MapSet<K, V> {
-    let valueSet = this.getSet(key);
+    const valueSet = this.getSet(key);
     values.forEach((value) => {
       if (!valueSet.has(value)) {
         valueSet.add(value);
@@ -82,15 +69,15 @@ export class MapSet<K, V> {
   // clang-format off
   public delete(key: K, value: V): boolean {
     // clang-format on
-    let valueSet = this.map.get(key) || null;
+    const valueSet = this.map.get(key) || null;
     if (valueSet === null) {
       return false;
     }
 
-    let didRemove = valueSet.delete(value);
+    const didRemove = valueSet.delete(value);
     if (didRemove) {
       this.count--;
-      if (valueSet.size == 0) {
+      if (valueSet.size === 0) {
         this.map.delete(key);
       }
     }
@@ -98,7 +85,7 @@ export class MapSet<K, V> {
   }
 
   public get(key: K): V[]|null {
-    let valueSet = this.map.get(key) || null;
+    const valueSet = this.map.get(key) || null;
     return valueSet === null ? null : Array.from(valueSet);
   }
 
@@ -112,10 +99,23 @@ export class MapSet<K, V> {
   }
 
   public values(): V[] {
-    let results: V[] = [];
+    const results: V[] = [];
     this.map.forEach((valueSet, key) => {
       results.push.apply(results, Array.from(valueSet));
     });
     return results;
+  }
+
+  /**
+   * Returns a set for a given key. If the key does not exist in the map,
+   * a new Set will be created.
+   */
+  private getSet(key: K): Set<V> {
+    let valueSet = this.map.get(key) || null;
+    if (valueSet === null) {
+      valueSet = new Set<V>();
+      this.map.set(key, valueSet);
+    }
+    return valueSet;
   }
 }

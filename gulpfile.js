@@ -123,7 +123,7 @@ function genFlags() {
       quote = '';
     }
     // We do not use readonly so that tests can modify them, esp. DEBUG.
-    contents += `  static ${key} = ${quote}${value}${quote};\n`;
+    contents += `  public static ${key} = ${quote}${value}${quote};\n`;
   }
   contents += '}  // class Flags\n';
   fs.ensureDirSync('lib/gen');

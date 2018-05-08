@@ -14,10 +14,12 @@
       "check-space"
     ],
     "forin": true,
+    "interface-name": [true, "never-prefix"],
     "indent": [true, "spaces"],
     "jsdoc-format": true,
     "label-position": true,
     "linebreak-style": [true, "LF"],
+    "max-classes-per-file": [false],
     "new-parens": true,
     "no-angle-bracket-type-assertion": true,
     "no-construct": true,
