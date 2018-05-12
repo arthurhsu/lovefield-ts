@@ -21,13 +21,7 @@ import {Constraint} from './constraint';
 import {ForeignKeySpec} from './foreign_key_spec';
 import {Index} from './index';
 
-export interface TableMethod {
-  createRow(): Row;
-  deserializeRow(dbRecord: RawRow): Row;
-  getConstraint(): Constraint;
-}
-
-export class Table {
+export abstract class Table {
   // Row id index is named <tableName>.#, which is an invalid name for JS vars
   // and therefore user-defined indices can never collide with it.
   public static ROW_ID_INDEX_PATTERN = '#';
@@ -54,14 +48,6 @@ export class Table {
     return this.alias || this.name;
   }
 
-  public as(name: string): Table {
-    const clone =
-        new Table(this.name, this.columns, this.indices, this.persistentIndex);
-    clone.alias = this.alias;
-    clone.referencingForeignKeys = this.referencingForeignKeys;
-    return clone;
-  }
-
   public getIndices(): Index[] {
     return this.indices;
   }
@@ -71,4 +57,9 @@ export class Table {
   public getRowIdIndexName(): string {
     return `${this.name}.${Table.ROW_ID_INDEX_PATTERN}`;
   }
+
+  public abstract createRow(): Row;
+  public abstract deserializeRow(dbRecord: RawRow): Row;
+  public abstract getConstraint(): Constraint;
+  public abstract as(alias: string): Table;
 }
