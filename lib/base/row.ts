@@ -23,6 +23,10 @@ export class RawRow {
 
 // The base row class for all rows.
 export class Row {
+  // An ID to be used when a row that does not correspond to a DB entry is
+  // created (for example the result of joining two rows).
+  public static DUMMY_ID = -1;
+
   // Get the next unique row ID to use for creating a new instance.
   public static getNextId(): number {
     return Row.nextId++;
@@ -90,10 +94,6 @@ export class Row {
     }
     return buffer;
   }
-
-  // An ID to be used when a row that does not correspond to a DB entry is
-  // created (for example the result of joining two rows).
-  private static DUMMY_ID = -1;
 
   // The ID to assign to the next row that will be created.
   // Should be initialized to the appropriate value from the BackStore instance

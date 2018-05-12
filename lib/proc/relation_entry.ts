@@ -16,6 +16,7 @@
  */
 
 import {Row} from '../base/row';
+import {Column} from '../schema/column';
 
 /**
  * Each RelationEntry represents a row that is passed from one execution step
@@ -23,6 +24,37 @@ import {Row} from '../base/row';
  * table (as it can be the result of a cross-product/join operation).
  */
 export class RelationEntry {
+  // Combines two entries into a single entry.
+  public static combineEntries(
+      leftEntry: RelationEntry, leftEntryTables: string[],
+      rightEntry: RelationEntry, rightEntryTables: string[]): RelationEntry {
+    const result = {};
+    const mergeEntry = (entry: RelationEntry, entryTables: string[]) => {
+      if (entry.isPrefixApplied) {
+        const payload = entry.row.payload();
+        Array.from(Object.keys(payload)).forEach((prefix) => {
+          result[prefix] = payload[prefix];
+        });
+      } else {
+        // TODO(arthurhsu): assert
+        // goog.asserts.assert(
+        // !result.hasOwnProperty(entryTables[0]),
+        // 'Attempted to join table with itself, without using table alias, ' +
+        // 'or same alias ' + entryTables[0] + 'is reused for multiple tables.')
+
+        // Since the entry is not prefixed, all attributes come from a single
+        // table.
+        result[entryTables[0]] = entry.row.payload();
+      }
+    };
+
+    mergeEntry(leftEntry, leftEntryTables);
+    mergeEntry(rightEntry, rightEntryTables);
+
+    const row = new Row(Row.DUMMY_ID, result);
+    return new RelationEntry(row, true);
+  }
+
   // The ID to assign to the next entry that will be created.
   private static nextId = 0;
 
@@ -31,15 +63,50 @@ export class RelationEntry {
   }
 
   public id: number;
-  // private isPrefixApplied: boolean;
+  private isPrefixApplied: boolean;
 
   // |isPrefixApplied| Whether the payload in this entry is using prefixes for
   // each attribute. This happens when this entry is the result of a relation
   // join.
   constructor(readonly row: Row, isPrefixApplied: boolean) {
     this.id = RelationEntry.getNextId();
-    // this.isPrefixApplied = isPrefixApplied;
+    this.isPrefixApplied = isPrefixApplied;
   }
 
-  // TODO(arthurhsu): port the rest
+  public getField(column: Column): any {
+    // Attempting to get the field from the aliased location first, since it is
+    // not guaranteed that setField() has been called for this instance. If not
+    // found then look for it in its normal location.
+    const alias = column.getAlias();
+    if (alias !== null && this.row.payload().hasOwnProperty(alias)) {
+      return this.row.payload()[alias];
+    }
+
+    if (this.isPrefixApplied) {
+      return this.row
+          .payload()[column.getTable().getEffectiveName()][column.getName()];
+    } else {
+      return this.row.payload()[column.getName()];
+    }
+  }
+
+  public setField(column: Column, value: any): void {
+    const alias = column.getAlias();
+    if (alias !== null) {
+      this.row.payload()[alias] = value;
+      return;
+    }
+
+    if (this.isPrefixApplied) {
+      const tableName = column.getTable().getEffectiveName();
+      let containerObj = this.row.payload()[tableName];
+      if (!(containerObj !== undefined && containerObj !== null)) {
+        containerObj = {};
+        this.row.payload()[tableName] = containerObj;
+      }
+      containerObj[column.getName()] = value;
+    } else {
+      this.row.payload()[column.getName()] = value;
+    }
+  }
 }

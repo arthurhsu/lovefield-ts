@@ -18,7 +18,6 @@
 import {RawRow, Row} from '../base/row';
 import {Column} from './column';
 import {Constraint} from './constraint';
-import {ForeignKeySpec} from './foreign_key_spec';
 import {Index} from './index';
 
 export abstract class Table {
@@ -27,15 +26,11 @@ export abstract class Table {
   public static ROW_ID_INDEX_PATTERN = '#';
 
   private alias: string;
-  // Foreign key constraints where this table acts as the parent. Populated
-  // later (within lf.schema.Builder#finalize), only if such constraints exist.
-  private referencingForeignKeys: ForeignKeySpec[];
 
   constructor(
       readonly name: string, readonly columns: Column[],
       readonly indices: Index[], readonly persistentIndex: boolean) {
     this.alias = null as any as string;
-    this.referencingForeignKeys = null as any as ForeignKeySpec[];
   }
 
   public getName(): string {
