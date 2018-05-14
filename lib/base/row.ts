@@ -100,10 +100,10 @@ export class Row {
   // that is being used.
   private static nextId: number = Row.DUMMY_ID + 1;
 
+  protected payload_: object;
   private id_: number;
-  private payload_: object;
 
-  constructor(id: number, payload: object) {
+  constructor(id: number, payload?: object) {
     this.id_ = id;
     this.payload_ = payload || this.defaultPayload();
   }
