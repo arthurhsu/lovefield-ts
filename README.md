@@ -9,7 +9,7 @@ Lovefield Typescript port and modernization.
 * Install Chrome
 * Install Node 9+
 * `npm install`
-* `guppy precommit` or `node node_modules\guppy-cli\bin\index.js precommit`
+* `node node_modules/guppy-cli/bin/index.js pre-commit`
 
 ### Development flow
 
