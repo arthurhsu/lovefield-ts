@@ -47,9 +47,7 @@ export interface PredicateProvider {
   between(from: ValueOperandType, to: ValueOperandType): Predicate;
 
   // Array finding
-  // clang-format off
   in(values: Binder|ValueOperandType[]): Predicate;
-  // clang-format on
 
   // Nullity test
   isNull(): Predicate;

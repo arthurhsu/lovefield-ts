@@ -62,12 +62,9 @@ export class MapSet<K, V> {
 
   /**
    * Removes a value associated with the given key.
-   * Note: special clang-format tags added to workaround clang-format bug.
-   * @return {boolean} Whether the map was modified.
+   * Returns true if the map was modified.
    */
-  // clang-format off
   public delete(key: K, value: V): boolean {
-    // clang-format on
     const valueSet = this.map.get(key) || null;
     if (valueSet === null) {
       return false;
