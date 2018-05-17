@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-import {Order} from '../base/enum';
-import {Column} from './column';
+import {Type} from '../base/enum';
 
-export interface IndexedColumnSpec {
+export interface ColumnDef {
   name: string;
-  order?: Order;
-  autoIncrement?: boolean;
-}
-
-export class IndexedColumn {
-  constructor(
-      readonly schema: Column, readonly order: Order,
-      readonly autoIncrement: boolean) {}
+  type: Type;
+  unique: boolean;
+  nullable: boolean;
 }

@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-import {Order} from '../base/enum';
-import {Column} from './column';
+import {DataStoreType} from '../base/enum';
 
-export interface IndexedColumnSpec {
-  name: string;
-  order?: Order;
-  autoIncrement?: boolean;
-}
-
-export class IndexedColumn {
-  constructor(
-      readonly schema: Column, readonly order: Order,
-      readonly autoIncrement: boolean) {}
+export interface ConnectOptions {
+  // TODO(arthurhsu): uncomment the comments below
+  // onUpgrade?: (RawBackstore): Promise;
+  storeType: DataStoreType;
+  // firebase?: Firebase;
+  websqlDbSize?: number;
+  enableInspector?: boolean;
 }
