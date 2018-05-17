@@ -103,8 +103,8 @@ export class TreeNode {
 
   // Returns removed node, if any.
   public removeChild(child: TreeNode): TreeNode|null {
-    return this.children ?
-        this.removeChildAt(this.children.indexOf(child)) : null;
+    return this.children ? this.removeChildAt(this.children.indexOf(child)) :
+                           null;
   }
 
   // Returns original node, if any.
