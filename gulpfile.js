@@ -191,6 +191,14 @@ gulp.task('test', ['build'], () => {
   }
 });
 
+gulp.task('debug', ['build'], () => {
+  new karma.Server({
+      configFile: path.join(__dirname, 'karma_config.js'),
+      singleRun: false,
+      mocha: { grep: getGrepPattern() }
+  }).start();
+});
+
 gulp.task('pre-commit', ['build', 'lint', 'fastcheck'], () => {
 });
 
