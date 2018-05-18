@@ -55,7 +55,7 @@ export class Builder {
     this.tableBuilders.set(tableName, new TableBuilder(tableName));
     const ret = this.tableBuilders.get(tableName);
     if (!ret) {
-      throw new Exception(ErrorCode.ASSERTION);
+      throw new Exception(ErrorCode.ASSERTION, 'Builder.createTable');
     }
     return ret;
   }

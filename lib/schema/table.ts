@@ -59,7 +59,7 @@ export abstract class Table implements BaseTable {
     return this._usePersistentIndex;
   }
 
-  public abstract createRow(): Row;
+  public abstract createRow(value?: object): Row;
   public abstract deserializeRow(dbRecord: RawRow): Row;
   public abstract getConstraint(): Constraint;
   public abstract as(alias: string): Table;

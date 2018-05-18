@@ -27,6 +27,7 @@
   "include": [
     "gen/flags.ts",
     "lib/**/*.ts",
+    "testing/**/*.ts",
     "tests/**/*.ts"
   ],
   "exclude": [

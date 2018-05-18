@@ -173,17 +173,12 @@ export class TableBuilder {
 
     const columns: ColumnDef[] =
         Array.from(this.columns.keys()).map((colName) => {
-          const colType = this.columns.get(colName);
-          if (colType) {
-            return {
-              name: colName,
-              nullable: this.nullable.has(colName) || false,
-              type: colType,
-              unique: this.uniqueColumns.has(colName) || false,
-            };
-          } else {
-            throw new Exception(ErrorCode.ASSERTION);
-          }
+          return {
+            name: colName,
+            nullable: this.nullable.has(colName) || false,
+            type: this.columns.get(colName) as any as Type,
+            unique: this.uniqueColumns.has(colName) || false,
+          };
         });
 
     // Pass null as indices since Columns are not really constructed yet.
@@ -257,8 +252,7 @@ export class TableBuilder {
         throw new Exception(
             ErrorCode.PK_CANT_BE_FK, this.fkSpecs[fkSpecIndex].name);
       }
-    }
-    throw new Exception(ErrorCode.ASSERTION);
+    }  // else nothing to check.
   }
 
   // Checks whether the primary key index is identical (in terms of indexed
@@ -285,8 +279,7 @@ export class TableBuilder {
               ErrorCode.DUPLICATE_PK, `${this.name}.${indexName}`);
         }
       });
-    }
-    throw new Exception(ErrorCode.ASSERTION);
+    }  // else nothing to check.
   }
 
   // Checks whether any primary key column has also been marked as nullable.
@@ -304,8 +297,7 @@ export class TableBuilder {
               ErrorCode.NULLABLE_PK, `${this.name}.${indexedColumnSpec.name}`);
         }
       });
-    }
-    throw new Exception(ErrorCode.ASSERTION);
+    }  // else nothing to check.
   }
 
   // Convert different column representations (column name only or column

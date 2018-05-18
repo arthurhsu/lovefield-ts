@@ -35,7 +35,7 @@ export class BaseColumn implements Column {
       readonly nullable: boolean, readonly type: Type, alias?: string) {
     this.alias = alias || null as any as string;
     this.indices = [];
-    this.index = null as any as Index;
+    this.index = undefined as any as Index;
   }
 
   public getName(): string {

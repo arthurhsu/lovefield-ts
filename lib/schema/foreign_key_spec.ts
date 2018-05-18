@@ -20,8 +20,8 @@ import {ErrorCode, Exception} from '../base/exception';
 export interface RawForeignKeySpec {
   local: string;
   ref: string;
-  action: ConstraintAction;
-  timing: ConstraintTiming;
+  action?: ConstraintAction;
+  timing?: ConstraintTiming;
 }
 
 export class ForeignKeySpec {
@@ -45,7 +45,7 @@ export class ForeignKeySpec {
     this.parentTable = array[0];
     this.parentColumn = array[1];
     this.name = `${childTable}.${name}`;
-    this.action = rawSpec.action;
-    this.timing = rawSpec.timing;
+    this.action = rawSpec.action || ConstraintAction.RESTRICT;
+    this.timing = rawSpec.timing || ConstraintTiming.IMMEDIATE;
   }
 }

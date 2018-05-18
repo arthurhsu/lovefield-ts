@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
- import * as chai from 'chai';
- import {Exception} from '../lib/base/exception';
+import * as chai from 'chai';
+import {Exception} from '../lib/base/exception';
 
- export class TestUtil {
-   public static assertThrowsError(exceptionCode: number, fn: () => any) {
-     let thrown = false;
-     try {
-       fn();
-     } catch (e) {
-       thrown = true;
-       chai.assert.isTrue(e instanceof Exception);
-       chai.assert.equal(exceptionCode, e.code);
-     }
-     chai.assert.isTrue(thrown);
-   }
- }
+export class TestUtil {
+  public static assertThrowsError(exceptionCode: number, fn: () => any) {
+    let thrown = false;
+    try {
+      fn();
+    } catch (e) {
+      thrown = true;
+      chai.assert.isTrue(e instanceof Exception);
+      chai.assert.equal(exceptionCode, e.code);
+    }
+    chai.assert.isTrue(thrown);
+  }
+}

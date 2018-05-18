@@ -72,6 +72,7 @@ export class TableImpl extends Table {
         this._name, colDef, this._indices, this._usePersistentIndex, name);
     clone._referencingFK = this._referencingFK;
     clone._constraint = this._constraint;
+    clone._alias = name;
     return clone;
   }
 

@@ -28,6 +28,7 @@
     "no-internal-module": true,
     "no-reference": true,
     "no-require-imports": true,
+    "no-string-literal": false,
     "no-this-assignment": false,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
