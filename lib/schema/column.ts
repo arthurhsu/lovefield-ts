@@ -29,4 +29,7 @@ export interface Column {
   // not exist.
   getIndex(): Index;
   isNullable(): boolean;
+
+  // Additional function call, not existent in original Lovefield.
+  isUniquie(): boolean;
 }

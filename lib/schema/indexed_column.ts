@@ -23,8 +23,8 @@ export interface IndexedColumnSpec {
   autoIncrement?: boolean;
 }
 
-export class IndexedColumn {
-  constructor(
-      readonly schema: Column, readonly order: Order,
-      readonly autoIncrement: boolean) {}
+export interface IndexedColumn {
+  schema: Column;
+  order: Order;
+  autoIncrement: boolean;
 }

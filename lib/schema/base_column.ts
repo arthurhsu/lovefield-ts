@@ -66,6 +66,10 @@ export class BaseColumn implements Column {
     return this.nullable;
   }
 
+  public isUniquie(): boolean {
+    return this.unique;
+  }
+
   public getIndices(): Index[] {
     this.table.getIndices().forEach((index) => {
       const colNames = index.columns.map((col) => col.schema.getName());

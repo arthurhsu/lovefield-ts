@@ -15,41 +15,48 @@
  */
 
 import {RawRow, Row} from '../base/row';
+import {BaseTable} from './base_table';
 import {Column} from './column';
 import {Constraint} from './constraint';
 import {Index} from './index';
 
-export abstract class Table {
+export abstract class Table implements BaseTable {
   // Row id index is named <tableName>.#, which is an invalid name for JS vars
   // and therefore user-defined indices can never collide with it.
   public static ROW_ID_INDEX_PATTERN = '#';
 
-  private alias: string;
+  protected _indices: Index[];
+  protected _alias: string;
 
   constructor(
-      readonly name: string, readonly columns: Column[],
-      readonly indices: Index[], readonly persistentIndex: boolean) {
-    this.alias = null as any as string;
+      readonly _name: string, readonly _columns: Column[], indices: Index[],
+      readonly _usePersistentIndex: boolean) {
+    this._indices = indices;
+    this._alias = null as any as string;
   }
 
   public getName(): string {
-    return this.name;
+    return this._name;
   }
   public getAlias(): string {
-    return this.alias;
+    return this._alias;
   }
   public getEffectiveName(): string {
-    return this.alias || this.name;
+    return this._alias || this._name;
   }
 
   public getIndices(): Index[] {
-    return this.indices;
+    return this._indices;
   }
   public getColumns(): Column[] {
-    return this.columns;
+    return this._columns;
   }
   public getRowIdIndexName(): string {
-    return `${this.name}.${Table.ROW_ID_INDEX_PATTERN}`;
+    return `${this._name}.${Table.ROW_ID_INDEX_PATTERN}`;
+  }
+
+  public persistentIndex(): boolean {
+    return this._usePersistentIndex;
   }
 
   public abstract createRow(): Row;

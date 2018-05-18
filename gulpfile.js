@@ -18,6 +18,7 @@ const chalk = require('chalk');
 const diff = require('diff');
 const fs = require('fs-extra');
 const gulp = require('gulp');
+const debug = require('gulp-debug');
 const guppy = require('git-guppy')(gulp);
 const mocha = require('gulp-mocha');
 const format = require('gulp-clang-format');
@@ -198,7 +199,7 @@ gulp.task('fastcheck', () => {
       .src()
       .pipe(format.checkFormat('file'))
       .on('warning', e => {
-        gulp.debug(e.message);
+        debug(e.message);
         process.exit(1);
       });
 });
