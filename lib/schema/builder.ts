@@ -17,6 +17,7 @@
 import {ErrorCode, Exception} from '../base/exception';
 
 import {Database} from './database';
+import {GraphNode} from './graph_node';
 import {Info} from './info';
 import {Pragma} from './pragma';
 import {Table} from './table';
@@ -73,19 +74,72 @@ export class Builder {
   // Builds the graph of foreign key relationships and checks for
   // loop in the graph.
   private checkFkCycle() {
-    // TODO(arthurhsu): implement
+    // Builds graph.
+    const nodeMap = new Map<string, GraphNode>();
+    this.schema.tables().forEach((table) => {
+      nodeMap.set(table.getName(), new GraphNode(table.getName()));
+    }, this);
+    this.tableBuilders.forEach((builder, tableName) => {
+      builder.getFkSpecs().forEach((spec) => {
+        const parentNode = nodeMap.get(spec.parentTable);
+        if (parentNode) {
+          parentNode.edges.add(tableName);
+        }
+      });
+    });
+    // Checks for cycle.
+    Array.from(nodeMap.values()).forEach((graphNode) => {
+      this.checkCycleUtil(graphNode, nodeMap);
+    }, this);
   }
 
   // Performs foreign key checks like validity of names of parent and
   // child columns, matching of types and uniqueness of referred column
   // in the parent.
   private checkForeignKeyValidity(builder: TableBuilder) {
-    // TODO(arthurhsu): implement
+    builder.getFkSpecs().forEach((specs) => {
+      const parentTableName = specs.parentTable;
+      const table = this.tableBuilders.get(parentTableName);
+      if (!table) {
+        // 536: Foreign key {0} refers to invalid table.
+        throw new Exception(ErrorCode.INVALID_FK_TABLE);
+      }
+      const parentSchema = table.getSchema();
+      const parentColName = specs.parentColumn;
+      if (!parentSchema.hasOwnProperty(parentColName)) {
+        // 537: Foreign key {0} refers to invalid column.
+        throw new Exception(ErrorCode.INVALID_FK_COLUMN);
+      }
+
+      const localSchema = builder.getSchema();
+      const localColName = specs.childColumn;
+      if (localSchema[localColName].getType() !==
+          parentSchema[parentColName].getType()) {
+        // 538: Foreign key {0} column type mismatch.
+        throw new Exception(ErrorCode.INVALID_FK_COLUMN_TYPE, specs.name);
+      }
+      if (!parentSchema[parentColName].isUnique()) {
+        // 539: Foreign key {0} refers to non-unique column.
+        throw new Exception(ErrorCode.FK_COLUMN_NONUNIQUE, specs.name);
+      }
+    }, this);
   }
 
   // Performs checks to avoid chains of foreign keys on same column.
   private checkForiengKeyChain(builder: TableBuilder) {
-    // TODO(arthurhsu): implement
+    const fkSpecArray = builder.getFkSpecs();
+    fkSpecArray.forEach((specs) => {
+      const parentBuilder = this.tableBuilders.get(specs.parentTable);
+      if (parentBuilder) {
+        parentBuilder.getFkSpecs().forEach((parentSpecs) => {
+          if (parentSpecs.childColumn === specs.parentColumn) {
+            // 534: Foreign key {0} refers to source column of another
+            // foreign key.
+            throw new Exception(ErrorCode.FK_COLUMN_IN_USE, specs.name);
+          }
+        }, this);
+      }
+    }, this);
   }
 
   private finalize() {
@@ -107,38 +161,40 @@ export class Builder {
   // 3rd Edition By Cormen et Al". It says that a directed graph G
   // can be acyclic if and only DFS of G yields no back edges.
   // @see http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
-  // private checkCycleUtil(
-  //     graphNode: GraphNode, nodeMap: Map<string, GraphNode>) {
-  // TODO(arthurhsu): implement
-  // }
-}
-
-// A class that represents a vertex in the graph of foreign keys relationships.
-/*
-class GraphNode {
-  public visited: boolean;
-  public onStack: boolean;
-  public edges: Set<GraphNode>;
-  readonly name: string;
-
-  constructor(tableName: string) {
-    this.name = tableName;
-    this.visited = false;
-    this.onStack = false;
-    this.edges = new Set<GraphNode>();
+  private checkCycleUtil(
+      graphNode: GraphNode, nodeMap: Map<string, GraphNode>) {
+    if (!graphNode.visited) {
+      graphNode.visited = true;
+      graphNode.onStack = true;
+      graphNode.edges.forEach((edge) => {
+        const childNode = nodeMap.get(edge);
+        if (childNode) {
+          if (!childNode.visited) {
+            this.checkCycleUtil(childNode, nodeMap);
+          } else if (childNode.onStack) {
+            // Checks for self loop, in which case, it does not throw an
+            // exception.
+            if (graphNode !== childNode) {
+              // 533: Foreign key loop detected.
+              throw new Exception(ErrorCode.FK_LOOP);
+            }
+          }
+        }
+      }, this);
+    }
+    graphNode.onStack = false;
   }
 }
-*/
 
 class DatabaseSchema implements Database {
-  public readonly _info: Info;
   public _pragma: Pragma;
+  private _info: Info;
   private tableMap: Map<string, Table>;
 
   constructor(readonly _name: string, readonly _version: number) {
     this.tableMap = new Map<string, Table>();
     this._pragma = {enableBundledMode: false};
-    this._info = new Info(this);
+    this._info = undefined as any as Info;
   }
 
   public name(): string {
@@ -150,6 +206,9 @@ class DatabaseSchema implements Database {
   }
 
   public info(): Info {
+    if (this._info === undefined) {
+      this._info = new Info(this);
+    }
     return this._info;
   }
 

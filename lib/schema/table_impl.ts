@@ -65,7 +65,7 @@ export class TableImpl extends Table {
         name: col.getName(),
         nullable: col.isNullable(),
         type: col.getType(),
-        unique: col.isUniquie(),
+        unique: col.isUnique(),
       };
     });
     const clone = new TableImpl(

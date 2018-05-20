@@ -66,7 +66,7 @@ export class BaseColumn implements Column {
     return this.nullable;
   }
 
-  public isUniquie(): boolean {
+  public isUnique(): boolean {
     return this.unique;
   }
 

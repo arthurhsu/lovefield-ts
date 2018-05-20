@@ -193,6 +193,10 @@ export class TableBuilder {
     return table as any as Table;
   }
 
+  public getFkSpecs(): ForeignKeySpec[] {
+    return this.fkSpecs;
+  }
+
   private checkNamingRules(name: string) {
     if (!(/^[A-Za-z_][A-Za-z0-9_]*$/.test(name))) {
       // 502: Naming rule violation: {0}.

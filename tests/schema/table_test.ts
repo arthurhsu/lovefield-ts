@@ -43,7 +43,7 @@ describe('Table', () => {
 
   it('alias_StaticSchema',
      () => {
-         // TODO(arthurhsu): To be implemented.
+         // Will not implement in TypeScript port.
      });
 
   it('alias_DynamicSchema', () => {

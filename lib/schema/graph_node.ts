@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-import {Type} from '../base/enum';
-import {Index} from './index';
-import {Table} from './table';
+export class GraphNode {
+  public visited: boolean;
+  public onStack: boolean;
+  public edges: Set<string>;
 
-export interface Column {
-  getName(): string;
-  getNormalizedName(): string;
-  getTable(): Table;
-  getType(): Type;
-  getAlias(): string;
-  getIndices(): Index[];
-  // The index that refers only to this column, or null if such index does
-  // not exist.
-  getIndex(): Index;
-  isNullable(): boolean;
-
-  // Additional function call, not existent in original Lovefield.
-  isUnique(): boolean;
+  constructor(readonly name: string) {
+    this.visited = false;
+    this.onStack = false;
+    this.edges = new Set<string>();
+  }
 }
