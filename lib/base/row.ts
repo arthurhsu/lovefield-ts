@@ -16,8 +16,9 @@
 
 import {Key} from '../index/key_range';
 
-export class RawRow {
-  constructor(readonly id: number, readonly value: string|object) {}
+export interface RawRow {
+  id: number;
+  value: string|object;
 }
 
 // The base row class for all rows.
@@ -129,7 +130,7 @@ export class Row {
   }
 
   public serialize(): RawRow {
-    return new RawRow(this.id_, this.toDbPayload());
+    return {id: this.id_, value: this.toDbPayload()};
   }
 
   public keyOfIndex(indexName: string): Key {

@@ -96,7 +96,7 @@ export class TableImpl extends Table {
     this._columns.forEach((col) => {
       const key = col.getName();
       const type = col.getType();
-      let value: any = (dbRecord.value as any)[key];
+      let value: any = dbRecord.value[key];
       if (type === Type.ARRAY_BUFFER) {
         value = Row.hexToBin(value as string);
       } else if (type === Type.DATE_TIME) {
