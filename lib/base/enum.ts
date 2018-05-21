@@ -57,3 +57,13 @@ export const DEFAULT_VALUES: Map<Type, any> = new Map([
   [Type.STRING, ''],                             // not nullable
   [Type.OBJECT, null],                           // nullable
 ]);
+
+export enum TransactionType {
+  READ_ONLY = 0,
+  READ_WRITE = 1,
+}
+
+export enum TableType {
+  DATA = 0,
+  INDEX = 1,
+}
