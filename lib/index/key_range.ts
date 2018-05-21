@@ -16,6 +16,7 @@
 
 import {Favor} from './comparator';
 
+// TODO(arthurhsu): original SingleKey can be null.
 export type SingleKey = string|number;
 export type Key = SingleKey|SingleKey[];
 
