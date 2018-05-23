@@ -16,8 +16,8 @@
 
 import {TableType} from '../base/enum';
 import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
-import {Table} from '../schema/table';
 import {TransactionStats} from './transaction_stats';
 
 // Tx objects are wrappers of backstore-provided transactions. The interface
@@ -25,7 +25,7 @@ import {TransactionStats} from './transaction_stats';
 export interface Tx {
   getTable(
       tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType: TableType): Table;
+      tableType: TableType): RuntimeTable;
 
   // Returns the journal associated with this transaction.
   // The journal keeps track of all changes happened within the transaction.
@@ -38,7 +38,7 @@ export interface Tx {
 
   // Aborts tranaction. Caller shall listen to rejection of commit() to detect
   // end of transaction.
-  abort(): Promise<any>;
+  abort(): Promise<void>;
 
   // Returns transaction stats if transaction is finalized, otherwise null.
   stats(): TransactionStats|null;
