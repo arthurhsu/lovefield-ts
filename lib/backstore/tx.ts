@@ -38,7 +38,7 @@ export interface Tx {
 
   // Aborts tranaction. Caller shall listen to rejection of commit() to detect
   // end of transaction.
-  abort(): Promise<void>;
+  abort(): void;
 
   // Returns transaction stats if transaction is finalized, otherwise null.
   stats(): TransactionStats|null;

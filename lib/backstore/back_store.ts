@@ -15,18 +15,18 @@
  */
 
 import {TransactionType} from '../base/enum';
+import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {Table} from '../schema/table';
-import {RawBackStore} from './raw_back_store';
 import {Tx} from './tx';
 
 // Interface for all backing stores to implement (Indexed DB, filesystem,
 // memory etc).
-export interface BackStore<RawDB, RawTx> {
+export interface BackStore {
   // Initialize the database and setting up row id.
-  init(onUpgrade?: (db: RawBackStore<RawDB, RawTx>) => Promise<void>):
-      Promise<void>;
+  // |db| must be instance of RawBackStore<>.
+  init(onUpgrade?: (db: object) => Promise<void>): Promise<void>;
 
   // Creates backstore native transaction that is tied to a given journal.
   createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx;
@@ -35,7 +35,7 @@ export interface BackStore<RawDB, RawTx> {
   close(): void;
 
   // Returns one table based on table name.
-  getTableInternal(tableName: string): Table;
+  getTableInternal(tableName: string): RuntimeTable;
 
   // Subscribe to back store changes outside of this connection. Each change
   // event corresponds to one transaction. The events will be fired in the order

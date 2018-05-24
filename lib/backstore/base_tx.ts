@@ -43,7 +43,7 @@ export abstract class BaseTx implements Tx {
   public abstract getTable(
       tableName: string, deserializeFn: (value: RawRow) => Row,
       tableType: TableType): RuntimeTable;
-  public abstract abort(): Promise<void>;
+  public abstract abort(): void;
   public abstract commitInternal(): Promise<void>;
 
   public getJournal(): Journal|null {
