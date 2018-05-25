@@ -52,8 +52,8 @@ export interface RuntimeIndex {
   // ordering of the index's comparator.
   // |limit| sets max number of rows to return, |skip| skips first N rows.
   getRange(
-      range: SingleKeyRange[]|KeyRange[], reverseOrder: boolean, limit: number,
-      skip: number): number[];
+      range?: SingleKeyRange[]|KeyRange[], reverseOrder?: boolean,
+      limit?: number, skip?: number): number[];
 
   // Removes everything from the tree.
   clear(): void;

@@ -22,6 +22,7 @@
     "max-classes-per-file": [true, 2, "exclude-class-expressions"],
     "new-parens": true,
     "no-angle-bracket-type-assertion": true,
+    "no-bitwise": false,
     "no-construct": true,
     "no-debugger": true,
     "no-inferrable-types": true,
