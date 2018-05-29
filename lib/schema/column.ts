@@ -27,7 +27,7 @@ export interface Column {
   getIndices(): Index[];
   // The index that refers only to this column, or null if such index does
   // not exist.
-  getIndex(): Index;
+  getIndex(): Index|null;
   isNullable(): boolean;
 
   // Additional function call, not existent in original Lovefield.

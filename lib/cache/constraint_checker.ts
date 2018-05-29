@@ -246,7 +246,7 @@ export class ConstraintChecker {
     const parentColumn: Column = parentTable[foreignKeySpec.parentColumn];
     // getIndex() must find an index since the parent of a foreign key
     // constraint must have a dedicated index.
-    const parentIndexSchema: Index = parentColumn.getIndex();
+    const parentIndexSchema: Index = parentColumn.getIndex() as Index;
     return this.indexStore.get(parentIndexSchema.getNormalizedName()) as
         RuntimeIndex;
   }
