@@ -1,0 +1,10 @@
+language: node_js
+sudo: false
+
+before_script:
+  - npm install -g gulp typescript tslint
+  - npm install
+
+script:
+  gulp build
+
