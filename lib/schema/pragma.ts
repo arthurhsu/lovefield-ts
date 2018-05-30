@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export interface Pragma {
-  enableBundledMode: boolean;
-}
+export interface Pragma { enableBundledMode: boolean; }
