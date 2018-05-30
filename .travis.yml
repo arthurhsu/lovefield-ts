@@ -7,4 +7,5 @@ before_script:
 
 script:
   gulp build
+  # TODO(arthurhsu): Switch to gulp test once SauceLabs is integrated.
 
