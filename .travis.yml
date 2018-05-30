@@ -1,5 +1,12 @@
 language: node_js
+node_js:
+  - "9"
+
 sudo: false
+
+cache:
+  directories:
+    - "node_modules"
 
 before_script:
   - npm install -g gulp typescript tslint
