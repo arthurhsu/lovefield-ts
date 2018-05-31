@@ -15,8 +15,9 @@
  */
 
 import {Row} from '../base/row';
+import {ComparatorType} from './comparator_type';
 import {IndexStats} from './index_stats';
-import {Key, KeyRange, SingleKeyRange} from './key_range';
+import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
 
 // Index used in runtime execution, lf.index.Index.
 export interface RuntimeIndex {
@@ -26,19 +27,19 @@ export interface RuntimeIndex {
   // Inserts data into index. If the key already existed, append value to the
   // value list. If the index does not support duplicate keys, adding duplicate
   // keys will result in throwing CONSTRAINT error.
-  add(key: Key, value: number): void;
+  add(key: Key|SingleKey, value: number): void;
 
   // Replaces data in index. All existing data for that key will be purged.
   // If the key is not found, inserts the data.
-  set(key: Key, value: number): void;
+  set(key: Key|SingleKey, value: number): void;
 
   // Deletes a row having given key from index. If not found return silently.
   // If |rowId| is given, delete a single row id when the index allows
   // duplicate keys. Ignored for index supporting only unique keys.
-  remove(key: Key, rowId?: number): void;
+  remove(key: Key|SingleKey, rowId?: number): void;
 
   // Gets values from index. Returns empty array if not found.
-  get(key: Key): number[];
+  get(key: Key|SingleKey): number[];
 
   // Gets the cost of retrieving data for given range.
   cost(keyRange?: SingleKeyRange|KeyRange): number;
@@ -62,7 +63,7 @@ export interface RuntimeIndex {
   // B-Tree), the containsKey will return garbage. Caller needs to be aware of
   // the behavior of the given index (this shall not be a problem with indices
   // that are properly wrapped by NullableIndex).
-  containsKey(key: Key): boolean;
+  containsKey(key: Key|SingleKey): boolean;
 
   // Returns an array of exactly two elements, holding the minimum key at
   // position 0, and all associated values at position 1. If no keys exist in
@@ -78,9 +79,7 @@ export interface RuntimeIndex {
   serialize(): Row[];
 
   // Returns the comparator used by this index.
-  // TODO(arthurhsu): figure out how to return a generic type without explicit
-  // type inferences.
-  comparator(): any;
+  comparator(): ComparatorType;
 
   // Whether the index accepts unique key only.
   isUniqueKey(): boolean;
