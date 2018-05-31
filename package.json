@@ -22,7 +22,7 @@
     "diff": "^3.5.0",
     "fs-extra": "^5.0.0",
     "git-guppy": "^2.1.0",
-    "gulp": "^4.0.0",
+    "gulp": "^3.9.1",
     "gulp-clang-format": "^1.0.25",
     "gulp-debug": "^4.0.0",
     "gulp-mocha": "^5.0.0",
