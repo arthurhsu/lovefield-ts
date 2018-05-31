@@ -29,7 +29,7 @@ module.exports = function(config) {
       '**/*.ts': ['karma-typescript']
     },
 
-    reporters: ['dots', 'saucelabs', 'karma-typescript'],
+    reeporters: ['dots', 'saucelabs', 'karma-typescript'],
     port: 9876,
     colors: true,
 
@@ -42,8 +42,12 @@ module.exports = function(config) {
       ]
     },
 
+    concurrency: 2,
+
     sauceLabs: {
       testName: 'Lovefield TypeScript Port',
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      startConnect: process.env.TRAVIS !== 'true',
       recordScreenshots: false,
       connectOptions: {
         port: 5757,
