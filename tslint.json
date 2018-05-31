@@ -41,6 +41,7 @@
       "check-open-brace",
       "check-whitespace"
     ],
+    "object-literal-shorthand": false,
     "quotemark": [
       true,
       "single",
