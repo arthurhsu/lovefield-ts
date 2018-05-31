@@ -1,7 +1,17 @@
-// Karma configuration
-// Generated on Sat Oct 22 2016 17:35:31 GMT-0700 (Pacific Daylight Time)
-
 module.exports = function(config) {
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+    console.error('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
+    process.exit(1);
+  }
+
+  var customLaunchers = {
+    sl_chrome_linux: {
+      base: 'SauceLabs',
+      browserName: 'chrome',
+      platform: 'linux'
+    }
+  };
+
   config.set({
     frameworks: ['mocha', 'karma-typescript'],
     singleRun: true,
@@ -25,14 +35,6 @@ module.exports = function(config) {
 
     browsers: Object.keys(customLaunchers),
 
-    customLaunchers: {
-      sl_chrome_linux: {
-        base: 'SauceLabs',
-        browserName: 'chrome',
-        platform: 'linux'
-      }
-    },
-
     karmaTypescriptConfig: {
       tsconfig: 'tsconfig.json',
       exclude: [
@@ -51,6 +53,7 @@ module.exports = function(config) {
     },
 
     // Increase timeout in case connection in CI is slow
-    captureTimeout: 120000
+    captureTimeout: 120000,
+    customLaunchers: customLaunchers
   })
 }  // end of module
