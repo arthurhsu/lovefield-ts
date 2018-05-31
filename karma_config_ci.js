@@ -29,7 +29,9 @@ module.exports = function(config) {
       '**/*.ts': ['karma-typescript']
     },
 
-    reeporters: ['dots', 'saucelabs', 'karma-typescript'],
+    plugins: ['karma-sauce-launcher'],
+
+    reporters: ['dots', 'saucelabs', 'karma-typescript'],
     port: 9876,
     colors: true,
 
@@ -47,6 +49,8 @@ module.exports = function(config) {
     sauceLabs: {
       testName: 'Lovefield TypeScript Port',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
       startConnect: process.env.TRAVIS !== 'true',
       recordScreenshots: false,
       connectOptions: {
@@ -56,8 +60,7 @@ module.exports = function(config) {
       public: 'public'
     },
 
-    // Increase timeout in case connection in CI is slow
-    captureTimeout: 120000,
+    captureTimeout: 0,
     customLaunchers: customLaunchers
   })
 }  // end of module
