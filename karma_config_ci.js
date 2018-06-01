@@ -49,9 +49,7 @@ module.exports = function(config) {
     sauceLabs: {
       testName: 'Lovefield TypeScript Port',
       tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY,
-      startConnect: process.env.TRAVIS !== 'true',
+      startConnect: false,
       recordScreenshots: false,
       connectOptions: {
         port: 5757,
