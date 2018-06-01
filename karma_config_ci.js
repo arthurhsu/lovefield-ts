@@ -29,8 +29,6 @@ module.exports = function(config) {
       '**/*.ts': ['karma-typescript']
     },
 
-    plugins: ['karma-sauce-launcher'],
-
     reporters: ['dots', 'saucelabs', 'karma-typescript'],
     port: 9876,
     colors: true,
