@@ -174,9 +174,9 @@ gulp.task('test', ['build'], () => {
       require: ['source-map-support/register'],
       grep: getGrepPattern()
     };
-  
+
     gulp.src('out/tests/**/*.js', {read: false})
-        .pipe(mocha(mochaOptions));  
+        .pipe(mocha(mochaOptions));
   } else {
     let server = new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
@@ -189,6 +189,16 @@ gulp.task('test', ['build'], () => {
     });
     server.start();
   }
+});
+
+gulp.task('ci', ['build'], () => {
+  const server = new karma.Server({
+    configFile: path.join(__dirname, 'karma_config_ci.js')
+  });
+  server.on('run_complete', () => {
+      karma.stopper.stop();
+    });
+  server.start();
 });
 
 gulp.task('debug', ['build'], () => {
