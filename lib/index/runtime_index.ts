@@ -15,7 +15,7 @@
  */
 
 import {Row} from '../base/row';
-import {ComparatorType} from './comparator_type';
+import {Comparator} from './comparator';
 import {IndexStats} from './index_stats';
 import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
 
@@ -79,7 +79,7 @@ export interface RuntimeIndex {
   serialize(): Row[];
 
   // Returns the comparator used by this index.
-  comparator(): ComparatorType;
+  comparator(): Comparator;
 
   // Whether the index accepts unique key only.
   isUniqueKey(): boolean;

@@ -65,15 +65,17 @@ export class BTreeNode {
       node.keys = row.payload()[0];
       node.values = row.payload()[1];
       node.keys.forEach((key, index) => {
-        stats.add(key, tree.isUniqueKey() ? 1 : node.values[index].length);
+        stats.add(
+            key,
+            tree.isUniqueKey() ? 1 : (node.values[index] as number[]).length);
       });
       return node;
     });
     for (let i = 0; i < leaves.length - 1; ++i) {
       BTreeNode.associate(leaves[i], leaves[i + 1]);
     }
-    return (leaves.length > 1) ?
-        BTreeNode.createInternals(leaves[0]) : leaves[0];
+    return (leaves.length > 1) ? BTreeNode.createInternals(leaves[0]) :
+                                 leaves[0];
   }
 
   // Create B-Tree from sorted array of key-value pairs
@@ -90,9 +92,9 @@ export class BTreeNode {
     return node;
   }
 
-  // Maximum number of children a node can have (i.e. order of the B-Tree, denoted
-  // as N in the following comments). This number must be greater or equals to 4
-  // for the implemented deletion algorithm to function correctly.
+  // Maximum number of children a node can have (i.e. order of the B-Tree,
+  // denoted as N in the following comments). This number must be greater or
+  // equals to 4 for the implemented deletion algorithm to function correctly.
   private static MAX_COUNT = 512;
   private static MAX_KEY_LEN = BTreeNode.MAX_COUNT - 1;
   private static MIN_KEY_LEN = BTreeNode.MAX_COUNT >> 1;
@@ -132,13 +134,14 @@ export class BTreeNode {
   private static calcNodeLen(remaining: number): number {
     const maxLen = BTreeNode.MAX_KEY_LEN;
     const minLen = BTreeNode.MIN_KEY_LEN + 1;
-    return (remaining >= maxLen + minLen) ? maxLen :
+    return (remaining >= maxLen + minLen) ?
+        maxLen :
         ((remaining >= minLen && remaining <= maxLen) ? remaining : minLen);
   }
 
   // Create leaf nodes from given data.
-  private static createLeaves(
-      tree: BTree, data: BTreeNodePayload[]): BTreeNode {
+  private static createLeaves(tree: BTree, data: BTreeNodePayload[]):
+      BTreeNode {
     let remaining = data.length;
     let dataIndex = 0;
 
@@ -214,21 +217,21 @@ export class BTreeNode {
 
   // Returns left most key of the subtree.
   private static leftMostKey(node: BTreeNode): Key {
-    return node.isLeaf() ?
-        node.keys[0] : BTreeNode.leftMostKey(node.children[0]);
+    return node.isLeaf() ? node.keys[0] :
+                           BTreeNode.leftMostKey(node.children[0]);
   }
 
   public prev: BTreeNode|null;
   public next: BTreeNode|null;
   public keys: Key[];
   public values: number[]|number[][];
+  public getContainingLeaf: (key: Key|SingleKey) => BTreeNode | null;
 
   private id: number;
   private tree: BTree;
   private height: number;
   private parent: BTreeNode|null;
   private children: BTreeNode[];
-  private getContainingLeaf: (key: Key|SingleKey) => BTreeNode;
 
   constructor(id: number, tree: BTree) {
     this.id = id;
@@ -241,7 +244,8 @@ export class BTreeNode {
     this.values = [];
     this.children = [];
     this.getContainingLeaf = tree.comparator().keyDimensions() === 1 ?
-      this.getContainingLeafSingleKey : this.getContainingLeafMultiKey;
+        this.getContainingLeafSingleKey :
+        this.getContainingLeafMultiKey;
   }
 
   // Dump the tree as string. For example, if the tree is
@@ -252,7 +256,8 @@ export class BTreeNode {
   //  /      |       \        /      |      \
   // 1|3  9|10|11  13|14    15|16  27|29  31|38|45
   //
-  // and the values of the tree are identical to the keys, then the output will be
+  // and the values of the tree are identical to the keys, then the output will
+  // be
   //
   // 11[15]
   // {2|12}
@@ -261,9 +266,10 @@ export class BTreeNode {
   // 0[1|3]  15[9|10|11]  1[13|14]  17[15|16]  5[27|29]  7[31|38|45]
   // {1/3}2  0{9/10/11}2  15{13/14}2  1{15/16}12  17{27/29}12  5{31/38/45}12
   //
-  // Each tree level contains two lines, the first line is the key line containing
-  // keys of each node in the format of <nodeid>[<key0>|<key1>|...|<keyN-1>]. The
-  // second line is the value line containing values of each node in the format of
+  // Each tree level contains two lines, the first line is the key line
+  // containing keys of each node in the format of
+  // <nodeid>[<key0>|<key1>|...|<keyN-1>]. The second line is the value line
+  // containing values of each node in the format of
   // <leftnodeid>[<value0>|<value1>|...|<valueN>]<parentnodeid>. The root node
   // does not have parent so its parent node id is denoted as underscore.
   //
@@ -286,7 +292,8 @@ export class BTreeNode {
 
   public getRightMostNode(): BTreeNode {
     return this.isLeaf() ?
-        this : this.children[this.children.length - 1].getRightMostNode();
+        this :
+        this.children[this.children.length - 1].getRightMostNode();
   }
 
   public get(key: Key|SingleKey): number[] {
@@ -336,14 +343,18 @@ export class BTreeNode {
     if (this.isLeaf()) {
       if (this.tree.eq(this.keys[pos], key)) {
         if (replace) {
-          this.tree.stats().remove(key,
-              this.tree.isUniqueKey() ? 1 : this.values[pos].length);
+          this.tree.stats().remove(
+              key,
+              this.tree.isUniqueKey() ? 1 :
+                                        (this.values[pos] as number[]).length);
           this.values[pos] = this.tree.isUniqueKey() ? value : [value];
         } else if (this.tree.isUniqueKey()) {
           // 201: Duplicate keys are not allowed.
-          throw new Exception(ErrorCode.DUPLICATE_KEYS, this.tree.getName(), JSON.stringify(key));
+          throw new Exception(
+              ErrorCode.DUPLICATE_KEYS, this.tree.getName(),
+              JSON.stringify(key));
         } else {  // Non-unique key that already existed.
-          if (!ArrayHelper.binaryInsert(this.values[pos], value)) {
+          if (!ArrayHelper.binaryInsert(this.values[pos] as number[], value)) {
             // 109: Attempt to insert a row number that already existed.
             throw new Exception(ErrorCode.ROW_ID_EXISTED);
           }
@@ -352,10 +363,11 @@ export class BTreeNode {
         return this;
       }
       this.keys.splice(pos, 0, key);
-      this.values.splice(pos, 0, this.tree.isUniqueKey() ? value : [value]);
+      (this.values as any[])
+          .splice(pos, 0, (this.tree.isUniqueKey() ? value : [value]) as any);
       this.tree.stats().add(key, 1);
-      return (this.keys.length === BTreeNode.MAX_COUNT) ?
-          this.splitLeaf() : this;
+      return (this.keys.length === BTreeNode.MAX_COUNT) ? this.splitLeaf() :
+                                                          this;
     } else {
       pos = this.tree.eq(this.keys[pos], key) ? pos + 1 : pos;
       const node = this.children[pos].insert(key, value, replace);
@@ -367,8 +379,8 @@ export class BTreeNode {
         this.children.splice(pos, 1, node.children[1]);
         this.children.splice(pos, 0, node.children[0]);
       }
-      return (this.keys.length === BTreeNode.MAX_COUNT) ?
-          this.splitInternal() : this;
+      return (this.keys.length === BTreeNode.MAX_COUNT) ? this.splitInternal() :
+                                                          this;
     }
   }
 
@@ -388,7 +400,8 @@ export class BTreeNode {
       return coverage[0] ? (coverage[1] ? Favor.TIE : Favor.LHS) : Favor.RHS;
     };
 
-    const keys = this.keys;  // Used to avoid binding this for recursive functions.
+    const keys =
+        this.keys;  // Used to avoid binding this for recursive functions.
     const favorLeft = compare(c.compareRange(keys[left], keyRange));
     const favorRight = compare(c.compareRange(keys[right], keyRange));
 
@@ -469,8 +482,9 @@ export class BTreeNode {
   }
 
   // Loops through all keys and check if key is in the given range. If so push
-  // the values into results. This method is slower than the getRange() by design
-  // and should be used only in the case of cross-column nullable indices.
+  // the values into results. This method is slower than the getRange() by
+  // design and should be used only in the case of cross-column nullable
+  // indices.
   // TODO(arthurhsu): remove this method when GridFile is implemented.
   //
   // |results| can be an empty array, or an array holding any results from
@@ -493,8 +507,8 @@ export class BTreeNode {
       return;
     }
 
-    for (let i = start;
-         i < this.keys.length && params.count < params.limit; ++i) {
+    for (let i = start; i < this.keys.length && params.count < params.limit;
+         ++i) {
       if (!c.isInRange(this.keys[i], keyRange)) {
         continue;
       }
@@ -509,13 +523,13 @@ export class BTreeNode {
   public fill(params: BTreeNodeFillParam, results: number[]): void {
     if (this.isLeaf()) {
       for (let i = 0; i < this.values.length && params.count > 0; ++i) {
+        const val: number[] = this.values[i] as number[];
         if (params.offset > 0) {
-          params.offset -=
-              (!this.tree.isUniqueKey() ? this.values[i].length : 1);
+          params.offset -= (!this.tree.isUniqueKey() ? val.length : 1);
           if (params.offset < 0) {
-            for (let j = this.values[i].length + params.offset;
-                 j < this.values[i].length && params.count > 0; ++j) {
-              results[params.startIndex++] = this.values[i][j];
+            for (let j = val.length + params.offset;
+                 j < val.length && params.count > 0; ++j) {
+              results[params.startIndex++] = val[j];
               params.count--;
             }
           }
@@ -525,7 +539,7 @@ export class BTreeNode {
           results[params.startIndex++] = this.values[i] as number;
           params.count--;
         } else {
-          for (let j = 0; j < this.values[i].length && params.count > 0; ++j) {
+          for (let j = 0; j < val.length && params.count > 0; ++j) {
             results[params.startIndex++] = this.values[i][j];
             params.count--;
           }
@@ -556,8 +570,8 @@ export class BTreeNode {
     this.children.forEach((c) => this.keys.push(BTreeNode.leftMostKey(c)));
   }
 
-  // Deletes a key from a given node. If the key length is smaller than required,
-  // execute the following operations according to order:
+  // Deletes a key from a given node. If the key length is smaller than
+  // required, execute the following operations according to order:
   // 1. Steal a key from right sibling, if there is one with key > N/2
   // 2. Steal a key from left sibling, if there is one with key > N/2
   // 3. Merge to right sibling, if any
@@ -571,8 +585,8 @@ export class BTreeNode {
   // @param {number=} optvalue Match the value to delete.
   // @return {boolean} Whether a fix is needed or not.
   // @private
-  private delete(
-      key: Key|SingleKey, parentPos: number, value?: number): boolean {
+  private delete(key: Key|SingleKey, parentPos: number, value?: number):
+      boolean {
     const pos = this.searchKey(key);
     const isLeaf = this.isLeaf();
     if (!isLeaf) {
@@ -598,8 +612,8 @@ export class BTreeNode {
 
       this.keys.splice(pos, 1);
       if (isLeaf) {
-        const removedLength = this.tree.isUniqueKey() ? 1 :
-            (this.values[pos] as number[]).length;
+        const removedLength =
+            this.tree.isUniqueKey() ? 1 : (this.values[pos] as number[]).length;
         this.values.splice(pos, 1);
         this.tree.stats().remove(key, removedLength);
       }
@@ -621,14 +635,12 @@ export class BTreeNode {
     let fromIndex: number;
     let fromChildIndex: number;
     let toIndex: number;
-    if (this.next &&
-        this.next.keys.length > BTreeNode.MIN_KEY_LEN) {
+    if (this.next && this.next.keys.length > BTreeNode.MIN_KEY_LEN) {
       from = this.next;
       fromIndex = 0;
       fromChildIndex = 0;
       toIndex = this.keys.length + 1;
-    } else if (this.prev &&
-        this.prev.keys.length > BTreeNode.MIN_KEY_LEN) {
+    } else if (this.prev && this.prev.keys.length > BTreeNode.MIN_KEY_LEN) {
       from = this.prev;
       fromIndex = this.prev.keys.length - 1;
       fromChildIndex = this.isLeaf() ? fromIndex : fromIndex + 1;
@@ -663,19 +675,20 @@ export class BTreeNode {
     let mergeTo: BTreeNode;
     let keyOffset: number;
     let childOffset: number;
-    if (this.next &&
-        this.next.keys.length < BTreeNode.MAX_KEY_LEN) {
+    if (this.next && this.next.keys.length < BTreeNode.MAX_KEY_LEN) {
       mergeTo = this.next;
       keyOffset = 0;
       childOffset = 0;
     } else if (this.prev) {
       mergeTo = this.prev;
       keyOffset = mergeTo.keys.length;
-      childOffset = mergeTo.isLeaf() ? mergeTo.values.length :
-          mergeTo.children.length;
+      childOffset =
+          mergeTo.isLeaf() ? mergeTo.values.length : mergeTo.children.length;
+    } else {
+      throw new Exception(ErrorCode.ASSERTION);
     }
 
-    let args = [keyOffset, 0].concat(this.keys);
+    let args: any[] = [keyOffset, 0].concat(this.keys as any[]);
     Array.prototype.splice.apply(mergeTo.keys, args);
     let myChildren = null;
     if (this.isLeaf()) {
@@ -684,7 +697,7 @@ export class BTreeNode {
       myChildren = this.children;
       myChildren.forEach((node) => node.parent = mergeTo);
     }
-    args = [childOffset, 0].concat(myChildren);
+    args = [childOffset, 0].concat(myChildren as any[]);
     Array.prototype.splice.apply(
         mergeTo.isLeaf() ? mergeTo.values : mergeTo.children, args);
     BTreeNode.associate(this.prev, this.next);
@@ -760,7 +773,7 @@ export class BTreeNode {
     return left;
   }
 
-  private getContainingLeafSingleKey(key: SingleKey): BTreeNode {
+  private getContainingLeafSingleKey(key: Key): BTreeNode|null {
     if (!this.isLeaf()) {
       let pos = this.searchKey(key);
       if (this.tree.eq(this.keys[pos], key)) {
@@ -772,15 +785,15 @@ export class BTreeNode {
     return this;
   }
 
-  private getContainingLeafMultiKey(key: SingleKey[]): BTreeNode {
+  private getContainingLeafMultiKey(key: SingleKey[]): BTreeNode|null {
     if (!this.isLeaf()) {
       let pos = this.searchKey(key);
       if (this.tree.eq(this.keys[pos], key)) {
         // Note the multi-key comparator will return TIE if compared with an
         // unbounded key. As a result, we need to check if any dimension of the
         // key contains unbound.
-        const hasUnbound = key.some(
-            (dimension) => dimension === SingleKeyRange.UNBOUND_VALUE);
+        const hasUnbound =
+            key.some((dimension) => dimension === SingleKeyRange.UNBOUND_VALUE);
         if (!hasUnbound) {
           pos++;
         }
@@ -805,8 +818,8 @@ export class BTreeNode {
       }
       results[params.count++] = this.values[i] as number;
     } else {
-      for (let j = 0;
-           j < this.values[i].length && params.count < results.length;
+      for (let j = 0; j < (this.values[i] as number[]).length &&
+           params.count < results.length;
            ++j) {
         if (!params.reverse && params.skip) {
           params.skip--;
@@ -823,8 +836,8 @@ export class BTreeNode {
   // means max number to fill in the results; reverse means the request is
   // for reverse ordering; skip means remaining skip count.
   private appendResults(
-      params: BTreeNodeRangeParam, results: number[], from: number, to: number):
-      void {
+      params: BTreeNodeRangeParam, results: number[], from: number,
+      to: number): void {
     for (let i = from; i < to; ++i) {
       if (!params.reverse && params.count >= params.limit) {
         return;

@@ -18,7 +18,8 @@ import {Favor} from './comparator';
 
 // TODO(arthurhsu): original SingleKey can be null.
 export type SingleKey = string|number;
-export type Key = SingleKey|SingleKey[];
+export type MultiKey = SingleKey[];
+export type Key = SingleKey|MultiKey;
 
 // Unbound is used to denote an unbound key range boundary.
 export class UnboundKey {}
@@ -312,3 +313,4 @@ export class SingleKeyRange {
 // Example for a Index.Key (x, y) a KeyRange of [[0, 100], [50, 70]]
 // represents the 2D area where 0 >= x >= 100 AND 50 <= y <=100.
 export type KeyRange = SingleKeyRange[];
+export type Range = SingleKeyRange|KeyRange;

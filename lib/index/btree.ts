@@ -16,8 +16,7 @@
 
 import {Row} from '../base/row';
 import {BTreeNode, BTreeNodePayload} from './btree_node';
-import {Favor} from './comparator';
-import {ComparatorType} from './comparator_type';
+import {Comparator, Favor} from './comparator';
 import {IndexHelper} from './index_helper';
 import {IndexStats} from './index_stats';
 import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
@@ -29,7 +28,7 @@ export class BTree implements RuntimeIndex {
 
   // Creates tree from serialized leaves.
   public static deserialize(
-      comparator: ComparatorType, name: string, uniqueKeyOnly: boolean,
+      comparator: Comparator, name: string, uniqueKeyOnly: boolean,
       rows: Row[]): BTree {
     const tree = new BTree(name, comparator, uniqueKeyOnly);
     const newRoot = BTreeNode.deserialize(rows, tree);
@@ -38,13 +37,13 @@ export class BTree implements RuntimeIndex {
   }
 
   private name: string;
-  private comparatorObj: ComparatorType;
+  private comparatorObj: Comparator;
   private uniqueKeyOnly: boolean;
   private root: BTreeNode;
   private statsObj: IndexStats;
 
   constructor(
-      name: string, comparator: ComparatorType, uniqueKeyOnly: boolean,
+      name: string, comparator: Comparator, uniqueKeyOnly: boolean,
       data?: BTreeNodePayload[]) {
     this.name = name;
     this.comparatorObj = comparator;
@@ -98,7 +97,7 @@ export class BTree implements RuntimeIndex {
     }
 
     // TODO(arthurhsu): implement better cost calculation for ranges.
-    return this.getRange([keyRange]).length;
+    return this.getRange([keyRange] as KeyRange).length;
   }
 
   public stats(): IndexStats {
@@ -126,9 +125,8 @@ export class BTree implements RuntimeIndex {
     }
 
     if (keyRanges === undefined ||
-        (keyRanges.length === 1 &&
-         keyRanges[0] instanceof SingleKeyRange &&
-         keyRanges[0].isAll())) {
+        (keyRanges.length === 1 && keyRanges[0] instanceof SingleKeyRange &&
+         (keyRanges[0] as SingleKeyRange).isAll())) {
       return this.getAll(maxCount, reverse, limit, skip);
     }
 
@@ -154,20 +152,20 @@ export class BTree implements RuntimeIndex {
       // Reason: say the nodes are [12, 15], [16, 18], when look for >15,
       //         first node will return empty, but we shall not stop there.
       let strikeCount = 0;
-      while (start !== undefined &&
-             start !== null &&
+      while (start !== undefined && start !== null &&
              params.count < params.limit) {
         if (useFilter) {
           start.getRangeWithFilter(range, params, results);
         } else {
           start.getRange(range, params, results);
         }
-        if (params.skip === 0 && !start.isFirstKeyInRange(range)) {
+        if (params.skip === 0 &&
+            !start.isFirstKeyInRange(range as SingleKeyRange[])) {
           strikeCount++;
         } else {
           strikeCount = 0;
         }
-        start = strikeCount === 2 ? null : start.next();
+        start = strikeCount === 2 ? null : (start as BTreeNode).next;
       }
     }, this);
 
@@ -175,9 +173,8 @@ export class BTree implements RuntimeIndex {
       // There are extra elements in results, truncate them.
       results.splice(params.count, results.length - params.count);
     }
-    return (reverse) ?
-        IndexHelper.slice(results, reverse, limit, skip) :
-        results;
+    return (reverse) ? IndexHelper.slice(results, reverse, limit, skip) :
+                       results;
   }
 
   public clear(): void {
@@ -201,7 +198,7 @@ export class BTree implements RuntimeIndex {
     return this.uniqueKeyOnly;
   }
 
-  public comparator(): ComparatorType {
+  public comparator(): Comparator {
     return this.comparatorObj;
   }
 
@@ -222,9 +219,9 @@ export class BTree implements RuntimeIndex {
   // |maxCount|: max possible number of rows
   // |reverse|: retrieve the results in the reverse ordering of the comparator.
   private getAll(
-      maxCount: number, reverse: boolean, limit: number, skip: number):
-      number[] {
-    const off = reverse ? this.stats.totalRows - maxCount - skip : skip;
+      maxCount: number, reverse: boolean, limit: number,
+      skip: number): number[] {
+    const off = reverse ? this.stats().totalRows - maxCount - skip : skip;
 
     const results = new Array<number>(maxCount);
     const params = {
@@ -238,9 +235,9 @@ export class BTree implements RuntimeIndex {
 
   // If the first dimension of key is null, returns null, otherwise returns the
   // results for min()/max().
-  private checkNullKey(node: BTreeNode, index: number): any[]|null {
+  private checkNullKey(node: BTreeNode, index: number): [Key, any]|null {
     if (!this.comparator().comparable(node.keys[index])) {
-      if (node.keys[index].length > 1) {
+      if (Array.isArray(node.keys[index])) {
         if (node.keys[index][0] === null) {
           return null;
         }
@@ -254,7 +251,7 @@ export class BTree implements RuntimeIndex {
     ];
   }
 
-  private findLeftMost(): BTreeNode|null {
+  private findLeftMost(): [Key, any]|null {
     let node: BTreeNode|null = this.root.getLeftMostNode();
     let index = 0;
     do {
@@ -274,7 +271,7 @@ export class BTree implements RuntimeIndex {
     return null;
   }
 
-  private findRightMost(): BTreeNode|null {
+  private findRightMost(): [Key, any]|null {
     let node: BTreeNode|null = this.root.getRightMostNode();
     let index = node.keys.length - 1;
     do {
@@ -302,7 +299,7 @@ export class BTree implements RuntimeIndex {
       return null;
     }
 
-    return compareFn(leftMost[0], rightMost[0]) === Favor.LHS ?
-        leftMost : rightMost;
+    return compareFn(leftMost[0], rightMost[0]) === Favor.LHS ? leftMost :
+                                                                rightMost;
   }
 }

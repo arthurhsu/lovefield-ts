@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {Key, Range} from './key_range';
+
 /**
  * The comparison result constant. This must be consistent with the constant
  * required by the sort function of Array.prototype.sort.
@@ -28,8 +30,8 @@ export enum Favor {
  * Comparator used to provide necessary information for building an index tree.
  * It offers methods to indicate which operand is "favorable".
  */
-export interface Comparator<KeyType, RangeType> {
-  compare(lhs: KeyType, rhs: KeyType): Favor;
+export interface Comparator {
+  compare(lhs: Key, rhs: Key): Favor;
 
   /**
    * Returns an array of boolean which represents the relative positioning of
@@ -38,19 +40,19 @@ export interface Comparator<KeyType, RangeType> {
    * range projection covers any value left/right of the key (including the key
    * itself), then left/right will be set to true.
    */
-  compareRange(key: KeyType, range: RangeType): boolean[];
+  compareRange(key: Key, range: Range): boolean[];
 
   /**
    * Finds which one of the two operands is the minimum in absolute terms.
    */
-  min(lhs: KeyType, rhs: KeyType): Favor;
+  min(lhs: Key, rhs: Key): Favor;
 
   /**
    * Finds which one of the two operands is the maximum in absolute terms.
    */
-  max(lhs: KeyType, rhs: KeyType): Favor;
+  max(lhs: Key, rhs: Key): Favor;
 
-  isInRange(key: KeyType, range: RangeType): boolean;
+  isInRange(key: Key, range: Range): boolean;
 
   /**
    * Whether the key's first dimension is in range's first dimension or not.
@@ -58,33 +60,33 @@ export interface Comparator<KeyType, RangeType> {
    * B-Tree shall stop looping when the first key is out of range since the tree
    * is sorted by first dimension.
    */
-  isFirstKeyInRange(key: KeyType, range: RangeType): boolean;
+  isFirstKeyInRange(key: Key, range: Range): boolean;
 
   /**
    * Returns a range that represents all data.
    */
-  getAllRange(): RangeType;
+  getAllRange(): Range;
 
   /**
    * Binds unbound values to given key ranges, and sorts them so that these
    * ranges will be in the order from left to right.
    */
-  sortKeyRanges(keyRanges: RangeType[]): RangeType[];
+  sortKeyRanges(keyRanges: Range[]): Range[];
 
   /**
    * Returns true if the given range is open ended on the left-hand-side.
    */
-  isLeftOpen(range: RangeType): boolean;
+  isLeftOpen(range: Range): boolean;
 
   /**
    * Converts key range to keys.
    */
-  rangeToKeys(range: RangeType): KeyType[];
+  rangeToKeys(range: Range): Key[];
 
   /**
    * Returns false if any dimension of the key contains null.
    */
-  comparable(key: KeyType): boolean;
+  comparable(key: Key): boolean;
 
   /**
    * Returns number of key dimensions.
