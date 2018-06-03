@@ -25,6 +25,7 @@ import {Key, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
 import {SimpleComparator} from '../../lib/index/simple_comparator';
+import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -890,22 +891,22 @@ describe('BTree', () => {
     assert.equal(expected, tree.toString());
   });
 
-  // TODO(arthurhsu): re-enable
-  /*
   it('SingleRow_NumericalKey_Asc', () => {
-    const test = new lf.testing.index.TestSingleRowNumericalKey(function() {
+    const test = new TestSingleRowNumericalKey(() => {
       return new BTree('test', c, true);
     });
     test.run();
   });
 
   it('SingleRow_NumericalKey_Desc', () => {
-    const test = new lf.testing.index.TestSingleRowNumericalKey(function() {
+    const test = new TestSingleRowNumericalKey(() => {
       return new BTree('test', c2, true);
     }, true);
     test.run();
   });
 
+  // TODO(arthurhsu): re-enable
+  /*
   it('SingleRow_StringKey_Asc', () => {
     const test = new lf.testing.index.TestSingleRowStringKey(function() {
       return new BTree('test', c, true);
@@ -1042,7 +1043,7 @@ describe('BTree', () => {
 
   it('UniqueConstraint', () => {
     const tree = insertToTree(9);
-    TestUtil.assertThrowsError(ErrorCode.CONSTRAINT_ERROR, () => {
+    TestUtil.assertThrowsError(ErrorCode.DUPLICATE_KEYS, () => {
       tree.add(13, 13);
     });
   });

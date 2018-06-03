@@ -15,22 +15,50 @@
  */
 
 import * as chai from 'chai';
-import {KeyRange} from '../../lib/index/key_range';
+import {KeyRange, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 
 const assert = chai.assert;
 
-export class TestIndex {
-  public static constructorFn: () => RuntimeIndex;
-
+export abstract class TestIndex {
   // Asserts that the return values of getRange() and cost() are as expected for
   // the given index, for the given key range.
   public static assertGetRangeCost(
-      index: RuntimeIndex, keyRange: KeyRange|undefined,
+      index: RuntimeIndex, keyRange: KeyRange|SingleKeyRange|undefined,
       expectedResult: number[]): void {
-    const actualResult =
-        index.getRange(keyRange !== undefined ? [keyRange] : undefined);
+    const actualResult = index.getRange(
+        keyRange !== undefined ? [keyRange] as SingleKeyRange[] | KeyRange[] :
+                                 undefined);
     assert.sameOrderedMembers(expectedResult, actualResult);
     assert.equal(actualResult.length, index.cost(keyRange));
+  }
+
+  protected constructorFn: () => RuntimeIndex;
+
+  constructor(constructorFn: () => RuntimeIndex) {
+    this.constructorFn = constructorFn;
+  }
+
+  public abstract testAddGet(index: RuntimeIndex): void;
+  public abstract testGetRangeCost(index: RuntimeIndex): void;
+  public abstract testRemove(index: RuntimeIndex): void;
+  public abstract testSet(index: RuntimeIndex): void;
+  public abstract testMinMax(index: RuntimeIndex): void;
+  public abstract testMultiRange(index: RuntimeIndex): void;
+
+  public run(): void {
+    const testCases = [
+      this.testAddGet,
+      this.testGetRangeCost,
+      this.testMinMax,
+      this.testRemove,
+      this.testSet,
+      this.testMultiRange,
+    ];
+
+    testCases.forEach((tc) => {
+      const index = this.constructorFn();
+      tc.call(this, index);
+    }, this);
   }
 }

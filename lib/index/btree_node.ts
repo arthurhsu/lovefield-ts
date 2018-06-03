@@ -567,7 +567,9 @@ export class BTreeNode {
   // Reconstructs internal node keys.
   private fix(): void {
     this.keys = [];
-    this.children.forEach((c) => this.keys.push(BTreeNode.leftMostKey(c)));
+    for (let i = 1; i < this.children.length; ++i) {
+      this.keys.push(BTreeNode.leftMostKey(this.children[i]));
+    }
   }
 
   // Deletes a key from a given node. If the key length is smaller than
