@@ -107,7 +107,7 @@ export class BTreeNode {
     const children = node.children.map((n) => n.id).join('|');
     const values = node.values.join('/');
     const getNodeId = (n: BTreeNode|null) => {
-      return (n !== null && n !== undefined) ? n.id.toString() : '';
+      return (n !== null && n !== undefined) ? n.id.toString() : '_';
     };
 
     let contents = getNodeId(node.prev) + '{';
