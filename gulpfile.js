@@ -194,10 +194,12 @@ gulp.task('test', ['build'], () => {
 gulp.task('ci', ['build'], () => {
   const server = new karma.Server({
     configFile: path.join(__dirname, 'karma_config_ci.js')
+  }, (exitCode) => {
+    if (exitCode) process.exit(exitCode);
   });
   server.on('run_complete', () => {
-      karma.stopper.stop();
-    });
+    karma.stopper.stop();
+  });
   server.start();
 });
 
