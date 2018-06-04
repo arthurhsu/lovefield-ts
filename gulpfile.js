@@ -195,8 +195,8 @@ gulp.task('ci', ['build'], () => {
   const server = new karma.Server({
     configFile: path.join(__dirname, 'karma_config_ci.js')
   });
-  server.on('run_complete', (exitCode) => {
-    console.log(`karma run complete, exitCode: ${exitCode}`);
+  server.on('run_complete', (ret) => {
+    console.log(`karma run complete, exitCode: ${JSON.stringify(ret)}`);
     karma.stopper.stop();
   });
   server.start();
