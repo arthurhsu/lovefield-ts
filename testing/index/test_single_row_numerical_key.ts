@@ -129,9 +129,9 @@ export class TestSingleRowNumericalKey extends TestIndex {
     assert.isNull(index.max());
 
     this.populateIndex(index);
-    assert.sameOrderedMembers(
+    assert.sameDeepOrderedMembers(
         this.minKeyValuePair as any[], index.min() as any[]);
-    assert.sameOrderedMembers(
+    assert.sameDeepOrderedMembers(
         this.maxKeyValuePair as any[], index.max() as any[]);
   }
 

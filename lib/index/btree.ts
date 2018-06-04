@@ -108,7 +108,7 @@ export class BTree implements RuntimeIndex {
       keyRanges?: SingleKeyRange[]|KeyRange[], reverseOrder?: boolean,
       rawLimit?: number, rawSkip?: number): number[] {
     const leftMostKey = this.root.getLeftMostNode().keys[0];
-    if (leftMostKey === undefined || !rawLimit) {
+    if (leftMostKey === undefined || rawLimit === 0) {
       // Tree is empty or fake fetch to make query plan cached.
       return BTree.EMPTY;
     }
