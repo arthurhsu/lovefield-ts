@@ -18,48 +18,34 @@ import * as chai from 'chai';
 import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {TestIndex} from './test_index';
+import {TestSingleRowNumericalKey} from './test_single_row_numerical_key';
 
 const assert = chai.assert;
 
-export class TestSingleRowNumericalKey extends TestIndex {
-  // The key ranges used for testing.
-  public static keyRanges = [
-    // get all.
-    undefined,
-    SingleKeyRange.all(),
-    // get one key
-    SingleKeyRange.only(15),
-    // lower bound.
-    SingleKeyRange.lowerBound(15),
-    SingleKeyRange.lowerBound(15, true),
-    // upper bound.
-    SingleKeyRange.upperBound(15),
-    SingleKeyRange.upperBound(15, true),
-    // both lower and upper bound.
-    new SingleKeyRange(12, 15, false, false),
-    new SingleKeyRange(12, 15, true, false),
-    new SingleKeyRange(12, 15, false, true),
-    new SingleKeyRange(12, 15, true, true),
+export class TestMultiRowNumericalKey extends TestIndex {
+  // Values that are added in the index in populateIndex().
+  private static allValues = [
+    20, 30, 21, 31, 22, 32, 23, 33, 24, 34,
+    25, 35, 26, 36, 27, 37, 28, 38, 29, 39,
   ];
 
-  // The corresponding expected results for key ranges.
   private static expectations = [
     // get all.
-    [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
-    [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+    TestMultiRowNumericalKey.allValues,
+    TestMultiRowNumericalKey.allValues,
     // get one key
-    [25],
+    [25, 35],
     // lower bound.
-    [25, 26, 27, 28, 29],
-    [26, 27, 28, 29],
+    [25, 35, 26, 36, 27, 37, 28, 38, 29, 39],
+    [26, 36, 27, 37, 28, 38, 29, 39],
     // upper bound.
-    [20, 21, 22, 23, 24, 25],
-    [20, 21, 22, 23, 24],
+    [20, 30, 21, 31, 22, 32, 23, 33, 24, 34, 25, 35],
+    [20, 30, 21, 31, 22, 32, 23, 33, 24, 34],
     // both lower and upper bound.
-    [22, 23, 24, 25],
-    [23, 24, 25],
-    [22, 23, 24],
-    [23, 24],
+    [22, 32, 23, 33, 24, 34, 25, 35],
+    [23, 33, 24, 34, 25, 35],
+    [22, 32, 23, 33, 24, 34],
+    [23, 33, 24, 34],
   ];
 
   // Holds the max key and the corresponding values, populated in populateIndex.
@@ -69,7 +55,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
   private minKeyValuePair: [SingleKey, number[]]|null;
 
   // |reverse| means range expectations shall be reversed or not.
-  constructor(constructorFn: () => RuntimeIndex, readonly reverse = false) {
+  constructor(constructorFn: () => RuntimeIndex) {
     super(constructorFn);
     this.maxKeyValuePair = null;
     this.minKeyValuePair = null;
@@ -78,46 +64,47 @@ export class TestSingleRowNumericalKey extends TestIndex {
   public testAddGet(index: RuntimeIndex): void {
     for (let i = 0; i < 10; ++i) {
       const key = 10 + i;
-      const value = 20 + i;
-      index.add(key, value);
-      const actualValue = index.get(key)[0];
-      assert.equal(value, actualValue);
+      const value1 = 20 + i;
+      const value2 = 30 + i;
+      index.add(key, value1);
+      index.add(key, value2);
+      assert.equal(value1, index.get(key)[0]);
+      assert.equal(value2, index.get(key)[1]);
     }
   }
 
   public testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index);
+
     TestSingleRowNumericalKey.keyRanges.forEach((keyRange, counter) => {
-      const expectedResult = TestSingleRowNumericalKey.expectations[counter];
-      if (this.reverse) {
-        expectedResult.reverse();
-      }
+      const expectedResult = TestMultiRowNumericalKey.expectations[counter];
       TestIndex.assertGetRangeCost(index, keyRange, expectedResult);
-    }, this);
+    });
   }
 
   public testRemove(index: RuntimeIndex): void {
     this.populateIndex(index);
 
+    index.remove(11, 21);
+    assert.sameDeepOrderedMembers([31], index.get(11));
     index.remove(12, 22);
-    assert.sameOrderedMembers([], index.get(12));
-
-    const keyRange = SingleKeyRange.only(12);
-    assert.sameOrderedMembers([], index.getRange([keyRange]));
-    assert.equal(0, index.cost(keyRange));
+    index.remove(12, 32);
+    assert.sameDeepOrderedMembers([], index.get(12));
+    assert.sameDeepOrderedMembers(
+        [], index.getRange([SingleKeyRange.only(12)]));
   }
 
   public testSet(index: RuntimeIndex): void {
     this.populateIndex(index);
     index.remove(12, 22);
-    assert.equal(9, index.getRange().length);
 
     for (let i = 0; i < 10; ++i) {
       const key = 10 + i;
-      const value = 30 + i;
+      const value = 40 + i;
       index.set(key, value);
-      const actualValue = index.get(key)[0];
-      assert.equal(value, actualValue);
+      const actualValues = index.get(key);
+      assert.equal(1, actualValues.length);
+      assert.equal(value, actualValues[0]);
     }
 
     assert.equal(10, index.getRange().length);
@@ -136,42 +123,27 @@ export class TestSingleRowNumericalKey extends TestIndex {
   }
 
   public testMultiRange(index: RuntimeIndex): void {
-    for (let i = 0; i < 20; ++i) {
-      index.set(i, i);
-    }
-
-    // Simulate NOT(BETWEEN(2, 18))
-    const range1 =
-        new SingleKeyRange(SingleKeyRange.UNBOUND_VALUE, 2, false, true);
-    const range2 =
-        new SingleKeyRange(18, SingleKeyRange.UNBOUND_VALUE, true, false);
-
-    const comparator = index.comparator();
-    const expected = [0, 1, 19].sort(comparator.compare.bind(comparator));
-    const expectedReverse = expected.slice().reverse();
-
-    assert.sameOrderedMembers(expected, index.getRange([range1, range2]));
-    assert.sameOrderedMembers(expected, index.getRange([range2, range1]));
-    assert.sameOrderedMembers(
-        expectedReverse, index.getRange([range1, range2], true));
-    assert.sameOrderedMembers(
-        expectedReverse, index.getRange([range2, range1], true));
+    // TODO(arthurhsu): implement, original code does not have it.
   }
 
   private populateIndex(index: RuntimeIndex): void {
     for (let i = 0; i < 10; ++i) {
       const key = 10 + i;
-      const value = key + 10;
-      index.add(key, value);
+      const value1 = 20 + i;
+      const value2 = 30 + i;
+      index.add(key, value1);
+      index.add(key, value2);
 
-      // Detecting min key and corresponding value to be used in assertions.
+      // Detecting min key and corresponding value to be used later in
+      // assertions.
       if (this.minKeyValuePair === null || key < this.minKeyValuePair[0]) {
-        this.minKeyValuePair = [key, [value]];
+        this.minKeyValuePair = [key, [value1, value2]];
       }
 
-      // Detecting max key and corresponding value to be used in assertions.
+      // Detecting max key and corresponding value to be used later in
+      // assertions.
       if (this.maxKeyValuePair === null || key > this.maxKeyValuePair[0]) {
-        this.maxKeyValuePair = [key, [value]];
+        this.maxKeyValuePair = [key, [value1, value2]];
       }
     }
   }

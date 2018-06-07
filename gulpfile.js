@@ -167,16 +167,20 @@ gulp.task('lint', () => {
       }));
 });
 
+function quickTest() {
+  let mochaOptions = {
+    reporter: 'spec',
+    require: ['source-map-support/register'],
+    grep: getGrepPattern()
+  };
+
+  gulp.src('out/tests/**/*.js', {read: false})
+      .pipe(mocha(mochaOptions));
+}
+
 gulp.task('test', ['build'], () => {
   if (isQuickMode()) {
-    let mochaOptions = {
-      reporter: 'spec',
-      require: ['source-map-support/register'],
-      grep: getGrepPattern()
-    };
-
-    gulp.src('out/tests/**/*.js', {read: false})
-        .pipe(mocha(mochaOptions));
+    quickTest();
   } else {
     let server = new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
@@ -192,6 +196,7 @@ gulp.task('test', ['build'], () => {
 });
 
 gulp.task('ci', ['build'], () => {
+  quickTest();
   const server = new karma.Server({
     configFile: path.join(__dirname, 'karma_config_ci.js')
   });

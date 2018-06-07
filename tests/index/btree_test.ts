@@ -25,6 +25,8 @@ import {Key, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
 import {SimpleComparator} from '../../lib/index/simple_comparator';
+import {TestMultiKeyIndex} from '../../testing/index/test_multi_key_index';
+import {TestMultiRowNumericalKey} from '../../testing/index/test_multi_row_numerical_key';
 import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
 import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 import {TestUtil} from '../../testing/test_util';
@@ -915,25 +917,19 @@ describe('BTree', () => {
     test.run();
   });
 
-  // TODO(arthurhsu): re-enable
-  /*
   it('MultiKeyIndex', () => {
-    const test = new lf.testing.index.TestMultiKeyIndex(function() {
+    const test = new TestMultiKeyIndex(() => {
       return new BTree(
-          'test',
-          new MultiKeyComparator([Order.ASC, Order.DESC]),
-          true);
+          'test', new MultiKeyComparator([Order.ASC, Order.DESC]), true);
     });
     test.run();
   });
 
   it('MultiRow_NumericalKey', () => {
-    const test = new lf.testing.index.TestMultiRowNumericalKey(function() {
-      return new BTree('test', c, false);
-    });
+    const test =
+        new TestMultiRowNumericalKey(() => new BTree('test', c, false));
     test.run();
   });
-  */
 
   it('GetRange_Numeric', () => {
     const tree = new BTree('test', c, true);
