@@ -181,7 +181,7 @@ gulp.task('test', ['build'], () => {
     let server = new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
       singleRun: true,
-      mocha: { grep: getGrepPattern() }
+      client: { mocha: { grep: getGrepPattern() } }
     });
 
     server.on('run_complete', () => {
@@ -191,12 +191,26 @@ gulp.task('test', ['build'], () => {
   }
 });
 
+function errorInSauceBrowserResults(ret) {
+  let result = false;
+  ret.browsers.forEach(browser => {
+    let res = browser.lastResult;
+    console.log(`${browser.name}: ${res.total} [${res.success}/${res.failed}]`);
+    result = (res.failed > 0) ? true : result;
+  });
+  return result;
+}
+
 gulp.task('ci', ['build'], () => {
   const server = new karma.Server({
     configFile: path.join(__dirname, 'karma_config_ci.js')
   });
   server.on('run_complete', (ret) => {
     karma.stopper.stop();
+    if (errorInSauceBrowserResults(ret)) {
+      console.log('===== TEST FAILED =====');
+      process.exit(1);
+    }
   });
   server.start();
 });
@@ -205,7 +219,7 @@ gulp.task('debug', ['build'], () => {
   new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
       singleRun: false,
-      mocha: { grep: getGrepPattern() }
+      client: { mocha: { grep: getGrepPattern() } }
   }).start();
 });
 
