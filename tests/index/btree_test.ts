@@ -26,6 +26,7 @@ import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
 import {SimpleComparator} from '../../lib/index/simple_comparator';
 import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
+import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -892,35 +893,30 @@ describe('BTree', () => {
   });
 
   it('SingleRow_NumericalKey_Asc', () => {
-    const test = new TestSingleRowNumericalKey(() => {
-      return new BTree('test', c, true);
-    });
+    const test =
+        new TestSingleRowNumericalKey(() => new BTree('test', c, true));
     test.run();
   });
 
   it('SingleRow_NumericalKey_Desc', () => {
-    const test = new TestSingleRowNumericalKey(() => {
-      return new BTree('test', c2, true);
-    }, true);
+    const test =
+        new TestSingleRowNumericalKey(() => new BTree('test', c2, true), true);
+    test.run();
+  });
+
+  it('SingleRow_StringKey_Asc', () => {
+    const test = new TestSingleRowStringKey(() => new BTree('test', c, true));
+    test.run();
+  });
+
+  it('SingleRow_StringKey_Desc', () => {
+    const test =
+        new TestSingleRowStringKey(() => new BTree('test', c2, true), true);
     test.run();
   });
 
   // TODO(arthurhsu): re-enable
   /*
-  it('SingleRow_StringKey_Asc', () => {
-    const test = new lf.testing.index.TestSingleRowStringKey(function() {
-      return new BTree('test', c, true);
-    });
-    test.run();
-  });
-
-  it('SingleRow_StringKey_Desc', () => {
-    const test = new lf.testing.index.TestSingleRowStringKey(function() {
-      return new BTree('test', c2, true);
-    }, true);
-    test.run();
-  });
-
   it('MultiKeyIndex', () => {
     const test = new lf.testing.index.TestMultiKeyIndex(function() {
       return new BTree(

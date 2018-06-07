@@ -29,7 +29,7 @@ export abstract class TestIndex {
     const actualResult = index.getRange(
         keyRange !== undefined ? [keyRange] as SingleKeyRange[] | KeyRange[] :
                                  undefined);
-    assert.sameOrderedMembers(expectedResult, actualResult);
+    assert.sameDeepOrderedMembers(expectedResult, actualResult);
     assert.equal(actualResult.length, index.cost(keyRange));
   }
 
