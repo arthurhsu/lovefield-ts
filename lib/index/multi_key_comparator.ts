@@ -19,7 +19,7 @@ import {Comparator, Favor} from './comparator';
 import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
 import {SimpleComparator} from './simple_comparator';
 
-export class MultiKeyComparator implements Comparator<Key, KeyRange> {
+export class MultiKeyComparator implements Comparator {
   public static createOrders(numKeys: number, order: Order): Order[] {
     const orders: Order[] = new Array<Order>(numKeys);
     for (let i = 0; i < numKeys; ++i) {

@@ -18,7 +18,7 @@ import {Order} from '../base/enum';
 import {Comparator, Favor} from './comparator';
 import {SingleKey, SingleKeyRange} from './key_range';
 
-export class SimpleComparator implements Comparator<SingleKey, SingleKeyRange> {
+export class SimpleComparator implements Comparator {
   public static compareAscending(lhs: SingleKey, rhs: SingleKey): Favor {
     return lhs > rhs ? Favor.LHS : (lhs < rhs ? Favor.RHS : Favor.TIE);
   }
