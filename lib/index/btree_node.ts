@@ -607,7 +607,8 @@ export class BTreeNode {
         if (ArrayHelper.binaryRemove((this.values[pos] as number[]), value)) {
           this.tree.stats().remove(key, 1);
         }
-        if (Array.isArray(this.values[pos])) {
+        const len = (this.values[pos] as number[]).length;
+        if (len) {
           return false;  // No need to fix.
         }
       }
