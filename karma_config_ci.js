@@ -42,7 +42,7 @@ module.exports = function(config) {
       ]
     },
 
-    concurrency: 2,
+    concurrency: 1,
 
     sauceLabs: {
       testName: 'Lovefield TypeScript Port',
@@ -52,6 +52,14 @@ module.exports = function(config) {
       public: 'public'
     },
 
+    client: {
+      mocha: {
+        timeout: 10000
+      }
+    },
+
+    browserDisconnectTimeout: 10000,
+    browserNoActivityTimeout: 20000,
     captureTimeout: 0,
     customLaunchers: customLaunchers
   })
