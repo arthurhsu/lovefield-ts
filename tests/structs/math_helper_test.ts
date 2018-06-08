@@ -64,7 +64,7 @@ describe('MathHelper', () => {
 
     const collectorFn = (a: number, b: number) => b;
 
-    // TODO(arthurhsu): this is very fishy, where is the 7 coming from?
+    // The expect values are indices from the second array.
     assert.sameOrderedMembers(
         [1, 2, 4, 6, 7],
         func(

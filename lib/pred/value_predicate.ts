@@ -16,13 +16,15 @@
 
 import {assert} from '../base/assert';
 import {Binder} from '../base/bind';
+import {Type} from '../base/enum';
 import {EvalRegistry, EvalType} from '../base/eval';
 import {ErrorCode, Exception} from '../base/exception';
 import {Predicate} from '../base/predicate';
+import {SingleKey, SingleKeyRange} from '../index/key_range';
+import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
 import {Column} from '../schema/column';
 import {Table} from '../schema/table';
-
 import {PredicateNode} from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
@@ -122,6 +124,11 @@ export class ValuePredicate extends PredicateNode {
         this.value + ')';
   }
 
+  // This is used to enable unit test.
+  public peek(): any {
+    return this.value;
+  }
+
   // Whether this predicate can be converted to a KeyRange instance.
   public isKeyRangeCompatible(): boolean {
     this.checkBinding();
@@ -138,8 +145,39 @@ export class ValuePredicate extends PredicateNode {
   // Converts this predicate to a key range.
   // NOTE: Not all predicates can be converted to a key range, callers must call
   // isKeyRangeCompatible() before calling this method.
-  public toKeyRange(): void {  // SingleKeyRangeSet {
-    // TODO(arthurhsu): implement
+  public toKeyRange(): SingleKeyRangeSet {
+    assert(
+        this.isKeyRangeCompatible(),
+        'Could not convert predicate to key range.');
+
+    let keyRange = null;
+    if (this.evaluatorType === EvalType.BETWEEN) {
+      keyRange = new SingleKeyRange(
+          this.getValueAsKey(this.value[0]), this.getValueAsKey(this.value[1]),
+          false, false);
+    } else if (this.evaluatorType === EvalType.IN) {
+      const keyRanges =
+          this.value.map((v: any) => SingleKeyRange.only(v as SingleKey));
+      return new SingleKeyRangeSet(
+          this.isComplement ? SingleKeyRange.complement(keyRanges) : keyRanges);
+    } else {
+      const value = this.getValueAsKey(this.value);
+      if (this.evaluatorType === EvalType.EQ) {
+        keyRange = SingleKeyRange.only(value);
+      } else if (this.evaluatorType === EvalType.GTE) {
+        keyRange = SingleKeyRange.lowerBound(value);
+      } else if (this.evaluatorType === EvalType.GT) {
+        keyRange = SingleKeyRange.lowerBound(value, true);
+      } else if (this.evaluatorType === EvalType.LTE) {
+        keyRange = SingleKeyRange.upperBound(value);
+      } else {
+        // Must be this.evaluatorType === EvalType.LT.
+        keyRange = SingleKeyRange.upperBound(value, true);
+      }
+    }
+
+    return new SingleKeyRangeSet(
+        this.isComplement ? keyRange.complement() : [keyRange]);
   }
 
   private checkBinding(): void {
@@ -178,7 +216,10 @@ export class ValuePredicate extends PredicateNode {
   }
 
   // Converts value in this predicate to index key.
-  // private getValueAsKey(value: T): void { // SingleKey {
-  // TODO(arthurhsu): implement
-  // }
+  private getValueAsKey(value: any): SingleKey {
+    if (this.column.getType() === Type.DATE_TIME) {
+      return (value as Date).getTime();
+    }
+    return value as SingleKey;
+  }
 }
