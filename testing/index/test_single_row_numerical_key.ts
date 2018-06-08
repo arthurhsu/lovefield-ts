@@ -23,7 +23,7 @@ const assert = chai.assert;
 
 export class TestSingleRowNumericalKey extends TestIndex {
   // The key ranges used for testing.
-  public static keyRanges = [
+  private keyRanges = [
     // get all.
     undefined,
     SingleKeyRange.all(),
@@ -43,7 +43,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
   ];
 
   // The corresponding expected results for key ranges.
-  private static expectations = [
+  private expectations = [
     // get all.
     [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
     [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -87,12 +87,12 @@ export class TestSingleRowNumericalKey extends TestIndex {
 
   public testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index);
-    TestSingleRowNumericalKey.keyRanges.forEach((keyRange, counter) => {
-      const expectedResult = TestSingleRowNumericalKey.expectations[counter];
+    this.keyRanges.forEach((keyRange, counter) => {
+      const expectedResult = this.expectations[counter];
       if (this.reverse) {
         expectedResult.reverse();
       }
-      TestIndex.assertGetRangeCost(index, keyRange, expectedResult);
+      this.assertGetRangeCost(index, keyRange, expectedResult);
     }, this);
   }
 

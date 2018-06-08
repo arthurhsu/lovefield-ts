@@ -22,7 +22,7 @@ import {TestIndex} from './test_index';
 const assert = chai.assert;
 
 export class TestMultiKeyIndex extends TestIndex {
-  private static keyRanges = [
+  private keyRanges = [
     // Get all.
     undefined,
     [SingleKeyRange.all(), SingleKeyRange.all()],
@@ -73,7 +73,7 @@ export class TestMultiKeyIndex extends TestIndex {
     ],
   ];
 
-  private static expectations = [
+  private expectations = [
     // Get all.
     [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009],
     [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009],
@@ -120,10 +120,10 @@ export class TestMultiKeyIndex extends TestIndex {
   public testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index, 10);
 
-    TestMultiKeyIndex.keyRanges.forEach((range, i) => {
-      const expected = TestMultiKeyIndex.expectations[i];
-      TestIndex.assertGetRangeCost(index, range, expected);
-    });
+    this.keyRanges.forEach((range, i) => {
+      const expected = this.expectations[i];
+      this.assertGetRangeCost(index, range, expected);
+    }, this);
   }
 
   public testRemove(index: RuntimeIndex): void {

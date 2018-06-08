@@ -18,21 +18,40 @@ import * as chai from 'chai';
 import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {TestIndex} from './test_index';
-import {TestSingleRowNumericalKey} from './test_single_row_numerical_key';
 
 const assert = chai.assert;
 
 export class TestMultiRowNumericalKey extends TestIndex {
   // Values that are added in the index in populateIndex().
-  private static allValues = [
+  private allValues = [
     20, 30, 21, 31, 22, 32, 23, 33, 24, 34,
     25, 35, 26, 36, 27, 37, 28, 38, 29, 39,
   ];
 
-  private static expectations = [
+  // The key ranges used for testing.
+  private keyRanges = [
     // get all.
-    TestMultiRowNumericalKey.allValues,
-    TestMultiRowNumericalKey.allValues,
+    undefined,
+    SingleKeyRange.all(),
+    // get one key
+    SingleKeyRange.only(15),
+    // lower bound.
+    SingleKeyRange.lowerBound(15),
+    SingleKeyRange.lowerBound(15, true),
+    // upper bound.
+    SingleKeyRange.upperBound(15),
+    SingleKeyRange.upperBound(15, true),
+    // both lower and upper bound.
+    new SingleKeyRange(12, 15, false, false),
+    new SingleKeyRange(12, 15, true, false),
+    new SingleKeyRange(12, 15, false, true),
+    new SingleKeyRange(12, 15, true, true),
+  ];
+
+  private expectations = [
+    // get all.
+    this.allValues,
+    this.allValues,
     // get one key
     [25, 35],
     // lower bound.
@@ -76,10 +95,10 @@ export class TestMultiRowNumericalKey extends TestIndex {
   public testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index);
 
-    TestSingleRowNumericalKey.keyRanges.forEach((keyRange, counter) => {
-      const expectedResult = TestMultiRowNumericalKey.expectations[counter];
-      TestIndex.assertGetRangeCost(index, keyRange, expectedResult);
-    });
+    this.keyRanges.forEach((keyRange, counter) => {
+      const expectedResult = this.expectations[counter];
+      this.assertGetRangeCost(index, keyRange, expectedResult);
+    }, this);
   }
 
   public testRemove(index: RuntimeIndex): void {
