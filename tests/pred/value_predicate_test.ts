@@ -18,12 +18,15 @@ import * as chai from 'chai';
 import {bind, Binder} from '../../lib/base/bind';
 import {Type} from '../../lib/base/enum';
 import {EvalType} from '../../lib/base/eval';
+import {ErrorCode} from '../../lib/base/exception';
 import {Row} from '../../lib/base/row';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
+import {Relation} from '../../lib/proc/relation';
 import {createSchema} from '../../lib/schema/builder';
 import {Column} from '../../lib/schema/column';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -94,20 +97,16 @@ describe('ValuePredicate', () => {
     return sampleRows;
   }
 
-  // TODO(arthursu): enable after Relation is implemented
-  /*
   function checkEval_Eq(table: Table): void {
     const sampleRow = getTableARows(1)[0];
-    const relation = Relation.fromRows(
-        [sampleRow], [table.getEffectiveName()]);
+    const relation = Relation.fromRows([sampleRow], [table.getEffectiveName()]);
 
     const predicate1 = new ValuePredicate(
-        table['id'], sampleRow.payload().id, EvalType.EQ);
+        table['id'], (sampleRow.payload() as any).id, EvalType.EQ);
     const finalRelation1 = predicate1.eval(relation);
     assert.equal(1, finalRelation1.entries.length);
 
-    const predicate2 = new ValuePredicate(
-        table['id'], 'otherId', EvalType.EQ);
+    const predicate2 = new ValuePredicate(table['id'], 'otherId', EvalType.EQ);
     const finalRelation2 = predicate2.eval(relation);
     assert.equal(0, finalRelation2.entries.length);
   }
@@ -119,7 +118,6 @@ describe('ValuePredicate', () => {
   it('eval_eq_alias', () => {
     checkEval_Eq(tableA.as('SomeTableAlias'));
   });
-  */
 
   // TODO(arthurhsu): enable after Relation and JoinPredicate
   /*
@@ -268,8 +266,6 @@ describe('ValuePredicate', () => {
     assert.isFalse(p.isKeyRangeCompatible());
   });
 
-  // TODO(arthurhsu): enable after Relation implemented
-  /*
   it('unboundPredicate', () => {
     const sampleRow = getTableARows(1)[0];
     const relation = Relation.fromRows([sampleRow], [tableA.getName()]);
@@ -278,23 +274,19 @@ describe('ValuePredicate', () => {
     const p = new ValuePredicate(tableA['id'], binder, EvalType.EQ);
 
     // Predicate shall be unbound.
-    assert.isTrue(p.value instanceof lf.Binder);
+    assert.isTrue(p.peek() instanceof Binder);
 
     // Tests binding.
-    p.bind([9999, sampleRow.payload().id]);
-    assert.equal(sampleRow.payload().id, p.value);
-    assert.isFalse(p.value instanceof lf.Binder);
+    p.bind([9999, (sampleRow.payload() as any).id]);
+    assert.equal((sampleRow.payload() as any).id, p.peek());
+    assert.isFalse(p.peek() instanceof Binder);
     const result = p.eval(relation);
     assert.equal(1, result.entries.length);
 
     // Tests binding to an invalid array throws error.
-    try {
+    TestUtil.assertThrowsError(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, () => {
       p.bind([8888]);
-    } catch (e) {
-      // 510: Cannot bind to given array: out of range.
-      // TODO(arthurhsu): use ErrorCode and test util.
-      assert.equal(510, e.code);
-    }
+    });
   });
 
   it('unboundPredicate_Array', () => {
@@ -309,7 +301,6 @@ describe('ValuePredicate', () => {
     p.bind(ids);
     assert.equal(3, p.eval(relation).entries.length);
   });
-  */
 
   it('copy_UnboundPredicate', () => {
     const sampleRow = getTableARows(1)[0];
