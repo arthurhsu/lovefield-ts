@@ -25,6 +25,7 @@
     "karma-typescript": "^3.0.12",
     "mocha": "^5.2.0",
     "sinon": "^4.5.0",
+    "ts-sinon": "^1.0.12",
     "typescript": "^2.9.1"
   },
   "devDependencies": {
