@@ -113,6 +113,7 @@ export class TableImpl extends Table {
       uniqueIndices: Set<string>, nullable: Set<string>,
       fkSpecs: ForeignKeySpec[]): void {
     if (indices.size === 0) {
+      this._constraint = new Constraint(null as any as Index, [], []);
       return;
     }
 
