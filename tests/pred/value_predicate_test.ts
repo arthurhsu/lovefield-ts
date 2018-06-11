@@ -20,6 +20,7 @@ import {Type} from '../../lib/base/enum';
 import {EvalType} from '../../lib/base/eval';
 import {ErrorCode} from '../../lib/base/exception';
 import {Row} from '../../lib/base/row';
+import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {Relation} from '../../lib/proc/relation';
 import {createSchema} from '../../lib/schema/builder';
@@ -33,7 +34,7 @@ const assert = chai.assert;
 describe('ValuePredicate', () => {
   let schema: Database;
   let tableA: Table;
-  // let tableB: Table;
+  let tableB: Table;
 
   function getSchema() {
     const schemaBuilder = createSchema('valuepredicate', 1);
@@ -50,7 +51,7 @@ describe('ValuePredicate', () => {
   beforeEach(() => {
     schema = getSchema();
     tableA = schema.table('TableA');
-    // tableB = schema.table('TableB');
+    tableB = schema.table('TableB');
   });
 
   it('copy', () => {
@@ -119,8 +120,6 @@ describe('ValuePredicate', () => {
     checkEval_Eq(tableA.as('SomeTableAlias'));
   });
 
-  // TODO(arthurhsu): enable after Relation and JoinPredicate
-  /*
   // Testing the case where a ValuePredicate is applied on a relation that is
   // the result of a previous join operation.
   // |table1| must be TableA or alias, |table2| must be TableB or alias.
@@ -130,23 +129,23 @@ describe('ValuePredicate', () => {
       name: 'dummyName',
     });
     const rightRow1 = table2.createRow({
-      id: 'dummyId',
       email: 'dummyEmail1',
+      id: 'dummyId',
     });
     const rightRow2 = table2.createRow({
-      id: 'dummyId',
       email: 'dummyEmail2',
+      id: 'dummyId',
     });
 
-    const leftRelation = lf.proc.Relation.fromRows(
-        [leftRow], [table1.getEffectiveName()]);
-    const rightRelation = lf.proc.Relation.fromRows(
-        [rightRow1, rightRow2], [table2.getEffectiveName()]);
+    const leftRelation =
+        Relation.fromRows([leftRow], [table1.getEffectiveName()]);
+    const rightRelation =
+        Relation.fromRows([rightRow1, rightRow2], [table2.getEffectiveName()]);
 
-    const joinPredicate = new JoinPredicate(
-        table1['id'], table2['id'], EvalType.EQ);
-    const joinedRelation = joinPredicate.evalRelationsHashJoin(
-        leftRelation, rightRelation, false);
+    const joinPredicate =
+        new JoinPredicate(table1['id'], table2['id'], EvalType.EQ);
+    const joinedRelation =
+        joinPredicate.evalRelationsHashJoin(leftRelation, rightRelation, false);
 
     const valuePredicate = new ValuePredicate(
         table2['email'], rightRow2.payload()['email'], EvalType.EQ);
@@ -164,7 +163,6 @@ describe('ValuePredicate', () => {
   it('eval_Eq_PreviousJoin_Alias', () => {
     checkEval_Eq_PreviousJoin(tableA.as('table1'), tableB.as('table2'));
   });
-  */
 
   // Tests the conversion of a value predicate to a KeyRange for a column of
   // type STRING.

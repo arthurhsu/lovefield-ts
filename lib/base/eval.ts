@@ -31,8 +31,8 @@ export enum EvalType {
 
 type ValueType = boolean|number|string;
 
-type ComparisonFunction = (l: any, r: any) => boolean;
-type KeyOfIndexFunction = (key: ValueType|Date) => ValueType;
+export type ComparisonFunction = (l: any, r: any) => boolean;
+export type KeyOfIndexFunction = (key: ValueType|Date) => ValueType;
 
 function identity<T>(value: T): T {
   return value;
