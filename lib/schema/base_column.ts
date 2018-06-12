@@ -17,9 +17,9 @@
 import {Binder} from '../base/bind';
 import {Type} from '../base/enum';
 import {EvalType} from '../base/eval';
-import {Predicate} from '../base/predicate';
-import {OperandType, ValueOperandType} from '../base/predicate_provider';
 import {createPredicate} from '../pred/pred';
+import {Predicate} from '../pred/predicate';
+import {OperandType, ValueOperandType} from '../pred/predicate_provider';
 import {Column} from '../schema/column';
 import {Index} from '../schema/index';
 import {Table} from '../schema/table';

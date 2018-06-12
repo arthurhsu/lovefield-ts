@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 The Lovefield Project Authors. All Rights Reserved.
+ * Copyright 2018 The Lovefield Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import {EvalType} from '../base/eval';
-import {Column} from '../schema/column';
-import {Predicate} from './predicate';
+import {Binder} from '../base/bind';
+import {Row} from '../base/row';
+import {Table} from '../schema/table';
+import {QueryBuilder} from './query_builder';
 
-import {ValuePredicate} from './value_predicate';
-
-export function createPredicate<T>(
-    lhs: Column, rhs: Column|T, type: EvalType): Predicate {
-  // TODO(arthurhsu): implement
-  return new ValuePredicate(lhs, rhs, type);
+export interface InsertQuery extends QueryBuilder {
+  into(table: Table): InsertQuery;
+  values(rows: Row[]|Binder|Binder[]): InsertQuery;
 }

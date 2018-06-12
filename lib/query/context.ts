@@ -15,7 +15,7 @@
  */
 
 import {assert} from '../base/assert';
-import {Predicate} from '../base/predicate';
+import {Predicate} from '../pred/predicate';
 import {PredicateNode} from '../pred/predicate_node';
 import {ValuePredicate} from '../pred/value_predicate';
 import {Database} from '../schema/database';

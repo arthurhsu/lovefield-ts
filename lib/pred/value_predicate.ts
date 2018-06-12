@@ -19,12 +19,12 @@ import {Binder} from '../base/bind';
 import {Type} from '../base/enum';
 import {EvalRegistry, EvalType} from '../base/eval';
 import {ErrorCode, Exception} from '../base/exception';
-import {Predicate} from '../base/predicate';
 import {SingleKey, SingleKeyRange} from '../index/key_range';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
 import {Column} from '../schema/column';
 import {Table} from '../schema/table';
+import {Predicate} from './predicate';
 import {PredicateNode} from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
