@@ -67,3 +67,9 @@ export enum TableType {
   DATA = 0,
   INDEX = 1,
 }
+
+export enum ExecType {
+  NO_CHILD = -1,    // Will not call any of its children's exec().
+  ALL = 0,          // Will invoke all children nodes' exec().
+  FIRST_CHILD = 1,  // Will invoke only the first child's exec().
+}
