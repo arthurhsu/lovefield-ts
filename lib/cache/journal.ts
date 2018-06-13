@@ -63,9 +63,8 @@ export class Journal {
 
   constructor(global: Global, txScope: Set<Table>) {
     this.scope = new Map<string, Table>();
-    txScope.forEach((tableSchema) => {
-      this.scope.set(tableSchema.getName(), tableSchema);
-    }, this);
+    txScope.forEach(
+        (tableSchema) => this.scope.set(tableSchema.getName(), tableSchema));
 
     this.schema = global.getService(Service.SCHEMA);
     this.cache = global.getService(Service.CACHE);
@@ -85,9 +84,8 @@ export class Journal {
   // TODO(dpapad): Indices currently can't provide a diff, therefore the entire
   // index is flushed into disk every time, even if only one leaf-node changed.
   public getIndexDiff(): RuntimeIndex[] {
-    const tableSchemas = Array.from(this.tableDiffs.keys()).map((tableName) => {
-      return this.scope.get(tableName);
-    }, this);
+    const tableSchemas = Array.from(this.tableDiffs.keys())
+                             .map((tableName) => this.scope.get(tableName));
 
     const indices: RuntimeIndex[] = [];
     tableSchemas.forEach((schema) => {
@@ -135,9 +133,8 @@ export class Journal {
 
     this.constraintChecker.checkForeignKeysForUpdate(
         table, modifications, ConstraintTiming.IMMEDIATE);
-    modifications.forEach((modification) => {
-      this.modifyRow(table, modification);
-    }, this);
+    modifications.forEach(
+        (modification) => this.modifyRow(table, modification));
   }
 
   public insertOrReplace(table: Table, rows: Row[]): void {
@@ -205,10 +202,8 @@ export class Journal {
   public rollback(): void {
     assert(!this.terminated, 'Attempted to rollback a terminated journal.');
 
-    const reverseDiffs =
-        Array.from(this.tableDiffs.values()).map((tableDiff) => {
-          return tableDiff.getReverse();
-        });
+    const reverseDiffs = Array.from(this.tableDiffs.values())
+                             .map((tableDiff) => tableDiff.getReverse());
     this.inMemoryUpdater.update(reverseDiffs);
 
     this.terminated = true;

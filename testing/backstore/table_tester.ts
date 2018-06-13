@@ -32,9 +32,7 @@ export class TableTester {
           this.testPut(),
           this.testRemove(),
         ])
-        .then(() => {
-          return Promise.resolve();
-        });
+        .then(() => Promise.resolve());
   }
 
   private testGet_NonExisting(): Promise<void> {
@@ -64,9 +62,7 @@ export class TableTester {
     const resolver = new Resolver<void>();
     const table = this.creator();
     table.put(rows)
-        .then(() => {
-          return table.get([]);
-        })
+        .then(() => table.get([]))
         .then(
             (results) => {
               assert.equal(rowCount, results.length);
@@ -93,9 +89,7 @@ export class TableTester {
     const resolver = new Resolver<void>();
     const table = this.creator();
     table.put(rows)
-        .then(() => {
-          return table.get(rowIds);
-        })
+        .then(() => table.get(rowIds))
         .then(
             (results) => {
               const resultRowIds = results.map((row) => row.id());
@@ -128,16 +122,12 @@ export class TableTester {
     const resolver = new Resolver<void>();
     const table = this.creator();
     table.put(rows)
-        .then(() => {
-          return table.get([]);
-        })
+        .then(() => table.get([]))
         .then((results) => {
           assert.equal(rows.length, results.length);
           return table.remove(rowIdsToDelete);
         })
-        .then(() => {
-          return table.get([]);
-        })
+        .then(() => table.get([]))
         .then(
             (results) => {
               assert.equal(rows.length - rowIdsToDelete.length, results.length);

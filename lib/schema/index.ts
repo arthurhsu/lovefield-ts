@@ -27,8 +27,6 @@ export class Index {
 
   // Whether this index refers to any column that is marked as nullable.
   public hasNullableColumn(): boolean {
-    return this.columns.some((column): boolean => {
-      return column.schema.isNullable();
-    });
+    return this.columns.some((column): boolean => column.schema.isNullable());
   }
 }

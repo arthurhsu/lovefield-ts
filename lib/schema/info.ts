@@ -112,9 +112,7 @@ export class Info {
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => {
-      return this.schema.table(tableName);
-    }, this);
+    return tables.map((tableName) => this.schema.table(tableName));
   }
 
   // Looks up child tables for given tables.
@@ -135,15 +133,11 @@ export class Info {
     colNames.forEach((col) => {
       const children = this.colChild.get(col);
       if (children) {
-        children.forEach((child) => {
-          tableNames.add(child);
-        });
+        children.forEach((child) => tableNames.add(child));
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => {
-      return this.schema.table(tableName);
-    }, this);
+    return tables.map((tableName) => this.schema.table(tableName));
   }
 
   private expandScope(tableName: string, map: MapSet<string, Table>): Table[] {

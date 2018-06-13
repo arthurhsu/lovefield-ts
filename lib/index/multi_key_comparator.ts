@@ -31,9 +31,7 @@ export class MultiKeyComparator implements Comparator {
   protected comparators: SimpleComparator[];
 
   constructor(orders: Order[]) {
-    this.comparators = orders.map((order) => {
-      return new SimpleComparator(order);
-    });
+    this.comparators = orders.map((order) => new SimpleComparator(order));
   }
 
   public compare(lhs: Key, rhs: Key): Favor {
@@ -126,12 +124,10 @@ export class MultiKeyComparator implements Comparator {
   }
 
   public rangeToKeys(keyRange: KeyRange): Key[] {
-    const startKey = keyRange.map((range, i) => {
-      return this.comparators[i].rangeToKeys(range)[0];
-    }, this);
-    const endKey = keyRange.map((range, i) => {
-      return this.comparators[i].rangeToKeys(range)[1];
-    }, this);
+    const startKey =
+        keyRange.map((range, i) => this.comparators[i].rangeToKeys(range)[0]);
+    const endKey =
+        keyRange.map((range, i) => this.comparators[i].rangeToKeys(range)[1]);
 
     return [startKey, endKey];
   }

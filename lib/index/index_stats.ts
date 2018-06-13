@@ -52,8 +52,6 @@ export class IndexStats {
   // Combines stats given and put the results into current object.
   public updateFromList(statsList: IndexStats[]): void {
     this.clear();
-    statsList.forEach((stats) => {
-      this.totalRows += stats.totalRows;
-    }, this);
+    statsList.forEach((stats) => this.totalRows += stats.totalRows);
   }
 }

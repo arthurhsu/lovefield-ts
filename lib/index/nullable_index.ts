@@ -43,9 +43,7 @@ export class NullableIndex implements RuntimeIndex {
     newRows.splice(index, 1);
     const tree = deserializeFn(newRows);
     const nullableIndex = new NullableIndex(tree);
-    nulls.forEach((rowId) => {
-      nullableIndex.nulls.add(rowId);
-    });
+    nulls.forEach((rowId) => nullableIndex.nulls.add(rowId));
     return nullableIndex;
   }
 

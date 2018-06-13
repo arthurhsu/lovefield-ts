@@ -72,15 +72,12 @@ export class InMemoryUpdater {
   // Updates the cache based on the given table diff.
   private updateCacheForDiff(diff: TableDiff): void {
     const tableName = diff.getName();
-    diff.getDeleted().forEach((row, rowId) => {
-      this.cache.remove(tableName, rowId);
-    }, this);
-    diff.getAdded().forEach((row, rowId) => {
-      this.cache.set(tableName, row);
-    }, this);
-    diff.getModified().forEach((modification, rowId) => {
-      this.cache.set(tableName, modification[1] as Row);
-    }, this);
+    diff.getDeleted().forEach(
+        (row, rowId) => this.cache.remove(tableName, rowId));
+    diff.getAdded().forEach((row, rowId) => this.cache.set(tableName, row));
+    diff.getModified().forEach(
+        (modification, rowId) =>
+            this.cache.set(tableName, modification[1] as Row));
   }
 
   // Updates index data structures based on the given table diff.

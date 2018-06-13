@@ -50,9 +50,7 @@ export class MemoryTable implements RuntimeTable {
   }
 
   public putSync(rows: Row[]): void {
-    rows.forEach((row) => {
-      this.data.set(row.id(), row);
-    }, this);
+    rows.forEach((row) => this.data.set(row.id(), row));
   }
 
   public put(rows: Row[]): Promise<void> {
@@ -65,9 +63,7 @@ export class MemoryTable implements RuntimeTable {
       // Remove all.
       this.data.clear();
     } else {
-      ids.forEach((id) => {
-        this.data.delete(id);
-      }, this);
+      ids.forEach((id) => this.data.delete(id));
     }
   }
 

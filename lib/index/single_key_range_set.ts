@@ -25,9 +25,7 @@ export class SingleKeyRangeSet {
     });
 
     let results: SingleKeyRange[] = [];
-    ranges.forEach((dimension) => {
-      results = results.concat(dimension);
-    });
+    ranges.forEach((dimension) => results = results.concat(dimension));
 
     return new SingleKeyRangeSet(results.filter((r) => r !== null));
   }

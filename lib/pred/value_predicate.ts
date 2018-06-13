@@ -185,9 +185,7 @@ export class ValuePredicate extends PredicateNode {
     if (!(this.value instanceof Binder)) {
       if (Array.isArray(this.value)) {
         const array = this.value as Array<Binder|any>;
-        bound = !array.some((val) => {
-          return val instanceof Binder;
-        });
+        bound = !array.some((val) => val instanceof Binder);
       } else {
         bound = true;
       }
@@ -209,9 +207,8 @@ export class ValuePredicate extends PredicateNode {
           false :
           (valueSet.has(rowValue) !== this.isComplement);
     };
-    const entries = relation.entries.filter((entry) => {
-      return evaluatorFn(entry.getField(this.column));
-    });
+    const entries = relation.entries.filter(
+        (entry) => evaluatorFn(entry.getField(this.column)));
     return new Relation(entries, relation.getTables());
   }
 

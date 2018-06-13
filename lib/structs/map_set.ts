@@ -54,9 +54,8 @@ export class MapSet<K, V> {
   }
 
   public merge(mapSet: MapSet<K, V>): MapSet<K, V> {
-    mapSet.keys().forEach((key) => {
-      this.setMany(key, Array.from(mapSet.getSet(key)));
-    });
+    mapSet.keys().forEach(
+        (key) => this.setMany(key, Array.from(mapSet.getSet(key))));
     return this;
   }
 
@@ -96,9 +95,8 @@ export class MapSet<K, V> {
 
   public values(): V[] {
     const results: V[] = [];
-    this.map.forEach((valueSet, key) => {
-      results.push.apply(results, Array.from(valueSet));
-    });
+    this.map.forEach(
+        (valueSet, key) => results.push.apply(results, Array.from(valueSet)));
     return results;
   }
 

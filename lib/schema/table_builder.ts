@@ -138,9 +138,8 @@ export class TableBuilder {
   }
 
   public addNullable(columns: string[]): TableBuilder {
-    this.normalizeColumns(columns, false).forEach((col) => {
-      this.nullable.add(col.name);
-    });
+    this.normalizeColumns(columns, false)
+        .forEach((col) => this.nullable.add(col.name));
     return this;
   }
 

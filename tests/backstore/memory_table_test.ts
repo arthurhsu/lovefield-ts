@@ -19,9 +19,7 @@ import {TableTester} from '../../testing/backstore/table_tester';
 
 describe('MemoryTable', () => {
   it('tableTester', () => {
-    const tester = new TableTester(() => {
-      return new MemoryTable();
-    });
+    const tester = new TableTester(() => new MemoryTable());
     return tester.run();
   });
 });

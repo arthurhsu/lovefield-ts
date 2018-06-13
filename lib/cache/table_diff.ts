@@ -94,15 +94,9 @@ export class TableDiff {
 
   // Merge another diff into this one.
   public merge(other: TableDiff) {
-    other.added.forEach((row, rowId) => {
-      this.add(row);
-    }, this);
-    other.modified.forEach((modification, rowId) => {
-      this.modify(modification);
-    }, this);
-    other.deleted.forEach((row, rowId) => {
-      this.delete(row);
-    }, this);
+    other.added.forEach((row, rowId) => this.add(row));
+    other.modified.forEach((modification, rowId) => this.modify(modification));
+    other.deleted.forEach((row, rowId) => this.delete(row));
   }
 
   // Transforms each changes included in this diff (insertion, modification,
@@ -113,15 +107,12 @@ export class TableDiff {
   public getAsModifications(): Modification[] {
     const modifications: Modification[] = [];
 
-    this.added.forEach((row, id) => {
-      modifications.push([/* then */ null, /* now */ row]);
-    });
-    this.modified.forEach((modification, id) => {
-      modifications.push(modification);
-    });
-    this.deleted.forEach((row, id) => {
-      modifications.push([/* then */ row, /* now */ null]);
-    });
+    this.added.forEach(
+        (row, id) => modifications.push([/* then */ null, /* now */ row]));
+    this.modified.forEach(
+        (modification, id) => modifications.push(modification));
+    this.deleted.forEach(
+        (row, id) => modifications.push([/* then */ row, /* now */ null]));
 
     return modifications;
   }
@@ -137,12 +128,8 @@ export class TableDiff {
   public getReverse(): TableDiff {
     const reverseDiff = new TableDiff(this.name);
 
-    this.added.forEach((row, id) => {
-      reverseDiff.delete(row);
-    });
-    this.deleted.forEach((row, id) => {
-      reverseDiff.add(row);
-    });
+    this.added.forEach((row, id) => reverseDiff.delete(row));
+    this.deleted.forEach((row, id) => reverseDiff.add(row));
     this.modified.forEach((modification, id) => {
       reverseDiff.modify([modification[1], modification[0]]);
     });

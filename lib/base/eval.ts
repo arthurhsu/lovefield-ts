@@ -174,9 +174,7 @@ function buildDateEvaluatorMap(): Map<EvalType, ComparisonFunction> {
     return (a == null || b == null) ? false : a.getTime() > b.getTime();
   });
   map.set(EvalType.IN, (targetValue: Date, values: Date[]) => {
-    return values.some((value) => {
-      return value.getTime() === targetValue.getTime();
-    });
+    return values.some((value) => value.getTime() === targetValue.getTime());
   });
   map.set(EvalType.LTE, (a: Date, b: Date) => {
     return (a == null || b == null) ? false : a.getTime() <= b.getTime();

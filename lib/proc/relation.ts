@@ -60,9 +60,8 @@ export class Relation {
 
     const intersection = new Map<number, RelationEntry>();
     allEntries.forEach((entry) => {
-      const existsInAll = relationMaps.every((relation) => {
-        return relation.has(entry.id);
-      });
+      const existsInAll =
+          relationMaps.every((relation) => relation.has(entry.id));
       if (existsInAll) {
         intersection.set(entry.id, entry);
       }
@@ -82,9 +81,7 @@ export class Relation {
     const union = new Map<number, RelationEntry>();
     relations.forEach((relation) => {
       Relation.assertCompatible(relations[0], relation);
-      relation.entries.forEach((entry) => {
-        union.set(entry.id, entry);
-      });
+      relation.entries.forEach((entry) => union.set(entry.id, entry));
     });
 
     return new Relation(
@@ -94,9 +91,7 @@ export class Relation {
   // Creates an lf.proc.Relation instance from a set of lf.Row instances.
   public static fromRows(rows: Row[], tables: string[]): Relation {
     const isPrefixApplied = tables.length > 1;
-    const entries = rows.map((row) => {
-      return new RelationEntry(row, isPrefixApplied);
-    });
+    const entries = rows.map((row) => new RelationEntry(row, isPrefixApplied));
     return new Relation(entries, tables);
   }
 
@@ -140,15 +135,11 @@ export class Relation {
   }
 
   public getPayloads(): object[] {
-    return this.entries.map((entry) => {
-      return entry.row.payload();
-    });
+    return this.entries.map((entry) => entry.row.payload());
   }
 
   public getRowIds(): number[] {
-    return this.entries.map((entry) => {
-      return entry.row.id();
-    });
+    return this.entries.map((entry) => entry.row.id());
   }
 
   // Adds an aggregated result to this relation.

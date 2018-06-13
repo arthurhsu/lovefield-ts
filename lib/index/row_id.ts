@@ -34,9 +34,7 @@ export class RowId implements RuntimeIndex {
   public static deserialize(name: string, rows: Row[]): RowId {
     const index = new RowId(name);
     const rowIds: number[] = rows[0].payload() as number[];
-    rowIds.forEach((rowId) => {
-      index.add(rowId, rowId);
-    });
+    rowIds.forEach((rowId) => index.add(rowId, rowId));
     return index;
   }
 
@@ -95,9 +93,7 @@ export class RowId implements RuntimeIndex {
     const keyRanges: SingleKeyRange[] =
         range as SingleKeyRange[] || [SingleKeyRange.all()];
     const values: number[] = Array.from(this.rows.values()).filter((value) => {
-      return keyRanges.some((r) => {
-        return this.comparatorObj.isInRange(value, r);
-      }, this);
+      return keyRanges.some((r) => this.comparatorObj.isInRange(value, r));
     }, this) as number[];
     return IndexHelper.slice(values, reverseOrder, limit, skip);
   }

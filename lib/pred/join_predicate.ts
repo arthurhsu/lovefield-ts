@@ -400,9 +400,7 @@ export class JoinPredicate extends PredicateNode {
   // Creates a row with null columns with column names obtained from the table.
   private createNullPayload(table: Table): object {
     const payload = {};
-    table.getColumns().forEach((column) => {
-      payload[column.getName()] = null;
-    });
+    table.getColumns().forEach((column) => payload[column.getName()] = null);
     return payload;
   }
 

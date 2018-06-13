@@ -88,9 +88,8 @@ export class Builder {
       });
     });
     // Checks for cycle.
-    Array.from(nodeMap.values()).forEach((graphNode) => {
-      this.checkCycleUtil(graphNode, nodeMap);
-    }, this);
+    Array.from(nodeMap.values())
+        .forEach((graphNode) => this.checkCycleUtil(graphNode, nodeMap));
   }
 
   // Performs foreign key checks like validity of names of parent and

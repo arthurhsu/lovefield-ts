@@ -1035,9 +1035,8 @@ describe('BTree', () => {
 
   it('UniqueConstraint', () => {
     const tree = insertToTree(9);
-    TestUtil.assertThrowsError(ErrorCode.DUPLICATE_KEYS, () => {
-      tree.add(13, 13);
-    });
+    TestUtil.assertThrowsError(
+        ErrorCode.DUPLICATE_KEYS, () => tree.add(13, 13));
   });
 
   it('RandomNumbers', () => {

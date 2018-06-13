@@ -24,9 +24,7 @@ describe('Type', () => {
   // not cause browser crash due to standards non-compliance.
   it('hasValidDefaultValues', () => {
     const clone: any[] = [];
-    DEFAULT_VALUES.forEach((value: any) => {
-      clone.push(value);
-    });
+    DEFAULT_VALUES.forEach((value: any) => clone.push(value));
     assert.equal(DEFAULT_VALUES.size, clone.length);
   });
 });

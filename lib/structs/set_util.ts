@@ -34,9 +34,7 @@ export function isSubset<T>(set1: Set<T>, set2: Set<T>): boolean {
   }
 
   let result = true;
-  set2.forEach((value) => {
-    result = result && set1.has(value);
-  });
+  set2.forEach((value) => result = result && set1.has(value));
   return result;
 }
 
