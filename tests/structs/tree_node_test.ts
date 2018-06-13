@@ -75,17 +75,17 @@ describe('TreeNode', () => {
     const node3 = new TreeNode();
     node1.addChild(node2);
     node2.addChild(node3);
-    assert.equal(0, node1.depth());
-    assert.equal(1, node2.depth());
-    assert.equal(2, node3.depth());
+    assert.equal(0, node1.getDepth());
+    assert.equal(1, node2.getDepth());
+    assert.equal(2, node3.getDepth());
   });
 
   it('root', () => {
     const node1 = new TreeNode();
     const node2 = new TreeNode();
     node1.addChild(node2);
-    assert.equal(node1, node1.root());
-    assert.equal(node1, node2.root());
+    assert.equal(node1, node1.getRoot());
+    assert.equal(node1, node2.getRoot());
   });
 
   it('traverse', () => {

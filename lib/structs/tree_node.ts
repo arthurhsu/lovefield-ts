@@ -27,7 +27,15 @@ export class TreeNode {
     this.children = null;
   }
 
-  public root(): TreeNode {
+  public getParent(): TreeNode {
+    return this.parent as TreeNode;
+  }
+
+  public setParent(parentNode: TreeNode): void {
+    this.parent = parentNode;
+  }
+
+  public getRoot(): TreeNode {
     let root: TreeNode = this;
     while (root.parent !== null) {
       root = root.parent;
@@ -35,7 +43,7 @@ export class TreeNode {
     return root;
   }
 
-  public depth(): number {
+  public getDepth(): number {
     let depth = 0;
     let node: TreeNode = this;
     while (node.parent !== null) {
