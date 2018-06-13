@@ -41,6 +41,7 @@ export abstract class Context {
 
   // A map used for locating predicates by ID. Instantiated lazily.
   private predicateMap: Map<number, Predicate>;
+  private uniqueId!: string;
 
   constructor(schema: Database) {
     this.schema = schema;
@@ -74,6 +75,13 @@ export abstract class Context {
         return true;
       });
     }
+  }
+
+  public getUniqueId(): string {
+    if (!this.uniqueId) {
+      this.uniqueId = `lf_${((Math.random() * 1e9) >>> 0)}`;
+    }
+    return this.uniqueId;
   }
 
   public abstract getScope(): Set<Table>;

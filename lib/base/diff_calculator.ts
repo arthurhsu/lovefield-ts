@@ -46,7 +46,7 @@ export class DiffCalculator {
   // twice, with different collectorFn each time, because comparisons are done
   // based on object reference, there might be a cheaper way, such that
   // longestCommonSubsequence is only called once.
-  public applyDiff(oldResults: Relation, newResults: Relation): object[] {
+  public applyDiff(oldResults: Relation, newResults: Relation): ChangeRecord[] {
     const oldEntries = oldResults === null ? [] : oldResults.entries;
 
     // Detecting and applying deletions.
@@ -54,7 +54,7 @@ export class DiffCalculator {
         oldEntries, newResults.entries, this.comparator.bind(this),
         (indexLeft, indexRight) => oldEntries[indexLeft]);
 
-    const changeRecords: object[] = [];
+    const changeRecords: ChangeRecord[] = [];
     let commonIndex = 0;
     for (let i = 0; i < oldEntries.length; i++) {
       const entry = oldEntries[i];
