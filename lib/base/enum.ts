@@ -73,3 +73,10 @@ export enum ExecType {
   ALL = 0,          // Will invoke all children nodes' exec().
   FIRST_CHILD = 1,  // Will invoke only the first child's exec().
 }
+
+export enum LockType {
+  EXCLUSIVE = 0,
+  RESERVED_READ_ONLY = 1,
+  RESERVED_READ_WRITE = 2,
+  SHARED = 3,
+}
