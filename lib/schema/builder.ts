@@ -17,10 +17,9 @@
 import {ErrorCode, Exception} from '../base/exception';
 
 import {Database} from './database';
+import {DatabaseSchema} from './database_schema';
 import {GraphNode} from './graph_node';
-import {Info} from './info';
 import {Pragma} from './pragma';
-import {Table} from './table';
 import {TableBuilder} from './table_builder';
 
 export class Builder {
@@ -182,54 +181,6 @@ export class Builder {
       }, this);
     }
     graphNode.onStack = false;
-  }
-}
-
-class DatabaseSchema implements Database {
-  public _pragma: Pragma;
-  private _info: Info;
-  private tableMap: Map<string, Table>;
-
-  constructor(readonly _name: string, readonly _version: number) {
-    this.tableMap = new Map<string, Table>();
-    this._pragma = {enableBundledMode: false};
-    this._info = undefined as any as Info;
-  }
-
-  public name(): string {
-    return this._name;
-  }
-
-  public version(): number {
-    return this._version;
-  }
-
-  public info(): Info {
-    if (this._info === undefined) {
-      this._info = new Info(this);
-    }
-    return this._info;
-  }
-
-  public tables(): Table[] {
-    return Array.from(this.tableMap.values());
-  }
-
-  public table(tableName: string): Table {
-    const ret = this.tableMap.get(tableName);
-    if (!ret) {
-      // 101: Table {0} not found.
-      throw new Exception(ErrorCode.TABLE_NOT_FOUND, tableName);
-    }
-    return ret;
-  }
-
-  public setTable(table: Table) {
-    this.tableMap.set(table.getName(), table);
-  }
-
-  public pragma(): Pragma {
-    return this._pragma;
   }
 }
 

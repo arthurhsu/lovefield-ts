@@ -15,14 +15,12 @@
  */
 
 import {Favor} from './comparator';
+import {UnboundKey} from './unbound_key';
 
 // TODO(arthurhsu): original SingleKey can be null.
 export type SingleKey = string|number;
 export type MultiKey = SingleKey[];
 export type Key = SingleKey|MultiKey;
-
-// Unbound is used to denote an unbound key range boundary.
-export class UnboundKey {}
 
 // A SingleKeyRange represents a key range of a single column.
 export class SingleKeyRange {
