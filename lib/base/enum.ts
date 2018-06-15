@@ -80,3 +80,13 @@ export enum LockType {
   RESERVED_READ_WRITE = 2,
   SHARED = 3,
 }
+
+// The priority of each type of task. Lower number means higher priority.
+export enum TaskPriority {
+  EXPORT_TASK = 0,
+  IMPORT_TASK = 0,
+  OBSERVER_QUERY_TASK = 0,
+  EXTERNAL_CHANGE_TASK = 1,
+  USER_QUERY_TASK = 2,
+  TRANSACTION_TASK = 2,
+}

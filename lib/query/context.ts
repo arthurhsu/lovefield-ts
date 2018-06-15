@@ -15,6 +15,7 @@
  */
 
 import {assert} from '../base/assert';
+import {UniqueId} from '../base/unique_id';
 import {Predicate} from '../pred/predicate';
 import {PredicateNode} from '../pred/predicate_node';
 import {ValuePredicate} from '../pred/value_predicate';
@@ -22,7 +23,7 @@ import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 
 // Base context for all query types.
-export abstract class Context {
+export abstract class Context extends UniqueId {
   // Creates predicateMap such that predicates can be located by ID.
   private static buildPredicateMap(rootPredicate: PredicateNode):
       Map<number, Predicate> {
@@ -41,9 +42,9 @@ export abstract class Context {
 
   // A map used for locating predicates by ID. Instantiated lazily.
   private predicateMap: Map<number, Predicate>;
-  private uniqueId!: string;
 
   constructor(schema: Database) {
+    super();
     this.schema = schema;
     this.clonedFrom = null;
     this.where = null;
@@ -75,13 +76,6 @@ export abstract class Context {
         return true;
       });
     }
-  }
-
-  public getUniqueId(): string {
-    if (!this.uniqueId) {
-      this.uniqueId = `lf_${((Math.random() * 1e9) >>> 0)}`;
-    }
-    return this.uniqueId;
   }
 
   public abstract getScope(): Set<Table>;
