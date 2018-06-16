@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-// import {BackStore} from '../backstore/back_store';
+import {BackStore} from '../backstore/back_store';
 import {Cache} from '../cache/cache';
 import {IndexStore} from '../index/index_store';
+import {Runner} from '../proc/runner';
 import {Database} from '../schema/database';
+import {ObserverRegistry} from './observer_registry';
 import {ServiceId} from './service_id';
 
 export class Service {
   // TODO(arthurhsu): finish this class.
 
   // The backing data store used by this connection.
-  // TODO(arthurhsu): Backstore template type in TypeScript will make the
   // following statement fail compilation, need solution.
-  // public static BACK_STORE = new ServiceId<BackStore>('backstore');
+  public static BACK_STORE = new ServiceId<BackStore>('backstore');
 
   // The shared row cache used by this connection.
   public static CACHE = new ServiceId<Cache>('cache');
@@ -38,11 +39,11 @@ export class Service {
   // public static QUERY_ENGINE = new ServiceId<QueryEngine>('engine');
 
   // Query runner which executes transactions.
-  // public static RUNNER = new ServiceId<Runnder>('runner');
+  public static RUNNER = new ServiceId<Runner>('runner');
 
   // Observer registry storing all observing queries.
-  // public static OBSERVER_REGISTRY =
-  //     new ServiceId<ObserverRegistry>('observerregistry');
+  public static OBSERVER_REGISTRY =
+      new ServiceId<ObserverRegistry>('observerregistry');
 
   // Finalized schema associated with this connection.
   public static SCHEMA = new ServiceId<Database>('schema');
