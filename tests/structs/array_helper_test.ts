@@ -95,4 +95,16 @@ describe('ArrayHelper', () => {
     check(obj2, true, []);
     check(obj2, false, []);
   });
+
+  it('shuffle', () => {
+    const testArray = [1, 2, 3, 4, 5];
+    const testArrayClone: number[] =
+        JSON.parse(JSON.stringify(testArray)) as number[];
+
+    ArrayHelper.shuffle(testArray);
+    assert.sameMembers(testArrayClone, testArray);
+    assert.throw(() => {
+      assert.sameOrderedMembers(testArray, testArrayClone);
+    });
+  });
 });
