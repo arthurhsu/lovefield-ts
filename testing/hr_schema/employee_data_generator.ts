@@ -45,10 +45,12 @@ export class EmployeeDataGenerator {
   }
 
   public generate(count: number): Row[] {
-    assert(count >= this.jobCount,
-      'employee count must be greater or equal to job count');
-    assert(count >= this.departmentCount,
-      'employee count must be greater or equal to department count');
+    assert(
+        count >= this.jobCount,
+        'employee count must be greater or equal to job count');
+    assert(
+        count >= this.departmentCount,
+        'employee count must be greater or equal to department count');
 
     const rawData = this.generateRaw(count);
     const e = getHrDbSchemaBuilder().getSchema().table('Employee');
@@ -60,10 +62,10 @@ export class EmployeeDataGenerator {
     for (let i = 0; i < count; i++) {
       const firstName = this.genFirstName();
       const lastName = this.genLastName();
-      const email = firstName.toLowerCase() + '.' +
-          lastName.toLowerCase() + '@theweb.com';
-      const phoneNumber = String(
-          1000000000 + Math.floor(Math.random() * 999999999));
+      const email = firstName.toLowerCase() + '.' + lastName.toLowerCase() +
+          '@theweb.com';
+      const phoneNumber =
+          String(1000000000 + Math.floor(Math.random() * 999999999));
       const commissionPercent = 0.15 + Math.random();
 
       // tslint:disable
@@ -80,8 +82,8 @@ export class EmployeeDataGenerator {
         commissionPercent: commissionPercent,
         managerId: 'managerId',
         // Ensuring that each department is assigned at least one employee.
-        departmentId: i < this.departmentCount ?
-            `departmentId${i}` : this.genDepartmentId(),
+        departmentId: i < this.departmentCount ? `departmentId${i}` :
+                                                 this.genDepartmentId(),
         photo: this.genPhoto()
       };
       // tslint:enable

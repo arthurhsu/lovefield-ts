@@ -35,7 +35,8 @@ export class DepartmentDataGenerator {
   }
 
   private generateRaw(count: number): object[] {
-    assert(count <= this.names.length,
+    assert(
+        count <= this.names.length,
         `count can be at most ${this.names.length}`);
 
     const departments = new Array(count);

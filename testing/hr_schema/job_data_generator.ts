@@ -22,7 +22,12 @@ import {HRSchemaSamples} from './sample';
 
 export class JobDataGenerator {
   private static SALARY_POOL = [
-    100000, 200000, 300000, 400000, 500000, 600000,
+    100000,
+    200000,
+    300000,
+    400000,
+    500000,
+    600000,
   ];
 
   private titles: string[];
@@ -38,7 +43,8 @@ export class JobDataGenerator {
   }
 
   private generateRaw(count: number): object[] {
-    assert(count <= this.titles.length,
+    assert(
+        count <= this.titles.length,
         `count can be at most ${this.titles.length}`);
     const jobs = new Array<object>(count);
     for (let i = 0; i < count; i++) {

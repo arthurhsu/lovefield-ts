@@ -49,6 +49,17 @@ export class ArrayHelper {
     }
   }
 
+  // Clone the array.
+  public static clone<T>(arr: T[]): T[] {
+    const length = arr.length;
+    if (length > 0) {
+      const rv = new Array(length);
+      arr.forEach((v, i) => rv[i] = v);
+      return rv;
+    }
+    return [];
+  }
+
   // Returns lowest index of the target value if found, otherwise
   // (-(insertion point) - 1). The insertion point is where the value should
   // be inserted into arr to preserve the sorted property.  Return value >= 0
