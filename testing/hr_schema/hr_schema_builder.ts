@@ -17,7 +17,13 @@
 import {ConstraintAction, Order, Type} from '../../lib/base/enum';
 import {Builder, createSchema} from '../../lib/schema/builder';
 
+let hrSchemaBuilder: Builder;
+
 export function getHrDbSchemaBuilder(dbName?: string): Builder {
+  if (hrSchemaBuilder) {
+    return hrSchemaBuilder;
+  }
+
   const name = dbName || `hr${Date.now()}`;
   const schemaBuilder = createSchema(name, 1);
 
@@ -157,5 +163,6 @@ export function getHrDbSchemaBuilder(dbName?: string): Builder {
       .addIndex('idx_crossNull', ['string1', 'string2'], true)
       .persistentIndex(true);
 
+  hrSchemaBuilder = schemaBuilder;
   return schemaBuilder;
 }

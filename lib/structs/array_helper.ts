@@ -38,6 +38,28 @@ export class ArrayHelper {
     return true;
   }
 
+  // Randomly shuffle an array's element.
+  public static shuffle<T>(arr: T[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+      // Choose a random array index in [0, i] (inclusive with i).
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+  }
+
+  // Clone the array.
+  public static clone<T>(arr: T[]): T[] {
+    const length = arr.length;
+    if (length > 0) {
+      const rv = new Array(length);
+      arr.forEach((v, i) => rv[i] = v);
+      return rv;
+    }
+    return [];
+  }
+
   // Returns lowest index of the target value if found, otherwise
   // (-(insertion point) - 1). The insertion point is where the value should
   // be inserted into arr to preserve the sorted property.  Return value >= 0

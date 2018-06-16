@@ -95,4 +95,22 @@ describe('ArrayHelper', () => {
     check(obj2, true, []);
     check(obj2, false, []);
   });
+
+  it('shuffle', () => {
+    const testArray = [1, 2, 3, 4, 5];
+    const testArrayClone: number[] = ArrayHelper.clone(testArray);
+    assert.notEqual(testArray, testArrayClone);
+
+    ArrayHelper.shuffle(testArray);
+    assert.sameMembers(testArrayClone, testArray);
+    assert.throw(() => {
+      assert.sameOrderedMembers(testArray, testArrayClone);
+    });
+  });
+
+  it('clone', () => {
+    const a = [0, 1, 2, 3];
+    const a2 = ArrayHelper.clone(a);
+    assert.sameDeepOrderedMembers(a, a2);
+  });
 });
