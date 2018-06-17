@@ -17,6 +17,7 @@
 import {BackStore} from '../backstore/back_store';
 import {Cache} from '../cache/cache';
 import {IndexStore} from '../index/index_store';
+import {QueryEngine} from '../proc/query_engine';
 import {Runner} from '../proc/runner';
 import {Database} from '../schema/database';
 import {ObserverRegistry} from './observer_registry';
@@ -36,7 +37,7 @@ export class Service {
   public static INDEX_STORE = new ServiceId<IndexStore>('indexstore');
 
   // Query engine used for generating execution plan.
-  // public static QUERY_ENGINE = new ServiceId<QueryEngine>('engine');
+  public static QUERY_ENGINE = new ServiceId<QueryEngine>('engine');
 
   // Query runner which executes transactions.
   public static RUNNER = new ServiceId<Runner>('runner');

@@ -15,6 +15,7 @@
  */
 
 import {Relation} from '../proc/relation';
+import {TaskItem} from '../proc/task_item';
 import {SelectContext} from '../query/select_context';
 import {assert} from './assert';
 import {ChangeRecord} from './change_record';
@@ -54,8 +55,9 @@ export class ObserverRegistryEntry {
   }
 
   // TODO(arthurhsu): returns TaskItem
-  public getTaskItem(): object|null {
-    return null;
+  public getTaskItem(): TaskItem {
+    // return this.builder.getObservableTaskItem();
+    return null as any as TaskItem;
   }
 
   public hasObservers(): boolean {

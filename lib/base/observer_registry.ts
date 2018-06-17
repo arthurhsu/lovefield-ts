@@ -15,6 +15,7 @@
  */
 
 import {Relation} from '../proc/relation';
+import {TaskItem} from '../proc/task_item';
 import {SelectContext} from '../query/select_context';
 import {SelectQuery} from '../query/select_query';
 import {Table} from '../schema/table';
@@ -64,22 +65,20 @@ export class ObserverRegistry {
 
   // Finds all the observed queries that reference at least one of the given
   // tables.
-  // TODO(arthurhsu): return TaskItem
-  public getTaskItemsForTables(tables: Table[]): object[] {
+  public getTaskItemsForTables(tables: Table[]): TaskItem[] {
     const tableSet = new Set<string>();
     tables.forEach((table) => tableSet.add(table.getName()));
 
-    const items: object[] = [];
-    /*
+    const items: TaskItem[] = [];
     this.entries.forEach((entry, key) => {
       const item = entry.getTaskItem();
       const refersToTables =
-          item.context.from.some((table) => tableSet.has(table.getName());
+          (item.context as SelectContext)
+              .from.some((table) => tableSet.has(table.getName()));
       if (refersToTables) {
         items.push(item);
       }
     });
-    */
     return items;
   }
 

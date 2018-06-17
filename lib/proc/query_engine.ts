@@ -14,26 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
-import {Exception} from '../lib/base/exception';
+import {Context} from '../query/context';
+import {PhysicalQueryPlan} from './physical_query_plan';
 
-export class TestUtil {
-  public static assertThrowsError(exceptionCode: number, fn: () => any) {
-    let thrown = false;
-    try {
-      fn();
-    } catch (e) {
-      thrown = true;
-      chai.assert.isTrue(e instanceof Exception);
-      chai.assert.equal(exceptionCode, e.code);
-    }
-    chai.assert.isTrue(thrown);
-  }
-
-  public static assertPromiseReject(
-      exceptionCode: number, promise: Promise<any>): Promise<any> {
-    return promise.then(chai.assert.fail, (e: any) => {
-      chai.assert.equal(exceptionCode, e.code);
-    });
-  }
+export interface QueryEngine {
+  // Returns the generated plan that can be understood by Runner.
+  getPlan(query: Context): PhysicalQueryPlan;
 }
