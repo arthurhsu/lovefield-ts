@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
+import {DatabaseConnection} from '../base/database_connection';
 import {ErrorCode, Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {ServiceId} from '../base/service_id';
+import {RuntimeDatabase} from '../proc/runtime_database';
 
+import {ConnectOptions} from './connect_options';
 import {Database} from './database';
 import {DatabaseSchema} from './database_schema';
 import {GraphNode} from './graph_node';
@@ -26,13 +32,15 @@ export class Builder {
   private schema: DatabaseSchema;
   private tableBuilders: Map<string, TableBuilder>;
   private finalized: boolean;
-  // private db: DBInstance;
-  // private connectInProgress: boolean;
+  private db: RuntimeDatabase;
+  private connectInProgress: boolean;
 
   constructor(dbName: string, dbVersion: number) {
     this.schema = new DatabaseSchema(dbName, dbVersion);
     this.tableBuilders = new Map<string, TableBuilder>();
     this.finalized = false;
+    this.db = null as any as RuntimeDatabase;
+    this.connectInProgress = false;
   }
 
   public getSchema(): Database {
@@ -42,7 +50,51 @@ export class Builder {
     return this.schema;
   }
 
-  // TODO(arthurhsu): implement getGlobal(), connect()
+  public getGlobal(): Global {
+    const namespaceGlobalId = new ServiceId<Global>(`ns_${this.schema.name()}`);
+    const global = Global.get();
+    let namespacedGlobal: Global;
+    if (!global.isRegistered(namespaceGlobalId)) {
+      namespacedGlobal = new Global();
+      global.registerService(namespaceGlobalId, namespacedGlobal);
+    } else {
+      namespacedGlobal = global.getService(namespaceGlobalId);
+    }
+    return namespacedGlobal;
+  }
+
+  // Instantiates a connection to the database. Note: This method can only be
+  // called once per Builder instance. Subsequent calls will throw an error,
+  // unless the previous DB connection has been closed first.
+  public connect(options: ConnectOptions): Promise<DatabaseConnection> {
+    if (this.connectInProgress || (this.db !== null && this.db.isOpen())) {
+      // 113: Attempt to connect() to an already connected/connecting database.
+      throw new Exception(ErrorCode.ALREADY_CONNECTED);
+    }
+    this.connectInProgress = true;
+
+    if (this.db === null) {
+      const global = this.getGlobal();
+      if (!global.isRegistered(Service.SCHEMA)) {
+        global.registerService(Service.SCHEMA, this.getSchema());
+      }
+      this.db = new RuntimeDatabase(global);
+    }
+
+    return this.db.init(options).then(
+        (db) => {
+          this.connectInProgress = false;
+          return db;
+        },
+        (e) => {
+          this.connectInProgress = false;
+          // TODO(arthurhsu): Add a new test case to verify that failed init
+          // call allows the database to be deleted since we close it properly
+          // here.
+          this.db.close();
+          throw e;
+        });
+  }
 
   public createTable(tableName: string): TableBuilder {
     if (this.tableBuilders.has(tableName)) {

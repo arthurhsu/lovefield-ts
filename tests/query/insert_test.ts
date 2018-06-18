@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-// import * as chai from 'chai';
+import * as chai from 'chai';
 import {bind} from '../../lib/base/bind';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType} from '../../lib/base/enum';
 import {ErrorCode} from '../../lib/base/exception';
 import {Global} from '../../lib/base/global';
-import {Service} from '../../lib/base/service';
-import {QueryEngine} from '../../lib/proc/query_engine';
-import {Runner} from '../../lib/proc/runner';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {InsertBuilder} from '../../lib/query/insert_builder';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {TestUtil} from '../../testing/test_util';
 
-// const assert = chai.assert;
+const assert = chai.assert;
 
 describe('InsertTest', () => {
-  // TODO(arthurhsu): currently uses hacked way to create environment, should
-  // use an in-memory database once all pieces are in-place.
-
-  // let db: RuntimeDatabase;
+  let db: DatabaseConnection;
   let global: Global;
   before(() => {
-    // hr.db.connect({storeType: DatabaseType.MEMORY}).then(dbi => db = dbi);
-    global = new Global();
-    global.registerService(Service.SCHEMA, getHrDbSchemaBuilder().getSchema());
-    global.registerService(Service.RUNNER, new Runner());
-    global.registerService(Service.QUERY_ENGINE, {} as any as QueryEngine);
+    getHrDbSchemaBuilder()
+        .connect({storeType: DataStoreType.MEMORY})
+        .then((conn) => {
+          db = conn;
+          global = (db as RuntimeDatabase).getGlobal();
+        });
   });
 
   // Tests that Insert#exec() fails if into() has not been called first.
@@ -105,15 +103,14 @@ describe('InsertTest', () => {
     return TestUtil.assertPromiseReject(ErrorCode.INVALID_INSERT, query.exec());
   });
 
-  // TODO(arthurhsu): enable this test when memory DB is ready.
-  /*
   it('context_Clone', () => {
     const j = db.getSchema().table('Job');
     const query = db.insert().into(j).values(bind(0)) as InsertBuilder;
     const context = query.getQuery();
     const context2 = context.clone();
     assert.deepEqual(context.into, context2.into);
-    assert.sameDeepOrderedMembers(context.values, context2.values);
+    assert.isUndefined(context.values);
+    assert.isUndefined(context2.values);
     assert.isTrue(context2.clonedFrom === context);
     assert.notEqual(context.getUniqueNumber(), context2.getUniqueNumber());
 
@@ -122,9 +119,9 @@ describe('InsertTest', () => {
     const context3 = query2.getQuery();
     const context4 = context3.clone();
     assert.deepEqual(context3.into, context4.into);
-    assert.sameDeepOrderedMembers(context3.values, context4.values);
+    assert.isUndefined(context3.values);
+    assert.isUndefined(context4.values);
     assert.isTrue(context4.clonedFrom === context3);
     assert.notEqual(context3.getUniqueNumber(), context4.getUniqueNumber());
   });
-  */
 });
