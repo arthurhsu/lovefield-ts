@@ -40,6 +40,10 @@ describe('InsertTest', () => {
         });
   });
 
+  after(() => {
+    db.close();
+  });
+
   // Tests that Insert#exec() fails if into() has not been called first.
   it('exec_ThrowsMissingInto', () => {
     const query = new InsertBuilder(global);

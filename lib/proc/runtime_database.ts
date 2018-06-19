@@ -21,6 +21,7 @@ import {Global} from '../base/global';
 import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
+import {DeleteBuilder} from '../query/delete_builder';
 import {DeleteQuery} from '../query/delete_query';
 import {InsertBuilder} from '../query/insert_builder';
 import {InsertQuery} from '../query/insert_query';
@@ -103,11 +104,8 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public delete(): DeleteQuery {
-    /*
     this.checkActive();
     return new DeleteBuilder(this.global);
-    */
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
   public observe(query: SelectQuery, callback: ObserverCallback): void {

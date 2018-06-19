@@ -51,8 +51,8 @@ export interface DatabaseConnection {
   // Exports database as a JSON object.
   export(): Promise<object>;
 
-  // Imports from a JSON object into an empty database.
   // clang-format off
+  // Imports from a JSON object into an empty database.
   import(data: object): Promise<void>;
   // clang-format on
 }
