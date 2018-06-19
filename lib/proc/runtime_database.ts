@@ -22,11 +22,9 @@ import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {DeleteBuilder} from '../query/delete_builder';
-import {DeleteQuery} from '../query/delete_query';
 import {InsertBuilder} from '../query/insert_builder';
-import {InsertQuery} from '../query/insert_query';
 import {SelectQuery} from '../query/select_query';
-import {UpdateQuery} from '../query/update_query';
+import {UpdateBuilder} from '../query/update_builder';
 import {Column} from '../schema/column';
 import {ConnectOptions} from '../schema/connect_options';
 import {Database} from '../schema/database';
@@ -85,25 +83,22 @@ export class RuntimeDatabase implements DatabaseConnection {
     throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
-  public insert(): InsertQuery {
+  public insert(): InsertBuilder {
     this.checkActive();
     return new InsertBuilder(this.global);
   }
 
-  public insertOrReplace(): InsertQuery {
+  public insertOrReplace(): InsertBuilder {
     this.checkActive();
     return new InsertBuilder(this.global, /* allowReplace */ true);
   }
 
-  public update(table: Table): UpdateQuery {
-    /*
+  public update(table: Table): UpdateBuilder {
     this.checkActive();
     return new UpdateBuilder(this.global, table);
-    */
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
-  public delete(): DeleteQuery {
+  public delete(): DeleteBuilder {
     this.checkActive();
     return new DeleteBuilder(this.global);
   }
