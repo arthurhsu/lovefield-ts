@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import {TaskPriority, TransactionType} from '../base/enum';
+import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
 import {ObserverRegistry} from '../base/observer_registry';
+import {TaskPriority} from '../base/private_enum';
 import {Service} from '../base/service';
 import {SelectContext} from '../query/select_context';
 import {ObserverQueryTask} from './observer_query_task';

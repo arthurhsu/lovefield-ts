@@ -15,7 +15,8 @@
  */
 
 import * as chai from 'chai';
-import {TaskPriority, TransactionType} from '../../lib/base/enum';
+import {TransactionType} from '../../lib/base/enum';
+import {TaskPriority} from '../../lib/base/private_enum';
 import {Resolver} from '../../lib/base/resolver';
 import {Runner} from '../../lib/proc/runner';
 import {Table} from '../../lib/schema/table';

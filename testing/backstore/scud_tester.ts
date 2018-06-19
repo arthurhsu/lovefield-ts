@@ -17,8 +17,9 @@
 import * as chai from 'chai';
 
 import {BackStore} from '../../lib/backstore/back_store';
-import {TableType, TransactionType} from '../../lib/base/enum';
+import {TransactionType} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
+import {TableType} from '../../lib/base/private_enum';
 import {Row} from '../../lib/base/row';
 import {Service} from '../../lib/base/service';
 import {Cache} from '../../lib/cache/cache';

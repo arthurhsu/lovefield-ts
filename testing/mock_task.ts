@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {TaskPriority, TransactionType} from '../lib/base/enum';
+import {TransactionType} from '../lib/base/enum';
+import {TaskPriority} from '../lib/base/private_enum';
 import {Resolver} from '../lib/base/resolver';
 import {UniqueId} from '../lib/base/unique_id';
 import {Relation} from '../lib/proc/relation';

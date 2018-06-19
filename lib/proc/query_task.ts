@@ -17,8 +17,9 @@
 import {BackStore} from '../backstore/back_store';
 import {TransactionStats} from '../backstore/transaction_stats';
 import {Tx} from '../backstore/tx';
-import {TaskPriority, TransactionType} from '../base/enum';
+import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
+import {TaskPriority} from '../base/private_enum';
 import {Resolver} from '../base/resolver';
 import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';

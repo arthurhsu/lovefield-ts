@@ -15,7 +15,7 @@
  */
 
 import {assert} from '../base/assert';
-import {ExecType} from '../base/enum';
+import {ExecType} from '../base/private_enum';
 import {Journal} from '../cache/journal';
 import {Context} from '../query/context';
 import {TreeNode} from '../structs/tree_node';

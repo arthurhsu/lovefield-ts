@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {LockType} from '../base/enum';
+import {LockType} from '../base/private_enum';
 import {Table} from '../schema/table';
 import {LockTableEntry} from './lock_table_entry';
 

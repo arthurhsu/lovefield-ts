@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {LockType, TaskPriority, TransactionType} from '../base/enum';
+import {TransactionType} from '../base/enum';
+import {LockType, TaskPriority} from '../base/private_enum';
 import {LockManager} from './lock_manager';
 import {Relation} from './relation';
 import {Task} from './task';

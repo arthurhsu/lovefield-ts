@@ -62,31 +62,3 @@ export enum TransactionType {
   READ_ONLY = 0,
   READ_WRITE = 1,
 }
-
-export enum TableType {
-  DATA = 0,
-  INDEX = 1,
-}
-
-export enum ExecType {
-  NO_CHILD = -1,    // Will not call any of its children's exec().
-  ALL = 0,          // Will invoke all children nodes' exec().
-  FIRST_CHILD = 1,  // Will invoke only the first child's exec().
-}
-
-export enum LockType {
-  EXCLUSIVE = 0,
-  RESERVED_READ_ONLY = 1,
-  RESERVED_READ_WRITE = 2,
-  SHARED = 3,
-}
-
-// The priority of each type of task. Lower number means higher priority.
-export enum TaskPriority {
-  EXPORT_TASK = 0,
-  IMPORT_TASK = 0,
-  OBSERVER_QUERY_TASK = 0,
-  EXTERNAL_CHANGE_TASK = 1,
-  USER_QUERY_TASK = 2,
-  TRANSACTION_TASK = 2,
-}

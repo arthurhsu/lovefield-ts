@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {TableType, TransactionType} from '../base/enum';
+import {TransactionType} from '../base/enum';
+import {TableType} from '../base/private_enum';
 import {Resolver} from '../base/resolver';
 import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
