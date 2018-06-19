@@ -52,3 +52,8 @@ export enum FnType {
   STDDEV = 'STDDEV',
   SUM = 'SUM',
 }
+
+export enum Operator {
+  AND = 'and',
+  OR = 'or',
+}

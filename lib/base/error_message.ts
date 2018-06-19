@@ -180,7 +180,7 @@ function setupMap(): Map<ErrorCode, string> {
   m.set(ec.INVALID_FK_REF, 'Foreign key {0} has invalid reference syntax.');
   m.set(ec.INVALID_OUTER_JOIN, 'Outer join accepts only join predicate.');
   m.set(
-      ec.INVALID_FROM,
+      ec.MISSING_FROM_BEFORE_JOIN,
       'from() has to be called before innerJoin() or leftOuterJoin().');
   m.set(
       ec.PK_CANT_BE_FK,
