@@ -31,7 +31,6 @@ export abstract class Context extends UniqueId {
     rootPredicate.traverse((n) => {
       const node = n as PredicateNode as Predicate;
       predicateMap.set(node.getId(), node);
-      return true;
     });
     return predicateMap;
   }
@@ -73,7 +72,6 @@ export abstract class Context extends UniqueId {
         if (node instanceof ValuePredicate) {
           node.bind(values);
         }
-        return true;
       });
     }
   }

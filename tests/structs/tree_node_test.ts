@@ -100,7 +100,6 @@ describe('TreeNode', () => {
     let visitedNodes: TreeNode[] = [];
     node1.traverse((node) => {
       visitedNodes.push(node);
-      return true;
     });
     assert.deepEqual([node1, node2, node3, node4], visitedNodes);
 

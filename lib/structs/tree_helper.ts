@@ -71,7 +71,6 @@ export class TreeHelper {
       }
       nextParent =
           node.isLeaf() ? copyParentStack[copyParentStack.length - 1] : newNode;
-      return true;
     });
 
     return copyRoot;
@@ -324,7 +323,6 @@ export class TreeHelper {
         out += '-';
       }
       out += stringFn(node);
-      return true;
     });
     return out;
   }
