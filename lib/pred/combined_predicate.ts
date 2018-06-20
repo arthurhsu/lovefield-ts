@@ -82,10 +82,9 @@ export class CombinedPredicate extends PredicateNode {
     const columns = results || [];
     this.traverse((child) => {
       if (child === this) {
-        return false;
+        return;
       }
       (child as PredicateNode).getColumns(columns);
-      return true;
     });
 
     const columnSet = new Set<Column>(columns);
@@ -96,16 +95,15 @@ export class CombinedPredicate extends PredicateNode {
     const tables = results ? results : new Set<Table>();
     this.traverse((child) => {
       if (child === this) {
-        return false;
+        return;
       }
       (child as PredicateNode).getTables(tables);
-      return true;
     });
     return tables;
   }
 
   public toString(): string {
-    return `combined_pred${this.operator.toString()}`;
+    return `combined_pred_${this.operator.toString()}`;
   }
 
   // Converts this predicate to a key range.

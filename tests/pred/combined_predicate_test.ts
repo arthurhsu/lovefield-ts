@@ -55,8 +55,7 @@ describe('CombinedPredicate', () => {
   // Tests that copy() creates an identical tree where each node is a new
   // instance.
   it('copy_Simple', () => {
-    const expectedTree =
-        'combined_pred_and\n' +
+    const expectedTree = 'combined_pred_and\n' +
         '-value_pred(Employee.salary gte 200)\n' +
         '-value_pred(Employee.salary lte 600)\n';
 
@@ -70,19 +69,16 @@ describe('CombinedPredicate', () => {
   // Tests that copy() creates an identical tree where each node is a new
   // instance for the case of a tree with 3+ nodes.
   it('copy_VarArgs', () => {
-    const expectedTree =
-        'combined_pred_and\n' +
+    const expectedTree = 'combined_pred_and\n' +
         '-value_pred(Employee.salary gte 200)\n' +
         '-value_pred(Employee.salary lte 600)\n' +
         '-value_pred(Employee.commissionPercent lt 0.15)\n' +
         '-value_pred(Employee.commissionPercent gt 0.1)\n';
 
-    const original =
-        op.and(
-            e['salary'].gte(200),
-            e['salary'].lte(600),
-            e['commissionPercent'].lt(0.15),
-            e['commissionPercent'].gt(0.1)) as PredicateNode;
+    const original = op.and(
+                         e['salary'].gte(200), e['salary'].lte(600),
+                         e['commissionPercent'].lt(0.15),
+                         e['commissionPercent'].gt(0.1)) as PredicateNode;
     const copy = original.copy() as PredicateNode;
     assertTreesIdentical(expectedTree, original, copy);
     assert.equal(original.getId(), copy.getId());
@@ -91,18 +87,17 @@ describe('CombinedPredicate', () => {
   // Tests that copy() creates an identical tree where each node is a new
   // instance for the case of a tree with nested CombinedPredicate instances.
   it('copy_Nested', () => {
-    const expectedTree =
-        'combined_pred_and\n' +
+    const expectedTree = 'combined_pred_and\n' +
         '-value_pred(Employee.salary gte 200)\n' +
         '-combined_pred_and\n' +
         '--join_pred(Employee.jobId eq Job.id)\n' +
         '--join_pred(Employee.departmentId eq Department.id)\n';
 
-    const original: PredicateNode = op.and(
-        e['salary'].gte(200),
+    const original: PredicateNode =
         op.and(
-            e['jobId'].eq(j['id']),
-            e['departmentId'].eq(d['id']))) as PredicateNode;
+            e['salary'].gte(200),
+            op.and(e['jobId'].eq(j['id']), e['departmentId'].eq(d['id']))) as
+        PredicateNode;
     const copy = original.copy() as PredicateNode;
     assertTreesIdentical(expectedTree, original, copy);
     assert.equal(original.getId(), copy.getId());
@@ -137,23 +132,22 @@ describe('CombinedPredicate', () => {
     let expectedColumns = [e['salary']];
     assert.sameMembers(expectedColumns, p1.getColumns());
 
-    const p2 =
-        op.and(
-            e['salary'].gte(200),
-            e['salary'].lte(600),
-            e['commissionPercent'].lt(0.15),
-            e['commissionPercent'].gt(0.1)) as PredicateNode;
+    const p2 = op.and(
+                   e['salary'].gte(200), e['salary'].lte(600),
+                   e['commissionPercent'].lt(0.15),
+                   e['commissionPercent'].gt(0.1)) as PredicateNode;
     expectedColumns = [e['salary'], e['commissionPercent']];
     assert.sameMembers(expectedColumns, p2.getColumns());
 
     const p3 = op.and(
         e['salary'].gte(200),
-        op.and(
-            e['jobId'].eq(j['id']),
-            e['departmentId'].eq(['d.id'])));
+        op.and(e['jobId'].eq(j['id']), e['departmentId'].eq(d['id'])));
     expectedColumns = [
-      e['salary'], e['jobId'], e['departmentId'],
-      j['id'], d['id'],
+      e['salary'],
+      e['jobId'],
+      e['departmentId'],
+      j['id'],
+      d['id'],
     ];
     assert.sameMembers(expectedColumns, p3.getColumns());
   });
@@ -171,9 +165,7 @@ describe('CombinedPredicate', () => {
 
     const p3 = op.and(
         j['maxSalary'].gte(200),
-        op.and(
-            e['jobId'].eq(j['id']),
-            e['departmentId'].eq(d['id'])));
+        op.and(e['jobId'].eq(j['id']), e['departmentId'].eq(d['id'])));
     expectedTables = [e, j, d];
     assert.sameMembers(expectedTables, Array.from(p3.getTables().values()));
   });
@@ -217,8 +209,8 @@ describe('CombinedPredicate', () => {
     const notKeyRangeCompatbilePredicates = [
       op.or(e['firstName'].match(/Foo/), e['firstName'].eq('Bar')),
       op.or(e['firstName'].neq('Foo'), e['firstName'].eq('Bar')),
-      op.or(e['salary'].eq(100),
-      op.or(e['salary'].eq(200), e['salary'].eq(300))),
+      op.or(
+          e['salary'].eq(100), op.or(e['salary'].eq(200), e['salary'].eq(300))),
       op.or(e['salary'].isNull(), e['salary'].eq(600)),
       op.or(e['firstName'].eq('Foo'), e['lastName'].eq('Bar')),
     ];
@@ -229,9 +221,14 @@ describe('CombinedPredicate', () => {
 
   it('toKeyRange_Or', () => {
     const testCases = [
-      [op.or(e['salary'].eq(200), e['salary'].eq(600)), '[200, 200],[600, 600]'],
-      [op.or(e['salary'].lte(200), e['salary'].gte(600)),
-      '[unbound, 200],[600, unbound]'],
+      [
+        op.or(e['salary'].eq(200), e['salary'].eq(600)),
+        '[200, 200],[600, 600]',
+      ],
+      [
+        op.or(e['salary'].lte(200), e['salary'].gte(600)),
+        '[unbound, 200],[600, unbound]',
+      ],
       [op.or(e['salary'].lt(200), e['salary'].lt(100)), '[unbound, 200)'],
       [op.or(e['salary'].eq(200), e['salary'].eq(200)), '[200, 200]'],
     ];
@@ -252,21 +249,19 @@ describe('CombinedPredicate', () => {
       return relation.entries.map((entry) => entry.row.payload()['salary']);
     };
 
-    const inputRelation = Relation.fromRows(
-        getSampleRows(sampleRowCount), [e.getName()]);
+    const inputRelation =
+        Relation.fromRows(getSampleRows(sampleRowCount), [e.getName()]);
 
     const assertOriginal = () => {
       const outputRelation = predicate.eval(inputRelation);
       assert.sameDeepOrderedMembers(
-          expectedSalariesOriginal,
-          extractSalaries(outputRelation));
+          expectedSalariesOriginal, extractSalaries(outputRelation));
     };
 
     const assertComplement = () => {
       const outputRelation = predicate.eval(inputRelation);
       assert.sameDeepOrderedMembers(
-          expectedSalariesComplement,
-          extractSalaries(outputRelation));
+          expectedSalariesComplement, extractSalaries(outputRelation));
     };
 
     // Testing the original predicate.

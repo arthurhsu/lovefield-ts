@@ -18,15 +18,15 @@ import {Type} from './enum';
 import {ErrorCode, Exception} from './exception';
 
 export enum EvalType {
-  BETWEEN = 0,
-  EQ = 1,
-  GTE = 2,
-  GT = 3,
-  IN = 4,
-  LTE = 5,
-  LT = 6,
-  MATCH = 7,
-  NEQ = 8,
+  BETWEEN = 'between',
+  EQ = 'eq',
+  GTE = 'gte',
+  GT = 'gt',
+  IN = 'in',
+  LTE = 'lte',
+  LT = 'lt',
+  MATCH = 'match',
+  NEQ = 'neq',
 }
 
 type ValueType = boolean|number|string;

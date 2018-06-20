@@ -132,8 +132,8 @@ export class TreeNode {
 
   // Traverses the subtree with the possibility to skip branches. Starts with
   // this node, and visits the descendant nodes depth-first, in preorder.
-  public traverse(f: (node: TreeNode) => boolean): void {
-    if (f(this)) {
+  public traverse(f: (node: TreeNode) => boolean | void): void {
+    if (f(this) !== false) {
       this.getChildren().forEach((child) => child.traverse(f));
     }
   }
