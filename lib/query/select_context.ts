@@ -21,13 +21,26 @@ import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 import {Context} from './context';
 
-interface SelectContextOrderBy {
+export interface SelectContextOrderBy {
   column: Column;
   order: Order;
 }
 
 // Internal representation of SELECT query.
 export class SelectContext extends Context {
+  public static orderByToString(orderBy: SelectContextOrderBy[]): string {
+    let out = '';
+    orderBy.forEach((orderByEl, index) => {
+      out += orderByEl.column.getNormalizedName() + ' ';
+      out += orderByEl.order === Order.ASC ? 'ASC' : 'DESC';
+      if (index < orderBy.length - 1) {
+        out += ', ';
+      }
+    });
+
+    return out;
+  }
+
   public columns!: Column[];
   public from!: Table[];
   public limit!: number;
@@ -40,19 +53,6 @@ export class SelectContext extends Context {
 
   constructor(schema: Database) {
     super(schema);
-  }
-
-  public orderByToString(orderBy: SelectContextOrderBy[]): string {
-    let out = '';
-    orderBy.forEach((orderByEl, index) => {
-      out += orderByEl.column.getNormalizedName() + ' ';
-      out += orderByEl.order === Order.ASC ? 'ASC' : 'DESC';
-      if (index < orderBy.length - 1) {
-        out += ', ';
-      }
-    });
-
-    return out;
   }
 
   public getScope(): Set<Table> {

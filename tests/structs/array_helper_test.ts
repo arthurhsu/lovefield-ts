@@ -113,4 +113,23 @@ describe('ArrayHelper', () => {
     const a2 = ArrayHelper.clone(a);
     assert.sameDeepOrderedMembers(a, a2);
   });
+
+  it('flatten', () => {
+    assert.sameOrderedMembers(
+        [1, 2, 3, 4, 5], ArrayHelper.flatten(1, 2, 3, 4, 5));
+    assert.sameOrderedMembers(
+        [1, 2, 3, 4, 5], ArrayHelper.flatten(1, [2, [3, [4, 5]]]));
+    assert.sameOrderedMembers(
+        [1, 2, 3, 4], ArrayHelper.flatten(1, [2, [3, [4]]]));
+    assert.sameOrderedMembers(
+        [1, 2, 3, 4], ArrayHelper.flatten([[[1], 2], 3], 4));
+    assert.sameOrderedMembers([1], ArrayHelper.flatten([[1]]));
+    assert.sameOrderedMembers([], ArrayHelper.flatten());
+    assert.sameOrderedMembers([], ArrayHelper.flatten([]));
+    assert.sameOrderedMembers(
+        Array(180002).fill(3),
+        ArrayHelper.flatten(3, Array(180000).fill(3), 3));
+    assert.sameOrderedMembers(
+        Array(180000).fill(3), ArrayHelper.flatten([Array(180000).fill(3)]));
+  });
 });

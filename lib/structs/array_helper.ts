@@ -60,6 +60,25 @@ export class ArrayHelper {
     return [];
   }
 
+  // Flatten the array.
+  public static flatten(...arr: any[]): any[] {
+    const CHUNK_SIZE = 8192;
+
+    const result: any[] = [];
+    arr.forEach((element) => {
+      if (Array.isArray(element)) {
+        for (let c = 0; c < element.length; c += CHUNK_SIZE) {
+          const chunk = element.slice(c, c + CHUNK_SIZE);
+          const recurseResult = ArrayHelper.flatten.apply(null, chunk);
+          recurseResult.forEach((r: any) => result.push(r));
+        }
+      } else {
+        result.push(element);
+      }
+    });
+    return result;
+  }
+
   // Returns lowest index of the target value if found, otherwise
   // (-(insertion point) - 1). The insertion point is where the value should
   // be inserted into arr to preserve the sorted property.  Return value >= 0
