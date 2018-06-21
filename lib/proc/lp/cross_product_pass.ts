@@ -25,7 +25,8 @@ export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
     super();
   }
 
-  public rewrite(rootNode: LogicalQueryPlanNode, queryContext: Context) {
+  public rewrite(rootNode: LogicalQueryPlanNode, queryContext: Context):
+      LogicalQueryPlanNode {
     if ((queryContext as SelectContext).from.length < 3) {
       return rootNode;
     }
