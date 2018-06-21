@@ -31,7 +31,7 @@ describe('DeleteTest', () => {
   let db: DatabaseConnection;
   let global: Global;
   before(() => {
-    getHrDbSchemaBuilder()
+    return getHrDbSchemaBuilder()
         .connect({storeType: DataStoreType.MEMORY})
         .then((conn) => {
           db = conn;

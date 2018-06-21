@@ -15,7 +15,7 @@
  */
 
 import {Context} from '../query/context';
-import {PhysicalQueryPlan} from './physical_query_plan';
+import {PhysicalQueryPlan} from './pp/physical_query_plan';
 
 export interface TaskItem {
   context: Context;

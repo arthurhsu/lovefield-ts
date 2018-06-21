@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {ExecType} from '../base/private_enum';
-import {Journal} from '../cache/journal';
-import {Context} from '../query/context';
-import {TreeNode} from '../structs/tree_node';
-import {Relation} from './relation';
+import {assert} from '../../base/assert';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {Context} from '../../query/context';
+import {TreeNode} from '../../structs/tree_node';
+import {Relation} from '../relation';
 
 export abstract class PhysicalQueryPlanNode extends TreeNode {
   public static ANY = -1;

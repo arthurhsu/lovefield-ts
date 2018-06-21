@@ -27,7 +27,7 @@ import {Journal} from '../cache/journal';
 import {Context} from '../query/context';
 import {SelectContext} from '../query/select_context';
 import {Table} from '../schema/table';
-import {PhysicalQueryPlan} from './physical_query_plan';
+import {PhysicalQueryPlan} from './pp/physical_query_plan';
 import {Relation} from './relation';
 import {Task} from './task';
 import {TaskItem} from './task_item';

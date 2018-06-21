@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Table} from '../schema/table';
+import {Table} from '../../schema/table';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class PhysicalQueryPlan {
