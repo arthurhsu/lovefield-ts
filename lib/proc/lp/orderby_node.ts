@@ -23,6 +23,6 @@ export class OrderByNode extends LogicalQueryPlanNode {
   }
 
   public toString(): string {
-    return `order_by(${SelectContext.orderByToString(this.orderBy)}`;
+    return `order_by(${SelectContext.orderByToString(this.orderBy)})`;
   }
 }

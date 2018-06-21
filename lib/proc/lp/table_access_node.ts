@@ -23,7 +23,7 @@ export class TableAccessNode extends LogicalQueryPlanNode {
   }
 
   public toString(): string {
-    const postfix = this.table.getAlias() || '';
+    const postfix = this.table.getAlias() ? ` as ${this.table.getAlias()}` : '';
     return `table_access(${this.table.getName()}${postfix})`;
   }
 }
