@@ -161,7 +161,7 @@ export class TableBuilder {
     return this;
   }
 
-  public persistentIndex(value: boolean) {
+  public persistentIndex(value: boolean): void {
     this.persistIndex = value;
   }
 
@@ -196,14 +196,14 @@ export class TableBuilder {
     return this.fkSpecs;
   }
 
-  private checkNamingRules(name: string) {
+  private checkNamingRules(name: string): void {
     if (!(/^[A-Za-z_][A-Za-z0-9_]*$/.test(name))) {
       // 502: Naming rule violation: {0}.
       throw new Exception(ErrorCode.INVALID_NAME, name);
     }
   }
 
-  private checkNameConflicts(name: string) {
+  private checkNameConflicts(name: string): void {
     if (name === this.name) {
       // 546: Indices/constraints/columns can't re-use the table name {0}
       throw new Exception(ErrorCode.DUPLICATE_NAME, name);
@@ -216,7 +216,7 @@ export class TableBuilder {
     }
   }
 
-  private checkPrimaryKey(columns: IndexedColumnSpec[]) {
+  private checkPrimaryKey(columns: IndexedColumnSpec[]): void {
     let hasAutoIncrement = false;
     columns.forEach((column) => {
       const columnType = this.columns.get(column.name);
@@ -236,7 +236,7 @@ export class TableBuilder {
 
   // Checks whether any primary key column is also used as a foreign key child
   // column, and throws an exception if such a column is found.
-  private checkPrimaryKeyNotForeignKey() {
+  private checkPrimaryKeyNotForeignKey(): void {
     if (this.pkName === null) {
       return;
     }
@@ -260,7 +260,7 @@ export class TableBuilder {
 
   // Checks whether the primary key index is identical (in terms of indexed
   // columns) with another explicitly added index.
-  private checkPrimaryKeyDuplicateIndex() {
+  private checkPrimaryKeyDuplicateIndex(): void {
     if (this.pkName === null) {
       return;
     }
@@ -286,7 +286,7 @@ export class TableBuilder {
   }
 
   // Checks whether any primary key column has also been marked as nullable.
-  private checkPrimaryKeyNotNullable() {
+  private checkPrimaryKeyNotNullable(): void {
     if (this.pkName === null) {
       return;
     }
@@ -340,7 +340,7 @@ export class TableBuilder {
     return normalized;
   }
 
-  private markFkIndexForColumnUnique(column: string) {
+  private markFkIndexForColumnUnique(column: string): void {
     this.fkSpecs.forEach((fkSpec) => {
       if (fkSpec.childColumn === column) {
         this.uniqueIndices.add(fkSpec.name.split('.')[1]);

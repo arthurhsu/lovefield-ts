@@ -57,7 +57,7 @@ export class RelationEntry {
   // The ID to assign to the next entry that will be created.
   private static nextId = 0;
 
-  private static getNextId() {
+  private static getNextId(): number {
     return RelationEntry.nextId++;
   }
 

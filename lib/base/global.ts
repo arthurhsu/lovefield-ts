@@ -18,7 +18,7 @@ import {ErrorCode, Exception} from './exception';
 import {ServiceId} from './service_id';
 
 export class Global {
-  public static get() {
+  public static get(): Global {
     if (!Global.instance) {
       Global.instance = new Global();
     }

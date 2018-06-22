@@ -277,7 +277,7 @@ export class JoinPredicate extends PredicateNode {
 
     // Generates and pushes a new combined entry to the results.
     // |row| is The row corresponding to the inner entry.
-    function pushCombinedEntry(outerEntry: RelationEntry, row: Row) {
+    function pushCombinedEntry(outerEntry: RelationEntry, row: Row): void {
       const innerEntry = new RelationEntry(row, innerRelationTables.length > 1);
       const combinedEntry = RelationEntry.combineEntries(
           outerEntry, outerRelationTables, innerEntry, innerRelationTables);
@@ -313,7 +313,7 @@ export class JoinPredicate extends PredicateNode {
   }
 
   // Swaps left and right columns and changes operator (if necessary).
-  private reverseSelf() {
+  private reverseSelf(): void {
     const temp = this.leftColumn;
     this.leftColumn = this.rightColumn;
     this.rightColumn = temp;

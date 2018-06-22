@@ -18,7 +18,7 @@ import * as chai from 'chai';
 import {Exception} from '../lib/base/exception';
 
 export class TestUtil {
-  public static assertThrowsError(exceptionCode: number, fn: () => any) {
+  public static assertThrowsError(exceptionCode: number, fn: () => any): void {
     let thrown = false;
     try {
       fn();

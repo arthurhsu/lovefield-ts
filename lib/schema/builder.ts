@@ -124,7 +124,7 @@ export class Builder {
 
   // Builds the graph of foreign key relationships and checks for
   // loop in the graph.
-  private checkFkCycle() {
+  private checkFkCycle(): void {
     // Builds graph.
     const nodeMap = new Map<string, GraphNode>();
     this.schema.tables().forEach((table) => {
@@ -146,7 +146,7 @@ export class Builder {
   // Performs foreign key checks like validity of names of parent and
   // child columns, matching of types and uniqueness of referred column
   // in the parent.
-  private checkForeignKeyValidity(builder: TableBuilder) {
+  private checkForeignKeyValidity(builder: TableBuilder): void {
     builder.getFkSpecs().forEach((specs) => {
       const parentTableName = specs.parentTable;
       const table = this.tableBuilders.get(parentTableName);
@@ -176,7 +176,7 @@ export class Builder {
   }
 
   // Performs checks to avoid chains of foreign keys on same column.
-  private checkForiengKeyChain(builder: TableBuilder) {
+  private checkForiengKeyChain(builder: TableBuilder): void {
     const fkSpecArray = builder.getFkSpecs();
     fkSpecArray.forEach((specs) => {
       const parentBuilder = this.tableBuilders.get(specs.parentTable);
@@ -192,7 +192,7 @@ export class Builder {
     }, this);
   }
 
-  private finalize() {
+  private finalize(): void {
     if (!this.finalized) {
       this.tableBuilders.forEach((builder, name) => {
         this.checkForeignKeyValidity(builder);
@@ -211,8 +211,8 @@ export class Builder {
   // 3rd Edition By Cormen et Al". It says that a directed graph G
   // can be acyclic if and only DFS of G yields no back edges.
   // @see http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
-  private checkCycleUtil(
-      graphNode: GraphNode, nodeMap: Map<string, GraphNode>) {
+  private checkCycleUtil(graphNode: GraphNode, nodeMap: Map<string, GraphNode>):
+      void {
     if (!graphNode.visited) {
       graphNode.visited = true;
       graphNode.onStack = true;

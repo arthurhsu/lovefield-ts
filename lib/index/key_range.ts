@@ -54,7 +54,7 @@ export class SingleKeyRange {
         false);
   }
 
-  public static xor(a: boolean, b: boolean) {
+  public static xor(a: boolean, b: boolean): boolean {
     return a ? !b : b;
   }
 

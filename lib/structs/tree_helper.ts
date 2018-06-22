@@ -182,7 +182,7 @@ export class TreeHelper {
   // "node" itself if it could not be pushed down at all.
   public static pushNodeBelowChild(
       node: TreeNode, shouldPushDownFn: (node: TreeNode) => boolean,
-      cloneFn: (node: TreeNode) => TreeNode) {
+      cloneFn: (node: TreeNode) => TreeNode): TreeNode {
     assert(node.getChildCount() === 1);
     const child = node.getChildAt(0) as TreeNode;
     assert(child.getChildCount() > 1);

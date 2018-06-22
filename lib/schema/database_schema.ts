@@ -60,7 +60,7 @@ export class DatabaseSchema implements Database {
     return ret;
   }
 
-  public setTable(table: Table) {
+  public setTable(table: Table): void {
     this.tableMap.set(table.getName(), table);
   }
 

@@ -15,7 +15,7 @@
  */
 
 export class TransactionStats {
-  public static getDefault() {
+  public static getDefault(): TransactionStats {
     return new TransactionStats(false, 0, 0, 0, 0);
   }
 

@@ -59,7 +59,7 @@ export class Row {
   }
 
   // Creates a new Row instance with an automatically assigned ID.
-  public static create(payload?: object) {
+  public static create(payload?: object): Row {
     return new Row(Row.getNextId(), payload || {});
   }
 

@@ -21,7 +21,7 @@ import {SingleKeyRangeSet} from '../../lib/index/single_key_range_set';
 const assert = chai.assert;
 
 describe('SingleKeyRangeSet', () => {
-  function generateTestRanges() {
+  function generateTestRanges(): any {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),

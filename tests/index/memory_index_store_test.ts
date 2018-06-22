@@ -39,7 +39,7 @@ describe('MemoryIndexStore', () => {
 
   // Asserts that the indices corresponding to the given index names are of a
   // specific type.
-  function assertIndicesType<T>(indexNames: string[], type: string) {
+  function assertIndicesType<T>(indexNames: string[], type: string): void {
     indexNames.forEach((indexName) => {
       const index = indexStore.get(indexName) as RuntimeIndex;
       assert.equal(type, index.constructor.name);

@@ -82,7 +82,7 @@ export class Memory implements BackStore {
     }
   }
 
-  private initTable(tableSchema: Table) {
+  private initTable(tableSchema: Table): void {
     this.createTable(tableSchema.getName());
 
     if (tableSchema.persistentIndex()) {

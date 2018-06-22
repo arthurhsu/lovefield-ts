@@ -301,7 +301,7 @@ export class MockDataGenerator {
   }
 
   // Find the association between Jobs and Employees.
-  private findEmployeesPerJob() {
+  private findEmployeesPerJob(): Map<string, string[]> {
     const employeesPerJob = new Map<string, string[]>();
     this.sampleEmployees.forEach((employee) => {
       const key = employee.payload()['jobId'];

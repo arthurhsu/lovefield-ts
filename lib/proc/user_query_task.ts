@@ -49,7 +49,7 @@ export class UserQueryTask extends QueryTask {
   }
 
   // Notifies observers of queries that were run as part of this task, if any.
-  private notifyObserversDirectly(results: Relation[]) {
+  private notifyObserversDirectly(results: Relation[]): void {
     this.queries.forEach((query, index) => {
       this.observerRegistry.updateResultsForQuery(
           query as SelectContext, results[index]);

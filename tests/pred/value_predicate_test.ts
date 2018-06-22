@@ -36,7 +36,7 @@ describe('ValuePredicate', () => {
   let tableA: Table;
   let tableB: Table;
 
-  function getSchema() {
+  function getSchema(): Database {
     const schemaBuilder = createSchema('valuepredicate', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.STRING)

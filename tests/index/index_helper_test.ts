@@ -38,7 +38,7 @@ describe('IndexHelper', () => {
     assert.equal('10_10', IndexHelper.hashArray([' ', ' '] as any as object[]));
   });
 
-  function checkSlice(reverseOrder: boolean) {
+  function checkSlice(reverseOrder: boolean): void {
     const ARRAY = [0, 1, 2, 3, 4];
     const REVERSE_ARRAY = ARRAY.slice().reverse();
 

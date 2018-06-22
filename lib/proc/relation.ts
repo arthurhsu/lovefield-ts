@@ -99,7 +99,7 @@ export class Relation {
 
   // Asserts that two relations are compatible with regards to
   // union/intersection operations.
-  private static assertCompatible(lhs: Relation, rhs: Relation) {
+  private static assertCompatible(lhs: Relation, rhs: Relation): void {
     assert(
         lhs.isCompatible(rhs),
         'Intersection/union operations only apply to compatible relations.');
@@ -143,7 +143,7 @@ export class Relation {
   }
 
   // Adds an aggregated result to this relation.
-  public setAggregationResult(column: Column, result: AggregationResult) {
+  public setAggregationResult(column: Column, result: AggregationResult): void {
     if (this.aggregationResults === null) {
       this.aggregationResults = new Map<string, AggregationResult>();
     }

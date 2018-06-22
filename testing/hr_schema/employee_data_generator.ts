@@ -33,13 +33,13 @@ export class EmployeeDataGenerator {
   }
 
   // Sets the number of jobs that will be used for all generated employees.
-  public setJobCount(count: number) {
+  public setJobCount(count: number): void {
     this.jobCount = Math.min(count, HRSchemaSamples.JOB_TITLES.length);
   }
 
   // Sets the number of departments that will be used for all generated
   // employees.
-  public setDepartmentCount(count: number) {
+  public setDepartmentCount(count: number): void {
     this.departmentCount =
         Math.min(count, HRSchemaSamples.DEPARTMENT_NAMES.length);
   }

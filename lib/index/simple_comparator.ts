@@ -138,7 +138,7 @@ export class SimpleComparator implements Comparator {
     return [range.from as SingleKey, range.to as SingleKey];
   }
 
-  public comparable(key: SingleKey) {
+  public comparable(key: SingleKey): boolean {
     return key !== null;
   }
 
@@ -146,7 +146,7 @@ export class SimpleComparator implements Comparator {
     return 1;
   }
 
-  public toString() {
+  public toString(): string {
     return this.compare === SimpleComparator.compareDescending ?
         'SimpleComparator_DESC' :
         'SimpleComparator_ASC';

@@ -26,7 +26,7 @@ const assert = chai.assert;
 describe('SimpleComparator', () => {
   const NULL: SingleKey = null as any as SingleKey;
 
-  function checkOrderAsc(comparator: SimpleComparator) {
+  function checkOrderAsc(comparator: SimpleComparator): void {
     const c = comparator.compare.bind(comparator);
 
     assert.equal(Favor.TIE, c(0, 0));
@@ -58,7 +58,7 @@ describe('SimpleComparator', () => {
     assert.equal(Favor.RHS, c(null, 0));
   });
 
-  function checkOrderDesc(comparator: SimpleComparator) {
+  function checkOrderDesc(comparator: SimpleComparator): void {
     const c = comparator.compare.bind(comparator);
 
     assert.equal(Favor.TIE, c(0, 0));
@@ -90,7 +90,7 @@ describe('SimpleComparator', () => {
     assert.equal(Favor.LHS, c(null, 0));
   });
 
-  function checkMin(c: SimpleComparator) {
+  function checkMin(c: SimpleComparator): void {
     assert.equal(Favor.TIE, c.min(0, 0));
     assert.equal(Favor.TIE, c.min('', ''));
     assert.equal(Favor.TIE, c.min(888.88, 888.88));
@@ -107,7 +107,7 @@ describe('SimpleComparator', () => {
     assert.equal(Favor.LHS, c.min('bba', 'bbb'));
   }
 
-  function checkMinWithNull(c: SimpleComparator) {
+  function checkMinWithNull(c: SimpleComparator): void {
     assert.equal(Favor.RHS, c.min(NULL, 1));
     assert.equal(Favor.LHS, c.min(1, NULL));
     assert.equal(Favor.TIE, c.min(NULL, NULL));
@@ -130,7 +130,7 @@ describe('SimpleComparator', () => {
     checkMinWithNull(c4);
   });
 
-  function checkMax(c: SimpleComparator) {
+  function checkMax(c: SimpleComparator): void {
     assert.equal(Favor.TIE, c.max(0, 0));
     assert.equal(Favor.TIE, c.max('', ''));
     assert.equal(Favor.TIE, c.max(888.88, 888.88));
@@ -147,7 +147,7 @@ describe('SimpleComparator', () => {
     assert.equal(Favor.RHS, c.max('bba', 'bbb'));
   }
 
-  function checkMaxWithNull(c: SimpleComparator) {
+  function checkMaxWithNull(c: SimpleComparator): void {
     assert.equal(Favor.RHS, c.max(NULL, 1));
     assert.equal(Favor.LHS, c.max(1, NULL));
     assert.equal(Favor.TIE, c.max(NULL, NULL));
@@ -203,7 +203,7 @@ describe('SimpleComparator', () => {
     assert.sameOrderedMembers(expectationDesc, actual);
   });
 
-  function checkIsInRange(c: SimpleComparator) {
+  function checkIsInRange(c: SimpleComparator): void {
     assert.isTrue(c.isInRange(2, SingleKeyRange.all()));
     assert.isTrue(c.isInRange(2, SingleKeyRange.lowerBound(2)));
     assert.isFalse(c.isInRange(2, SingleKeyRange.lowerBound(2, true)));

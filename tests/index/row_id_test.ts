@@ -30,7 +30,7 @@ describe('RowId', () => {
     return index;
   }
 
-  function checkGetRange(index: RuntimeIndex) {
+  function checkGetRange(index: RuntimeIndex): void {
     assert.equal(10, index.getRange().length);
 
     let result = index.getRange();

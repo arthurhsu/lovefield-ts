@@ -190,7 +190,7 @@ describe('KeyRange', () => {
     assert.isFalse(xor(false, false));
   });
 
-  function generateTestRanges() {
+  function generateTestRanges(): any {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),

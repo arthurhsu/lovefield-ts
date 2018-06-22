@@ -49,7 +49,8 @@ export class InMemoryUpdater {
   // Updates all indices that are affefted as a result of the given
   // modification. In the case where an exception is thrown (constraint
   // violation) all the indices are unaffected.
-  public updateTableIndicesForRow(table: Table, modification: Modification) {
+  public updateTableIndicesForRow(table: Table, modification: Modification):
+      void {
     const indices = this.indexStore.getTableIndices(table.getName());
     let updatedIndices = 0;
     indices.forEach((index) => {

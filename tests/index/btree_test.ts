@@ -41,14 +41,14 @@ describe('BTree', () => {
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
 
-  function stubBTreeParam() {
+  function stubBTreeParam(): void {
     (BTreeNode as any).MAX_COUNT = 5;
     (BTreeNode as any).MAX_KEY_LEN = 5 - 1;
     (BTreeNode as any).MIN_KEY_LEN = 5 >> 1;
     (Row as any).nextId = 0;
   }
 
-  function resetBTreeParam() {
+  function resetBTreeParam(): void {
     (BTreeNode as any).MAX_COUNT = maxCount;
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;

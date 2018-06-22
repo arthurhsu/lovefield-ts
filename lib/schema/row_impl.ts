@@ -71,7 +71,7 @@ export class RowImpl extends Row {
     return obj;
   }
 
-  public keyOfIndex(indexName: string) {
+  public keyOfIndex(indexName: string): Key {
     const key = super.keyOfIndex(indexName);
     if (key === null) {
       const fn = this.functionMap.get(indexName);

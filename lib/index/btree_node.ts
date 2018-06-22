@@ -121,7 +121,7 @@ export class BTreeNode {
     return [key, contents];
   }
 
-  private static associate(left: BTreeNode|null, right: BTreeNode|null) {
+  private static associate(left: BTreeNode|null, right: BTreeNode|null): void {
     if (right) {
       right.prev = left;
     }

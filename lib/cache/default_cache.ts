@@ -32,12 +32,12 @@ export class DefaultCache implements Cache {
     }, this);
   }
 
-  public set(tableName: string, row: Row) {
+  public set(tableName: string, row: Row): void {
     this.map.set(row.id(), row);
     this.getTableRowSet(tableName).add(row.id());
   }
 
-  public setMany(tableName: string, rows: Row[]) {
+  public setMany(tableName: string, rows: Row[]): void {
     const tableSet = this.getTableRowSet(tableName);
     rows.forEach((row) => {
       this.map.set(row.id(), row);
@@ -81,12 +81,12 @@ export class DefaultCache implements Cache {
     return data;
   }
 
-  public remove(tableName: string, id: number) {
+  public remove(tableName: string, id: number): void {
     this.map.delete(id);
     this.getTableRowSet(tableName).delete(id);
   }
 
-  public removeMany(tableName: string, ids: number[]) {
+  public removeMany(tableName: string, ids: number[]): void {
     const tableSet = this.getTableRowSet(tableName);
     ids.forEach((id) => {
       this.map.delete(id);
@@ -98,7 +98,7 @@ export class DefaultCache implements Cache {
     return tableName ? this.getTableRowSet(tableName).size : this.map.size;
   }
 
-  public clear() {
+  public clear(): void {
     this.map.clear();
     this.tableRows.clear();
   }

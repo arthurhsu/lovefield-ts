@@ -24,7 +24,7 @@ import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_w
 const assert = chai.assert;
 
 describe('MultiKeyComparator', () => {
-  function shuffleAndTest(testFn: (c: MultiKeyComparator) => void) {
+  function shuffleAndTest(testFn: (c: MultiKeyComparator) => void): void {
     const ORDER = [Order.DESC, Order.ASC];
     ORDER.forEach((o1) => {
       ORDER.forEach((o2) => {
@@ -134,7 +134,7 @@ describe('MultiKeyComparator', () => {
     assert.equal(Favor.RHS, c([2, 'zza'], [2, 'zzz']));
   });
 
-  function checkIsInRange(c: MultiKeyComparator) {
+  function checkIsInRange(c: MultiKeyComparator): void {
     const lowerBound = SingleKeyRange.lowerBound(2);
     const lowerBoundExclude = SingleKeyRange.lowerBound(2, true);
     const upperBound = SingleKeyRange.upperBound(2);

@@ -47,7 +47,7 @@ export class TableDiff {
     return this.deleted;
   }
 
-  public add(row: Row) {
+  public add(row: Row): void {
     if (this.deleted.has(row.id())) {
       const modification: Modification =
           [this.deleted.get(row.id()) as any as Row, row];
@@ -58,7 +58,7 @@ export class TableDiff {
     }
   }
 
-  public modify(modification: Modification) {
+  public modify(modification: Modification): void {
     const oldValue = modification[0] as any as Row;
     const newValue = modification[1] as any as Row;
     assert(
@@ -79,7 +79,7 @@ export class TableDiff {
     }
   }
 
-  public delete(row: Row) {
+  public delete(row: Row): void {
     if (this.added.has(row.id())) {
       this.added.delete(row.id());
     } else if (this.modified.has(row.id())) {
@@ -93,7 +93,7 @@ export class TableDiff {
   }
 
   // Merge another diff into this one.
-  public merge(other: TableDiff) {
+  public merge(other: TableDiff): void {
     other.added.forEach((row, rowId) => this.add(row));
     other.modified.forEach((modification, rowId) => this.modify(modification));
     other.deleted.forEach((row, rowId) => this.delete(row));
