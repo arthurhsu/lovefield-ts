@@ -235,7 +235,3 @@ export class Builder {
     graphNode.onStack = false;
   }
 }
-
-export function createSchema(name: string, version: number): Builder {
-  return new Builder(name, version);
-}

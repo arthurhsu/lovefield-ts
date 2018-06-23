@@ -16,8 +16,8 @@
 
 import {Type} from '../lib/base/enum';
 import {Row} from '../lib/base/row';
-import {createSchema} from '../lib/schema/builder';
 import {Database} from '../lib/schema/database';
+import {schema} from '../lib/schema/schema';
 
 // A helper class for generating sample database rows for tables with
 // nullable columns and also ground truth data for the generated rows.
@@ -29,7 +29,7 @@ export class NullableDataGenerator {
   public schema: Database;
 
   constructor() {
-    const schemaBuilder = createSchema('NullableSchema', 1);
+    const schemaBuilder = schema.create('NullableSchema', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.INTEGER)
         .addNullable(['id']);

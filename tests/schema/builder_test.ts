@@ -17,7 +17,7 @@
 import * as chai from 'chai';
 import {ConstraintAction, ConstraintTiming, Order, Type} from '../../lib/base/enum';
 import {ErrorCode} from '../../lib/base/exception';
-import {createSchema} from '../../lib/schema/builder';
+import {Builder} from '../../lib/schema/builder';
 import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
 import {TestUtil} from '../../testing/test_util';
 
@@ -25,7 +25,7 @@ const assert = chai.assert;
 
 describe('Builder', () => {
   const createBuilder = () => {
-    const schemaBuilder = createSchema('hr', 1);
+    const schemaBuilder = new Builder('hr', 1);
     schemaBuilder.createTable('Job')
         .addColumn('id', Type.STRING)
         .addColumn('title', Type.STRING)
@@ -218,7 +218,7 @@ describe('Builder', () => {
   });
 
   it('checkForeignKeyChainOnSameColumn', () => {
-    const schemaBuilder = createSchema('hr', 1);
+    const schemaBuilder = new Builder('hr', 1);
     schemaBuilder.createTable('FkTable1')
         .addColumn('employeeId', Type.INTEGER)
         .addForeignKey(
@@ -381,31 +381,31 @@ describe('Builder', () => {
   it('throws_IllegalName', () => {
     // 502: Naming rule violation: {0}.
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = createSchema('d1', 1);
+      const schemaBuilder = new Builder('d1', 1);
       schemaBuilder.createTable('#NewTable');
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = createSchema('d2', 1);
+      const schemaBuilder = new Builder('d2', 1);
       schemaBuilder.createTable('NameTable')
           .addColumn('22arraybuffer', Type.ARRAY_BUFFER);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = createSchema('d3', 1);
+      const schemaBuilder = new Builder('d3', 1);
       schemaBuilder.createTable('NameTable')
           .addColumn('_obj_#ect', Type.OBJECT);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = createSchema('d4', 1);
+      const schemaBuilder = new Builder('d4', 1);
       schemaBuilder.createTable('NameTable')
           .addColumn('name', Type.STRING)
           .addIndex('idx.name', ['name']);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = createSchema('d4', 1);
+      const schemaBuilder = new Builder('d4', 1);
       schemaBuilder.createTable('NameTable')
           .addColumn('name', Type.STRING)
           .addUnique('unq#name', ['name']);

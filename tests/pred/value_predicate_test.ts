@@ -23,7 +23,7 @@ import {Row} from '../../lib/base/row';
 import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {Relation} from '../../lib/proc/relation';
-import {createSchema} from '../../lib/schema/builder';
+import {Builder} from '../../lib/schema/builder';
 import {Column} from '../../lib/schema/column';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
@@ -37,7 +37,7 @@ describe('ValuePredicate', () => {
   let tableB: Table;
 
   function getSchema(): Database {
-    const schemaBuilder = createSchema('valuepredicate', 1);
+    const schemaBuilder = new Builder('valuepredicate', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.STRING)
         .addColumn('name', Type.STRING);

@@ -15,7 +15,7 @@
  */
 
 import {ConstraintAction, Order, Type} from '../../lib/base/enum';
-import {Builder, createSchema} from '../../lib/schema/builder';
+import {Builder} from '../../lib/schema/builder';
 
 let hrSchemaBuilder: Builder;
 
@@ -25,7 +25,7 @@ export function getHrDbSchemaBuilder(dbName?: string): Builder {
   }
 
   const name = dbName || `hr${Date.now()}`;
-  const schemaBuilder = createSchema(name, 1);
+  const schemaBuilder = new Builder(name, 1);
 
   schemaBuilder.createTable('Job')
       .addColumn('id', Type.STRING)

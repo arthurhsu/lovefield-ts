@@ -19,7 +19,7 @@ import {ConstraintAction, ConstraintTiming, Type} from '../../lib/base/enum';
 import {DeleteContext} from '../../lib/query/delete_context';
 import {InsertContext} from '../../lib/query/insert_context';
 import {UpdateContext} from '../../lib/query/update_context';
-import {createSchema} from '../../lib/schema/builder';
+import {Builder} from '../../lib/schema/builder';
 import {Database} from '../../lib/schema/database';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 
@@ -28,7 +28,7 @@ const assert = chai.assert;
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.
   function getSchemaWithoutForeignKeys(): Database {
-    const schemaBuilder = createSchema('contexttest', 1);
+    const schemaBuilder = new Builder('contexttest', 1);
     schemaBuilder.createTable('TableA').addColumn('id', Type.STRING);
     schemaBuilder.createTable('TableB').addColumn('id', Type.STRING);
     return schemaBuilder.getSchema();
