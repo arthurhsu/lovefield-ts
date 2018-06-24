@@ -103,7 +103,7 @@ export class JoinPredicate extends PredicateNode {
         evaluatorType = EvalType.GTE;
         break;
       default:
-        throw new Exception(ErrorCode.ASSERTION);
+        break;
     }
     const newPredicate =
         new JoinPredicate(this.rightColumn, this.leftColumn, evaluatorType);

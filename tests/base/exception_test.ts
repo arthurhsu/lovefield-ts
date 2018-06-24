@@ -75,6 +75,7 @@ describe('Exception', () => {
 
   it('getMessage', () => {
     const debug = Flags.DEBUG;
+    Flags.DEBUG = true;
     const e = new Exception(ErrorCode.SIMULATED_ERROR);
     assert.equal('Simulated error', e.toString());
     Flags.DEBUG = debug;

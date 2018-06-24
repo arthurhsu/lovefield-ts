@@ -16,11 +16,24 @@
 
 import {assert} from '../../lib/base/assert';
 import {ErrorCode} from '../../lib/base/exception';
+import {Flags} from '../../lib/gen/flags';
 import {TestUtil} from '../../testing/test_util';
 
 describe('assert', () => {
   it('assert', () => {
+    const currentFlag = Flags.DEBUG;
+
+    // Assert only works when Flags.DEBUG is true.
+    Flags.DEBUG = true;
     TestUtil.assertThrowsError(ErrorCode.ASSERTION, () => assert(false));
     assert(true);
+
+    // And no assert to be triggered if Flags.DEBUG is false.
+    Flags.DEBUG = false;
+    assert(false);
+    assert(true);
+
+    // Reset the flag to its compiled state.
+    Flags.DEBUG = currentFlag;
   });
 });
