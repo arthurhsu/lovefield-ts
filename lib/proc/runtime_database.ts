@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+import {Memory} from '../backstore/memory';
 import {DatabaseConnection} from '../base/database_connection';
 import {TransactionType} from '../base/enum';
 import {ErrorCode, Exception} from '../base/exception';
 import {Global} from '../base/global';
+import {ObserverRegistry} from '../base/observer_registry';
 import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
+import {DefaultCache} from '../cache/default_cache';
+import {MemoryIndexStore} from '../index/memory_index_store';
 import {DeleteBuilder} from '../query/delete_builder';
 import {InsertBuilder} from '../query/insert_builder';
 import {SelectQuery} from '../query/select_query';
@@ -46,13 +50,13 @@ export class RuntimeDatabase implements DatabaseConnection {
     this.isActive = false;
   }
 
-  public init(options: ConnectOptions): Promise<RuntimeDatabase> {
+  public init(options?: ConnectOptions): Promise<RuntimeDatabase> {
     // The SCHEMA might have been removed from this.global_ in the case where
     // Database#close() was called, therefore it needs to be re-added.
+    this.global.registerService(Service.SCHEMA, this.schema);
+    this.global.registerService(Service.CACHE, new DefaultCache(this.schema));
 
     // TODO(arthurhsu): implement
-    this.global.registerService(Service.SCHEMA, this.schema);
-
     /*
     return lf.base.init(this.global_, opt_options).then(function() {
           this.isActive_ = true;
@@ -64,6 +68,10 @@ export class RuntimeDatabase implements DatabaseConnection {
     this.runner = new Runner();
     this.global.registerService(Service.QUERY_ENGINE, {} as any as QueryEngine);
     this.global.registerService(Service.RUNNER, this.runner);
+    this.global.registerService(Service.BACK_STORE, new Memory(this.schema));
+    this.global.registerService(Service.INDEX_STORE, new MemoryIndexStore());
+    this.global.registerService(
+        Service.OBSERVER_REGISTRY, new ObserverRegistry());
     return Promise.resolve(this);
   }
 

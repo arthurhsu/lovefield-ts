@@ -106,11 +106,6 @@ function genFlags() {
       if (index != -1) {
         let key = line.substring(0, index);
         let value = line.substring(index + 1);
-        if (value == 'true') {
-          value = true;
-        } else if (value == 'false') {
-          value = false;
-        }
         flags.Flags[key] = value;
       }
     });

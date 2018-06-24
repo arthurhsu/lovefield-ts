@@ -17,7 +17,7 @@
 import {AggregatedColumn} from '../../fn/aggregated_column';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
-export class AggregatedNode extends LogicalQueryPlanNode {
+export class AggregationNode extends LogicalQueryPlanNode {
   constructor(readonly columns: AggregatedColumn[]) {
     super();
   }
