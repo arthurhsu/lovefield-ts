@@ -54,6 +54,7 @@ describe('JoinPredicate', () => {
     // is created. The tables in hr schema do not handle nullable column.
     nullableGenerator = new NullableDataGenerator();
     schemaWithNullable = nullableGenerator.schema;
+    nullableGenerator.generate();
   });
 
   it('copy', () => {
@@ -230,7 +231,7 @@ describe('JoinPredicate', () => {
         eAlias, jAlias, JoinPredicate.prototype.evalRelationsHashJoin);
   });
 
-  xit('joinPredicate_EvalRelations_HashJoin', () => {
+  it('joinPredicate_EvalRelations_HashJoin', () => {
     checkEvalRelations_UniqueKeys(
         JoinPredicate.prototype.evalRelationsHashJoin);
     checkEvalRelations_NonUniqueKeys(
@@ -239,7 +240,7 @@ describe('JoinPredicate', () => {
         JoinPredicate.prototype.evalRelationsHashJoin);
   });
 
-  xit('joinPredicate_EvalRelations_NestedLoopJoin', () => {
+  it('joinPredicate_EvalRelations_NestedLoopJoin', () => {
     checkEvalRelations_UniqueKeys(
         JoinPredicate.prototype.evalRelationsNestedLoopJoin);
     checkEvalRelations_NonUniqueKeys(
@@ -248,7 +249,7 @@ describe('JoinPredicate', () => {
         JoinPredicate.prototype.evalRelationsNestedLoopJoin);
   });
 
-  xit('joinPredicate_EvalRelations_OuterJoin_HashJoin', () => {
+  it('joinPredicate_EvalRelations_OuterJoin_HashJoin', () => {
     checkEvalRelations_OuterJoin_UniqueKeys(
         JoinPredicate.prototype.evalRelationsHashJoin);
     checkEvalRelations_OuterJoin_NonUniqueKeys(
@@ -261,7 +262,7 @@ describe('JoinPredicate', () => {
         JoinPredicate.prototype.evalRelationsHashJoin);
   });
 
-  xit('joinPredicate_EvalRelations_OuterJoin_NestedLoopJoin', () => {
+  it('joinPredicate_EvalRelations_OuterJoin_NestedLoopJoin', () => {
     checkEvalRelations_OuterJoin_UniqueKeys(
         JoinPredicate.prototype.evalRelationsNestedLoopJoin);
     checkEvalRelations_OuterJoin_NonUniqueKeys(
@@ -274,12 +275,12 @@ describe('JoinPredicate', () => {
         JoinPredicate.prototype.evalRelationsNestedLoopJoin);
   });
 
-  xit('joinPredicate_EvalRelations_NestedLoopJoin_MultiJoin', () => {
+  it('joinPredicate_EvalRelations_NestedLoopJoin_MultiJoin', () => {
     checkEvalRelations_MultiJoin(
         JoinPredicate.prototype.evalRelationsNestedLoopJoin);
   });
 
-  xit('joinPredicate_EvalRelations_HashJoin_MultiJoin', () => {
+  it('joinPredicate_EvalRelations_HashJoin_MultiJoin', () => {
     checkEvalRelations_MultiJoin(JoinPredicate.prototype.evalRelationsHashJoin);
   });
 
@@ -650,7 +651,7 @@ describe('JoinPredicate', () => {
     const departments = new Array(departmentCount);
     for (let i = 0; i < departmentCount; i++) {
       const department = HRSchemaSampleData.generateSampleDepartmentData();
-      department.payload()['id'] = i.toString();
+      department.payload()['id'] = `departmentId${String(i)}`;
       departments[i] = department;
     }
 
