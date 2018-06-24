@@ -105,7 +105,7 @@ function genFlags() {
       let index = line.indexOf(':');
       if (index != -1) {
         let key = line.substring(0, index);
-        let value = line.substring(index + 1);
+        let value = line.substring(index + 1).trim();
         flags.Flags[key] = value;
       }
     });
@@ -115,7 +115,7 @@ function genFlags() {
   for (let key in flags.Flags) {
     let value = flags.Flags[key];
     let quote = '\'';
-    if (value == 'true' || value == 'false') {
+    if (typeof(value) == 'boolean') {
       quote = '';
     }
     // We do not use readonly so that tests can modify them, esp. DEBUG.
