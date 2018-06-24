@@ -27,13 +27,8 @@ export class PhysicalQueryPlan {
     return tableSet;
   }
 
-  private rootNode: PhysicalQueryPlanNode;
-  private scope: Set<Table>;
-
-  constructor(rootNode: PhysicalQueryPlanNode, scope: Set<Table>) {
-    this.rootNode = rootNode;
-    this.scope = scope;
-  }
+  constructor(
+      private rootNode: PhysicalQueryPlanNode, private scope: Set<Table>) {}
 
   public getRoot(): PhysicalQueryPlanNode {
     return this.rootNode;

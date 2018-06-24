@@ -27,10 +27,9 @@ import {MemoryTx} from './memory_tx';
 import {Tx} from './tx';
 
 export class Memory implements BackStore {
-  private schema: Database;
   private tables: Map<string, MemoryTable>;
 
-  constructor(schema: Database) {
+  constructor(private schema: Database) {
     this.schema = schema;
     this.tables = new Map<string, MemoryTable>();
   }

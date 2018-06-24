@@ -49,13 +49,11 @@ export class NullableIndex implements RuntimeIndex {
 
   private static NULL_ROW_ID = -2;
 
-  private index: RuntimeIndex;
   private nulls: Set<number>;
   private statsNull: IndexStats;
   private statsObj: IndexStats;
 
-  constructor(index: RuntimeIndex) {
-    this.index = index;
+  constructor(private index: RuntimeIndex) {
     this.nulls = new Set<number>();
     this.statsNull = new IndexStats();
     this.statsObj = new IndexStats();

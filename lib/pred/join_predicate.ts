@@ -38,19 +38,14 @@ export class JoinPredicate extends PredicateNode {
   // Exponent of block size, so the block size is 2^(BLOCK_SIZE_EXPONENT).
   private static BLOCK_SIZE_EXPONENT = 8;
 
-  public leftColumn: Column;
-  public rightColumn: Column;
-  public evaluatorType: EvalType;
   private nullPayload: object|null;
   private evaluatorFn: ComparisonFunction;
   private keyOfIndexFn: KeyOfIndexFunction;
 
   constructor(
-      leftColumn: Column, rightColumn: Column, evaluatorType: EvalType) {
+      public leftColumn: Column, public rightColumn: Column,
+      public evaluatorType: EvalType) {
     super();
-    this.leftColumn = leftColumn;
-    this.rightColumn = rightColumn;
-    this.evaluatorType = evaluatorType;
     this.nullPayload = null;
 
     const registry = EvalRegistry.get();

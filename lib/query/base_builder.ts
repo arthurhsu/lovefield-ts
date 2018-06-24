@@ -28,15 +28,13 @@ import {Context} from './context';
 import {QueryBuilder} from './query_builder';
 
 export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
-  protected global: Global;
   protected query: CONTEXT;
 
   private queryEngine: QueryEngine;
   private runner: Runner;
   private plan!: PhysicalQueryPlan;
 
-  constructor(global: Global, context: Context) {
-    this.global = global;
+  constructor(protected global: Global, context: Context) {
     this.queryEngine = global.getService(Service.QUERY_ENGINE);
     this.runner = global.getService(Service.RUNNER);
     this.query = context as CONTEXT;

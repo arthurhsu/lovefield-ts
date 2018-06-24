@@ -21,13 +21,9 @@ import {Index} from '../schema/index';
 import {Table} from '../schema/table';
 
 export class AggregatedColumn implements Column {
-  public child: Column;
-  public aggregatorType: FnType;
   public alias: string|null;
 
-  constructor(col: Column, aggregatorType: FnType) {
-    this.child = col;
-    this.aggregatorType = aggregatorType;
+  constructor(readonly child: Column, readonly aggregatorType: FnType) {
     this.alias = null;
   }
 

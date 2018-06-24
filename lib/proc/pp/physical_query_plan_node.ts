@@ -24,13 +24,8 @@ import {Relation} from '../relation';
 export abstract class PhysicalQueryPlanNode extends TreeNode {
   public static ANY = -1;
 
-  private numRelations: number;
-  private execType: ExecType;
-
-  constructor(numRelations: number, type: ExecType) {
+  constructor(private numRelations: number, private execType: ExecType) {
     super();
-    this.execType = type;
-    this.numRelations = numRelations;
   }
 
   // Core logic of this node.

@@ -35,16 +35,14 @@ export abstract class Context extends UniqueId {
     return predicateMap;
   }
 
-  public schema: Database;
   public where: Predicate|null;
   public clonedFrom: Context|null;
 
   // A map used for locating predicates by ID. Instantiated lazily.
   private predicateMap: Map<number, Predicate>;
 
-  constructor(schema: Database) {
+  constructor(public schema: Database) {
     super();
-    this.schema = schema;
     this.clonedFrom = null;
     this.where = null;
     this.predicateMap = null as any as Map<number, Predicate>;

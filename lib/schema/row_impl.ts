@@ -21,15 +21,11 @@ import {Column} from './column';
 import {Index} from './index';
 
 export class RowImpl extends Row {
-  private columns: Column[];
-  private functionMap: Map<string, (column: any) => Key>;
-
   constructor(
-      functionMap: Map<string, (column: any) => Key>, columns: Column[],
-      indices: Index[], id: number, payload?: object) {
+      private functionMap: Map<string, (column: any) => Key>,
+      private columns: Column[], indices: Index[], id: number,
+      payload?: object) {
     super(id, payload);
-    this.columns = columns;
-    this.functionMap = functionMap;
 
     // TypeScript forbids super to be called after this. Therefore we need
     // to duplicate this line from base class ctor because defaultPayload()

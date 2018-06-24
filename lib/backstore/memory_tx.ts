@@ -23,11 +23,8 @@ import {BaseTx} from './base_tx';
 import {Memory} from './memory';
 
 export class MemoryTx extends BaseTx {
-  private store: Memory;
-
-  constructor(store: Memory, type: TransactionType, journal?: Journal) {
+  constructor(private store: Memory, type: TransactionType, journal?: Journal) {
     super(type, journal);
-    this.store = store;
     if (type === TransactionType.READ_ONLY) {
       this.resolver.resolve();
     }

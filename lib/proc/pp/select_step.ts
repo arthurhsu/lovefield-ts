@@ -21,11 +21,8 @@ import {Relation} from '../relation';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class SelectStep extends PhysicalQueryPlanNode {
-  private predicateId: number;
-
-  constructor(predicateId: number) {
+  constructor(private predicateId: number) {
     super(1, ExecType.FIRST_CHILD);
-    this.predicateId = predicateId;
   }
 
   public toString(): string {

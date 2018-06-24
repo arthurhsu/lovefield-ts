@@ -38,13 +38,7 @@ export class RelationTransformer {
     return new Relation(entries, relations[0].getTables());
   }
 
-  private relation: Relation;
-  private columns: Column[];
-
-  constructor(relation: Relation, columns: Column[]) {
-    this.relation = relation;
-    this.columns = columns;
-  }
+  constructor(private relation: Relation, private columns: Column[]) {}
 
   // Calculates a transformed Relation based on the columns that are requested.
   // The type of the requested columns affect the output (non-aggregate only VS

@@ -35,7 +35,6 @@ import {TaskItem} from './task_item';
 // A QueryTask represents a collection of queries that should be executed as
 // part of a single transaction.
 export abstract class QueryTask extends UniqueId implements Task {
-  protected global: Global;
   protected backStore: BackStore;
   protected queries: Context[];
   private plans: PhysicalQueryPlan[];
@@ -44,9 +43,8 @@ export abstract class QueryTask extends UniqueId implements Task {
   private resolver: Resolver<Relation[]>;
   private tx!: Tx;
 
-  constructor(global: Global, items: TaskItem[]) {
+  constructor(protected global: Global, items: TaskItem[]) {
     super();
-    this.global = global;
     this.backStore = global.getService(Service.BACK_STORE);
     this.queries = items.map((item) => item.context);
     this.plans = items.map((item) => item.plan);

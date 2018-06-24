@@ -40,12 +40,10 @@ export class RowId implements RuntimeIndex {
 
   private static EMPTY_ARRAY: number[] = [];
 
-  private name: string;
   private rows: Set<SingleKey>;
   private comparatorObj: SimpleComparator;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(private name: string) {
     this.rows = new Set<SingleKey>();
     this.comparatorObj = new SimpleComparator(Order.ASC);
   }

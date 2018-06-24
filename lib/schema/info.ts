@@ -22,8 +22,6 @@ import {Table} from './table';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
-  private schema: Database;
-
   // A mapping from table name to its referencing CASCADE foreign keys.
   private cascadeReferringFk: MapSet<string, ForeignKeySpec>;
 
@@ -44,8 +42,7 @@ export class Info {
   // The map of full qualified column name to their child table name.
   private colChild: MapSet<string, string>;
 
-  constructor(dbSchema: Database) {
-    this.schema = dbSchema;
+  constructor(private schema: Database) {
     this.cascadeReferringFk = new MapSet();
     this.restrictReferringFk = new MapSet();
     this.parents = new MapSet();

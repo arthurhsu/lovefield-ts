@@ -227,15 +227,11 @@ export class BTreeNode {
   public values: number[]|number[][];
   public getContainingLeaf: (key: Key|SingleKey) => BTreeNode | null;
 
-  private id: number;
-  private tree: BTree;
   private height: number;
   private parent: BTreeNode|null;
   private children: BTreeNode[];
 
-  constructor(id: number, tree: BTree) {
-    this.id = id;
-    this.tree = tree;
+  constructor(private id: number, private tree: BTree) {
     this.height = 0;
     this.parent = null;
     this.prev = null;

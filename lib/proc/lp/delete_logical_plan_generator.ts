@@ -25,12 +25,10 @@ import {TableAccessNode} from './table_access_node';
 
 export class DeleteLogicalPlanGenerator extends
     BaseLogicalPlanGenerator<DeleteContext> {
-  private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>;
   constructor(
       query: DeleteContext,
-      rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
+      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
     super(query);
-    this.rewritePasses = rewritePasses;
   }
 
   public generateInternal(): LogicalQueryPlanNode {

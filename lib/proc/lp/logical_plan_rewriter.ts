@@ -22,18 +22,11 @@ import {RewritePass} from './rewrite_pass';
 // Rewrites the logical query plan such that the resulting logical query plan is
 // faster to execute than the original "naive" plan.
 export class LogicalPlanRewriter implements LogicalPlanGenerator {
-  private rootNode: LogicalQueryPlanNode;
-  private queryContext: Context;
-  private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>;
-
   constructor(
-      rootNode: LogicalQueryPlanNode, queryContext: Context,
-      rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
-    this.rootNode = rootNode;
+      private rootNode: LogicalQueryPlanNode, private queryContext: Context,
+      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
     // TODO(arthurhsu): weird hack here, refactor to remove abstract class.
     // It should be a clean interface with default implementation.
-    this.queryContext = queryContext;
-    this.rewritePasses = rewritePasses;
   }
 
   public generate(): LogicalQueryPlanNode {

@@ -26,15 +26,13 @@ import {Tx} from './tx';
 
 // A base class for all native DB transactions wrappers to subclass.
 export abstract class BaseTx implements Tx {
-  protected txType: TransactionType;
   protected resolver: Resolver<void>;
 
   private journal: Journal|null;
   private success: boolean;
   private statsObject: TransactionStats|null;
 
-  constructor(txType: TransactionType, journal?: Journal) {
-    this.txType = txType;
+  constructor(protected txType: TransactionType, journal?: Journal) {
     this.journal = journal || null;
     this.resolver = new Resolver<void>();
     this.success = false;

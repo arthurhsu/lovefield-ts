@@ -22,11 +22,9 @@ import {LogicalQueryPlanNode} from './logical_query_plan_node';
 // remove and simplify code structure.
 export abstract class BaseLogicalPlanGenerator<T extends Context> implements
     LogicalPlanGenerator {
-  protected query: T;
   private rootNode: LogicalQueryPlanNode;
 
-  constructor(query: T) {
-    this.query = query;
+  constructor(protected query: T) {
     this.rootNode = null as any as LogicalQueryPlanNode;
   }
 

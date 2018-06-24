@@ -25,12 +25,10 @@ import {PredicateNode} from './predicate_node';
 import {ValuePredicate} from './value_predicate';
 
 export class CombinedPredicate extends PredicateNode {
-  public operator: Operator;
   private isComplement: boolean;
 
-  constructor(operator: Operator) {
+  constructor(public operator: Operator) {
     super();
-    this.operator = operator;
 
     // Whether this predicate has been reversed. This is necessary only for
     // handling the case where setComplement() is called twice with the same

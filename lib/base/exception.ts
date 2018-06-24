@@ -18,12 +18,10 @@ import {Flags} from '../gen/flags';
 import {getErrorMessage} from './error_message';
 
 export class Exception {
-  public readonly code: number;
   public readonly message: string;
   public readonly args: any[];
 
-  constructor(code: ErrorCode, ...args: any[]) {
-    this.code = code;
+  constructor(readonly code: ErrorCode, ...args: any[]) {
     this.args = args;
     this.message = Flags.EXCEPTION_URL + code.toString();
 

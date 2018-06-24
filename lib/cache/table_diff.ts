@@ -22,13 +22,11 @@ export class TableDiff {
   private added: Map<number, Row>;
   private modified: Map<number, Modification>;
   private deleted: Map<number, Row>;
-  private name: string;
 
-  constructor(name: string) {
+  constructor(private name: string) {
     this.added = new Map();
     this.modified = new Map();
     this.deleted = new Map();
-    this.name = name;
   }
 
   public getName(): string {

@@ -32,7 +32,6 @@ import {TableAccessNode} from './table_access_node';
 
 export class SelectLogicalPlanGenerator extends
     BaseLogicalPlanGenerator<SelectContext> {
-  private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>;
   private tableAccessNodes: LogicalQueryPlanNode[];
   private crossProductNode: LogicalQueryPlanNode;
   private selectNode: LogicalQueryPlanNode;
@@ -45,9 +44,8 @@ export class SelectLogicalPlanGenerator extends
 
   constructor(
       query: SelectContext,
-      rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
+      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
     super(query);
-    this.rewritePasses = rewritePasses;
     this.tableAccessNodes = null as any as LogicalQueryPlanNode[];
     this.crossProductNode = null as any as LogicalQueryPlanNode;
     this.selectNode = null as any as LogicalQueryPlanNode;

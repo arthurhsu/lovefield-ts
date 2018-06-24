@@ -22,11 +22,8 @@ import {Relation} from '../relation';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class DeleteStep extends PhysicalQueryPlanNode {
-  private table: Table;
-
-  constructor(table: Table) {
+  constructor(private table: Table) {
     super(1, ExecType.FIRST_CHILD);
-    this.table = table;
   }
 
   public toString(): string {

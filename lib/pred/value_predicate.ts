@@ -28,18 +28,14 @@ import {Predicate} from './predicate';
 import {PredicateNode} from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
-  private column: Column;
-  private value: any;
-  private evaluatorType: EvalType;
   private evaluatorFn: (l: any, r: any) => boolean;
   private isComplement: boolean;
   private binder: Binder|any;
 
-  constructor(column: Column, value: any, evaluatorType: EvalType) {
+  constructor(
+      private column: Column, private value: any,
+      private evaluatorType: EvalType) {
     super();
-    this.column = column;
-    this.value = value;
-    this.evaluatorType = evaluatorType;
     this.evaluatorFn = EvalRegistry.get().getEvaluator(
         this.column.getType(), this.evaluatorType);
     this.isComplement = false;

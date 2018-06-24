@@ -15,10 +15,7 @@
  */
 
 export class ServiceId<T> {
-  private serviceId: string;
-  constructor(serviceId: string) {
-    this.serviceId = serviceId;
-  }
+  constructor(private serviceId: string) {}
 
   public toString(): string {
     return this.serviceId;

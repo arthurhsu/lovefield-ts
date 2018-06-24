@@ -37,13 +37,11 @@ import {QueryEngine} from './query_engine';
 import {Runner} from './runner';
 
 export class RuntimeDatabase implements DatabaseConnection {
-  private global: Global;
   private schema: Database;
   private isActive: boolean;
   private runner!: Runner;
 
-  constructor(global: Global) {
-    this.global = global;
+  constructor(private global: Global) {
     this.schema = global.getService(Service.SCHEMA);
 
     // Whether this connection to the database is active.

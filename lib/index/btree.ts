@@ -36,18 +36,12 @@ export class BTree implements RuntimeIndex {
     return tree;
   }
 
-  private name: string;
-  private comparatorObj: Comparator;
-  private uniqueKeyOnly: boolean;
   private root: BTreeNode;
   private statsObj: IndexStats;
 
   constructor(
-      name: string, comparator: Comparator, uniqueKeyOnly: boolean,
-      data?: BTreeNodePayload[]) {
-    this.name = name;
-    this.comparatorObj = comparator;
-    this.uniqueKeyOnly = uniqueKeyOnly;
+      private name: string, private comparatorObj: Comparator,
+      private uniqueKeyOnly: boolean, data?: BTreeNodePayload[]) {
     this.root = undefined as any as BTreeNode;
     this.statsObj = new IndexStats();
     if (data) {

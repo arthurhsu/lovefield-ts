@@ -27,14 +27,10 @@ import {EvalRegistry, EvalType} from './eval';
 // between old and new results for a given query.
 export class DiffCalculator {
   private evalRegistry: EvalRegistry;
-  private query: SelectContext;
-  private observableResults: any[];
   private columns: Column[];
 
-  constructor(query: SelectContext, observableResults: any[]) {
+  constructor(private query: SelectContext, private observableResults: any[]) {
     this.evalRegistry = EvalRegistry.get();
-    this.query = query;
-    this.observableResults = observableResults;
     this.columns = this.detectColumns();
   }
 

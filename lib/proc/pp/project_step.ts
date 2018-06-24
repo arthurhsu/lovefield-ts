@@ -24,13 +24,8 @@ import {RelationTransformer} from '../relation_transformer';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class ProjectStep extends PhysicalQueryPlanNode {
-  private columns: Column[];
-  private groupByColumns: Column[];
-
-  constructor(columns: Column[], groupByColumns: Column[]) {
+  constructor(private columns: Column[], private groupByColumns: Column[]) {
     super(PhysicalQueryPlanNode.ANY, ExecType.FIRST_CHILD);
-    this.columns = columns;
-    this.groupByColumns = groupByColumns;
   }
 
   public toString(): string {

@@ -25,12 +25,7 @@ import {RelationEntry} from '../relation_entry';
 type ValueType = number|string|Date|null;
 
 export class AggregationCalculator {
-  private relation: Relation;
-  private columns: AggregatedColumn[];
-
-  constructor(relation: Relation, columns: AggregatedColumn[]) {
-    this.relation = relation;
-    this.columns = columns;
+  constructor(private relation: Relation, private columns: AggregatedColumn[]) {
   }
 
   // Calculates all requested aggregations. Results are stored within

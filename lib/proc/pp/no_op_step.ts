@@ -22,11 +22,8 @@ import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 // A dummy execution step that performs no actual work.
 export class NoOpStep extends PhysicalQueryPlanNode {
-  private relations: Relation[];
-
-  constructor(relations: Relation[]) {
+  constructor(private relations: Relation[]) {
     super(PhysicalQueryPlanNode.ANY, ExecType.NO_CHILD);
-    this.relations = relations;
   }
 
   public toString(): string {
