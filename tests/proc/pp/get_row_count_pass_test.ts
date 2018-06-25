@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {DatabaseConnection} from '../../../lib/base/database_connection';
 import {DataStoreType, Type} from '../../../lib/base/enum';
 import {Global} from '../../../lib/base/global';
 import {AggregatedColumn} from '../../../lib/fn/aggregated_column';
@@ -32,6 +33,7 @@ import {Database} from '../../../lib/schema/database';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('GetRowCountPass', () => {
+  let conn: DatabaseConnection;
   let schema: Database;
   let global: Global;
   let pass: GetRowCountPass;
@@ -47,10 +49,15 @@ describe('GetRowCountPass', () => {
   beforeEach(() => {
     const connectOptions = {storeType: DataStoreType.MEMORY};
     return getSchemaBuilder().connect(connectOptions).then((db) => {
+      conn = db;
       schema = db.getSchema();
       global = (db as RuntimeDatabase).getGlobal();
       pass = new GetRowCountPass(global);
     });
+  });
+
+  afterEach(() => {
+    conn.close();
   });
 
   // Tests a simple tree, where only one AND predicate exists.

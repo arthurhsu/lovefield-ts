@@ -28,7 +28,7 @@ import {Table} from '../schema/table';
 import {MapSet} from '../structs/map_set';
 import {PredicateNode} from './predicate_node';
 
-interface IndexJoinInfo {
+export interface IndexJoinInfo {
   indexedColumn: Column;
   nonIndexedColumn: Column;
   index: RuntimeIndex;

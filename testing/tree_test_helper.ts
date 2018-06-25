@@ -25,7 +25,7 @@ import {TreeNode} from '../lib/structs/tree_node';
 
 const assert = chai.assert;
 
-interface TestTree {
+export interface TestTree {
   queryContext: SelectContext;
   root: PhysicalQueryPlanNode|LogicalQueryPlanNode;
 }
