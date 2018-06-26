@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {assert} from '../base/assert';
+
 export class ArrayHelper {
   // Returns true if the value were inserted, false otherwise.
   public static binaryInsert<T = number>(
@@ -76,6 +78,47 @@ export class ArrayHelper {
         result.push(element);
       }
     });
+    return result;
+  }
+
+  // Cartesian product of zero or more sets.  Gives an iterator that gives every
+  // combination of one element chosen from each set.  For example,
+  // ([1, 2], [3, 4]) gives ([1, 3], [1, 4], [2, 3], [2, 4]).
+  public static product<T>(arrays: T[][]): T[][] {
+    const someArrayEmpty = arrays.some((arr) => !arr.length);
+    if (someArrayEmpty || arrays.length === 0) {
+      return [];
+    }
+
+    let indices: number[]|null = new Array<number>(arrays.length);
+    indices.fill(0);
+    const result = [];
+    while (indices !== null) {
+      result.push(indices.map(
+          (valueIndex, arrayIndex) => arrays[arrayIndex][valueIndex]));
+
+      // Generate the next-largest indices for the next call.
+      // Increase the rightmost index. If it goes over, increase the next
+      // rightmost (like carry-over addition).
+      for (let i = indices.length - 1; i >= 0; i--) {
+        // Assertion prevents compiler warning below.
+        assert(indices !== null);
+        if (indices[i] < arrays[i].length - 1) {
+          indices[i]++;
+          break;
+        }
+
+        // We're at the last indices (the last element of every array), so
+        // the iteration is over on the next call.
+        if (i === 0) {
+          indices = null;
+          break;
+        }
+        // Reset the index in this column and loop back to increment the
+        // next one.
+        indices[i] = 0;
+      }
+    }
     return result;
   }
 
