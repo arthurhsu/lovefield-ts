@@ -77,7 +77,7 @@ export class Memory implements BackStore {
   }
 
   // Creates a new empty table in the database. It is a no-op if a table with
-  // thegiven name already exists.
+  // the given name already exists.
   // NOTE: the return value is not ported because it's not used.
   private createTable(tableName: string): void {
     if (!this.tables.has(tableName)) {
