@@ -140,7 +140,7 @@ export class SelectLogicalPlanGenerator extends
   }
 
   private generateSkipNode(): void {
-    if (this.query.skip && this.query.skip > 0) {
+    if ((this.query.skip && this.query.skip > 0) || this.query.skipBinder) {
       this.skipNode = new SkipNode(this.query.skip);
     }
   }

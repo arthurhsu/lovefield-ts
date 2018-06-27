@@ -15,6 +15,7 @@
  */
 
 import * as chai from 'chai';
+import {bind} from '../../../lib/base/bind';
 import {op} from '../../../lib/fn/op';
 import {PredicateNode} from '../../../lib/pred/predicate_node';
 import {LogicalPlanFactory} from '../../../lib/proc/lp/logical_plan_factory';
@@ -101,6 +102,47 @@ describe('LogicalPlanFactory', () => {
     const expectedTree = [
       'project()',
       '-table_access(tableA)',
+      '',
+    ].join('\n');
+
+    const logicalPlan = logicalPlanFactory.create(query);
+    assert.equal(expectedTree, TreeHelper.toString(logicalPlan.getRoot()));
+  });
+
+  // Tests that the generated logical query plan for a SELECT query with "SKIP
+  // ?" includes a "skip" node.
+  it('create_SelectPlan_Skip_WithBind', () => {
+    const table = env.schema.table('tableA');
+    const queryBuilder = new SelectBuilder(env.global, []);
+    queryBuilder.from(table).skip(bind(0));
+
+    const query = (queryBuilder.bind([3]) as SelectBuilder).getQuery();
+    const expectedTree = [
+      'skip(3)',
+      '-project()',
+      '--table_access(tableA)',
+      '',
+    ].join('\n');
+
+    const logicalPlan = logicalPlanFactory.create(query);
+    assert.equal(expectedTree, TreeHelper.toString(logicalPlan.getRoot()));
+  });
+
+  // Tests that the generated logical query plan for a SELECT query with
+  // "SKIP ?" when the value is bound to zero includes a "skip" node. Although
+  // skipping 0 has no effect on query results, the bound value may change on
+  // subsequent invocations.
+  it('create_SelectPlan_SkipZero_WithBind', () => {
+    const table = env.schema.table('tableA');
+    const queryBuilder = new SelectBuilder(env.global, []);
+    queryBuilder.from(table).skip(bind(0));
+
+    const query = (queryBuilder.bind([0]) as SelectBuilder).getQuery();
+
+    const expectedTree = [
+      'skip(0)',
+      '-project()',
+      '--table_access(tableA)',
       '',
     ].join('\n');
 

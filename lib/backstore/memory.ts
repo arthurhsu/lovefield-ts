@@ -72,6 +72,10 @@ export class Memory implements BackStore {
     // Not supported.
   }
 
+  public supportsImport(): boolean {
+    return true;
+  }
+
   // Creates a new empty table in the database. It is a no-op if a table with
   // thegiven name already exists.
   // NOTE: the return value is not ported because it's not used.

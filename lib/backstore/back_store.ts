@@ -48,4 +48,7 @@ export interface BackStore {
 
   // Notifies registered observers with table diffs.
   notify(changes: TableDiff[]): void;
+
+  // Whether this backstore supports the `import` operation.
+  supportsImport(): boolean;
 }
