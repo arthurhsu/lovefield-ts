@@ -164,7 +164,7 @@ gulp.task('lint', () => {
 
 function quickTest() {
   let mochaOptions = {
-    reporter: 'spec',
+    reporter: getGrepPattern() ? 'spec' : 'dot',
     require: ['source-map-support/register'],
     grep: getGrepPattern()
   };
