@@ -19,10 +19,11 @@ import {JoinPredicate} from '../../pred/join_predicate';
 import {Context} from '../../query/context';
 import {SelectContext} from '../../query/select_context';
 import {TreeHelper} from '../../structs/tree_helper';
+import {RewritePass} from '../rewrite_pass';
+
 import {CrossProductNode} from './cross_product_node';
 import {JoinNode} from './join_node';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {RewritePass} from './rewrite_pass';
 import {SelectNode} from './select_node';
 
 export class ImplicitJoinsPass extends RewritePass<LogicalQueryPlanNode> {

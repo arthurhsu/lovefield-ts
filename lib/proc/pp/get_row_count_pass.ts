@@ -20,7 +20,7 @@ import {AggregatedColumn} from '../../fn/aggregated_column';
 import {StarColumn} from '../../fn/star_column';
 import {SelectContext} from '../../query/select_context';
 import {TreeHelper} from '../../structs/tree_helper';
-import {RewritePass} from '../lp/rewrite_pass';
+import {RewritePass} from '../rewrite_pass';
 import {GetRowCountStep} from './get_row_count_step';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 import {TableAccessFullStep} from './table_access_full_step';

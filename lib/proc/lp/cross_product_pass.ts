@@ -16,9 +16,10 @@
 
 import {Context} from '../../query/context';
 import {SelectContext} from '../../query/select_context';
+import {RewritePass} from '../rewrite_pass';
+
 import {CrossProductNode} from './cross_product_node';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {RewritePass} from './rewrite_pass';
 
 export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
   constructor() {

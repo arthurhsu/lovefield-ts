@@ -19,8 +19,9 @@ import {SelectContext} from '../../query/select_context';
 import {Column} from '../../schema/column';
 import {Table} from '../../schema/table';
 import {TreeHelper} from '../../structs/tree_helper';
-import {RewritePass} from '../lp/rewrite_pass';
 import {Relation} from '../relation';
+import {RewritePass} from '../rewrite_pass';
+
 import {JoinStep} from './join_step';
 import {NoOpStep} from './no_op_step';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';

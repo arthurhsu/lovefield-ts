@@ -21,8 +21,9 @@ import {PredicateNode} from '../../pred/predicate_node';
 import {Context} from '../../query/context';
 import {ArrayHelper} from '../../structs/array_helper';
 import {TreeHelper} from '../../structs/tree_helper';
+import {RewritePass} from '../rewrite_pass';
+
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {RewritePass} from './rewrite_pass';
 import {SelectNode} from './select_node';
 
 export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {

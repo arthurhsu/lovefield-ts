@@ -21,10 +21,11 @@ import {Table} from '../../schema/table';
 import {isSubset} from '../../structs/set_util';
 import {TreeHelper} from '../../structs/tree_helper';
 import {TreeNode} from '../../structs/tree_node';
+import {RewritePass} from '../rewrite_pass';
+
 import {CrossProductNode} from './cross_product_node';
 import {JoinNode} from './join_node';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {RewritePass} from './rewrite_pass';
 import {SelectNode} from './select_node';
 import {TableAccessNode} from './table_access_node';
 

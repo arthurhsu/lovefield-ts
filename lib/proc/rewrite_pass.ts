@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Context} from '../../query/context';
+import {Context} from '../query/context';
 
 export abstract class RewritePass<T> {
   protected rootNode!: T;
