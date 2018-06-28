@@ -15,7 +15,13 @@
  */
 
 import * as chai from 'chai';
+import * as sinon from 'sinon';
+
 import {Exception} from '../lib/base/exception';
+import {IndexStats} from '../lib/index/index_stats';
+import {IndexStore} from '../lib/index/index_store';
+import {RuntimeIndex} from '../lib/index/runtime_index';
+import {Index} from '../lib/schema/index';
 
 export class TestUtil {
   public static assertThrowsError(exceptionCode: number, fn: () => any): void {
@@ -35,5 +41,20 @@ export class TestUtil {
     return promise.then(chai.assert.fail, (e: any) => {
       chai.assert.equal(exceptionCode, e.code);
     });
+  }
+
+  public static simulateIndexCost(
+      sandbox: sinon.SinonSandbox, indexStore: IndexStore, indexSchema: Index,
+      cost: number): void {
+    const index =
+        indexStore.get(indexSchema.getNormalizedName()) as RuntimeIndex;
+    sandbox.stub(index, 'cost').callsFake(() => cost);
+  }
+
+  public static simulateIndexStats(
+      sandbox: sinon.SinonSandbox, indexStore: IndexStore, indexName: string,
+      indexStats: IndexStats): void {
+    const index = indexStore.get(indexName) as RuntimeIndex;
+    sandbox.stub(index, 'stats').callsFake(() => indexStats);
   }
 }

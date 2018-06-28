@@ -166,10 +166,10 @@ export class CombinedPredicate extends PredicateNode {
         return false;
       }
       if (predicateColumn === null) {
-        predicateColumn = (child as ValuePredicate).getColumns()[0];
+        predicateColumn = (child as ValuePredicate).column;
       }
       return predicateColumn.getNormalizedName() ===
-          (child as ValuePredicate).getColumns()[0].getNormalizedName();
+          (child as ValuePredicate).column.getNormalizedName();
     });
   }
 }

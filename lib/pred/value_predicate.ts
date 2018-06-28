@@ -33,8 +33,8 @@ export class ValuePredicate extends PredicateNode {
   private binder: Binder|any;
 
   constructor(
-      private column: Column, private value: any,
-      private evaluatorType: EvalType) {
+      readonly column: Column, private value: any,
+      readonly evaluatorType: EvalType) {
     super();
     this.evaluatorFn = EvalRegistry.get().getEvaluator(
         this.column.getType(), this.evaluatorType);

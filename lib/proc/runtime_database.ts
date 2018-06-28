@@ -70,7 +70,9 @@ export class RuntimeDatabase implements DatabaseConnection {
     this.global.registerService(Service.INDEX_STORE, new MemoryIndexStore());
     this.global.registerService(
         Service.OBSERVER_REGISTRY, new ObserverRegistry());
-    return Promise.resolve(this);
+    return this.global.getService(Service.INDEX_STORE)
+        .init(this.schema)
+        .then(() => this);
   }
 
   public getGlobal(): Global {
