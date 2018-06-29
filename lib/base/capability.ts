@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-import {RawBackStore} from '../backstore/raw_back_store';
-import {DataStoreType} from '../base/enum';
+export class Capability {
+  public static get(): Capability {
+    if (Capability.instance === undefined) {
+      Capability.instance = new Capability();
+    }
+    return Capability.instance;
+  }
 
-export interface ConnectOptions {
-  // TODO(arthurhsu): uncomment the comments below
-  onUpgrade?: (raw: RawBackStore) => Promise<void>;
-  storeType: DataStoreType;
-  // firebase?: Firebase;
-  websqlDbSize?: number;
-  enableInspector?: boolean;
+  private static instance: Capability;
+
+  public readonly indexedDb: boolean;
+  public readonly webSql: boolean;
+
+  constructor() {
+    // TODO(arthurhsu): implement detection that is Node.js friendly.
+    this.indexedDb = false;
+    this.webSql = false;
+  }
 }

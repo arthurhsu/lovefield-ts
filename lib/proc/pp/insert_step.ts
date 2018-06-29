@@ -21,7 +21,6 @@ import {Service} from '../../base/service';
 import {Journal} from '../../cache/journal';
 import {IndexStore} from '../../index/index_store';
 import {RuntimeIndex} from '../../index/runtime_index';
-import {Context} from '../../query/context';
 import {InsertContext} from '../../query/insert_context';
 import {Table} from '../../schema/table';
 import {Relation} from '../relation';
@@ -63,13 +62,13 @@ export class InsertStep extends PhysicalQueryPlanNode {
     return `insert(${this.table.getName()})`;
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
-    const queryContext = context as any as InsertContext;
-    InsertStep.assignAutoIncrementPks(
-        this.table, queryContext.values, this.indexStore);
-    (journal as Journal).insert(this.table, queryContext.values);
+  public execInternal(
+      relations: Relation[], journal?: Journal,
+      queryContext?: InsertContext): Relation[] {
+    const values = (queryContext as InsertContext).values;
+    InsertStep.assignAutoIncrementPks(this.table, values, this.indexStore);
+    (journal as Journal).insert(this.table, values);
 
-    return [Relation.fromRows(queryContext.values, [this.table.getName()])];
+    return [Relation.fromRows(values, [this.table.getName()])];
   }
 }

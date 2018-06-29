@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import {BackStore} from '../backstore/back_store';
 import {Memory} from '../backstore/memory';
+import {Capability} from '../base/capability';
 import {DatabaseConnection} from '../base/database_connection';
-import {TransactionType} from '../base/enum';
+import {DataStoreType, TransactionType} from '../base/enum';
 import {ErrorCode, Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {ObserverRegistry} from '../base/observer_registry';
@@ -24,16 +26,19 @@ import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {DefaultCache} from '../cache/default_cache';
+import {Flags} from '../gen/flags';
 import {MemoryIndexStore} from '../index/memory_index_store';
 import {DeleteBuilder} from '../query/delete_builder';
 import {InsertBuilder} from '../query/insert_builder';
+import {SelectBuilder} from '../query/select_builder';
 import {SelectQuery} from '../query/select_query';
 import {UpdateBuilder} from '../query/update_builder';
 import {Column} from '../schema/column';
 import {ConnectOptions} from '../schema/connect_options';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
-import {QueryEngine} from './query_engine';
+
+import {DefaultQueryEngine} from './default_query_engine';
 import {Runner} from './runner';
 
 export class RuntimeDatabase implements DatabaseConnection {
@@ -49,30 +54,41 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public init(options?: ConnectOptions): Promise<RuntimeDatabase> {
-    // The SCHEMA might have been removed from this.global_ in the case where
+    // The SCHEMA might have been removed from this.global in the case where
     // Database#close() was called, therefore it needs to be re-added.
     this.global.registerService(Service.SCHEMA, this.schema);
     this.global.registerService(Service.CACHE, new DefaultCache(this.schema));
-
-    // TODO(arthurhsu): implement
-    /*
-    return lf.base.init(this.global_, opt_options).then(function() {
-          this.isActive_ = true;
-          this.runner_ = this.global_.getService(lf.service.RUNNER);
+    const backStore = this.createBackStore(this.schema, options);
+    this.global.registerService(Service.BACK_STORE, backStore);
+    const indexStore = new MemoryIndexStore();
+    this.global.registerService(Service.INDEX_STORE, indexStore);
+    const onUpgrade = options ? options.onUpgrade : undefined;
+    return backStore.init(onUpgrade)
+        .then(() => {
+          this.global.registerService(
+              Service.QUERY_ENGINE, new DefaultQueryEngine(this.global));
+          this.runner = new Runner();
+          this.global.registerService(Service.RUNNER, this.runner);
+          this.global.registerService(
+              Service.OBSERVER_REGISTRY, new ObserverRegistry());
+          return indexStore.init(this.schema);
+        })
+        .then(() => {
+          // TODO(arthurhsu): implement
+          // if (observeExternalChanges) {
+          // var externalChangeObserver =
+          //     new ExternalChangeObserver(global);
+          //   externalChangeObserver.startObserving();
+          // }
+          // if (options['enableInspector']) {
+          //   lf.base.enableInspector_(global);
+          // }
+          // var prefetcher = new lf.cache.Prefetcher(global);
+          // return prefetcher.init(schema);
+          // }).then(() => {
+          this.isActive = true;
           return this;
-        }.bind(this));
-    */
-    this.isActive = true;
-    this.runner = new Runner();
-    this.global.registerService(Service.QUERY_ENGINE, {} as any as QueryEngine);
-    this.global.registerService(Service.RUNNER, this.runner);
-    this.global.registerService(Service.BACK_STORE, new Memory(this.schema));
-    this.global.registerService(Service.INDEX_STORE, new MemoryIndexStore());
-    this.global.registerService(
-        Service.OBSERVER_REGISTRY, new ObserverRegistry());
-    return this.global.getService(Service.INDEX_STORE)
-        .init(this.schema)
-        .then(() => this);
+        });
   }
 
   public getGlobal(): Global {
@@ -84,11 +100,8 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public select(...columns: Column[]): SelectQuery {
-    /*
     this.checkActive();
-    return new SelectBuilder(this.global_, columns);
-    */
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+    return new SelectBuilder(this.global, columns);
   }
 
   public insert(): InsertBuilder {
@@ -124,41 +137,40 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public createTransaction(type?: TransactionType): Transaction {
-    /*
-    this.checkActive();
-    return new RuntimeTransaction(this.global);
-    */
+    // TODO(arthurhsu): implement
+    // this.checkActive();
+    // return new RuntimeTransaction(this.global);
     throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
   public close(): void {
-    // TODO(arthurhsu): implement
-    /*
-    lf.base.closeDatabase(this.global_);
-    */
+    try {
+      const backStore = this.global.getService(Service.BACK_STORE);
+      backStore.close();
+    } catch (e) {
+      // Swallow the exception if DB is not initialized yet.
+    }
     this.global.clear();
     this.isActive = false;
   }
 
   public export(): Promise<object> {
-    /*
-    this.checkActive_();
-    var task = new lf.proc.ExportTask(this.global_);
-    return this.runner_.scheduleTask(task).then(function(results) {
-      return results[0].getPayloads()[0];
-    });
-    */
+    // TODO(arthurhsu): implement
+    // this.checkActive_();
+    // var task = new lf.proc.ExportTask(this.global_);
+    // return this.runner_.scheduleTask(task).then(function(results) {
+    //   return results[0].getPayloads()[0];
+    // });
     throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
   public import(data: object): Promise<void> {
-    /*
-    this.checkActive_();
-    var task = new lf.proc.ImportTask(this.global_, data);
-    return this.runner_.scheduleTask(task).then(function() {
-      return null;
-    });
-    */
+    // TODO(arthurhsu): implement
+    // this.checkActive_();
+    // var task = new lf.proc.ImportTask(this.global_, data);
+    // return this.runner_.scheduleTask(task).then(function() {
+    //   return null;
+    // });
     throw new Exception(ErrorCode.NOT_IMPLEMENTED);
   }
 
@@ -166,12 +178,56 @@ export class RuntimeDatabase implements DatabaseConnection {
     return this.isActive;
   }
 
+  // clang-format off
   private checkActive(): void {
-    // clang-format off
     if (!this.isActive) {
       // 2: The database connection is not active.
       throw new Exception(ErrorCode.CONNECTION_CLOSED);
     }
-    // clang-format on
   }
+
+  private createBackStore(
+      schema: Database, options?: ConnectOptions): BackStore {
+    let backStore: BackStore;
+
+    if (Flags.MEMORY_ONLY) {
+      backStore = new Memory(schema);
+      return backStore;
+    }
+
+    let dataStoreType: DataStoreType;
+    if (options === undefined || options.storeType === undefined) {
+      const capability = Capability.get();
+      dataStoreType = capability.indexedDb ?
+            DataStoreType.INDEXED_DB :
+            (capability.webSql ? DataStoreType.WEB_SQL : DataStoreType.MEMORY);
+    } else {
+      dataStoreType = options.storeType;
+    }
+
+    switch (dataStoreType) {
+    // TODO(arthurhsu): implement
+    // case DataStoreType.INDEXED_DB:
+    //   backStore = new IndexedDB(global, schema);
+    //   break;
+    case DataStoreType.MEMORY:
+      backStore = new Memory(schema);
+      break;
+
+    // case DataStoreType.OBSERVABLE_STORE:
+    //   backStore = new ObservableStore(schema);
+    //   break;
+    // case DataStoreType.WEB_SQL:
+    //   backStore = new WebSql(
+    //       global, schema, options['webSqlDbSize']);
+    //   break;
+    default:
+      // We no longer support FIREBASE.
+      // 300: Not supported.
+      throw new Exception(ErrorCode.NOT_SUPPORTED);
+    }
+
+    return backStore;
+  }
+  // clang-format on
 }

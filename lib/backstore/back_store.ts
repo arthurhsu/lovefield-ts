@@ -19,14 +19,15 @@ import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {Table} from '../schema/table';
+import {RawBackStore} from './raw_back_store';
 import {Tx} from './tx';
 
 // Interface for all backing stores to implement (Indexed DB, filesystem,
 // memory etc).
 export interface BackStore {
   // Initialize the database and setting up row id.
-  // |db| must be instance of RawBackStore<>.
-  init(onUpgrade?: (db: object) => Promise<void>): Promise<void>;
+  // |db| must be instance of RawBackStore.
+  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void>;
 
   // Creates backstore native transaction that is tied to a given journal.
   createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx;

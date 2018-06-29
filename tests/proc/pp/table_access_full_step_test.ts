@@ -34,13 +34,11 @@ describe('TableAccessFullStep', () => {
     return env.init().then(() => env.addSampleData());
   });
 
-  // TODO(arthurhsu): enable after query engine is implemented
-  // Currently it crashes at BaseBuilder#getPlan().
-  xit('tableAccessFullStep', () => {
+  it('tableAccessFullStep', () => {
     return checkTableAccessFullStep(schema.table('tableA'));
   });
 
-  xit('tableAccessFullStep_Alias', () => {
+  it('tableAccessFullStep_Alias', () => {
     return checkTableAccessFullStep(
         schema.table('tableA').as('SomeTableAlias'));
   });

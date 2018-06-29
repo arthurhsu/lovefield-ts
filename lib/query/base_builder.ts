@@ -100,7 +100,7 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   }
 
   private getPlan(): PhysicalQueryPlan {
-    if (this.plan !== undefined && this.plan !== null) {
+    if (this.plan === undefined || this.plan === null) {
       this.plan = this.queryEngine.getPlan(this.query);
     }
     return this.plan;

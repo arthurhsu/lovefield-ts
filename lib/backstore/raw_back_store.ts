@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-// Raw datastore interface passed to onUpgrade() function.
-export interface RawBackStore<RawDB, RawTx> {
+// Raw data store interface passed to onUpgrade() function.
+export interface RawBackStore {
   // Returns original database instance that can be used for low-level data
   // manipulations, not really useful for IndexedDB.
-  getRawDBInstance(): RawDB;
+  getRawDBInstance(): any;
 
   // Returns original database upgrade transaction.
-  getRawTransaction(): RawTx;
+  getRawTransaction(): any;
 
   // Removes a table from data store. Lovefield does not support automatic
   // dropping table. Users must call dropTable manually during upgrade to purge

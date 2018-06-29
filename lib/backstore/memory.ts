@@ -24,6 +24,7 @@ import {Table} from '../schema/table';
 import {BackStore} from './back_store';
 import {MemoryTable} from './memory_table';
 import {MemoryTx} from './memory_tx';
+import {RawBackStore} from './raw_back_store';
 import {Tx} from './tx';
 
 export class Memory implements BackStore {
@@ -34,7 +35,7 @@ export class Memory implements BackStore {
     this.tables = new Map<string, MemoryTable>();
   }
 
-  public init(onUpgrade?: (db: object) => Promise<void>): Promise<void> {
+  public init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void> {
     // Memory does not uses raw back store, just ignore the onUpgrade function.
     this.schema.tables().forEach((table) => this.initTable(table), this);
     return Promise.resolve();

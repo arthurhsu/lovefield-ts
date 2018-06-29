@@ -37,13 +37,11 @@ describe('IndexRangeScanStep', () => {
     });
   });
 
-  // TODO(arthurhsu): enable after query engine is implemented
-  // Currently it crashes at BaseBuilder#getPlan().
-  xit('ascending', () => {
+  it('ascending', () => {
     return checkIndexRangeScan(Order.ASC, 'ascending');
   });
 
-  xit('descending', () => {
+  it('descending', () => {
     return checkIndexRangeScan(Order.DESC, 'descending');
   });
 

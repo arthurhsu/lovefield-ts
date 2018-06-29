@@ -38,16 +38,14 @@ describe('MultiIndexRangeScanStep', () => {
     });
   });
 
-  // TODO(arthurhsu): enable after query engine is implemented
-  // Currently it crashes at BaseBuilder#getPlan().
-  xit('empty', () => {
+  it('empty', () => {
     const idKeyRange = new SingleKeyRange(20, 21, false, false);
     const nameKeyRange =
         new SingleKeyRange('dummyName' + 200, 'dummyName' + 205, false, false);
     return assertMultiIndexRangeScanResult(idKeyRange, nameKeyRange, []);
   });
 
-  xit('scan', () => {
+  it('scan', () => {
     const idKeyRange = new SingleKeyRange(5, 8, false, false);
     const nameKeyRange =
         new SingleKeyRange('dummyName' + 3, 'dummyName' + 5, false, false);

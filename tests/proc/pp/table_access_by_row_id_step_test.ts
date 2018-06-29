@@ -36,13 +36,11 @@ describe('TableAccessByRowId', () => {
     return env.init().then(() => env.addSampleData());
   });
 
-  // TODO(arthurhsu): enable after query engine is implemented
-  // Currently it crashes at BaseBuilder#getPlan().
-  xit('tableAccessByRowId', () => {
+  it('tableAccessByRowId', () => {
     return checkTableAccessByRowId(schema.table('tableA'));
   });
 
-  xit('tableAccessByRowId_Alias', () => {
+  it('tableAccessByRowId_Alias', () => {
     return checkTableAccessByRowId(schema.table('tableA').as('SomeTableAlias'));
   });
 
@@ -75,7 +73,7 @@ describe('TableAccessByRowId', () => {
     });
   }
 
-  xit('tableAccessByRowId_Empty', () => {
+  it('tableAccessByRowId_Empty', () => {
     const table = schema.table('tableB');
     const step = new TableAccessByRowIdStep(env.global, table);
 
