@@ -24,20 +24,13 @@ import {Table} from '../lib/schema/table';
 
 export class MockTask extends UniqueId implements Task {
   public name: string;
-  private txType: TransactionType;
-  private scope: Set<Table>;
-  private execFn: () => any;
-  private priority: TaskPriority;
   private resolver: Resolver<Relation[]>;
 
   constructor(
-      txType: TransactionType, scope: Set<Table>, execFn: () => any,
-      priority: TaskPriority, name?: string) {
+      private txType: TransactionType, private scope: Set<Table>,
+      private execFn: () => any, private priority: TaskPriority,
+      name?: string) {
     super();
-    this.txType = txType;
-    this.scope = scope;
-    this.execFn = execFn;
-    this.priority = priority;
     this.resolver = new Resolver<Relation[]>();
     this.name = name || this.getUniqueId();
   }

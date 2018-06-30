@@ -21,11 +21,7 @@ import {RuntimeIndex} from '../../lib/index/runtime_index';
 const assert = chai.assert;
 
 export abstract class TestIndex {
-  protected constructorFn: () => RuntimeIndex;
-
-  constructor(constructorFn: () => RuntimeIndex) {
-    this.constructorFn = constructorFn;
-  }
+  constructor(protected constructorFn: () => RuntimeIndex) {}
 
   public abstract testAddGet(index: RuntimeIndex): void;
   public abstract testGetRangeCost(index: RuntimeIndex): void;

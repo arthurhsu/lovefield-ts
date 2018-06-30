@@ -24,27 +24,23 @@ import {Row} from '../../lib/base/row';
 import {Service} from '../../lib/base/service';
 import {Cache} from '../../lib/cache/cache';
 import {Journal} from '../../lib/cache/journal';
-import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
 
 export class ScudTester {
-  private db: BackStore;
-  private global: Global;
-  private schema: Database;
   private tableSchema: Table;
   private cache: Cache;
   private reload: null|(() => BackStore);
 
-  constructor(db: BackStore, global: Global, reload?: () => BackStore) {
+  constructor(
+      private db: BackStore, private global: Global, reload?: () => BackStore) {
     this.db = db;
-    this.global = global;
-    this.schema = global.getService(Service.SCHEMA);
-    this.tableSchema = this.schema.tables()[0];
+    const schema = global.getService(Service.SCHEMA);
+    this.tableSchema = schema.tables()[0];
     this.cache = global.getService(Service.CACHE);
     this.reload = reload || null;
   }
 
-  public run(): Promise<void> {
+  public async run(): Promise<void> {
     const CONTENTS = {id: 'hello', name: 'world'};
     const CONTENTS2 = {id: 'hello2', name: 'world2'};
 
@@ -52,27 +48,20 @@ export class ScudTester {
     const row2 = Row.create(CONTENTS);
     const row3 = new Row(row1.id(), CONTENTS2);
 
-    return this.db.init()
-        .then(() => this.insert([row1]))
-        .then(() => this.assertOnlyRows([row1]))
-        .then((results) => {
-          // Insert row2, update row1.
-          return this.insert([row2, row3]);
-        })
-        .then(() => this.assertOnlyRows([row3, row2]))
-        .then((results) => {
-          // Update cache, otherwise the bundled operation will fail.
-          this.cache.setMany(this.tableSchema.getName(), [row2, row3]);
-
-          // Remove row1.
-          return this.remove([row1.id()]);
-        })
-        .then(() => this.assertOnlyRows([row2]))
-        .then((results) => {
-          // Remove all.
-          return this.removeAll();
-        })
-        .then(() => this.assertOnlyRows([]));
+    await this.db.init();
+    await this.insert([row1]);
+    await this.assertOnlyRows([row1]);
+    // Insert row2, update row1.
+    await this.insert([row2, row3]);
+    await this.assertOnlyRows([row3, row2]);
+    // Update cache, otherwise the bundled operation will fail.
+    this.cache.setMany(this.tableSchema.getName(), [row2, row3]);
+    // Remove row1.
+    await this.remove([row1.id()]);
+    await this.assertOnlyRows([row2]);
+    // Remove all.
+    await this.removeAll();
+    await this.assertOnlyRows([]);
   }
 
   private insert(rows: Row[]): Promise<void> {
