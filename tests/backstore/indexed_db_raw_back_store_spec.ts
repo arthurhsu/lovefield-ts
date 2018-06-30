@@ -21,13 +21,16 @@ import {IndexedDB} from '../../lib/backstore/indexed_db';
 import {IndexedDBRawBackStore} from '../../lib/backstore/indexed_db_raw_back_store';
 import {Page} from '../../lib/backstore/page';
 import {RawBackStore} from '../../lib/backstore/raw_back_store';
+import {Capability} from '../../lib/base/capability';
 import {Type} from '../../lib/base/enum';
 import {RawRow, Row} from '../../lib/base/row';
 import {Builder} from '../../lib/schema/builder';
 
 const assert = chai.assert;
+const skip = !(Capability.get().indexedDb);
+const test = skip ? describe.skip : describe;
 
-describe('IndexedDBRawBackStore', () => {
+test('IndexedDBRawBackStore', () => {
   const CONTENTS = {id: 'hello', name: 'world'};
   const CONTENTS2 = {id: 'hello2', name: 'world2'};
   const MAGIC = Math.pow(2, Page.BUNDLE_EXPONENT);
@@ -35,7 +38,6 @@ describe('IndexedDBRawBackStore', () => {
   let builder2: Builder;
 
   beforeEach(() => {
-    // TODO(arthurhsu): check capability.
     const dbName = `schema${Date.now()}`;
     builder1 = new Builder(dbName, 1);
     builder1.createTable('tableA_')
@@ -51,7 +53,6 @@ describe('IndexedDBRawBackStore', () => {
   });
 
   it('convert', () => {
-    // TODO(arthurhsu): check capability.
     const date = new Date();
     const buffer = new ArrayBuffer(8);
     const view = new Uint8Array(buffer);
@@ -72,7 +73,6 @@ describe('IndexedDBRawBackStore', () => {
   // Tests that onUpgrade function is still called with version 0 for a new DB
   // instance.
   it('newDBInstance', () => {
-    // TODO(arthurhsu): check capability.
     const onUpgrade = sinon.spy((rawDb: RawBackStore) => {
       assert.equal(0, rawDb.getVersion());
       return Promise.resolve();
@@ -156,7 +156,6 @@ describe('IndexedDBRawBackStore', () => {
   }
 
   it('addTableColumn', () => {
-    // TODO(arthurhsu): check capability.
     let db: IndexedDB|null =
         new IndexedDB(builder1.getGlobal(), builder1.getSchema());
     const date = new Date();
@@ -183,7 +182,6 @@ describe('IndexedDBRawBackStore', () => {
   });
 
   it('addTableColumn_Bundled', () => {
-    // TODO(arthurhsu): check capability.
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB|null =
@@ -220,7 +218,6 @@ describe('IndexedDBRawBackStore', () => {
   }
 
   it('dropTableColumn', () => {
-    // TODO(arthurhsu): check capability.
     let db: IndexedDB|null =
         new IndexedDB(builder1.getGlobal(), builder1.getSchema());
     return db.init()
@@ -244,7 +241,6 @@ describe('IndexedDBRawBackStore', () => {
   });
 
   it('dropTableColumn_Bundled', () => {
-    // TODO(arthurhsu): check capability.
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB|null =
@@ -278,7 +274,6 @@ describe('IndexedDBRawBackStore', () => {
   }
 
   it('renameTableColumn', () => {
-    // TODO(arthurhsu): check capability.
     let db: IndexedDB|null =
         new IndexedDB(builder1.getGlobal(), builder1.getSchema());
     return db.init()
@@ -304,7 +299,6 @@ describe('IndexedDBRawBackStore', () => {
   });
 
   it('renameTableColumn_Bundled', () => {
-    // TODO(arthurhsu): check capability.
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB|null =
@@ -340,7 +334,6 @@ describe('IndexedDBRawBackStore', () => {
   }
 
   it('dropTable', () => {
-    // TODO(arthurhsu): check capability.
     let db: IndexedDB|null =
         new IndexedDB(builder1.getGlobal(), builder1.getSchema());
     return db.init()
@@ -366,7 +359,6 @@ describe('IndexedDBRawBackStore', () => {
   }
 
   it('dump', () => {
-    // TODO(arthurhsu): check capability.
     let db: IndexedDB|null =
         new IndexedDB(builder1.getGlobal(), builder1.getSchema());
     return db.init()
@@ -382,7 +374,6 @@ describe('IndexedDBRawBackStore', () => {
   });
 
   it('dump_Bundled', () => {
-    // TODO(arthurhsu): check capability.
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB|null =

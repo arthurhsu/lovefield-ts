@@ -17,11 +17,17 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
+import {TransactionType} from '../lib/base/enum';
 import {Exception} from '../lib/base/exception';
+import {Global} from '../lib/base/global';
+import {TableType} from '../lib/base/private_enum';
+import {Row} from '../lib/base/row';
+import {Service} from '../lib/base/service';
 import {IndexStats} from '../lib/index/index_stats';
 import {IndexStore} from '../lib/index/index_store';
 import {RuntimeIndex} from '../lib/index/runtime_index';
 import {Index} from '../lib/schema/index';
+import {Table} from '../lib/schema/table';
 
 export class TestUtil {
   public static assertThrowsError(exceptionCode: number, fn: () => any): void {
@@ -56,5 +62,14 @@ export class TestUtil {
       indexStats: IndexStats): void {
     const index = indexStore.get(indexName) as RuntimeIndex;
     sandbox.stub(index, 'stats').callsFake(() => indexStats);
+  }
+
+  public static selectAll(global: Global, tableSchema: Table): Promise<Row[]> {
+    const backStore = global.getService(Service.BACK_STORE);
+    const tx = backStore.createTx(TransactionType.READ_ONLY, [tableSchema]);
+    const table = tx.getTable(
+        tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
+        TableType.DATA);
+    return table.get([]);
   }
 }

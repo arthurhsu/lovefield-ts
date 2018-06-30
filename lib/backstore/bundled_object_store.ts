@@ -30,7 +30,7 @@ export class BundledObjectStore implements RuntimeTable {
       global: Global, store: IDBObjectStore,
       deserializeFn: (raw: RawRow) => Row, tableType: TableType): RuntimeTable {
     const retrievePageFn = tableType === TableType.DATA ?
-        BundledObjectStore.getDataTablePage.bind(global) :
+        BundledObjectStore.getDataTablePage.bind(null, global) :
         BundledObjectStore.getIndexTablePage;
 
     return new BundledObjectStore(store, deserializeFn, retrievePageFn);

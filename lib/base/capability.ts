@@ -29,7 +29,7 @@ export class Capability {
 
   constructor() {
     // TODO(arthurhsu): implement detection that is Node.js friendly.
-    this.indexedDb = false;
+    this.indexedDb = true;
     this.webSql = false;
   }
 }
