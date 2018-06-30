@@ -3,7 +3,7 @@
     "allowJs": false,
     "allowUnreachableCode": false,
     "lib": [
-      "es5",
+      "dom",
       "es6"
     ],
     "module": "commonjs",

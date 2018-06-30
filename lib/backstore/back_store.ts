@@ -27,7 +27,7 @@ import {Tx} from './tx';
 export interface BackStore {
   // Initialize the database and setting up row id.
   // |db| must be instance of RawBackStore.
-  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void>;
+  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<any>;
 
   // Creates backstore native transaction that is tied to a given journal.
   createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx;

@@ -169,7 +169,7 @@ function quickTest() {
     grep: getGrepPattern()
   };
 
-  gulp.src('out/tests/**/*.js', {read: false})
+  gulp.src(['out/tests/**/*.js', '!out/tests/**/*_spec.js'], {read: false})
       .pipe(mocha(mochaOptions));
 }
 

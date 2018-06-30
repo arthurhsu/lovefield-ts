@@ -14,34 +14,45 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
+import {TransactionType} from '../../lib/base/enum';
+import {Global} from '../base/global';
 import {TableType} from '../base/private_enum';
 import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
-import {BaseTx} from './base_tx';
-import {Memory} from './memory';
 
-export class MemoryTx extends BaseTx {
-  constructor(private store: Memory, type: TransactionType, journal?: Journal) {
-    super(type, journal);
-    if (type === TransactionType.READ_ONLY) {
-      this.resolver.resolve();
-    }
+import {BaseTx} from './base_tx';
+import {BundledObjectStore} from './bundled_object_store';
+import {ObjectStore} from './object_store';
+
+export class IndexedDBTx extends BaseTx {
+  constructor(
+      private global: Global, private tx: IDBTransaction,
+      txType: TransactionType, private bundleMode: boolean, journal?: Journal) {
+    super(txType, journal);
+    this.tx.oncomplete = this.resolver.resolve.bind(this.resolver);
+    this.tx.onabort = this.resolver.reject.bind(this.resolver);
   }
 
   public getTable(
       tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType?: TableType): RuntimeTable {
-    return this.store.getTableInternal(tableName);
+      type?: TableType): RuntimeTable {
+    if (this.bundleMode) {
+      const tableType =
+          (type !== undefined && type !== null) ? type : TableType.DATA;
+      return BundledObjectStore.forTableType(
+          this.global, this.tx.objectStore(tableName), deserializeFn,
+          tableType);
+    } else {
+      return new ObjectStore(this.tx.objectStore(tableName), deserializeFn);
+    }
   }
 
   public abort(): void {
-    this.resolver.reject();
+    this.tx.abort();
   }
 
-  public commitInternal(): Promise<void> {
-    this.resolver.resolve();
+  public commitInternal(): Promise<any> {
     return this.resolver.promise;
   }
 }

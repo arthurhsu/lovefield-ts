@@ -26,7 +26,7 @@ import {Tx} from './tx';
 
 // A base class for all native DB transactions wrappers to subclass.
 export abstract class BaseTx implements Tx {
-  protected resolver: Resolver<void>;
+  protected resolver: Resolver<any>;
 
   private journal: Journal|null;
   private success: boolean;
@@ -34,16 +34,16 @@ export abstract class BaseTx implements Tx {
 
   constructor(protected txType: TransactionType, journal?: Journal) {
     this.journal = journal || null;
-    this.resolver = new Resolver<void>();
+    this.resolver = new Resolver<any>();
     this.success = false;
     this.statsObject = null;
   }
 
   public abstract getTable(
       tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType: TableType): RuntimeTable;
+      tableType?: TableType): RuntimeTable;
   public abstract abort(): void;
-  public abstract commitInternal(): Promise<void>;
+  public abstract commitInternal(): Promise<any>;
 
   public getJournal(): Journal|null {
     return this.journal;
