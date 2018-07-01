@@ -15,6 +15,7 @@
  */
 
 import {BackStore} from '../backstore/back_store';
+import {IndexedDB} from '../backstore/indexed_db';
 import {Memory} from '../backstore/memory';
 import {Capability} from '../base/capability';
 import {DatabaseConnection} from '../base/database_connection';
@@ -26,6 +27,7 @@ import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {DefaultCache} from '../cache/default_cache';
+import {Prefetcher} from '../cache/prefetcher';
 import {Flags} from '../gen/flags';
 import {MemoryIndexStore} from '../index/memory_index_store';
 import {DeleteBuilder} from '../query/delete_builder';
@@ -83,9 +85,10 @@ export class RuntimeDatabase implements DatabaseConnection {
           // if (options['enableInspector']) {
           //   lf.base.enableInspector_(global);
           // }
-          // var prefetcher = new lf.cache.Prefetcher(global);
-          // return prefetcher.init(schema);
-          // }).then(() => {
+          const prefetcher = new Prefetcher(this.global);
+          return prefetcher.init(this.schema);
+        })
+        .then(() => {
           this.isActive = true;
           return this;
         });
@@ -206,10 +209,9 @@ export class RuntimeDatabase implements DatabaseConnection {
     }
 
     switch (dataStoreType) {
-    // TODO(arthurhsu): implement
-    // case DataStoreType.INDEXED_DB:
-    //   backStore = new IndexedDB(global, schema);
-    //   break;
+    case DataStoreType.INDEXED_DB:
+      backStore = new IndexedDB(this.global, schema);
+      break;
     case DataStoreType.MEMORY:
       backStore = new Memory(schema);
       break;
