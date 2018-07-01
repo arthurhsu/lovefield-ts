@@ -100,11 +100,9 @@ export class MapSet<K, V> {
     return results;
   }
 
-  /**
-   * Returns a set for a given key. If the key does not exist in the map,
-   * a new Set will be created.
-   */
-  private getSet(key: K): Set<V> {
+  // Returns a set for a given key. If the key does not exist in the map,
+  // a new Set will be created.
+  public getSet(key: K): Set<V> {
     let valueSet = this.map.get(key) || null;
     if (valueSet === null) {
       valueSet = new Set<V>();

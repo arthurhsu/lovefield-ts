@@ -42,6 +42,7 @@ import {Table} from '../schema/table';
 
 import {DefaultQueryEngine} from './default_query_engine';
 import {Runner} from './runner';
+import {RuntimeTransaction} from './runtime_transaction';
 
 export class RuntimeDatabase implements DatabaseConnection {
   private schema: Database;
@@ -140,10 +141,8 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public createTransaction(type?: TransactionType): Transaction {
-    // TODO(arthurhsu): implement
-    // this.checkActive();
-    // return new RuntimeTransaction(this.global);
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+    this.checkActive();
+    return new RuntimeTransaction(this.global);
   }
 
   public close(): void {

@@ -40,10 +40,10 @@ export interface Transaction {
 
   // Rolls back all changes that were made within this transaction. Rollback is
   // only allowed if the transaction has not been yet committed.
-  rollback(): Promise<void>;
+  rollback(): Promise<any>;
 
   // Returns transaction statistics. This call will return meaningful value only
   // after a transaction is committed or rolled back. Read-only transactions
   // will have stats with success equals to true and all other counts as 0.
-  stats(): TransactionStats;
+  stats(): TransactionStats|null;
 }

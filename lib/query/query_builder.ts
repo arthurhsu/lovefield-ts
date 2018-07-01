@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {TaskItem} from '../proc/task_item';
+
 export interface QueryBuilder {
   // Executes the query, all errors will be passed to the reject function.
   // The resolve function may receive parameters as results of execution, for
@@ -31,4 +33,7 @@ export interface QueryBuilder {
   // |stripValueInfo| true will remove value info to protect PII, default to
   // false in all implementations.
   toSql(stripValueInfo: boolean): string;
+
+  getTaskItem(): TaskItem;
+  assertExecPreconditions(): void;
 }
