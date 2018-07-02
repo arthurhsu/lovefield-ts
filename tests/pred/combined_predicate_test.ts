@@ -190,23 +190,23 @@ describe('CombinedPredicate', () => {
         predicate, 8, expectedSalariesOriginal, expectedSalariesComplement);
   });
 
-  it('isKeyRangeCompatbile_And', () => {
+  it('isKeyRangeCompatible_And', () => {
     const predicate =
         op.and(e['salary'].gte(200), e['salary'].lte(600)) as CombinedPredicate;
     assert.isFalse(predicate.isKeyRangeCompatible());
   });
 
-  it('isKeyRangeCompatbile_Or', () => {
-    const keyRangeCompatbilePredicates = [
+  it('isKeyRangeCompatible_Or', () => {
+    const keyRangeCompatiblePredicates = [
       op.or(e['salary'].eq(200), e['salary'].eq(600)),
       op.or(e['salary'].lte(200), e['salary'].gte(600)),
       op.or(e['salary'].eq(200)),
     ];
-    keyRangeCompatbilePredicates.forEach((p) => {
+    keyRangeCompatiblePredicates.forEach((p) => {
       assert.isTrue((p as CombinedPredicate).isKeyRangeCompatible());
     });
 
-    const notKeyRangeCompatbilePredicates = [
+    const notKeyRangeCompatiblePredicates = [
       op.or(e['firstName'].match(/Foo/), e['firstName'].eq('Bar')),
       op.or(e['firstName'].neq('Foo'), e['firstName'].eq('Bar')),
       op.or(
@@ -214,7 +214,7 @@ describe('CombinedPredicate', () => {
       op.or(e['salary'].isNull(), e['salary'].eq(600)),
       op.or(e['firstName'].eq('Foo'), e['lastName'].eq('Bar')),
     ];
-    notKeyRangeCompatbilePredicates.forEach((p) => {
+    notKeyRangeCompatiblePredicates.forEach((p) => {
       assert.isFalse((p as CombinedPredicate).isKeyRangeCompatible());
     });
   });
@@ -282,7 +282,7 @@ describe('CombinedPredicate', () => {
     assertComplement();
   }
 
-  // Generates sample emolyee data to be used for tests.
+  // Generates sample employee data to be used for tests.
   function getSampleRows(rowCount: number): Row[] {
     const employees: Row[] = new Array(rowCount);
     for (let i = 0; i < rowCount; i++) {
