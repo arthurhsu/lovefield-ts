@@ -132,7 +132,7 @@ function buildObjectEvaluatorMap(): Map<EvalType, ComparisonFunction> {
   const map = new Map<EvalType, ComparisonFunction>();
 
   const checkNull = (value: object) => {
-    if (value === null) {
+    if (value !== null) {
       // 550: where() clause includes an invalid predicate, can't compare
       // lf.Type.OBJECT to anything other than null.
       throw new Exception(ErrorCode.INVALID_PREDICATE);
