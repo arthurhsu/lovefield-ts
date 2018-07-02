@@ -66,7 +66,7 @@ export class Builder {
   // Instantiates a connection to the database. Note: This method can only be
   // called once per Builder instance. Subsequent calls will throw an error,
   // unless the previous DB connection has been closed first.
-  public connect(options: ConnectOptions): Promise<DatabaseConnection> {
+  public connect(options?: ConnectOptions): Promise<DatabaseConnection> {
     if (this.connectInProgress || (this.db !== null && this.db.isOpen())) {
       // 113: Attempt to connect() to an already connected/connecting database.
       throw new Exception(ErrorCode.ALREADY_CONNECTED);
