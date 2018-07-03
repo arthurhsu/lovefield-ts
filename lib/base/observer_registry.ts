@@ -16,6 +16,7 @@
 
 import {Relation} from '../proc/relation';
 import {TaskItem} from '../proc/task_item';
+import {SelectBuilder} from '../query/select_builder';
 import {SelectContext} from '../query/select_context';
 import {SelectQuery} from '../query/select_query';
 import {Table} from '../schema/table';
@@ -33,9 +34,9 @@ export class ObserverRegistry {
   }
 
   // Registers an observer for the given query.
-  public addObserver(builder: SelectQuery, callback: ObserverCallback): void {
-    // TODO(arthurhsu): implement
-    const queryId = '';  // this.getQueryId(builder.getObservableQuery());
+  public addObserver(query: SelectQuery, callback: ObserverCallback): void {
+    const builder = query as SelectBuilder;
+    const queryId = this.getQueryId(builder.getObservableQuery());
     let entry = this.entries.get(queryId) || null;
     if (entry === null) {
       entry = new ObserverRegistryEntry(builder);
@@ -44,11 +45,10 @@ export class ObserverRegistry {
     entry.addObserver(callback);
   }
 
-  // Unregisters an observer for the given query.
-  public removeObserver(builder: SelectQuery, callback: ObserverCallback):
-      void {
-    // const query = builder.getObservableQuery();
-    const queryId = '';  // this.getQueryId(query);
+  // Unregister an observer for the given query.
+  public removeObserver(query: SelectQuery, callback: ObserverCallback): void {
+    const builder = query as SelectBuilder;
+    const queryId = this.getQueryId(builder.getObservableQuery());
 
     const entry: ObserverRegistryEntry =
         this.entries.get(queryId) as ObserverRegistryEntry;

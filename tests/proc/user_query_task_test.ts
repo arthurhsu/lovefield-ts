@@ -181,10 +181,9 @@ describe('UserQueryTask', () => {
     assert.equal(0, results.length);
   });
 
-  // TODO(arthurhsu): enable after observer task is implemented.
   // Tests that when a parametrized query finishes execution, observers are
   // notified.
-  xit('singlePlan_ParametrizedQuery', () => {
+  it('singlePlan_ParametrizedQuery', () => {
     const promiseResolver = new Resolver();
 
     const selectQueryBuilder =

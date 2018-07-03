@@ -77,7 +77,6 @@ export class RuntimeDatabase implements DatabaseConnection {
           return indexStore.init(this.schema);
         })
         .then(() => {
-          // TODO(arthurhsu): implement
           // if (observeExternalChanges) {
           // var externalChangeObserver =
           //     new ExternalChangeObserver(global);
@@ -128,16 +127,16 @@ export class RuntimeDatabase implements DatabaseConnection {
     return new DeleteBuilder(this.global);
   }
 
-  public observe(query: SelectQuery, callback: ObserverCallback): void {
+  public observe(builder: SelectQuery, callback: ObserverCallback): void {
     this.checkActive();
     const observerRegistry = this.global.getService(Service.OBSERVER_REGISTRY);
-    observerRegistry.addObserver(query, callback);
+    observerRegistry.addObserver(builder, callback);
   }
 
-  public unobserve(query: SelectQuery, callback: ObserverCallback): void {
+  public unobserve(builder: SelectQuery, callback: ObserverCallback): void {
     this.checkActive();
     const observerRegistry = this.global.getService(Service.OBSERVER_REGISTRY);
-    observerRegistry.removeObserver(query, callback);
+    observerRegistry.removeObserver(builder, callback);
   }
 
   public createTransaction(type?: TransactionType): Transaction {

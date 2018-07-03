@@ -16,6 +16,7 @@
 
 import {Relation} from '../proc/relation';
 import {TaskItem} from '../proc/task_item';
+import {SelectBuilder} from '../query/select_builder';
 import {SelectContext} from '../query/select_context';
 import {assert} from './assert';
 import {ChangeRecord} from './change_record';
@@ -23,21 +24,17 @@ import {DiffCalculator} from './diff_calculator';
 
 export type ObserverCallback = (changes: ChangeRecord[]) => void;
 export class ObserverRegistryEntry {
-  // TODO(arthurhsu): partial implementation, need this class to bootstrap
-  // SelectBuilder.
-  // private builder: SelectBuilder
   private observers: Set<ObserverCallback>;
   private observable: any[];
   private lastResults: Relation|null;
   private diffCalculator: DiffCalculator;
 
-  constructor(builder: object) {
-    // this.builder = builder;
+  constructor(private builder: SelectBuilder) {
+    this.builder = builder;
     this.observers = new Set<ObserverCallback>();
     this.observable = [];
     this.lastResults = null;
-    const context: SelectContext =
-        /* builder.getObservableQuery() */ null as any as SelectContext;
+    const context: SelectContext = builder.getObservableQuery();
     this.diffCalculator = new DiffCalculator(context, this.observable);
   }
 
@@ -54,10 +51,8 @@ export class ObserverRegistryEntry {
     return this.observers.delete(callback);
   }
 
-  // TODO(arthurhsu): returns TaskItem
   public getTaskItem(): TaskItem {
-    // return this.builder.getObservableTaskItem();
-    return null as any as TaskItem;
+    return this.builder.getObservableTaskItem();
   }
 
   public hasObservers(): boolean {

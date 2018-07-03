@@ -82,7 +82,7 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   }
 
   public getObservableQuery(): CONTEXT {
-    return this.query.clone() as CONTEXT;
+    return this.query as CONTEXT;
   }
 
   public getTaskItem(): TaskItem {

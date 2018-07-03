@@ -24,8 +24,6 @@ import {ObserverRegistry} from './observer_registry';
 import {ServiceId} from './service_id';
 
 export class Service {
-  // TODO(arthurhsu): finish this class.
-
   // The backing data store used by this connection.
   // following statement fail compilation, need solution.
   public static BACK_STORE = new ServiceId<BackStore>('backstore');
