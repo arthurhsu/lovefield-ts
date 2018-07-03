@@ -49,6 +49,7 @@ import {InsertStep} from './insert_step';
 import {JoinStep} from './join_step';
 import {LimitSkipByIndexPass} from './limit_skip_by_index_pass';
 import {LimitStep} from './limit_step';
+import {OrderByIndexPass} from './order_by_index_pass';
 import {OrderByStep} from './order_by_step';
 import {PhysicalPlanRewriter} from './physical_plan_rewriter';
 import {PhysicalQueryPlan} from './physical_query_plan';
@@ -69,7 +70,7 @@ export class PhysicalPlanFactory {
       new IndexRangeScanPass(global),
       // TODO(arthurhsu): implement
       // new MultiColumnOrPass(),
-      // new OrderByIndexPass(),
+      new OrderByIndexPass(global),
       new LimitSkipByIndexPass(),
       new GetRowCountPass(global),
     ];
