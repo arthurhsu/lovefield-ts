@@ -49,6 +49,7 @@ import {InsertStep} from './insert_step';
 import {JoinStep} from './join_step';
 import {LimitSkipByIndexPass} from './limit_skip_by_index_pass';
 import {LimitStep} from './limit_step';
+import {MultiColumnOrPass} from './multi_column_or_pass';
 import {OrderByIndexPass} from './order_by_index_pass';
 import {OrderByStep} from './order_by_step';
 import {PhysicalPlanRewriter} from './physical_plan_rewriter';
@@ -68,8 +69,7 @@ export class PhysicalPlanFactory {
     this.selectOptimizationPasses = [
       new IndexJoinPass(),
       new IndexRangeScanPass(global),
-      // TODO(arthurhsu): implement
-      // new MultiColumnOrPass(),
+      new MultiColumnOrPass(global),
       new OrderByIndexPass(global),
       new LimitSkipByIndexPass(),
       new GetRowCountPass(global),
