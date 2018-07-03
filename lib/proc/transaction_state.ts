@@ -41,9 +41,9 @@ export class StateTransition {
   constructor() {
     this.map = new MapSet<TransactionState, TransactionState>();
     const TS = TransactionState;
-    this.map.set(TS.CREATED, TS.ACQUIRED_SCOPE);
+    this.map.set(TS.CREATED, TS.ACQUIRING_SCOPE);
     this.map.set(TS.CREATED, TS.EXECUTING_AND_COMMITTING);
-    this.map.set(TS.ACQUIRED_SCOPE, TS.ACQUIRED_SCOPE);
+    this.map.set(TS.ACQUIRING_SCOPE, TS.ACQUIRED_SCOPE);
     this.map.set(TS.ACQUIRED_SCOPE, TS.EXECUTING_QUERY);
     this.map.set(TS.ACQUIRED_SCOPE, TS.COMMITTING);
     this.map.set(TS.ACQUIRED_SCOPE, TS.ROLLING_BACK);
