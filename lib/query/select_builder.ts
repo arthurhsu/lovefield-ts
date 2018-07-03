@@ -163,7 +163,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public orderBy(column: Column, order: Order): SelectBuilder {
+  public orderBy(column: Column, order?: Order): SelectBuilder {
     // 549: from() has to be called before orderBy() or groupBy().
     this.checkFrom(ErrorCode.FROM_AFTER_ORDER_GROUPBY);
 
@@ -173,7 +173,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
 
     this.query.orderBy.push({
       column: column,
-      order: order ? order : Order.ASC,
+      order: (order !== undefined && order !== null) ? order : Order.ASC,
     });
     return this;
   }
