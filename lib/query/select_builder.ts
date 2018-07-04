@@ -82,6 +82,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
       // 516: where() has already been called.
       throw new Exception(ErrorCode.DUPLICATE_WHERE);
     }
+    this.whereAlreadyCalled = true;
 
     this.augmentWhereClause(predicate);
     return this;
