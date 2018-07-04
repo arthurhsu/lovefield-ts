@@ -26,6 +26,7 @@ import {TreeHelper} from '../structs/tree_helper';
 import {TreeNode} from '../structs/tree_node';
 import {Context} from './context';
 import {QueryBuilder} from './query_builder';
+import {SqlHelper} from './to_sql';
 
 export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   protected query: CONTEXT;
@@ -66,9 +67,7 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   }
 
   public toSql(stripValueInfo = false): string {
-    // TODO(arthurhsu): implement
-    // return QueryHelper.toSql(this, stripValueInfo);
-    return 'not implemented';
+    return SqlHelper.toSql(this, stripValueInfo);
   }
 
   // Asserts whether the preconditions for executing this query are met. Should

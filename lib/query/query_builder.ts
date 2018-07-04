@@ -32,7 +32,7 @@ export interface QueryBuilder {
 
   // |stripValueInfo| true will remove value info to protect PII, default to
   // false in all implementations.
-  toSql(stripValueInfo: boolean): string;
+  toSql(stripValueInfo?: boolean): string;
 
   getTaskItem(): TaskItem;
   assertExecPreconditions(): void;
