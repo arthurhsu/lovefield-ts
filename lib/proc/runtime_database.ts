@@ -41,6 +41,8 @@ import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 
 import {DefaultQueryEngine} from './default_query_engine';
+import {ExportTask} from './export_task';
+import {ImportTask} from './import_task';
 import {Runner} from './runner';
 import {RuntimeTransaction} from './runtime_transaction';
 
@@ -156,23 +158,19 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   public export(): Promise<object> {
-    // TODO(arthurhsu): implement
-    // this.checkActive_();
-    // var task = new lf.proc.ExportTask(this.global_);
-    // return this.runner_.scheduleTask(task).then(function(results) {
-    //   return results[0].getPayloads()[0];
-    // });
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+    this.checkActive();
+    const task = new ExportTask(this.global);
+    return this.runner.scheduleTask(task).then((results) => {
+      return results[0].getPayloads()[0];
+    });
   }
 
   public import(data: object): Promise<void> {
-    // TODO(arthurhsu): implement
-    // this.checkActive_();
-    // var task = new lf.proc.ImportTask(this.global_, data);
-    // return this.runner_.scheduleTask(task).then(function() {
-    //   return null;
-    // });
-    throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+    this.checkActive();
+    const task = new ImportTask(this.global, data);
+    return this.runner.scheduleTask(task).then(() => {
+    return;
+    });
   }
 
   public isOpen(): boolean {
