@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {assert} from '../base/assert';
 import {Row} from '../base/row';
 import {Column} from '../schema/column';
 
@@ -35,11 +36,11 @@ export class RelationEntry {
           result[prefix] = payload[prefix];
         });
       } else {
-        // TODO(arthurhsu): assert
-        // goog.asserts.assert(
-        // !result.hasOwnProperty(entryTables[0]),
-        // 'Attempted to join table with itself, without using table alias, ' +
-        // 'or same alias ' + entryTables[0] + 'is reused for multiple tables.')
+        assert(
+            !result.hasOwnProperty(entryTables[0]),
+            'Attempted to join table with itself, without using table alias, ' +
+                'or same alias ' + entryTables[0] +
+                'is reused for multiple tables.');
 
         // Since the entry is not prefixed, all attributes come from a single
         // table.

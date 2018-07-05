@@ -66,7 +66,7 @@ export class BundledObjectStore implements RuntimeTable {
     return this.getPagesByRowIds(ids).then((pages) => {
       return ids.map((id) => {
         const page = pages.get(Page.toPageId(id)) as Page;
-        assert(page === undefined, 'Containing page is empty');
+        assert(page !== undefined, 'Containing page is empty');
         return this.deserializeFn(page.getPayload()[id]);
       });
     });

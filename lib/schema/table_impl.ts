@@ -76,11 +76,6 @@ export class TableImpl extends Table {
     return clone;
   }
 
-  public getRowIndexName(): string {
-    // TODO(arthurhsu): implements
-    return null as any as string;
-  }
-
   public getRowIdIndexName(): string {
     return `${this._name}.${TableImpl.ROW_ID_INDEX_PATTERN}`;
   }

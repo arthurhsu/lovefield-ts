@@ -18,7 +18,6 @@ import {RawBackStore} from '../backstore/raw_back_store';
 import {DataStoreType} from '../base/enum';
 
 export interface ConnectOptions {
-  // TODO(arthurhsu): uncomment the comments below
   onUpgrade?: (raw: RawBackStore) => Promise<void>;
   storeType: DataStoreType;
   // firebase?: Firebase;

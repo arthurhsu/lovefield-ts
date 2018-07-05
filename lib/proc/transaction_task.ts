@@ -29,6 +29,7 @@ import {Journal} from '../cache/journal';
 import {QueryBuilder} from '../query/query_builder';
 import {Table} from '../schema/table';
 
+import {ObserverQueryTask} from './observer_query_task';
 import {Relation} from './relation';
 import {Runner} from './runner';
 import {Task} from './task';
@@ -155,9 +156,8 @@ export class TransactionTask extends UniqueId implements Task {
     const items = this.observerRegistry.getTaskItemsForTables(
         Array.from(this.scope.values()));
     if (items.length !== 0) {
-      // TODO(arthurhsu): implement
-      // const observerTask = new ObserverQueryTask(this.global, items);
-      // this.runner.scheduleTask(observerTask);
+      const observerTask = new ObserverQueryTask(this.global, items);
+      this.runner.scheduleTask(observerTask);
       throw new Exception(ErrorCode.NOT_IMPLEMENTED);
     }
   }

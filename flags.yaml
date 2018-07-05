@@ -10,7 +10,7 @@
 Flags:
   # Debug mode: in debug mode, full assertion and error messages will be
   # compiled into dist.
-  DEBUG: false
+  DEBUG: true
 
   # Makes Lovefield to support in-memory DB only without data persistence.
   # When set to true, in-memory DB will be created regardless storeType

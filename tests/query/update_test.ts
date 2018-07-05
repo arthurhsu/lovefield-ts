@@ -88,8 +88,6 @@ describe('UpdateTest', () => {
     assert.notEqual(context.set[0], context2.set[0]);
     assert.equal(context2.clonedFrom, context);
     assert.notEqual(context.getUniqueId(), context2.getUniqueId());
-    // TODO(arthurhsu): implement
-    // assert.notEqual((context.where as Predicate).getUniqueId(),
-    //    (context2.where as Predicate).getUniqueId());
+    assert.notEqual(context.where, context2.where);
   });
 });
