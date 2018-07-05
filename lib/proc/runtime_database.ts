@@ -15,6 +15,7 @@
  */
 
 import {BackStore} from '../backstore/back_store';
+import {ExternalChangeObserver} from '../backstore/external_change_observer';
 import {IndexedDB} from '../backstore/indexed_db';
 import {Memory} from '../backstore/memory';
 import {ObservableStore} from '../backstore/observable_store';
@@ -52,12 +53,18 @@ export class RuntimeDatabase implements DatabaseConnection {
   private schema: Database;
   private isActive: boolean;
   private runner!: Runner;
+  private observeExternalChanges: boolean;
 
   constructor(private global: Global) {
     this.schema = global.getService(Service.SCHEMA);
 
     // Whether this connection to the database is active.
     this.isActive = false;
+
+    // Observe external changes, set for non-local persistence storage.
+    // This was for Firebase but the TypeScript version does not support it.
+    // Kept to allow future integration with other cloud backend.
+    this.observeExternalChanges = false;
   }
 
   public init(options?: ConnectOptions): Promise<RuntimeDatabase> {
@@ -81,11 +88,11 @@ export class RuntimeDatabase implements DatabaseConnection {
           return indexStore.init(this.schema);
         })
         .then(() => {
-          // if (observeExternalChanges) {
-          // var externalChangeObserver =
-          //     new ExternalChangeObserver(global);
-          //   externalChangeObserver.startObserving();
-          // }
+          if (this.observeExternalChanges) {
+            const externalChangeObserver =
+                new ExternalChangeObserver(this.global);
+            externalChangeObserver.startObserving();
+          }
           if (options && options['enableInspector'] && window) {
             // Exposes a global '#lfExport' method, that can be used by the
             // Lovefield Inspector Devtools Chrome extension.
