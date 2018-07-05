@@ -54,7 +54,7 @@ export class Global {
     return this.services.has(serviceId.toString());
   }
 
-  public listServices(): IterableIterator<string> {
-    return this.services.keys();
+  public listServices(): string[] {
+    return Array.from(this.services.keys());
   }
 }

@@ -22,6 +22,7 @@ import {DatabaseConnection} from '../base/database_connection';
 import {DataStoreType, TransactionType} from '../base/enum';
 import {ErrorCode, Exception} from '../base/exception';
 import {Global} from '../base/global';
+import {Inspector} from '../base/inspect';
 import {ObserverRegistry} from '../base/observer_registry';
 import {ObserverCallback} from '../base/observer_registry_entry';
 import {Service} from '../base/service';
@@ -84,9 +85,11 @@ export class RuntimeDatabase implements DatabaseConnection {
           //     new ExternalChangeObserver(global);
           //   externalChangeObserver.startObserving();
           // }
-          // if (options['enableInspector']) {
-          //   lf.base.enableInspector_(global);
-          // }
+          if (options && options['enableInspector'] && window) {
+            // Exposes a global '#lfExport' method, that can be used by the
+            // Lovefield Inspector Devtools Chrome extension.
+            window.top['#lfInspect'] = Inspector.inspect;
+          }
           const prefetcher = new Prefetcher(this.global);
           return prefetcher.init(this.schema);
         })
