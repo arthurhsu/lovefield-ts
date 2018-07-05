@@ -17,6 +17,7 @@
 import {BackStore} from '../backstore/back_store';
 import {IndexedDB} from '../backstore/indexed_db';
 import {Memory} from '../backstore/memory';
+import {ObservableStore} from '../backstore/observable_store';
 import {Capability} from '../base/capability';
 import {DatabaseConnection} from '../base/database_connection';
 import {DataStoreType, TransactionType} from '../base/enum';
@@ -168,22 +169,21 @@ export class RuntimeDatabase implements DatabaseConnection {
     });
   }
 
-  public import(data: object): Promise<void> {
+  // TODO(arthurhsu): clang-format is unable to properly format this file after
+  // this import function.
+  // clang-format off
+  public import(data: object): Promise<any> {
     this.checkActive();
     const task = new ImportTask(this.global, data);
-    return this.runner.scheduleTask(task).then(() => {
-    return;
-    });
+    return this.runner.scheduleTask(task);
   }
 
   public isOpen(): boolean {
     return this.isActive;
   }
 
-  // clang-format off
   private checkActive(): void {
     if (!this.isActive) {
-      // 2: The database connection is not active.
       throw new Exception(ErrorCode.CONNECTION_CLOSED);
     }
   }
@@ -199,33 +199,37 @@ export class RuntimeDatabase implements DatabaseConnection {
 
     let dataStoreType: DataStoreType;
     if (options === undefined || options.storeType === undefined) {
-      const capability = Capability.get();
-      dataStoreType = capability.indexedDb ?
-            DataStoreType.INDEXED_DB :
-            (capability.webSql ? DataStoreType.WEB_SQL : DataStoreType.MEMORY);
+    const capability = Capability.get();
+    dataStoreType = capability.indexedDb ?
+        DataStoreType.INDEXED_DB :
+        (capability.webSql ? DataStoreType.WEB_SQL : DataStoreType.MEMORY);
     } else {
       dataStoreType = options.storeType;
     }
 
     switch (dataStoreType) {
-    case DataStoreType.INDEXED_DB:
-      backStore = new IndexedDB(this.global, schema);
-      break;
-    case DataStoreType.MEMORY:
-      backStore = new Memory(schema);
-      break;
+      case DataStoreType.INDEXED_DB:
+        backStore = new IndexedDB(this.global, schema);
+        break;
 
-    // case DataStoreType.OBSERVABLE_STORE:
-    //   backStore = new ObservableStore(schema);
-    //   break;
-    // case DataStoreType.WEB_SQL:
-    //   backStore = new WebSql(
-    //       global, schema, options['webSqlDbSize']);
-    //   break;
-    default:
-      // We no longer support FIREBASE.
-      // 300: Not supported.
-      throw new Exception(ErrorCode.NOT_SUPPORTED);
+      case DataStoreType.MEMORY:
+        backStore = new Memory(schema);
+        break;
+
+      case DataStoreType.OBSERVABLE_STORE:
+        backStore = new ObservableStore(schema);
+        break;
+
+      case DataStoreType.WEB_SQL:
+        //   backStore = new WebSql(
+        //       global, schema, options['webSqlDbSize']);
+        //   break;
+        throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+
+      default:
+        // We no longer support FIREBASE.
+        // 300: Not supported.
+        throw new Exception(ErrorCode.NOT_SUPPORTED);
     }
 
     return backStore;
