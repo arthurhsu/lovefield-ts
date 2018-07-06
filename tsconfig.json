@@ -22,7 +22,8 @@
     "types": [
       "chai",
       "mocha",
-      "node"
+      "node",
+      "websql"
     ]
   },
   "include": [

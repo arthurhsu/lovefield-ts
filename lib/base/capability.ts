@@ -77,7 +77,7 @@ export class Capability {
   }
 
   private detectNodeJS(): boolean {
-    if (typeof process !== undefined) {
+    if (typeof process !== undefined && process.version) {
       // Assume this is NodeJS.
       this.convertVersion(process.version.slice(1));
       // Support only Node.js >= 7.0.
@@ -104,7 +104,7 @@ export class Capability {
       this.isIOS.bind(this),     // this must be placed after Safari
     ];
 
-    checkSequence.some((fn) => !fn());
+    checkSequence.some((fn) => fn());
   }
 
   private detectVersion(): void {
@@ -122,7 +122,9 @@ export class Capability {
     do {
       match = regex.exec(this.agent);
       if (match) {
-        this.versionMap.set(match[0] as string, match[1] as string);
+        const version = match[0] as string;
+        this.versionMap.set(
+            match[1] as string, version.slice(version.indexOf('/') + 1));
       }
     } while (match);
   }
@@ -131,10 +133,10 @@ export class Capability {
     let detected = false;
     if (this.agent.indexOf('Chrome') !== -1) {
       detected = true;
-      this.convertVersion('Chrome');
+      this.convertVersion(this.versionMap.get('Chrome'));
     } else if (this.agent.indexOf('CriOS') !== -1) {
       detected = true;
-      this.convertVersion('CriOS');
+      this.convertVersion(this.versionMap.get('CriOS'));
     }
 
     if (detected) {
@@ -192,7 +194,7 @@ export class Capability {
   private isSafari(): boolean {
     if (this.agent.indexOf('Safari') !== -1) {
       this.browser = 'safari';
-      this.convertVersion('Version');
+      this.convertVersion(this.versionMap.get('Version'));
       this.supported = this.version[0] >= 10;
       this.indexedDb = this.supported;
       this.webSql = true;
@@ -206,7 +208,7 @@ export class Capability {
         (this.agent.indexOf('iPad') !== -1 ||
          this.agent.indexOf('iPhone') !== -1)) {
       this.browser = 'ios_webview';
-      this.convertVersion('Version');
+      this.convertVersion(this.versionMap.get('Version'));
       this.supported = this.version[0] >= 10;
       this.indexedDb = this.supported;
       this.webSql = true;

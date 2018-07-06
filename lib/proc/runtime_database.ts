@@ -19,6 +19,7 @@ import {ExternalChangeObserver} from '../backstore/external_change_observer';
 import {IndexedDB} from '../backstore/indexed_db';
 import {Memory} from '../backstore/memory';
 import {ObservableStore} from '../backstore/observable_store';
+import {WebSql} from '../backstore/web_sql';
 import {Capability} from '../base/capability';
 import {DatabaseConnection} from '../base/database_connection';
 import {DataStoreType, TransactionType} from '../base/enum';
@@ -228,10 +229,9 @@ export class RuntimeDatabase implements DatabaseConnection {
         break;
 
       case DataStoreType.WEB_SQL:
-        //   backStore = new WebSql(
-        //       global, schema, options['webSqlDbSize']);
-        //   break;
-        throw new Exception(ErrorCode.NOT_IMPLEMENTED);
+        backStore = new WebSql(
+            this.global, schema, options ? options.websqlDbSize : undefined);
+        break;
 
       default:
         // We no longer support FIREBASE.

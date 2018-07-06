@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {Row} from '../base/row';
 
 // Raw data store interface passed to onUpgrade() function.
 export interface RawBackStore {
@@ -42,6 +43,10 @@ export interface RawBackStore {
   renameTableColumn(
       tableName: string, oldColumnName: string,
       newColumnName: string): Promise<void>;
+
+  // Creates a Lovefield row structure that can be stored into raw DB instance
+  // via raw transaction.
+  createRow(payload: object): Row;
 
   // Returns version of existing DB.
   getVersion(): number;
