@@ -24,12 +24,194 @@ export class Capability {
 
   private static instance: Capability;
 
-  public readonly indexedDb: boolean;
-  public readonly webSql: boolean;
+  public supported: boolean;
+  public indexedDb: boolean;
+  public webSql: boolean;
+  public localStorage: boolean;
+
+  private agent: string;
+  private browser: string;
+  private version: number[];
+  private versionMap: Map<string, string>;
 
   constructor() {
-    // TODO(arthurhsu): implement detection that is Node.js friendly.
-    this.indexedDb = true;
+    this.supported = false;
+    this.indexedDb = false;
     this.webSql = false;
+    this.localStorage = false;
+    this.agent = '';
+    this.browser = '';
+    this.version = [];
+    this.versionMap = new Map<string, string>();
+
+    this.detect();
+  }
+
+  public getDetection(): string {
+    return `${this.browser} ${this.version.join('.')}`;
+  }
+
+  private detect(): void {
+    if (!this.detectNodeJS()) {
+      if (navigator) {
+        this.agent = navigator.userAgent;
+        this.detectBrowser();
+      }
+    }
+  }
+
+  private convertVersion(version: string|undefined): void {
+    if (version === undefined) {
+      return;
+    }
+
+    this.version = version.split('.').map((v) => {
+      let n = 0;
+      try {
+        n = parseInt(v, 10);
+      } catch (e) {
+        // Swallow error.
+      }
+      return n;
+    });
+  }
+
+  private detectNodeJS(): boolean {
+    if (typeof process !== undefined) {
+      // Assume this is NodeJS.
+      this.convertVersion(process.version.slice(1));
+      // Support only Node.js >= 7.0.
+      this.supported = this.version[0] >= 7;
+      this.browser = 'nodejs';
+      this.indexedDb = false;
+      this.webSql = false;
+      return true;
+    }
+    return false;
+  }
+
+  private detectBrowser(): void {
+    if (this.isIE() || this.isAndroid()) {
+      return;
+    }
+
+    this.localStorage = true;
+    this.detectVersion();
+    const checkSequence = [
+      this.isEdge.bind(this),  // this must be placed before Chrome
+      this.isFirefox.bind(this), this.isChrome.bind(this),
+      this.isSafari.bind(this),  // this must be placed after Chrome/Firefox
+      this.isIOS.bind(this),     // this must be placed after Safari
+    ];
+
+    checkSequence.some((fn) => !fn());
+  }
+
+  private detectVersion(): void {
+    const regex = new RegExp(
+        // Key. Note that a key may have a space.
+        // (i.e. 'Mobile Safari' in 'Mobile Safari/5.0')
+        '(\\w[\\w ]+)' +
+            '/' +                // slash
+            '([^\\s]+)' +        // version (i.e. '5.0b')
+            '\\s*' +             // whitespace
+            '(?:\\((.*?)\\))?',  // parenthetical info. parentheses not matched.
+        'g');
+
+    let match: RegExpExecArray|null = null;
+    do {
+      match = regex.exec(this.agent);
+      if (match) {
+        this.versionMap.set(match[0] as string, match[1] as string);
+      }
+    } while (match);
+  }
+
+  private isChrome(): boolean {
+    let detected = false;
+    if (this.agent.indexOf('Chrome') !== -1) {
+      detected = true;
+      this.convertVersion('Chrome');
+    } else if (this.agent.indexOf('CriOS') !== -1) {
+      detected = true;
+      this.convertVersion('CriOS');
+    }
+
+    if (detected) {
+      this.browser = 'chrome';
+      this.supported = this.version[0] > 60;
+      this.indexedDb = true;
+      this.webSql = true;
+      return true;
+    }
+    return false;
+  }
+
+  private isEdge(): boolean {
+    if (this.agent.indexOf('Edge') !== -1) {
+      this.browser = 'edge';
+      this.supported = true;
+      this.indexedDb = true;
+      this.webSql = false;
+      this.convertVersion(this.versionMap.get('Edge'));
+      return true;
+    }
+    return false;
+  }
+
+  private isFirefox(): boolean {
+    if (this.agent.indexOf('Firefox') !== -1) {
+      this.browser = 'firefox';
+      this.convertVersion('Firefox');
+      this.supported = this.version[0] > 60;
+      this.indexedDb = true;
+      this.webSql = false;
+      return true;
+    }
+    return false;
+  }
+
+  private isIE(): boolean {
+    if (this.agent.indexOf('Trident') !== -1 ||
+        this.agent.indexOf('MSIE') !== -1) {
+      this.browser = 'ie';
+      return true;
+    }
+    return false;
+  }
+
+  private isAndroid(): boolean {
+    if (this.agent.indexOf('Android') !== -1 && !this.isChrome() &&
+        !this.isFirefox()) {
+      this.browser = 'legacy_android';
+      return true;
+    }
+    return false;
+  }
+
+  private isSafari(): boolean {
+    if (this.agent.indexOf('Safari') !== -1) {
+      this.browser = 'safari';
+      this.convertVersion('Version');
+      this.supported = this.version[0] >= 10;
+      this.indexedDb = this.supported;
+      this.webSql = true;
+      return true;
+    }
+    return false;
+  }
+
+  private isIOS(): boolean {
+    if (this.agent.indexOf('AppleWebKit') !== -1 &&
+        (this.agent.indexOf('iPad') !== -1 ||
+         this.agent.indexOf('iPhone') !== -1)) {
+      this.browser = 'ios_webview';
+      this.convertVersion('Version');
+      this.supported = this.version[0] >= 10;
+      this.indexedDb = this.supported;
+      this.webSql = true;
+      return true;
+    }
+    return false;
   }
 }

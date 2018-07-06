@@ -21,7 +21,8 @@
     "target": "es5",
     "types": [
       "chai",
-      "mocha"
+      "mocha",
+      "node"
     ]
   },
   "include": [
