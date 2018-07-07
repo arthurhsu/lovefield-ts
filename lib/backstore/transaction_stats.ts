@@ -20,10 +20,26 @@ export class TransactionStats {
   }
 
   constructor(
-      readonly success: boolean,
-      readonly insertedRowCount: number,
-      readonly updatedRowCount: number,
-      readonly deletedRowCount: number,
-      readonly changedTableCount: number,
+      private success_: boolean,
+      private insertedRowCount_: number,
+      private updatedRowCount_: number,
+      private deletedRowCount_: number,
+      private changedTableCount_: number,
   ) {}
+
+  public success(): boolean {
+    return this.success_;
+  }
+  public insertedRowCount(): number {
+    return this.insertedRowCount_;
+  }
+  public updatedRowCount(): number {
+    return this.updatedRowCount_;
+  }
+  public deletedRowCount(): number {
+    return this.deletedRowCount_;
+  }
+  public changedTableCount(): number {
+    return this.changedTableCount_;
+  }
 }

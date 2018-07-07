@@ -18,7 +18,6 @@ import {BackStore} from '../backstore/back_store';
 import {TransactionStats} from '../backstore/transaction_stats';
 import {Tx} from '../backstore/tx';
 import {TransactionType} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {ObserverRegistry} from '../base/observer_registry';
 import {TaskPriority} from '../base/private_enum';
@@ -158,7 +157,6 @@ export class TransactionTask extends UniqueId implements Task {
     if (items.length !== 0) {
       const observerTask = new ObserverQueryTask(this.global, items);
       this.runner.scheduleTask(observerTask);
-      throw new Exception(ErrorCode.NOT_IMPLEMENTED);
     }
   }
 }

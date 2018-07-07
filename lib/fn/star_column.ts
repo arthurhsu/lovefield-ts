@@ -76,4 +76,10 @@ export class StarColumn implements Column {
   public isUnique(): boolean {
     return false;
   }
+
+  public as(alias: string): StarColumn {
+    const clone = new StarColumn(alias);
+    clone.table = this.table;
+    return clone;
+  }
 }

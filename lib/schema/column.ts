@@ -32,4 +32,7 @@ export interface Column {
 
   // Additional function call, not existent in original Lovefield.
   isUnique(): boolean;
+
+  // Alias the column, used in query.
+  as(alias: string): Column;
 }
