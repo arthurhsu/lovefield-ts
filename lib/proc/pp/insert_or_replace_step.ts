@@ -41,7 +41,7 @@ export class InsertOrReplaceStep extends PhysicalQueryPlanNode {
 
   public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
       Relation[] {
-    const queryContext = context as any as InsertContext;
+    const queryContext = ctx as any as InsertContext;
     InsertStep.assignAutoIncrementPks(
         this.table, queryContext.values, this.indexStore);
     (journal as Journal).insertOrReplace(this.table, queryContext.values);
