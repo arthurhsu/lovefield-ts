@@ -151,4 +151,9 @@ describe('ArrayHelper', () => {
         ArrayHelper.product([[1, 2], [3, 4], [5, 6]]));
     assert.sameDeepMembers([], ArrayHelper.product([[], [1, 2, 3]]));
   });
+
+  it('bucket', () => {
+    assert.deepEqual(
+        {1: [1, 3], 0: [2, 4]}, ArrayHelper.bucket([1, 2, 3, 4], (v) => v % 2));
+  });
 });

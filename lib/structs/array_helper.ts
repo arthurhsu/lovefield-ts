@@ -122,6 +122,20 @@ export class ArrayHelper {
     return result;
   }
 
+  // Returns an object whose keys are all unique return values of sorter.
+  public static bucket<T>(arr: T[], sorter: (v: T) => any): object {
+    const bucket = {};
+
+    arr.forEach((v) => {
+      const key = sorter(v);
+      if (bucket[key] === undefined) {
+        bucket[key] = [];
+      }
+      bucket[key].push(v);
+    });
+    return bucket;
+  }
+
   // Returns lowest index of the target value if found, otherwise
   // (-(insertion point) - 1). The insertion point is where the value should
   // be inserted into arr to preserve the sorted property.  Return value >= 0
