@@ -131,6 +131,7 @@ export function getHrDbSchemaBuilder(dbName?: string): Builder {
       .addColumn('number', Type.NUMBER)
       .addColumn('string', Type.STRING)
       .addColumn('string2', Type.STRING)
+      .addColumn('proto', Type.OBJECT)
       .addPrimaryKey(['string', 'number'])
       .addUnique('uq_constraint', ['integer', 'string2'])
       .addNullable(['datetime']);

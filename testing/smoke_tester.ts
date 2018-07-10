@@ -184,16 +184,16 @@ export class SmokeTester {
     assert.isTrue(thrown);
 
     // Invalid query shall be caught in transaction, too.
-    const select2 = db.select().from(r).from(r);
+    const select2 = db.select();
     const tx2 = db.createTransaction(TransactionType.READ_ONLY);
     thrown = false;
     try {
       await tx2.exec([select2]);
     } catch (e) {
       thrown = true;
-      // 515: from() has already been called.
-      assert.equal(ErrorCode.DUPLICATE_FROM, e.code);
+      assert.equal(ErrorCode.INVALID_SELECT, e.code);
     }
+    assert.isTrue(thrown);
   }
 
   // Generates sample records to be used for testing.
