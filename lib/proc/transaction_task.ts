@@ -109,12 +109,15 @@ export class TransactionTask extends UniqueId implements Task {
             (e) => {
               this.journal.rollback();
 
-              // Need to reject execResolver here such that all locks acquired
-              // by this transaction task are eventually released. NOTE: Using a
-              // CancellationError to prevent the Promise framework to consider
-              // this.execResolver_.promise an unhandled rejected promise, which
-              // ends up in an unwanted exception showing up in the console.
-              this.execResolver.reject(e);
+              // Need to resolve execResolver here such that all locks acquired
+              // by this transaction task are eventually released and avoid
+              // unhandled rejected promise, which ends up in an unwanted
+              // exception showing up in the console.
+              this.execResolver.resolve();
+
+              // Rethrows e so that caller's catch and reject handler will have
+              // a chance to handle error instead of considering execution
+              // success.
               throw e;
             });
   }

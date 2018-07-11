@@ -272,9 +272,12 @@ describe('EndToEndTransaction', () => {
 
     // Attempting to add an employee row that already exists.
     const q4 = db.insert().into(e).values([sampleEmployees[0]]);
+    let isThrown = false;
     try {
       await tx.attach(q4);
     } catch (ex) {
+      isThrown = true;
+
       // 201: Duplicate keys are not allowed.
       assert.equal(ErrorCode.DUPLICATE_KEYS, ex.code);
 
@@ -286,6 +289,8 @@ describe('EndToEndTransaction', () => {
       TestUtil.assertThrowsError(ErrorCode.INVALID_TX_STATE, beginFn);
     }
 
+    // Ensure previous catch block is effective.
+    assert.isTrue(isThrown);
     results = await TestUtil.selectAll(global, j);
     // Checking that the entire transaction was rolled back, and therefore that
     // Job row that had been added does not appear on disk.
