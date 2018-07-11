@@ -71,7 +71,7 @@ describe('ExternalChangeObserver', () => {
     modifiedRow.payload()['id'] = 'DummyJobId';
     modifiedRow.assignRowId(sampleJobs[0].id());
 
-    const extractResultsPk = (res: Row[]) => {
+    const extractResultsPk = (res: object[]) => {
       return res.map((obj: object) => obj[j['id'].getName()]);
     };
     const extractRowsPk = (rows: Row[]) =>
@@ -79,7 +79,7 @@ describe('ExternalChangeObserver', () => {
 
     // Simulate an external insertion of rows.
     await simulateInsertionModification(j, sampleJobs);
-    let results = await db.select().from(j).orderBy(j['id']).exec();
+    let results: object[] = await db.select().from(j).orderBy(j['id']).exec();
     // Ensure that external insertion change is detected and applied properly.
     assert.sameDeepOrderedMembers(
         extractRowsPk(initialRows), extractResultsPk(results));

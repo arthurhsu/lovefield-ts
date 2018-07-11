@@ -181,7 +181,7 @@ describe('EndToEndSelectTest', () => {
   it('SkipBinder', async () => {
     const queryBuilder = db.select().from(j).skip(bind(0));
 
-    let results: Row[] = await queryBuilder.bind([0]).exec();
+    let results: object[] = await queryBuilder.bind([0]).exec();
     assert.equal(dataGenerator.sampleJobs.length, results.length);
     results = await queryBuilder.bind([2]).exec();
     assert.equal(dataGenerator.sampleJobs.length - 2, results.length);
@@ -219,7 +219,7 @@ describe('EndToEndSelectTest', () => {
     assert.equal(
         -1, plan.indexOf('index_range_scan(CrossColumnTable.idx_crossNull'));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.sameMembers([10, 12, 14], results.map((obj) => obj['integer1']));
   });
 
@@ -236,7 +236,7 @@ describe('EndToEndSelectTest', () => {
     assert.notEqual(
         -1, plan.indexOf('index_range_scan(CrossColumnTable.idx_crossNull'));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     // Rows with integer1 value of 14, 16 and 18 have string1 value of null,
     // so should not appear in the results.
     assert.sameMembers(
@@ -256,7 +256,7 @@ describe('EndToEndSelectTest', () => {
     assert.notEqual(
         -1, plan.indexOf('index_range_scan(CrossColumnTable.idx_crossNull'));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.sameMembers([8], results.map((obj) => obj['integer1']));
   });
 
@@ -265,7 +265,7 @@ describe('EndToEndSelectTest', () => {
     const q1 = db.select(j['id'].as('Foo')).from(j).where(j['id'].eq(targetId));
     const q2 = db.select(j['id']).from(j).where(j['id'].eq(targetId));
 
-    let results: Row[] = await q1.exec();
+    let results: object[] = await q1.exec();
     assert.equal(1, results.length);
     assert.equal(targetId, results[0]['Foo']);
     results = await q2.exec();
@@ -278,7 +278,7 @@ describe('EndToEndSelectTest', () => {
   it('ColumnFiltering', async () => {
     const queryBuilder = db.select(j['id'], j['title'].as('Job Title')).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(dataGenerator.sampleJobs.length, results.length);
     results.forEach((result) => {
       assert.equal(2, Object.keys(result).length);
@@ -294,7 +294,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder = db.select().from(e, j).where(
         op.and(e['jobId'].eq(jobId), e['jobId'].eq(j['id'])));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertEmployeesForJob(e, jobId, results);
   });
 
@@ -308,7 +308,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder = db.select().from(j, e).where(
         op.and(e['jobId'].eq(jobId), e['jobId'].eq(j['id'])));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertEmployeesForJob(e, jobId, results);
   });
 
@@ -323,7 +323,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder = db.select().from(j1, e1).where(
         op.and(e1['jobId'].eq(jobId), e1['jobId'].eq(j1['id'])));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertEmployeesForJob(e1, jobId, results);
   });
 
@@ -338,7 +338,7 @@ describe('EndToEndSelectTest', () => {
                              .orderBy(j1['id'], Order.ASC)
                              .orderBy(j2['id'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const groundTruth = dataGenerator.jobGroundTruth.selfJoinSalary;
     assert.equal(groundTruth.length, results.length);
     for (let i = 0; i < results.length; i++) {
@@ -367,7 +367,7 @@ describe('EndToEndSelectTest', () => {
 
   // Executes and checks the given multi-join query (implicit vs explicit).
   function checkMultiJoin(queryBuilder: SelectQuery): Promise<void> {
-    return queryBuilder.exec().then((results: Row[]) => {
+    return queryBuilder.exec().then((results: object[]) => {
       assert.equal(dataGenerator.sampleEmployees.length, results.length);
       results.forEach((obj) => {
         assert.equal(3, Object.keys(obj).length);
@@ -394,7 +394,7 @@ describe('EndToEndSelectTest', () => {
         e['jobId'].eq(j['id']), e['departmentId'].eq(d['id']),
         e['id'].eq(sampleEmployee.payload()['id'])));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     const obj = results[0];
     assert.equal(
@@ -422,7 +422,7 @@ describe('EndToEndSelectTest', () => {
         j['maxSalary'].eq(dataGenerator.jobGroundTruth.maxMaxSalary),
         j['title'].eq(sampleJob.payload()['title'])));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.isTrue(results.length >= 1);
     results.forEach((obj, index) => {
       assert.isTrue(
@@ -442,7 +442,7 @@ describe('EndToEndSelectTest', () => {
                              .innerJoin(j, j['id'].eq(e['jobId']))
                              .where(j['minSalary'].gt(minSalaryLimit));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const expectedJobs = dataGenerator.sampleJobs.filter((job) => {
       return job.payload()['minSalary'] > minSalaryLimit;
     });
@@ -541,7 +541,7 @@ describe('EndToEndSelectTest', () => {
                              .leftOuterJoin(c, r['id'].eq(c['regionId']))
                              .orderBy(r['id'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOuterJoinResult(r, c, results);
   });
 
@@ -556,7 +556,7 @@ describe('EndToEndSelectTest', () => {
                              .orderBy(r['id'], Order.ASC)
                              .where(c['id'].eq(countryId));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(countryId, results[0][c.getName()][c['id'].getName()]);
     assert.isNotNull(results[0][r.getName()]);
@@ -573,7 +573,7 @@ describe('EndToEndSelectTest', () => {
                              .leftOuterJoin(d, e['departmentId'].eq(d['id']))
                              .where(op.and(j['id'].isNull(), d['id'].isNull()));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     // Since every employee corresponds to an existing jobId and
     // departmentId expecting an empty result.
     assert.equal(0, results.length);
@@ -587,7 +587,7 @@ describe('EndToEndSelectTest', () => {
                              .innerJoin(l, c['id'].eq(l['countryId']))
                              .orderBy(r['id'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOuterInnerJoinResult(r, c, l, results);
   });
 
@@ -599,7 +599,7 @@ describe('EndToEndSelectTest', () => {
                              .leftOuterJoin(l, c['id'].eq(l['countryId']))
                              .orderBy(r['id'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertInnerOuterJoinResult(c, r, l, results);
   });
 
@@ -639,7 +639,7 @@ describe('EndToEndSelectTest', () => {
                              .innerJoin(j, j['id'].eq(e['jobId']))
                              .where(d['id'].eq(expectedDepartmentId));
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(dataGenerator.sampleEmployees.length, results.length);
     results.forEach((obj) => {
       assert.equal(3, Object.keys(obj).length);
@@ -659,7 +659,7 @@ describe('EndToEndSelectTest', () => {
   it('OrderBy_Ascending', async () => {
     const queryBuilder = db.select().from(j).orderBy(j['minSalary'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOrder(results, j['minSalary'], Order.ASC);
   });
 
@@ -667,7 +667,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder =
         db.select().from(j).orderBy(j['maxSalary'], Order.DESC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOrder(results, j['maxSalary'], Order.DESC);
   });
 
@@ -678,7 +678,7 @@ describe('EndToEndSelectTest', () => {
                              .orderBy(j['maxSalary'], Order.DESC)
                              .orderBy(j['minSalary'], Order.ASC);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(results.length, dataGenerator.sampleJobs.length);
     assertOrder(results, j['maxSalary'], Order.DESC);
 
@@ -701,7 +701,7 @@ describe('EndToEndSelectTest', () => {
                              .orderBy(aggregatedColumn, order)
                              .groupBy(e['jobId']);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOrder(results, aggregatedColumn, order);
   });
 
@@ -713,7 +713,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder =
         db.select(aggregatedColumn).from(e).orderBy(e['jobId'], order);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assertOrder(results, aggregatedColumn, order);
   });
 
@@ -736,7 +736,7 @@ describe('EndToEndSelectTest', () => {
     let expectedJobIdOrder: string[];
     // First executing the query with the aggregated column in the projected
     // list, to get the expected jobId ordering.
-    let results: Row[] = await queryBuilder1.exec();
+    let results: object[] = await queryBuilder1.exec();
     assertOrder(results, aggregatedColumn, order);
     expectedJobIdOrder = results.map((obj) => obj[e['jobId'].getName()]);
     // Then executing the same query without the aggregated column in the
@@ -752,7 +752,7 @@ describe('EndToEndSelectTest', () => {
             .from(e)
             .groupBy(e['jobId']);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const expectedResultCount =
         Array.from(dataGenerator.employeeGroundTruth.employeesPerJob.keys())
             .length;
@@ -769,7 +769,7 @@ describe('EndToEndSelectTest', () => {
             .limit(limit)
             .groupBy(e['jobId']);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(limit, results.length);
     assertGroupByResults(
         results, [e['jobId'].getName(), fn.avg(e['salary']).getName()]);
@@ -779,7 +779,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder = db.select(e['jobId'], e['salary'], fn.count(e['id']))
                              .from(e)
                              .groupBy(e['jobId']);
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const expectedResultCount =
         Array.from(dataGenerator.employeeGroundTruth.employeesPerJob.keys())
             .length;
@@ -799,7 +799,7 @@ describe('EndToEndSelectTest', () => {
                 e['departmentId'].eq(d['id']), d['locationId'].eq(l['id']),
                 l['countryId'].eq(c['id'])))
             .groupBy(e['jobId']);
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const expectedResultCount =
         Array.from(dataGenerator.employeeGroundTruth.employeesPerJob.keys())
             .length;
@@ -853,7 +853,7 @@ describe('EndToEndSelectTest', () => {
     const queryBuilder =
         db.select(aggregatedColumn1, aggregatedColumn2).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(2, Object.keys(results[0]).length);
     assert.equal(
@@ -869,7 +869,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.count(fn.distinct(j['maxSalary'])).as('NS');
     const queryBuilder = db.select(aggregatedColumn).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(
@@ -883,7 +883,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.count(h['name']);
     const queryBuilder = db.select(aggregatedColumn).from(h);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(0, results[0][aggregatedColumn.getName()]);
@@ -894,7 +894,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.count();
     const queryBuilder = db.select(aggregatedColumn).from(e);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(
@@ -908,7 +908,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.min(h['begin']);
     const queryBuilder = db.select(aggregatedColumn).from(h);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.isNull(results[0][aggregatedColumn.getName()]);
@@ -920,7 +920,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.max(h['begin']);
     const queryBuilder = db.select(aggregatedColumn).from(h);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.isNull(results[0][aggregatedColumn.getName()]);
@@ -931,7 +931,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.sum(fn.distinct(j['maxSalary']));
     const queryBuilder = db.select(aggregatedColumn).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(
@@ -944,7 +944,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.avg(fn.distinct(j['maxSalary']));
     const queryBuilder = db.select(aggregatedColumn).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(
@@ -955,10 +955,9 @@ describe('EndToEndSelectTest', () => {
   // Tests the case where a STDDEV and DISTINCT aggregators are combined.
   it('Stddev_Distinct', async () => {
     const aggregatedColumn = fn.stddev(fn.distinct(j['maxSalary']));
-    const queryBuilder = /** @type {!lf.query.SelectBuilder} */ (
-        db.select(aggregatedColumn).from(j));
+    const queryBuilder = db.select(aggregatedColumn).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     assert.equal(1, results.length);
     assert.equal(1, Object.keys(results[0]).length);
     assert.equal(
@@ -971,7 +970,7 @@ describe('EndToEndSelectTest', () => {
     const aggregatedColumn = fn.distinct(j['maxSalary']);
     const queryBuilder = db.select(aggregatedColumn).from(j);
 
-    const results: Row[] = await queryBuilder.exec();
+    const results: object[] = await queryBuilder.exec();
     const distinctSalaries = results.map((result) => {
       return result[aggregatedColumn.getName()];
     });
@@ -1010,7 +1009,7 @@ describe('EndToEndSelectTest', () => {
         dataGenerator.sampleEmployees.map((row) => row.payload()['lastName'])
             .sort();
 
-    const results: Row[] =
+    const results: object[] =
         await db.select(d['name'], e['lastName'].as('elname'), e['firstName'])
             .from(d, e)
             .where(e['departmentId'].eq(d['id']))
@@ -1024,14 +1023,14 @@ describe('EndToEndSelectTest', () => {
     const targetId = dataGenerator.sampleJobs[3].payload()['id'];
     const queryBuilder = db.select().from(j).where(j['id'].eq(bind(1)));
 
-    let results: Row[] = await queryBuilder.bind(['', '']).exec();
+    let results: object[] = await queryBuilder.bind(['', '']).exec();
     assert.equal(0, results.length);
     results = await queryBuilder.bind(['', targetId]).exec();
     assert.equal(1, results.length);
-    assert.equal(targetId, results[0].id);
+    assert.equal(targetId, results[0]['id']);
     results = await queryBuilder.exec();
     assert.equal(1, results.length);
-    assert.equal(targetId, results[0].id);
+    assert.equal(targetId, results[0]['id']);
   });
 
   it('ForgetParamBindingRejects', async () => {

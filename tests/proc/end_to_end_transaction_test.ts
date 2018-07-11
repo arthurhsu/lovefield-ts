@@ -198,7 +198,7 @@ describe('EndToEndTransaction', () => {
     const scope = [j, e];
     await tx.begin(scope);
     const q1 = db.select().from(j);
-    let results: Row[] = await tx.attach(q1);
+    let results: object[] = await tx.attach(q1);
     assert.equal(sampleJobs.length, results.length);
     const q2 = db.select().from(e);
     results = await tx.attach(q2);
@@ -254,7 +254,7 @@ describe('EndToEndTransaction', () => {
 
     await tx.begin(scope);
     const q0 = db.select().from(j);
-    let results: Row[] = await tx.attach(q0);
+    let results: object[] = await tx.attach(q0);
     assert.equal(sampleJobs.length, results.length);
 
     // Adding a new job row.
@@ -308,9 +308,9 @@ describe('EndToEndTransaction', () => {
     const newJob = j.createRow();
     newJob.payload()['id'] = newJobId;
     const q1 = db.insert().into(j).values([newJob]);
-    let results: Row[] = await tx.attach(q1);
+    await tx.attach(q1);
     const q2 = db.select().from(j).where(j['id'].eq(newJobId));
-    results = await tx.attach(q2);
+    let results: object[] = await tx.attach(q2);
     assert.equal(1, results.length);
 
     const q3 = db.select().from(j);
