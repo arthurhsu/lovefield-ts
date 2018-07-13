@@ -150,6 +150,10 @@ export class IndexedDB implements BackStore {
     return true;
   }
 
+  public peek(): IDBDatabase {
+    return this.db;
+  }
+
   private onUpgradeNeeded(
       onUpgrade: (raw: RawBackStore) => Promise<void>,
       ev: IDBVersionChangeEvent): Promise<void> {

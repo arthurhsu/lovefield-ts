@@ -77,6 +77,10 @@ export class Memory implements BackStore {
     return true;
   }
 
+  public peek(): Map<string, MemoryTable> {
+    return this.tables;
+  }
+
   // Creates a new empty table in the database. It is a no-op if a table with
   // the given name already exists.
   // NOTE: the return value is not ported because it's not used.
