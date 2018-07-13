@@ -144,6 +144,7 @@ export class Capability {
       this.supported = this.version[0] > 60;
       this.indexedDb = true;
       this.webSql = true;
+      this.localStorage = true;
       return true;
     }
     return false;
@@ -168,6 +169,7 @@ export class Capability {
       this.supported = this.version[0] > 60;
       this.indexedDb = true;
       this.webSql = false;
+      this.localStorage = true;
       return true;
     }
     return false;

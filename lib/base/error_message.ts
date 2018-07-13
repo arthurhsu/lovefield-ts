@@ -107,7 +107,9 @@ function setupMap(): Map<ErrorCode, string> {
   m.set(ec.NO_WEBSQL_TX, 'Use WebSQL instance to create transaction instead.');
   m.set(ec.NO_PRED_IN_TOSQL, 'toSql() does not support predicate type: {0}.');
   m.set(ec.NOT_IMPL_IN_TOSQL, 'toSql() is not implemented for {0}.');
-  m.set(ec.LS_NOT_PROVIDED, 'LocalStorage is not supported by platform.');
+  m.set(
+      ec.LOCAL_STORAGE_NOT_PROVIDED,
+      'LocalStorage is not supported by platform.');
   m.set(ec.NOT_IMPLEMENTED, 'Not implemented yet.');
   m.set(
       ec.CANT_OPEN_IDB,
