@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 const chalk = require('chalk');
 const diff = require('diff');
 const fs = require('fs-extra');
@@ -129,7 +128,7 @@ function genFlags() {
       .pipe(gulp.dest('lib/gen'));
 }
 
-gulp.task('default', () => {
+gulp.task('default', (cb) => {
   let log = console.log;
   log('gulp tasks:');
   log('  build: build all libraries and tests');
@@ -141,9 +140,17 @@ gulp.task('default', () => {
   log('  --quick, -q: Quick test only');
   log('  --grep, -g: Mocha grep pattern');
   log('  --flag <KEY:VALUE>: Override flags');
+  cb();
 });
 
-gulp.task('build', () => {
+gulp.task('clean', (cb) => {
+  fs.removeSync(getProject().options.outDir);
+  fs.removeSync('coverage');
+  fs.removeSync('lib/gen');
+  cb();
+});
+
+gulp.task('build', gulp.series('clean', function actualBuild() {
   genFlags();
   return getProject()
       .src()
@@ -151,7 +158,7 @@ gulp.task('build', () => {
       .pipe(tsProject())
       .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest(tsProject.options.outDir));
-});
+}));
 
 gulp.task('lint', () => {
   return getProject()
@@ -169,13 +176,19 @@ function quickTest() {
     grep: getGrepPattern()
   };
 
-  gulp.src(['out/tests/**/*.js', '!out/tests/**/*_spec.js'], {read: false})
+  return gulp
+      .src(['out/tests/**/*.js', '!out/tests/**/*_spec.js'], {read: false})
       .pipe(mocha(mochaOptions));
 }
 
-gulp.task('test', ['build'], () => {
+gulp.task('test', gulp.series('build', function actualTest(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
   if (isQuickMode()) {
-    quickTest();
+    return quickTest();
   } else {
     let server = new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
@@ -188,7 +201,7 @@ gulp.task('test', ['build'], () => {
     });
     server.start();
   }
-});
+}));
 
 function errorInSauceBrowserResults(ret) {
   let result = false;
@@ -200,7 +213,12 @@ function errorInSauceBrowserResults(ret) {
   return result;
 }
 
-gulp.task('ci', ['build'], () => {
+gulp.task('ci', gulp.series('build', function actualCI(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
   quickTest();
   const server = new karma.Server({
     configFile: path.join(__dirname, 'karma_config_ci.js')
@@ -213,18 +231,20 @@ gulp.task('ci', ['build'], () => {
     }
   });
   server.start();
-});
+}));
 
-gulp.task('debug', ['build'], () => {
+gulp.task('debug', gulp.series('build', function actualDebug(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
   new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
       singleRun: false,
       client: { mocha: { grep: getGrepPattern() } }
   }).start();
-});
-
-gulp.task('pre-commit', ['build', 'lint', 'fastcheck'], () => {
-});
+}));
 
 gulp.task('fastcheck', () => {
   return getProject()
@@ -236,6 +256,13 @@ gulp.task('fastcheck', () => {
       });
 });
 
+gulp.task(
+    'pre-commit',
+    gulp.parallel(['build', 'lint', 'fastcheck'],
+    function preCommitCheck(cb) {
+      cb();
+    }));
+
 gulp.task('format', () => {
   return getProject()
       .src()
@@ -243,15 +270,9 @@ gulp.task('format', () => {
       .pipe(gulp.dest('.'));
 });
 
-gulp.task('check', ['lint'], () => {
+gulp.task('check', gulp.series('lint', function actualCheck() {
   return getProject()
       .src()
       .pipe(format.format('file'))
       .pipe(checkFormat());
-});
-
-gulp.task('clean', () => {
-  fs.removeSync(getProject().options.outDir);
-  fs.removeSync('coverage');
-  fs.removeSync('lib/gen');
-});
+}));

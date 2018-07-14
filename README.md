@@ -54,6 +54,14 @@ The dist and release mechanism is not developed yet.
 * `npm install`
 * `node node_modules/guppy-cli/bin/index.js pre-commit`
 
+Lovefield-ts uses Gulp 4. If you have previously installed Lovefield, please run
+the following commands:
+
+```bash
+npm uninstall -g gulp
+npm install -g gulp-cli
+```
+
 ### Development flow
 
 Run `gulp` to see the commands.
