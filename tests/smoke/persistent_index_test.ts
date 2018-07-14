@@ -28,7 +28,7 @@ import {ComparatorFactory} from '../../lib/index/comparator_factory';
 import {Key} from '../../lib/index/key_range';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Index} from '../../lib/schema';
+import {Index} from '../../lib/schema/index';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 

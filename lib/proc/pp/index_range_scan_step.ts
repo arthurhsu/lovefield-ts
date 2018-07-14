@@ -25,7 +25,7 @@ import {Key, SingleKeyRange} from '../../index/key_range';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {Context} from '../../query/context';
 import {SelectContext} from '../../query/select_context';
-import {Index} from '../../schema';
+import {Index} from '../../schema/index';
 import {Relation} from '../relation';
 
 import {IndexKeyRangeCalculator} from './index_key_range_calculator';

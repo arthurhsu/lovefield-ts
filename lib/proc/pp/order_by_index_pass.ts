@@ -17,7 +17,7 @@
 import {Order} from '../../base/enum';
 import {Global} from '../../base/global';
 import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
-import {Index} from '../../schema';
+import {Index} from '../../schema/index';
 import {Table} from '../../schema/table';
 import {TreeHelper} from '../../structs/tree_helper';
 import {TreeNode} from '../../structs/tree_node';

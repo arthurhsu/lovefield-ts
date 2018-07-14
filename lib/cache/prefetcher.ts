@@ -27,8 +27,8 @@ import {IndexStore} from '../index/index_store';
 import {Key} from '../index/key_range';
 import {NullableIndex} from '../index/nullable_index';
 import {RowId} from '../index/row_id';
-import {Index} from '../schema';
 import {Database} from '../schema/database';
+import {Index} from '../schema/index';
 import {Table} from '../schema/table';
 
 import {Cache} from './cache';

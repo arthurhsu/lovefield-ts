@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Index} from '../schema';
+import {Index} from '../schema/index';
 import {MultiKeyComparator} from './multi_key_comparator';
 import {MultiKeyComparatorWithNull} from './multi_key_comparator_with_null';
 import {SimpleComparator} from './simple_comparator';

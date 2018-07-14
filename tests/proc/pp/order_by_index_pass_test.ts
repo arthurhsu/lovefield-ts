@@ -29,9 +29,9 @@ import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_i
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Index} from '../../../lib/schema';
 import {Builder} from '../../../lib/schema/builder';
 import {Column} from '../../../lib/schema/column';
+import {Index} from '../../../lib/schema/index';
 import {Table} from '../../../lib/schema/table';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
