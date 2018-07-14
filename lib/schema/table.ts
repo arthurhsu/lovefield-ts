@@ -25,13 +25,11 @@ export abstract class Table implements BaseTable {
   // and therefore user-defined indices can never collide with it.
   public static ROW_ID_INDEX_PATTERN = '#';
 
-  protected _indices: Index[];
   protected _alias: string;
 
   constructor(
-      readonly _name: string, readonly _columns: Column[], indices: Index[],
-      readonly _usePersistentIndex: boolean) {
-    this._indices = indices;
+      readonly _name: string, protected _columns: Column[],
+      protected _indices: Index[], readonly _usePersistentIndex: boolean) {
     this._alias = null as any as string;
   }
 

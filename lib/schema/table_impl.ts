@@ -42,13 +42,13 @@ export class TableImpl extends Table {
   constructor(
       name: string, cols: ColumnDef[], indices: Index[],
       persistentIndex: boolean, alias?: string) {
-    const columns = cols.map((col) => {
+    super(name, [], indices || TableImpl.EMPTY_INDICES, persistentIndex);
+    cols.forEach((col) => {
       const colSchema =
           new BaseColumn(this, col.name, col.unique, col.nullable, col.type);
       this[col.name] = colSchema;
-      return colSchema;
-    });
-    super(name, columns, indices || TableImpl.EMPTY_INDICES, persistentIndex);
+      this._columns.push(colSchema);
+    }, this);
     this._referencingFK = null as any as ForeignKeySpec[];
     this._functionMap = null as any as Map<string, (column: any) => Key>;
     this._constraint = null as any as Constraint;

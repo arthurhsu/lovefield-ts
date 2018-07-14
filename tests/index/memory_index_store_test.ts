@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import * as sinon from 'ts-sinon';
+import * as sinon from 'sinon';
 import {BTree} from '../../lib/index/btree';
 import {ComparatorFactory} from '../../lib/index/comparator_factory';
 import {IndexStore} from '../../lib/index/index_store';
@@ -23,7 +23,6 @@ import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {Database} from '../../lib/schema/database';
-import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
@@ -31,10 +30,19 @@ const assert = chai.assert;
 describe('MemoryIndexStore', () => {
   let indexStore: IndexStore;
   let schema: Database;
+  let sandbox: sinon.SinonSandbox;
+
+  before(() => {
+    sandbox = sinon.createSandbox();
+  });
 
   beforeEach(() => {
     indexStore = new MemoryIndexStore();
     schema = getMockSchemaBuilder().getSchema();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   // Asserts that the indices corresponding to the given index names are of a
@@ -46,63 +54,61 @@ describe('MemoryIndexStore', () => {
     });
   }
 
-  it('memoryIndexStore', () => {
+  it('memoryIndexStore', async () => {
     const tableA = schema.table('tableA');
-    const tableB: Table = sinon.stubObject<Table>(
-        schema.table('tableB'), {persistentIndex: true});
+    const tableB = schema.table('tableB');
+    sandbox.stub(tableB, 'persistentIndex').callsFake(() => true);
     const tableF = schema.table('tableF');
 
     assert.isFalse(tableA.persistentIndex());
     assert.isTrue(tableB.persistentIndex());
     assert.isFalse(tableF.persistentIndex());
 
-    return indexStore.init(schema).then(() => {
-      // Table A index names.
-      const tableAPkIndex = 'tableA.pkTableA';
-      const tableANameIndex = 'tableA.idxName';
-      const tableARowIdIndex = 'tableA.#';
+    await indexStore.init(schema);
 
-      // Table B index names.
-      const tableBPkIndex = 'tableB.pkTableB';
-      const tableBNameIndex = 'tableB.idxName';
-      const tableBRowIdIndex = 'tableB.#';
+    // Table A index names.
+    const tableAPkIndex = 'tableA.pkTableA';
+    const tableANameIndex = 'tableA.idxName';
+    const tableARowIdIndex = 'tableA.#';
 
-      // Table F index names.
-      const tableFNameIndex = 'tableF.idxName';
-      const tableFRowIdIndex = 'tableF.#';
+    // Table B index names.
+    const tableBPkIndex = 'tableB.pkTableB';
+    const tableBNameIndex = 'tableB.idxName';
+    const tableBRowIdIndex = 'tableB.#';
 
-      // Table G index names.
-      const tableGFkIndex = 'tableG.fk_Id';
-      const tableGFkIndex2 = 'tableG.idx_Id';
+    // Table F index names.
+    const tableFNameIndex = 'tableF.idxName';
+    const tableFRowIdIndex = 'tableF.#';
 
-      // Table J index names.
-      const tableJIdIndex = 'tableJ.idxId';
+    // Table G index names.
+    const tableGFkIndex = 'tableG.fk_Id';
+    const tableGFkIndex2 = 'tableG.idx_Id';
 
-      assertIndicesType(
-          [tableARowIdIndex, tableBRowIdIndex, tableFRowIdIndex], 'RowId');
-      assertIndicesType([tableAPkIndex], 'BTree');
-      assertIndicesType([tableGFkIndex], 'BTree');
-      assertIndicesType([tableGFkIndex2], 'BTree');
-      assertIndicesType([tableANameIndex], 'BTree');
-      assertIndicesType([tableBPkIndex, tableBNameIndex], 'BTree');
-      // Single-column nullable index is typed NullableIndex.
-      assertIndicesType([tableFNameIndex], 'NullableIndex');
-      // Cross-column nullable index is typed BTree.
-      assertIndicesType([tableJIdIndex], 'BTree');
-    });
+    // Table J index names.
+    const tableJIdIndex = 'tableJ.idxId';
+
+    assertIndicesType(
+        [tableARowIdIndex, tableBRowIdIndex, tableFRowIdIndex], 'RowId');
+    assertIndicesType([tableAPkIndex], 'BTree');
+    assertIndicesType([tableGFkIndex], 'BTree');
+    assertIndicesType([tableGFkIndex2], 'BTree');
+    assertIndicesType([tableANameIndex], 'BTree');
+    assertIndicesType([tableBPkIndex, tableBNameIndex], 'BTree');
+    // Single-column nullable index is typed NullableIndex.
+    assertIndicesType([tableFNameIndex], 'NullableIndex');
+    // Cross-column nullable index is typed BTree.
+    assertIndicesType([tableJIdIndex], 'BTree');
   });
 
   // Tests the case of calling getTableIndices() for a table that has no
   // indices.
-  it('getTableIndices_NoIndices', () => {
-    return indexStore.init(schema).then(() => {
-      const tableWithNoIndexName = schema.table('tableC');
-      // There should be at least one row id index.
-      assert.equal(
-          1, indexStore.getTableIndices(tableWithNoIndexName.getName()).length);
-      assert.isNotNull(
-          indexStore.get(tableWithNoIndexName.getRowIdIndexName()));
-    });
+  it('getTableIndices_NoIndices', async () => {
+    await indexStore.init(schema);
+    const tableWithNoIndexName = schema.table('tableC');
+    // There should be at least one row id index.
+    assert.equal(
+        1, indexStore.getTableIndices(tableWithNoIndexName.getName()).length);
+    assert.isNotNull(indexStore.get(tableWithNoIndexName.getRowIdIndexName()));
   });
 
   // Tests that when searching for a table's indices, the table name is used as
@@ -122,20 +128,19 @@ describe('MemoryIndexStore', () => {
   });
 
   // Tests that set() is correctly replacing any existing indices.
-  it('set', () => {
+  it('set', async () => {
     const tableSchema = schema.table('tableA');
     const indexSchema = tableSchema.getIndices()[0];
 
-    return indexStore.init(schema).then(() => {
-      const indexBefore = indexStore.get(indexSchema.getNormalizedName());
-      const comparator = ComparatorFactory.create(indexSchema);
-      const newIndex = new BTree(
-          indexSchema.getNormalizedName(), comparator, indexSchema.isUnique);
-      indexStore.set(tableSchema.getName(), newIndex);
+    await indexStore.init(schema);
+    const indexBefore = indexStore.get(indexSchema.getNormalizedName());
+    const comparator = ComparatorFactory.create(indexSchema);
+    const newIndex = new BTree(
+        indexSchema.getNormalizedName(), comparator, indexSchema.isUnique);
+    indexStore.set(tableSchema.getName(), newIndex);
 
-      const indexAfter = indexStore.get(indexSchema.getNormalizedName());
-      assert.isTrue(indexBefore !== indexAfter);
-      assert.equal(newIndex, indexAfter);
-    });
+    const indexAfter = indexStore.get(indexSchema.getNormalizedName());
+    assert.isTrue(indexBefore !== indexAfter);
+    assert.equal(newIndex, indexAfter);
   });
 });
