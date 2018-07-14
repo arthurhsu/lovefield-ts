@@ -229,6 +229,7 @@ gulp.task('ci', gulp.series('build', function actualCI(cb) {
       console.log('===== TEST FAILED =====');
       process.exit(1);
     }
+    cb();
   });
   server.start();
 }));
