@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Row} from '../base/row';
 import {ArrayHelper} from '../structs/array_helper';
 import {BTree} from './btree';

@@ -15,8 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {Order, Type} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ErrorCode, Order, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {TableBuilder} from '../../lib/schema/table_builder';
 import {TestUtil} from '../../testing/test_util';

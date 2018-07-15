@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 import {Capability} from '../../lib/base/capability';
 import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 

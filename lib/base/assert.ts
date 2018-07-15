@@ -15,7 +15,8 @@
  */
 
 import {Flags} from '../gen/flags';
-import {ErrorCode, Exception} from './exception';
+import {ErrorCode} from './enum';
+import {Exception} from './exception';
 
 export function assert(condition: boolean, message = 'assertion failed'): void {
   if (Flags.DEBUG) {

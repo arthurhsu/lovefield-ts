@@ -17,9 +17,8 @@
 import * as chai from 'chai';
 
 import {bind} from '../../lib/base/bind';
-import {DataStoreType} from '../../lib/base/enum';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {EvalType} from '../../lib/base/eval';
-import {ErrorCode} from '../../lib/base/exception';
 import {AggregatedColumn} from '../../lib/fn/aggregated_column';
 import {fn} from '../../lib/fn/fn';
 import {op} from '../../lib/fn/op';

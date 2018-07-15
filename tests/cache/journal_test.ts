@@ -16,7 +16,7 @@
 
 import * as chai from 'chai';
 
-import {ErrorCode} from '../../lib/base/exception';
+import {ErrorCode} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {Journal} from '../../lib/cache/journal';
 import {Key, SingleKeyRange} from '../../lib/index/key_range';

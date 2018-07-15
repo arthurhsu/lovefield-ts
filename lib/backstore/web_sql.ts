@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Resolver} from '../base/resolver';
 import {Row} from '../base/row';

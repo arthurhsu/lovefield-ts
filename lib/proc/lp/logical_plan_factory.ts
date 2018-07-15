@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from '../../base/exception';
+import {ErrorCode} from '../../base/enum';
+import {Exception} from '../../base/exception';
 import {Context} from '../../query/context';
 import {DeleteContext} from '../../query/delete_context';
 import {InsertContext} from '../../query/insert_context';

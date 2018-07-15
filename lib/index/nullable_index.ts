@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Row} from '../base/row';
 import {IndexStats} from './index_stats';
 import {Key, KeyRange, SingleKeyRange} from './key_range';

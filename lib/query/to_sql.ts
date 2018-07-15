@@ -15,9 +15,9 @@
  */
 
 import {Binder} from '../base/bind';
-import {Order, Type} from '../base/enum';
+import {ErrorCode, Order, Type} from '../base/enum';
 import {EvalType} from '../base/eval';
-import {ErrorCode, Exception} from '../base/exception';
+import {Exception} from '../base/exception';
 import {Operator} from '../base/private_enum';
 import {Row} from '../base/row';
 import {CombinedPredicate} from '../pred/combined_predicate';

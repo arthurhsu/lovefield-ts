@@ -15,8 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {Order} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ErrorCode, Order} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {BTree} from '../../lib/index/btree';
 import {BTreeNode} from '../../lib/index/btree_node';

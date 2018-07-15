@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from '../../lib/base/exception';
+import {ErrorCode} from '../../lib/base/enum';
+import {Exception} from '../../lib/base/exception';
 import {Row} from '../../lib/base/row';
 import {RuntimeTable} from '../../lib/base/runtime_table';
 import {TableDiff} from '../../lib/cache/table_diff';

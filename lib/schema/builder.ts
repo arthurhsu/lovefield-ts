@@ -15,7 +15,8 @@
  */
 
 import {DatabaseConnection} from '../base/database_connection';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Service} from '../base/service';
 import {ServiceId} from '../base/service_id';

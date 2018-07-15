@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Order, Type} from '../base/enum';
+import {ErrorCode, Order, Type} from '../base/enum';
 import {EvalRegistry} from '../base/eval';
-import {ErrorCode, Exception} from '../base/exception';
+import {Exception} from '../base/exception';
 import {RawRow, Row} from '../base/row';
 import {Key, SingleKey} from '../index/key_range';
 

@@ -16,9 +16,9 @@
 
 import {assert} from '../base/assert';
 import {Binder} from '../base/bind';
-import {Type} from '../base/enum';
+import {ErrorCode, Type} from '../base/enum';
 import {EvalRegistry, EvalType} from '../base/eval';
-import {ErrorCode, Exception} from '../base/exception';
+import {Exception} from '../base/exception';
 import {SingleKey, SingleKeyRange} from '../index/key_range';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';

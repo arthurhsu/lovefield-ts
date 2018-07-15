@@ -15,9 +15,8 @@
  */
 
 import * as chai from 'chai';
-import {Type} from '../../lib/base/enum';
+import {ErrorCode, Type} from '../../lib/base/enum';
 import {EvalRegistry, EvalType} from '../../lib/base/eval';
-import {ErrorCode} from '../../lib/base/exception';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;

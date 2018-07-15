@@ -15,8 +15,8 @@
  */
 
 import {BackStore} from '../backstore/back_store';
-import {TransactionType} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {TableType, TaskPriority} from '../base/private_enum';
 import {Resolver} from '../base/resolver';

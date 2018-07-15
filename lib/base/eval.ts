@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Type} from './enum';
-import {ErrorCode, Exception} from './exception';
+import {ErrorCode, Type} from './enum';
+import {Exception} from './exception';
 
 export enum EvalType {
   BETWEEN = 'between',

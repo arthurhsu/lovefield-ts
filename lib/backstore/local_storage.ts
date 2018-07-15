@@ -15,8 +15,8 @@
  */
 
 import {BackStore} from '../backstore/back_store';
-import {TransactionType} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';

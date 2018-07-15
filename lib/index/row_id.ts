@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Order} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode, Order} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Row} from '../base/row';
 import {Favor} from './comparator';
 import {IndexHelper} from './index_helper';

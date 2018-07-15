@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as chai from 'chai';
-import {ErrorCode} from '../../lib/base/exception';
+import {ErrorCode} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {ServiceId} from '../../lib/base/service_id';
 import {TestUtil} from '../../testing/test_util';

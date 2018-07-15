@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 import {bind} from '../../lib/base/bind';
 import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {UpdateBuilder} from '../../lib/query/update_builder';

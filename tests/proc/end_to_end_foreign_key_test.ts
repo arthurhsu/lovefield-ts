@@ -16,8 +16,7 @@
 
 import * as chai from 'chai';
 
-import {ConstraintTiming, DataStoreType, Type} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ConstraintTiming, DataStoreType, ErrorCode, Type} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';

@@ -15,7 +15,7 @@
  */
 
 import {assert} from '../../lib/base/assert';
-import {ErrorCode} from '../../lib/base/exception';
+import {ErrorCode} from '../../lib/base/enum';
 import {Flags} from '../../lib/gen/flags';
 import {TestUtil} from '../../testing/test_util';
 

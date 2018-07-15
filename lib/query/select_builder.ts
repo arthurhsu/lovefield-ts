@@ -15,8 +15,8 @@
  */
 
 import {Binder} from '../base/bind';
-import {Order, Type} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode, Order, Type} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {FnType} from '../base/private_enum';
 import {Service} from '../base/service';

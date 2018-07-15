@@ -17,8 +17,8 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {DataStoreType} from '../../lib/base/enum';
-import {ErrorCode, Exception} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Exception} from '../../lib/base/exception';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';

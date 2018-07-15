@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 
 import {DatabaseConnection} from '../../lib/base/database_connection';
-import {ConstraintAction, DataStoreType, Type} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ConstraintAction, DataStoreType, ErrorCode, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {Builder} from '../../lib/schema/builder';
 import {Table} from '../../lib/schema/table';

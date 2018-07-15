@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ConstraintAction, ConstraintTiming, Order, Type} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../base/enum';
+import {Exception} from '../base/exception';
 import {ColumnDef} from './column_def';
 import {ForeignKeySpec, RawForeignKeySpec} from './foreign_key_spec';
 import {Index} from './index';

@@ -15,8 +15,9 @@
  */
 
 import {assert} from '../base/assert';
+import {ErrorCode} from '../base/enum';
 import {ComparisonFunction, EvalRegistry, EvalType, KeyOfIndexFunction} from '../base/eval';
-import {ErrorCode, Exception} from '../base/exception';
+import {Exception} from '../base/exception';
 import {Row} from '../base/row';
 import {Cache} from '../cache/cache';
 import {Key} from '../index/key_range';

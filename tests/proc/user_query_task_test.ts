@@ -18,8 +18,7 @@ import * as chai from 'chai';
 
 import {bind} from '../../lib/base/bind';
 import {ChangeRecord} from '../../lib/base/change_record';
-import {DataStoreType} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {Resolver} from '../../lib/base/resolver';
 import {Row} from '../../lib/base/row';

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ConstraintAction, ConstraintTiming} from '../base/enum';
-import {ErrorCode, Exception} from '../base/exception';
+import {ConstraintAction, ConstraintTiming, ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Row} from '../base/row';
 import {Service} from '../base/service';

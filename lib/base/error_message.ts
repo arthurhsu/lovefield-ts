@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import {ErrorCode} from '../base/enum';
 import {Flags} from '../gen/flags';
-import {ErrorCode} from './exception';
 
 class ErrorMessages {
   public static get(code: ErrorCode): string|undefined {

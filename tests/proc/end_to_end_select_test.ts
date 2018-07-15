@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 
 import {bind} from '../../lib/base/bind';
-import {DataStoreType, Order} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {fn} from '../../lib/fn/fn';
 import {op} from '../../lib/fn/op';

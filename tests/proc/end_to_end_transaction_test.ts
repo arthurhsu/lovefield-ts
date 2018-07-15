@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 
 import {TransactionStats} from '../../lib/backstore/transaction_stats';
-import {DataStoreType} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {ObserverCallback} from '../../lib/base/observer_registry_entry';
 import {Resolver} from '../../lib/base/resolver';

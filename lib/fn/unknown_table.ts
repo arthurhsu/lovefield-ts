@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from '../base/exception';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {RawRow, Row} from '../base/row';
 import {Constraint} from '../schema/constraint';
 import {Table} from '../schema/table';

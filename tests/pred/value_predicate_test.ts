@@ -16,9 +16,8 @@
 
 import * as chai from 'chai';
 import {bind, Binder} from '../../lib/base/bind';
-import {Type} from '../../lib/base/enum';
+import {ErrorCode, Type} from '../../lib/base/enum';
 import {EvalType} from '../../lib/base/eval';
-import {ErrorCode} from '../../lib/base/exception';
 import {Row} from '../../lib/base/row';
 import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {ValuePredicate} from '../../lib/pred/value_predicate';

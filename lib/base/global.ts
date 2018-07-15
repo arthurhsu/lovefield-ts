@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Exception} from './exception';
+import {ErrorCode} from './enum';
+import {Exception} from './exception';
 import {ServiceId} from './service_id';
 
 export class Global {

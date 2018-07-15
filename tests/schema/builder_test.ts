@@ -15,8 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {ConstraintAction, ConstraintTiming, Order, Type} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../../lib/base/enum';
 import {Builder} from '../../lib/schema/builder';
 import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
 import {TestUtil} from '../../testing/test_util';

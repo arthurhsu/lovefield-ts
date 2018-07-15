@@ -16,8 +16,7 @@
 
 import * as chai from 'chai';
 
-import {ConstraintAction, ConstraintTiming, Type} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {ConstraintAction, ConstraintTiming, ErrorCode, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {ConstraintChecker} from '../../lib/cache/constraint_checker';
 import {Modification} from '../../lib/cache/modification';

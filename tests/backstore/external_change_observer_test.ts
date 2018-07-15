@@ -18,8 +18,7 @@ import * as chai from 'chai';
 
 import {ExternalChangeObserver} from '../../lib/backstore/external_change_observer';
 import {ObservableStore} from '../../lib/backstore/observable_store';
-import {DataStoreType, TransactionType} from '../../lib/base/enum';
-import {ErrorCode} from '../../lib/base/exception';
+import {DataStoreType, ErrorCode, TransactionType} from '../../lib/base/enum';
 import {TableType} from '../../lib/base/private_enum';
 import {Resolver} from '../../lib/base/resolver';
 import {Row} from '../../lib/base/row';
