@@ -17,8 +17,7 @@
 import * as chai from 'chai';
 import {ErrorCode, Order} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
-import {BTree} from '../../lib/index/btree';
-import {BTreeNode} from '../../lib/index/btree_node';
+import {BTree, BTreeNode} from '../../lib/index/btree';
 import {Comparator} from '../../lib/index/comparator';
 import {Key, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
