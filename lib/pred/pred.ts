@@ -15,7 +15,6 @@
  */
 
 import {EvalType} from '../base/eval';
-import {BaseColumn} from '../schema/base_column';
 import {Column} from '../schema/column';
 import {JoinPredicate} from './join_predicate';
 import {Predicate} from './predicate';
@@ -28,8 +27,9 @@ export function createPredicate<T>(
     return new ValuePredicate(lhs, rhs, type);
   }
 
-  if (rhs instanceof BaseColumn) {
-    return new JoinPredicate(lhs, rhs, type);
+  const r = rhs as any;
+  if (r.getIndex && r.getIndices) {
+    return new JoinPredicate(lhs, rhs as Column, type);
   }
 
   // Value predicate, which can be bounded or not.
