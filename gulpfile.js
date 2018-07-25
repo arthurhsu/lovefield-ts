@@ -300,7 +300,6 @@ gulp.task('deps', (cb) => {
             let r = relativePath(
                 path.resolve(
                     path.dirname(f.path), s.moduleSpecifier.text + '.ts'));
-            console.log(fPath, r);
             if (r !== fPath) {
               t.add(fPath, r);
             }

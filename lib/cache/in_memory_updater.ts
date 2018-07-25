@@ -15,13 +15,14 @@
  */
 
 import {Global} from '../base/global';
+import {Favor} from '../base/private_enum';
 import {Row} from '../base/row';
 import {Service} from '../base/service';
-import {Favor} from '../index/comparator';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
+
 import {Cache} from './cache';
 import {Modification} from './modification';
 import {TableDiff} from './table_diff';

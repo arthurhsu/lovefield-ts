@@ -16,7 +16,7 @@
 
 import * as chai from 'chai';
 import {Order} from '../../lib/base/enum';
-import {Favor} from '../../lib/index/comparator';
+import {Favor} from '../../lib/base/private_enum';
 import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';

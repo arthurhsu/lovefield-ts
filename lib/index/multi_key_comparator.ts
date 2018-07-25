@@ -15,7 +15,8 @@
  */
 
 import {Order} from '../base/enum';
-import {Comparator, Favor} from './comparator';
+import {Favor} from '../base/private_enum';
+import {Comparator} from './comparator';
 import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
 import {SimpleComparator} from './simple_comparator';
 

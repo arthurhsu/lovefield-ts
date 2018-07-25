@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {Favor} from '../../lib/index/comparator';
+import {Favor} from '../../lib/base/private_enum';
 import {SingleKeyRange} from '../../lib/index/key_range';
 
 const assert = chai.assert;

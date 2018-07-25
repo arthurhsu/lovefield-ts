@@ -16,8 +16,8 @@
 
 import {ErrorCode, Order} from '../base/enum';
 import {Exception} from '../base/exception';
+import {Favor} from '../base/private_enum';
 import {Row} from '../base/row';
-import {Favor} from './comparator';
 import {IndexHelper} from './index_helper';
 import {IndexStats} from './index_stats';
 import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';

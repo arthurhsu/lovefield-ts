@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+// The comparison result constant. This must be consistent with the constant
+// required by the sort function of Array.prototype.sort.
+export enum Favor {
+  RHS = -1,  // favors right hand side, i.e. lhs < rhs
+  TIE = 0,   // no favorite, i.e. lhs == rhs
+  LHS = 1,   // favors left hand side, i.e. lhs > rhs
+}
+
 export enum TableType {
   DATA = 0,
   INDEX = 1,

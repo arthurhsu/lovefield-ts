@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Favor} from './comparator';
+import {Favor} from '../base/private_enum';
 import {UnboundKey} from './unbound_key';
 
 // TODO(arthurhsu): original SingleKey can be null.
