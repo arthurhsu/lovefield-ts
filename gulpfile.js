@@ -16,6 +16,7 @@
 const chalk = require('chalk');
 const diff = require('diff');
 const fs = require('fs-extra');
+const glob = require('glob');
 const gulp = require('gulp');
 const debug = require('gulp-debug');
 const guppy = require('git-guppy')(gulp);
@@ -29,6 +30,8 @@ const karma = require('karma');
 const nopt = require('nopt');
 const path = require('path');
 const thru = require('through2');
+const Toposort = require('toposort-class');
+const ts = require('typescript');
 
 let tsProject;
 
@@ -277,3 +280,37 @@ gulp.task('check', gulp.series('lint', function actualCheck() {
       .pipe(format.format('file'))
       .pipe(checkFormat());
 }));
+
+gulp.task('deps', (cb) => {
+  glob('lib/**/*.ts', (err, matches) => {
+    let files = ['gen/flags.ts'].concat(matches);
+    let fileSet = new Set(files);
+    let options = JSON.parse(fs.readFileSync('tsconfig.json', 'utf-8'));
+    let program = ts.createProgram(files, options.compilerOptions);
+    const t = new Toposort();
+    const relativePath = (p) => {
+      return path.relative(__dirname, p).replace(/\\/g, '/');
+    };
+
+    for (const f of program.getSourceFiles()) {
+      const fPath = relativePath(f.path);
+      if (fileSet.has(fPath)) {
+        f.statements.forEach(s => {
+          if (ts.SyntaxKind[s.kind] === 'ImportDeclaration') {
+            let r = relativePath(
+                path.resolve(
+                    path.dirname(f.path), s.moduleSpecifier.text + '.ts'));
+            console.log(fPath, r);
+            if (r !== fPath) {
+              t.add(fPath, r);
+            }
+          }
+        });
+      }
+    }
+
+    console.log(t.sort().reverse());
+
+    cb();
+  });
+});
