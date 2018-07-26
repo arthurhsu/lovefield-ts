@@ -25,13 +25,13 @@ import {Column} from './column';
 import {ColumnDef} from './column_def';
 import {Constraint} from './constraint';
 import {ForeignKeySpec} from './foreign_key_spec';
-import {Index} from './index';
+import {IndexImpl} from './index_impl';
 import {IndexedColumn, IndexedColumnSpec} from './indexed_column';
 import {RowImpl} from './row_impl';
 import {Table} from './table';
 
 export class TableImpl extends Table {
-  private static EMPTY_INDICES: Index[] = [];
+  private static EMPTY_INDICES: IndexImpl[] = [];
 
   private _constraint: Constraint;
 
@@ -40,7 +40,7 @@ export class TableImpl extends Table {
   private _evalRegistry: EvalRegistry;
 
   constructor(
-      name: string, cols: ColumnDef[], indices: Index[],
+      name: string, cols: ColumnDef[], indices: IndexImpl[],
       persistentIndex: boolean, alias?: string) {
     super(name, [], indices || TableImpl.EMPTY_INDICES, persistentIndex);
     cols.forEach((col) => {
@@ -108,7 +108,7 @@ export class TableImpl extends Table {
       uniqueIndices: Set<string>, nullable: Set<string>,
       fkSpecs: ForeignKeySpec[]): void {
     if (indices.size === 0) {
-      this._constraint = new Constraint(null as any as Index, [], []);
+      this._constraint = new Constraint(null as any as IndexImpl, [], []);
       return;
     }
 
@@ -116,7 +116,7 @@ export class TableImpl extends Table {
     this._columns.forEach((col) => columnMap.set(col.getName(), col));
 
     this._indices = Array.from(indices.keys()).map((indexName) => {
-      return new Index(
+      return new IndexImpl(
           this._name, indexName, uniqueIndices.has(indexName),
           this.generateIndexedColumns(indices, columnMap, indexName));
     });
@@ -126,9 +126,9 @@ export class TableImpl extends Table {
         (index) => this._functionMap.set(
             index.getNormalizedName(), this.getKeyOfIndexFn(columnMap, index)));
 
-    const pk: Index = (pkName === null) ?
-        null as any as Index :
-        new Index(
+    const pk: IndexImpl = (pkName === null) ?
+        null as any as IndexImpl :
+        new IndexImpl(
             this._name, pkName, true,
             this.generateIndexedColumns(indices, columnMap, pkName));
     const notNullable =
@@ -173,7 +173,7 @@ export class TableImpl extends Table {
         SingleKey[] as Key;
   }
 
-  private getKeyOfIndexFn(columnMap: Map<string, Column>, index: Index):
+  private getKeyOfIndexFn(columnMap: Map<string, Column>, index: IndexImpl):
       (column: any) => Key {
     return index.columns.length === 1 ?
         this.getSingleKeyFn(columnMap, index.columns[0].schema) :

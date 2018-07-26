@@ -19,7 +19,7 @@ import {SingleKeyRange} from '../../../lib/index/key_range';
 import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
 import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
 import {Database} from '../../../lib/schema/database';
-import {Index} from '../../../lib/schema/index';
+import {IndexImpl} from '../../../lib/schema/index_impl';
 import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
@@ -63,11 +63,11 @@ describe('MultiIndexRangeScanStep', () => {
       idKeyRange: SingleKeyRange, nameKeyRange: SingleKeyRange,
       expectedRowIds: number[]): Promise<void> {
     const table = schema.table('tableA');
-    const idIndex: Index = table['id'].getIndex();
+    const idIndex: IndexImpl = table['id'].getIndex();
     const idRangeScanStep = new IndexRangeScanStep(
         env.global, idIndex, new MockKeyRangeCalculator([idKeyRange]), false);
 
-    const nameIndex: Index = table['name'].getIndex();
+    const nameIndex: IndexImpl = table['name'].getIndex();
     const nameRangeScanStep = new IndexRangeScanStep(
         env.global, nameIndex, new MockKeyRangeCalculator([nameKeyRange]),
         false);

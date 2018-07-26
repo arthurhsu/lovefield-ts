@@ -35,7 +35,7 @@ import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {Column} from '../../../lib/schema/column';
 import {Database} from '../../../lib/schema/database';
-import {Index} from '../../../lib/schema/index';
+import {IndexImpl} from '../../../lib/schema/index_impl';
 import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
@@ -63,7 +63,7 @@ describe('LimitSkipByIndexPass', () => {
     db.close();
   });
 
-  function getIndexByName(table: Table, indexName: string): Index {
+  function getIndexByName(table: Table, indexName: string): IndexImpl {
     return table.getIndices().filter((index) => index.name === indexName)[0];
   }
 

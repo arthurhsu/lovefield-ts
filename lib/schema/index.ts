@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-import {IndexedColumn} from './indexed_column';
-
-export class Index {
-  constructor(
-      readonly tableName: string, readonly name: string,
-      readonly isUnique: boolean, readonly columns: IndexedColumn[]) {}
-
-  public getNormalizedName(): string {
-    return `${this.tableName}.${this.name}`;
-  }
+export interface Index {
+  getNormalizedName(): string;
 
   // Whether this index refers to any column that is marked as nullable.
-  public hasNullableColumn(): boolean {
-    return this.columns.some((column): boolean => column.schema.isNullable());
-  }
+  hasNullableColumn(): boolean;
 }

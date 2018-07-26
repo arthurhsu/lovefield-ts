@@ -16,14 +16,14 @@
 
 import {Column} from './column';
 import {ForeignKeySpec} from './foreign_key_spec';
-import {Index} from './index';
+import {IndexImpl} from './index_impl';
 
 export class Constraint {
   constructor(
-      readonly primaryKey: Index, readonly notNullable: Column[],
+      readonly primaryKey: IndexImpl, readonly notNullable: Column[],
       readonly foreignKeys: ForeignKeySpec[]) {}
 
-  public getPrimaryKey(): Index {
+  public getPrimaryKey(): IndexImpl {
     return this.primaryKey;
   }
   public getNotNullable(): Column[] {

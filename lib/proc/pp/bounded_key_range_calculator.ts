@@ -20,7 +20,7 @@ import {SingleKeyRangeSet} from '../../index/single_key_range_set';
 import {CombinedPredicate} from '../../pred/combined_predicate';
 import {ValuePredicate} from '../../pred/value_predicate';
 import {Context} from '../../query/context';
-import {Index} from '../../schema/index';
+import {IndexImpl} from '../../schema/index_impl';
 import {ArrayHelper} from '../../structs/array_helper';
 import {MapSet} from '../../structs/map_set';
 import {IndexKeyRangeCalculator} from './index_key_range_calculator';
@@ -39,7 +39,7 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   // are used to grab the actual predicates from the given query context, such
   // that this calculator can be re-used with different query contexts.
   constructor(
-      private indexSchema: Index,
+      private indexSchema: IndexImpl,
       private predicateMap: MapSet<string, number>) {
     this.lastQueryContext = null as any as Context;
     this.combinations = null as any as (KeyRange[] | SingleKeyRange[]);

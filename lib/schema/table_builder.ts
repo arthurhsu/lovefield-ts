@@ -18,7 +18,7 @@ import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../bas
 import {Exception} from '../base/exception';
 import {ColumnDef} from './column_def';
 import {ForeignKeySpec, RawForeignKeySpec} from './foreign_key_spec';
-import {Index} from './index';
+import {IndexImpl} from './index_impl';
 import {IndexedColumnSpec} from './indexed_column';
 import {Table} from './table';
 import {TableImpl} from './table_impl';
@@ -182,7 +182,7 @@ export class TableBuilder {
 
     // Pass null as indices since Columns are not really constructed yet.
     const table = new TableImpl(
-        this.name, columns, null as any as Index[], this.persistIndex);
+        this.name, columns, null as any as IndexImpl[], this.persistIndex);
 
     // Columns shall be constructed within TableImpl's ctor, now we can
     // instruct it to construct proper index schema.

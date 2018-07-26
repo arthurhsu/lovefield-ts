@@ -20,7 +20,7 @@ import {Range} from '../../index/key_range';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {ValuePredicate} from '../../pred/value_predicate';
 import {Context} from '../../query/context';
-import {Index} from '../../schema/index';
+import {IndexImpl} from '../../schema/index_impl';
 import {MapSet} from '../../structs/map_set';
 
 import {BoundedKeyRangeCalculator} from './bounded_key_range_calculator';
@@ -40,7 +40,7 @@ export class IndexRangeCandidate {
   // query execution. Initialized lazily.
   private keyRangeCalculator: IndexKeyRangeCalculator|null;
 
-  constructor(private indexStore: IndexStore, readonly indexSchema: Index) {
+  constructor(private indexStore: IndexStore, readonly indexSchema: IndexImpl) {
     this.indexedColumnNames = new Set<string>(
         this.indexSchema.columns.map((col) => col.schema.getName()));
     this.predicateMap = null;

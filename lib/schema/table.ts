@@ -18,7 +18,7 @@ import {RawRow, Row} from '../base/row';
 import {BaseTable} from './base_table';
 import {Column} from './column';
 import {Constraint} from './constraint';
-import {Index} from './index';
+import {IndexImpl} from './index_impl';
 
 export abstract class Table implements BaseTable {
   // Row id index is named <tableName>.#, which is an invalid name for JS vars
@@ -29,7 +29,7 @@ export abstract class Table implements BaseTable {
 
   constructor(
       readonly _name: string, protected _columns: Column[],
-      protected _indices: Index[], readonly _usePersistentIndex: boolean) {
+      protected _indices: IndexImpl[], readonly _usePersistentIndex: boolean) {
     this._alias = null as any as string;
   }
 
@@ -43,7 +43,7 @@ export abstract class Table implements BaseTable {
     return this._alias || this._name;
   }
 
-  public getIndices(): Index[] {
+  public getIndices(): IndexImpl[] {
     return this._indices;
   }
   public getColumns(): Column[] {

@@ -17,7 +17,7 @@
 import {Order} from '../../base/enum';
 import {Global} from '../../base/global';
 import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
-import {Index} from '../../schema/index';
+import {IndexImpl} from '../../schema/index_impl';
 import {Table} from '../../schema/table';
 import {TreeHelper} from '../../structs/tree_helper';
 import {TreeNode} from '../../structs/tree_node';
@@ -31,7 +31,7 @@ import {TableAccessFullStep} from './table_access_full_step';
 import {UnboundedKeyRangeCalculator} from './unbounded_key_range_calculator';
 
 interface OrderByIndexRangeCandidate {
-  indexSchema: Index;
+  indexSchema: IndexImpl;
   isReverse: boolean;
 }
 
@@ -177,7 +177,7 @@ export class OrderByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
   // Determines whether the given index schema can be leveraged for producing
   // the ordering specified by the given orderBy.
   private getIndexCandidateForIndexSchema(
-      indexSchema: Index,
+      indexSchema: IndexImpl,
       orderBy: SelectContextOrderBy[]): OrderByIndexRangeCandidate|null {
     // First find an index schema which includes all columns to be sorted in the
     // same order.
@@ -211,7 +211,7 @@ export class OrderByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
   // order.
   // Returns An array of 2 elements, where 1st element corresponds to isNatural
   // and 2nd to isReverse.
-  private checkOrder(orderBy: SelectContextOrderBy[], indexSchema: Index):
+  private checkOrder(orderBy: SelectContextOrderBy[], indexSchema: IndexImpl):
       [boolean, boolean] {
     // Converting orderBy orders to a bitmask.
     const ordersLeftBitmask = orderBy.reduce((soFar, columnOrderBy) => {

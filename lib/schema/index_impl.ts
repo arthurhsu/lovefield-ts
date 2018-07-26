@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-import {KeyRange, SingleKeyRange} from '../../index/key_range';
-import {Context} from '../../query/context';
-import {IndexImpl} from '../../schema/index_impl';
-import {IndexKeyRangeCalculator} from './index_key_range_calculator';
+import {Index} from './index';
+import {IndexedColumn} from './indexed_column';
 
-export class UnboundedKeyRangeCalculator implements IndexKeyRangeCalculator {
-  constructor(private indexSchema: IndexImpl) {}
+export class IndexImpl implements Index {
+  constructor(
+      readonly tableName: string, readonly name: string,
+      readonly isUnique: boolean, readonly columns: IndexedColumn[]) {}
 
-  public getKeyRangeCombinations(queryContext: Context):
-      SingleKeyRange[]|KeyRange[] {
-    return this.indexSchema.columns.length === 1 ?
-        [SingleKeyRange.all()] :
-        [this.indexSchema.columns.map((col) => SingleKeyRange.all())];
+  public getNormalizedName(): string {
+    return `${this.tableName}.${this.name}`;
+  }
+
+  // Whether this index refers to any column that is marked as nullable.
+  public hasNullableColumn(): boolean {
+    return this.columns.some((column): boolean => column.schema.isNullable());
   }
 }

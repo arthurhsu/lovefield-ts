@@ -15,7 +15,7 @@
  */
 
 import {Database} from '../schema/database';
-import {Index} from '../schema/index';
+import {IndexImpl} from '../schema/index_impl';
 import {BTree} from './btree';
 import {ComparatorFactory} from './comparator_factory';
 import {IndexStore} from './index_store';
@@ -89,7 +89,7 @@ export class MemoryIndexStore implements IndexStore {
     return this.tableIndices.get(tableName) || [];
   }
 
-  private createIndex(indexSchema: Index): RuntimeIndex {
+  private createIndex(indexSchema: IndexImpl): RuntimeIndex {
     const comparator = ComparatorFactory.create(indexSchema);
     const index = new BTree(
         indexSchema.getNormalizedName(), comparator, indexSchema.isUnique);

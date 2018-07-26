@@ -27,7 +27,7 @@ import {ComparatorFactory} from '../../lib/index/comparator_factory';
 import {Key} from '../../lib/index/key_range';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Index} from '../../lib/schema/index';
+import {IndexImpl} from '../../lib/schema/index_impl';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
@@ -206,7 +206,7 @@ describe('PersistentIndex', () => {
   // in the backing store. |serializedRows| are the serialized version of the
   // index. |dataRows| are the rows that hold the actual data (not index data).
   function assertIndexContents(
-      indexSchema: Index, serializedRows: Row[], dataRows: Row[]): void {
+      indexSchema: IndexImpl, serializedRows: Row[], dataRows: Row[]): void {
     // Expecting at least one row for each index.
     assert.isTrue(serializedRows.length >= 1);
 

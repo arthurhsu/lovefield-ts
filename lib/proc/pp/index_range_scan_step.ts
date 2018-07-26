@@ -25,7 +25,7 @@ import {Key, SingleKeyRange} from '../../index/key_range';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {Context} from '../../query/context';
 import {SelectContext} from '../../query/select_context';
-import {Index} from '../../schema/index';
+import {IndexImpl} from '../../schema/index_impl';
 import {Relation} from '../relation';
 
 import {IndexKeyRangeCalculator} from './index_key_range_calculator';
@@ -38,7 +38,7 @@ export class IndexRangeScanStep extends PhysicalQueryPlanNode {
 
   // |reverseOrder|: return the results in reverse index order.
   constructor(
-      global: Global, public index: Index,
+      global: Global, public index: IndexImpl,
       public keyRangeCalculator: IndexKeyRangeCalculator,
       public reverseOrder: boolean) {
     super(0, ExecType.NO_CHILD);

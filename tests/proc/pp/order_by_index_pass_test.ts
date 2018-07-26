@@ -31,7 +31,7 @@ import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {Builder} from '../../../lib/schema/builder';
 import {Column} from '../../../lib/schema/column';
-import {Index} from '../../../lib/schema/index';
+import {IndexImpl} from '../../../lib/schema/index_impl';
 import {Table} from '../../../lib/schema/table';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
@@ -76,7 +76,7 @@ describe('OrderByIndexPass', () => {
     return schemaBuilder;
   }
 
-  function getIndexByName(table: Table, indexName: string): Index {
+  function getIndexByName(table: Table, indexName: string): IndexImpl {
     return table.getIndices().filter((index) => index.name === indexName)[0];
   }
 

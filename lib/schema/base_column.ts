@@ -21,21 +21,21 @@ import {createPredicate} from '../pred/pred';
 import {Predicate} from '../pred/predicate';
 import {OperandType, ValueOperandType} from '../pred/predicate_provider';
 import {Column} from '../schema/column';
-import {Index} from '../schema/index';
+import {IndexImpl} from '../schema/index_impl';
 import {Table} from '../schema/table';
 
 export class BaseColumn implements Column {
   public readonly alias: string;
 
-  private indices: Index[];
-  private index: Index;
+  private indices: IndexImpl[];
+  private index: IndexImpl;
 
   constructor(
       readonly table: Table, readonly name: string, readonly unique: boolean,
       readonly nullable: boolean, readonly type: Type, alias?: string) {
     this.alias = alias || null as any as string;
     this.indices = [];
-    this.index = undefined as any as Index;
+    this.index = undefined as any as IndexImpl;
   }
 
   public getName(): string {
@@ -70,7 +70,7 @@ export class BaseColumn implements Column {
     return this.unique;
   }
 
-  public getIndices(): Index[] {
+  public getIndices(): IndexImpl[] {
     this.table.getIndices().forEach((index) => {
       const colNames = index.columns.map((col) => col.schema.getName());
       if (colNames.indexOf(this.name) !== -1) {
@@ -80,7 +80,7 @@ export class BaseColumn implements Column {
     return this.indices;
   }
 
-  public getIndex(): Index {
+  public getIndex(): IndexImpl {
     // Check of undefined is used purposefully here, such that this logic is
     // skipped if this.index has been set to null by a previous execution of
     // getIndex().
@@ -94,7 +94,7 @@ export class BaseColumn implements Column {
 
       // Normally there should be only one dedicated index for this column,
       // but if there are more, just grab the first one.
-      this.index = (indices.length > 0) ? indices[0] : null as any as Index;
+      this.index = (indices.length > 0) ? indices[0] : null as any as IndexImpl;
     }
     return this.index;
   }

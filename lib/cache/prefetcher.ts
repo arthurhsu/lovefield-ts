@@ -28,7 +28,7 @@ import {Key} from '../index/key_range';
 import {NullableIndex} from '../index/nullable_index';
 import {RowId} from '../index/row_id';
 import {Database} from '../schema/database';
-import {Index} from '../schema/index';
+import {IndexImpl} from '../schema/index_impl';
 import {Table} from '../schema/table';
 
 import {Cache} from './cache';
@@ -102,7 +102,7 @@ export class Prefetcher {
     const whenIndicesReconstructed =
         tableSchema.getIndices()
             .map(
-                (indexSchema: Index) =>
+                (indexSchema: IndexImpl) =>
                     this.reconstructPersistentIndex(indexSchema, tx))
             .concat(this.reconstructPersistentRowIdIndex(tableSchema, tx));
 
@@ -115,7 +115,7 @@ export class Prefetcher {
   }
 
   // Reconstructs a persistent index by deserializing it from disk.
-  private reconstructPersistentIndex(indexSchema: Index, tx: Tx):
+  private reconstructPersistentIndex(indexSchema: IndexImpl, tx: Tx):
       Promise<void> {
     const indexTable = tx.getTable(
         indexSchema.getNormalizedName(), Row.deserialize, TableType.INDEX);
