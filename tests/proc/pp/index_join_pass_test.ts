@@ -25,8 +25,8 @@ import {SelectStep} from '../../../lib/proc/pp/select_step';
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Builder} from '../../../lib/schema/builder';
-import {Column} from '../../../lib/schema/column';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
@@ -243,7 +243,7 @@ describe('IndexJoinPass', () => {
         new TableAccessFullStep(global, queryContext.from[1]);
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
     const projectStep =
-        new ProjectStep(queryContext.columns, null as any as Column[]);
+        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
     joinStep.addChild(tableAccessStep2);
@@ -272,7 +272,7 @@ describe('IndexJoinPass', () => {
         new TableAccessFullStep(global, queryContext.from[1]);
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
     const projectStep =
-        new ProjectStep(queryContext.columns, null as any as Column[]);
+        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
     joinStep.addChild(tableAccessStep2);
@@ -302,7 +302,7 @@ describe('IndexJoinPass', () => {
     const joinStep =
         new JoinStep(global, joinPredicate, false /* isOuterJoin*/);
     const projectStep =
-        new ProjectStep(queryContext.columns, null as any as Column[]);
+        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
 
     joinStep.addChild(tableAccessStep1);
     selectStep.addChild(tableAccessStep2);

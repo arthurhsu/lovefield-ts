@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class GroupByNode extends LogicalQueryPlanNode {
-  constructor(readonly columns: Column[]) {
+  constructor(readonly columns: BaseColumn[]) {
     super();
   }
 

@@ -16,13 +16,13 @@
 
 import {Binder} from '../base/bind';
 import {Order} from '../base/enum';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 import {Context} from './context';
 
 export interface SelectContextOrderBy {
-  column: Column;
+  column: BaseColumn;
   order: Order;
 }
 
@@ -41,12 +41,12 @@ export class SelectContext extends Context {
     return out;
   }
 
-  public columns!: Column[];
+  public columns!: BaseColumn[];
   public from!: Table[];
   public limit!: number;
   public skip!: number;
   public orderBy!: SelectContextOrderBy[];
-  public groupBy!: Column[];
+  public groupBy!: BaseColumn[];
   public limitBinder!: Binder;
   public skipBinder!: Binder;
   public outerJoinPredicates!: Set<number>;

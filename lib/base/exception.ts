@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
 import {Flags} from '../gen/flags';
+import {ErrorCode} from './enum';
 import {getErrorMessage} from './error_message';
 
 export class Exception {

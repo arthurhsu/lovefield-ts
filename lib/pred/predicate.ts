@@ -15,7 +15,7 @@
  */
 
 import {Relation} from '../proc/relation';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 
 export interface Predicate {
@@ -33,7 +33,7 @@ export interface Predicate {
   // results array as the parameter holds previous results, given that this
   // function is called recursively.  If provided any column will be added on
   // that array. If not provided a new array will be allocated.
-  getColumns(results?: Column[]): Column[];
+  getColumns(results?: BaseColumn[]): BaseColumn[];
 
   // Returns an array of all tables involved in this predicate. The optional
   // results array as the parameter holds previous results, given that this

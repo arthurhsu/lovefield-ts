@@ -23,7 +23,7 @@ import {fn} from '../../lib/fn/fn';
 import {op} from '../../lib/fn/op';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {SelectQuery} from '../../lib/query/select_query';
-import {Column} from '../../lib/schema/column';
+import {BaseColumn} from '../../lib/schema/base_column';
 import {Table} from '../../lib/schema/table';
 import {ArrayHelper} from '../../lib/structs/array_helper';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
@@ -848,7 +848,7 @@ describe('EndToEndSelectTest', () => {
   // with non-aggregated columns.
   it('AggregatorsOnly', async () => {
     const aggregatedColumn1 = fn.max(j['maxSalary']);
-    const aggregatedColumn2 = fn.min(j['maxSalary']).as('minS');
+    const aggregatedColumn2 = fn.min(j['maxSalary']).as('minS') as BaseColumn;
     const queryBuilder =
         db.select(aggregatedColumn1, aggregatedColumn2).from(j);
 
@@ -865,7 +865,8 @@ describe('EndToEndSelectTest', () => {
 
   // Tests the case where a COUNT and DISTINCT aggregators are combined.
   it('Count_Distinct', async () => {
-    const aggregatedColumn = fn.count(fn.distinct(j['maxSalary'])).as('NS');
+    const aggregatedColumn =
+        fn.count(fn.distinct(j['maxSalary'])).as('NS') as BaseColumn;
     const queryBuilder = db.select(aggregatedColumn).from(j);
 
     const results: object[] = await queryBuilder.exec();
@@ -981,7 +982,8 @@ describe('EndToEndSelectTest', () => {
   // |results| are the results to be examined.
   // |column| is the column on which the entries are sorted.
   // |order| is the expected ordering of the entries.
-  function assertOrder(results: object[], column: Column, order: Order): void {
+  function assertOrder(
+      results: object[], column: BaseColumn, order: Order): void {
     let soFar: any = null;
     results.forEach((result, index) => {
       const value = result[column.getName()];

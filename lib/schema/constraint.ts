@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {Column} from './column';
+import {BaseColumn} from './base_column';
 import {ForeignKeySpec} from './foreign_key_spec';
 import {IndexImpl} from './index_impl';
 
 export class Constraint {
   constructor(
-      readonly primaryKey: IndexImpl, readonly notNullable: Column[],
+      readonly primaryKey: IndexImpl, readonly notNullable: BaseColumn[],
       readonly foreignKeys: ForeignKeySpec[]) {}
 
   public getPrimaryKey(): IndexImpl {
     return this.primaryKey;
   }
-  public getNotNullable(): Column[] {
+  public getNotNullable(): BaseColumn[] {
     return this.notNullable;
   }
   public getForeignKeys(): ForeignKeySpec[] {

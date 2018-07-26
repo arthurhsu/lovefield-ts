@@ -15,13 +15,13 @@
  */
 
 import {EvalType} from '../base/eval';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {JoinPredicate} from './join_predicate';
 import {Predicate} from './predicate';
 import {ValuePredicate} from './value_predicate';
 
 export function createPredicate<T>(
-    lhs: Column, rhs: Column|T, type: EvalType): Predicate {
+    lhs: BaseColumn, rhs: BaseColumn|T, type: EvalType): Predicate {
   // For the case of .eq(null).
   if (rhs === null) {
     return new ValuePredicate(lhs, rhs, type);
@@ -29,7 +29,7 @@ export function createPredicate<T>(
 
   const r = rhs as any;
   if (r.getIndex && r.getIndices) {
-    return new JoinPredicate(lhs, rhs as Column, type);
+    return new JoinPredicate(lhs, rhs as BaseColumn, type);
   }
 
   // Value predicate, which can be bounded or not.

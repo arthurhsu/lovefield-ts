@@ -21,7 +21,7 @@ import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {Predicate} from '../../lib/pred/predicate';
 import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
-import {Column} from '../../lib/schema/column';
+import {BaseColumn} from '../../lib/schema/base_column';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
@@ -75,7 +75,7 @@ describe('JoinPredicate', () => {
     assert.sameMembers([e['jobId'], j['id']], p.getColumns());
 
     // Test case where optional parameter is provided.
-    const columns: Column[] = [];
+    const columns: BaseColumn[] = [];
     assert.equal(columns, p.getColumns(columns));
     assert.sameMembers([e['jobId'], j['id']], columns);
   });

@@ -17,13 +17,13 @@
 import {DEFAULT_VALUES, Type} from '../base/enum';
 import {Row} from '../base/row';
 import {Key} from '../index/key_range';
-import {Column} from './column';
+import {BaseColumn} from './base_column';
 import {Index} from './index';
 
 export class RowImpl extends Row {
   constructor(
       private functionMap: Map<string, (column: any) => Key>,
-      private columns: Column[], indices: Index[], id: number,
+      private columns: BaseColumn[], indices: Index[], id: number,
       payload?: object) {
     super(id, payload);
 

@@ -24,14 +24,14 @@ import {Key} from '../index/key_range';
 import {RuntimeIndex} from '../index/runtime_index';
 import {Relation} from '../proc/relation';
 import {RelationEntry} from '../proc/relation_entry';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 import {MapSet} from '../structs/map_set';
 import {PredicateNode} from './predicate_node';
 
 export interface IndexJoinInfo {
-  indexedColumn: Column;
-  nonIndexedColumn: Column;
+  indexedColumn: BaseColumn;
+  nonIndexedColumn: BaseColumn;
   index: RuntimeIndex;
 }
 
@@ -44,7 +44,7 @@ export class JoinPredicate extends PredicateNode {
   private keyOfIndexFn: KeyOfIndexFunction;
 
   constructor(
-      public leftColumn: Column, public rightColumn: Column,
+      public leftColumn: BaseColumn, public rightColumn: BaseColumn,
       public evaluatorType: EvalType) {
     super();
     this.nullPayload = null;
@@ -63,7 +63,7 @@ export class JoinPredicate extends PredicateNode {
     return clone;
   }
 
-  public getColumns(results?: Column[]): Column[] {
+  public getColumns(results?: BaseColumn[]): BaseColumn[] {
     if (results !== undefined && results !== null) {
       results.push(this.leftColumn);
       results.push(this.rightColumn);

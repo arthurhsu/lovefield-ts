@@ -24,6 +24,7 @@ import {AggregatedColumn} from '../fn/aggregated_column';
 import {op} from '../fn/op';
 import {JoinPredicate} from '../pred/join_predicate';
 import {Predicate} from '../pred/predicate';
+import {BaseColumn} from '../schema/base_column';
 import {Column} from '../schema/column';
 import {Table} from '../schema/table';
 import {BaseBuilder} from './base_builder';
@@ -37,7 +38,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     super(global, new SelectContext(global.getService(Service.SCHEMA)));
     this.fromAlreadyCalled = false;
     this.whereAlreadyCalled = false;
-    this.query.columns = columns;
+    this.query.columns = columns as BaseColumn[];
     this.checkDistinctColumn();
     this.checkAggregations();
   }
@@ -164,7 +165,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public orderBy(column: Column, order?: Order): SelectBuilder {
+  public orderBy(column: BaseColumn, order?: Order): SelectBuilder {
     // 549: from() has to be called before orderBy() or groupBy().
     this.checkFrom(ErrorCode.FROM_AFTER_ORDER_GROUPBY);
 
@@ -179,7 +180,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public groupBy(...columns: Column[]): SelectBuilder {
+  public groupBy(...columns: BaseColumn[]): SelectBuilder {
     // 549: from() has to be called before orderBy() or groupBy().
     this.checkFrom(ErrorCode.FROM_AFTER_ORDER_GROUPBY);
 

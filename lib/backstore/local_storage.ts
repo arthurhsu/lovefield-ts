@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../backstore/back_store';
 import {ErrorCode, TransactionType} from '../base/enum';
 import {Exception} from '../base/exception';
 import {RuntimeTable} from '../base/runtime_table';
@@ -23,6 +22,7 @@ import {TableDiff} from '../cache/table_diff';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 
+import {BackStore} from './back_store';
 import {LocalStorageTable} from './local_storage_table';
 import {LocalStorageTx} from './local_storage_tx';
 import {RawBackStore} from './raw_back_store';

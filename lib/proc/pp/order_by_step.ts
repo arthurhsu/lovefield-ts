@@ -21,7 +21,7 @@ import {AggregatedColumn} from '../../fn/aggregated_column';
 import {fn} from '../../fn/fn';
 import {Context} from '../../query/context';
 import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 
 import {Relation} from '../relation';
 import {RelationEntry} from '../relation_entry';
@@ -57,8 +57,8 @@ export class OrderByStep extends PhysicalQueryPlanNode {
 
   // Determines whether sorting is requested on a column that has been
   // aggregated with lf.fn.distinct (if any).
-  private findDistinctColumn(relation: Relation): Column|null {
-    let distinctColumn: Column|null = null;
+  private findDistinctColumn(relation: Relation): BaseColumn|null {
+    let distinctColumn: BaseColumn|null = null;
 
     this.orderBy.every((entry) => {
       const tempDistinctColumn = fn.distinct(entry.column);
@@ -74,8 +74,8 @@ export class OrderByStep extends PhysicalQueryPlanNode {
   // Returns -1 if a should precede b, 1 if b should precede a, 0 if a and b
   // are determined to be equal.
   private comparator(
-      getLeftPayload: (col: Column) => any,
-      getRightPayload: (col: Column) => any): number {
+      getLeftPayload: (col: BaseColumn) => any,
+      getRightPayload: (col: BaseColumn) => any): number {
     let order: Order;
     let leftPayload = null;
     let rightPayload = null;

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 import {Context} from './context';
 
 interface UpdateSetContext {
   binding?: number;
-  column: Column;
+  column: BaseColumn;
   value: any;
 }
 

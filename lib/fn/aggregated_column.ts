@@ -16,14 +16,14 @@
 
 import {Type} from '../base/enum';
 import {FnType} from '../base/private_enum';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Index} from '../schema/index';
 import {Table} from '../schema/table';
 
-export class AggregatedColumn implements Column {
+export class AggregatedColumn implements BaseColumn {
   public alias: string|null;
 
-  constructor(readonly child: Column, readonly aggregatorType: FnType) {
+  constructor(readonly child: BaseColumn, readonly aggregatorType: FnType) {
     this.alias = null;
   }
 
@@ -74,9 +74,9 @@ export class AggregatedColumn implements Column {
 
   // Returns The chain of columns that starts from this column. All columns
   // are of type AggregatedColumn except for the last column.
-  public getColumnChain(): Column[] {
-    const columnChain: Column[] = [this];
-    let currentColumn: Column = this;
+  public getColumnChain(): BaseColumn[] {
+    const columnChain: BaseColumn[] = [this];
+    let currentColumn: BaseColumn = this;
     while (currentColumn instanceof AggregatedColumn) {
       columnChain.push(currentColumn.child);
       currentColumn = currentColumn.child;

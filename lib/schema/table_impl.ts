@@ -21,8 +21,8 @@ import {RawRow, Row} from '../base/row';
 import {Key, SingleKey} from '../index/key_range';
 
 import {BaseColumn} from './base_column';
-import {Column} from './column';
 import {ColumnDef} from './column_def';
+import {ColumnImpl} from './column_impl';
 import {Constraint} from './constraint';
 import {ForeignKeySpec} from './foreign_key_spec';
 import {IndexImpl} from './index_impl';
@@ -45,7 +45,7 @@ export class TableImpl extends Table {
     super(name, [], indices || TableImpl.EMPTY_INDICES, persistentIndex);
     cols.forEach((col) => {
       const colSchema =
-          new BaseColumn(this, col.name, col.unique, col.nullable, col.type);
+          new ColumnImpl(this, col.name, col.unique, col.nullable, col.type);
       this[col.name] = colSchema;
       this._columns.push(colSchema);
     }, this);
@@ -112,7 +112,7 @@ export class TableImpl extends Table {
       return;
     }
 
-    const columnMap = new Map<string, Column>();
+    const columnMap = new Map<string, BaseColumn>();
     this._columns.forEach((col) => columnMap.set(col.getName(), col));
 
     this._indices = Array.from(indices.keys()).map((indexName) => {
@@ -137,23 +137,24 @@ export class TableImpl extends Table {
   }
 
   private generateIndexedColumns(
-      indices: Map<string, IndexedColumnSpec[]>, columnMap: Map<string, Column>,
-      indexName: string): IndexedColumn[] {
+      indices: Map<string, IndexedColumnSpec[]>,
+      columnMap: Map<string, BaseColumn>, indexName: string): IndexedColumn[] {
     const index = indices.get(indexName);
     if (index) {
       return index.map((indexedColumn) => {
         return {
           autoIncrement: indexedColumn.autoIncrement as any as boolean,
           order: indexedColumn.order as any as Order,
-          schema: columnMap.get(indexedColumn.name) as any as Column,
+          schema: columnMap.get(indexedColumn.name) as any as BaseColumn,
         };
       });
     }
     throw new Exception(ErrorCode.ASSERTION);
   }
 
-  private getSingleKeyFn(columnMap: Map<string, Column>, column: Column):
-      (column: any) => Key {
+  private getSingleKeyFn(
+      columnMap: Map<string, BaseColumn>,
+      column: BaseColumn): (column: any) => Key {
     const col = columnMap.get(column.getName());
     if (col) {
       const colType = col.getType();
@@ -165,7 +166,7 @@ export class TableImpl extends Table {
   }
 
   private getMultiKeyFn(
-      columnMap: Map<string, Column>,
+      columnMap: Map<string, BaseColumn>,
       columns: IndexedColumn[]): (column: any) => Key {
     const getSingleKeyFunctions =
         columns.map((col) => this.getSingleKeyFn(columnMap, col.schema));
@@ -173,7 +174,7 @@ export class TableImpl extends Table {
         SingleKey[] as Key;
   }
 
-  private getKeyOfIndexFn(columnMap: Map<string, Column>, index: IndexImpl):
+  private getKeyOfIndexFn(columnMap: Map<string, BaseColumn>, index: IndexImpl):
       (column: any) => Key {
     return index.columns.length === 1 ?
         this.getSingleKeyFn(columnMap, index.columns[0].schema) :

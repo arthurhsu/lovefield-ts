@@ -17,7 +17,7 @@
 import {ExecType} from '../../base/private_enum';
 import {Journal} from '../../cache/journal';
 import {Context} from '../../query/context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {MapSet} from '../../structs/map_set';
 import {Relation} from '../relation';
 import {RelationEntry} from '../relation_entry';
@@ -25,7 +25,7 @@ import {RelationEntry} from '../relation_entry';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class GroupByStep extends PhysicalQueryPlanNode {
-  constructor(private groupByColumns: Column[]) {
+  constructor(private groupByColumns: BaseColumn[]) {
     super(1, ExecType.FIRST_CHILD);
   }
 

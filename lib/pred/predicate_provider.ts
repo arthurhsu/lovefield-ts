@@ -15,11 +15,11 @@
  */
 
 import {Binder} from '../base/bind';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Predicate} from './predicate';
 
 export type ValueOperandType = Binder|number|string|Date;
-export type OperandType = Column|ValueOperandType;
+export type OperandType = BaseColumn|ValueOperandType;
 
 export interface PredicateProvider {
   // Equal to

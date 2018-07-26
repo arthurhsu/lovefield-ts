@@ -20,7 +20,7 @@ import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Service} from '../base/service';
 import {Predicate} from '../pred/predicate';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 import {BaseBuilder} from './base_builder';
 import {UpdateContext} from './update_context';
@@ -31,7 +31,7 @@ export class UpdateBuilder extends BaseBuilder<UpdateContext> {
     this.query.table = table;
   }
 
-  public set(column: Column, value: Binder|any): UpdateBuilder {
+  public set(column: BaseColumn, value: Binder|any): UpdateBuilder {
     const set = {
       binding: value instanceof Binder ? (value as Binder).index : -1,
       column: column,

@@ -16,7 +16,7 @@
 
 import {assert} from '../base/assert';
 import {Row} from '../base/row';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 
 /**
  * Each RelationEntry represents a row that is passed from one execution step
@@ -71,7 +71,7 @@ export class RelationEntry {
     this.id = RelationEntry.getNextId();
   }
 
-  public getField(column: Column): any {
+  public getField(column: BaseColumn): any {
     // Attempting to get the field from the aliased location first, since it is
     // not guaranteed that setField() has been called for this instance. If not
     // found then look for it in its normal location.
@@ -88,7 +88,7 @@ export class RelationEntry {
     }
   }
 
-  public setField(column: Column, value: any): void {
+  public setField(column: BaseColumn, value: any): void {
     const alias = column.getAlias();
     if (alias !== null) {
       this.row.payload()[alias] = value;

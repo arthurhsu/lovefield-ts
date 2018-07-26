@@ -36,7 +36,7 @@ import {SelectStep} from '../../../lib/proc/pp/select_step';
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Column} from '../../../lib/schema/column';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
@@ -103,7 +103,7 @@ describe('IndexRangeScanPass', () => {
       queryContext.limit = 20;
 
       const limitNode = new LimitStep();
-      const projectNode = new ProjectStep([], null as any as Column[]);
+      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
       limitNode.addChild(projectNode);
       const selectNode =
           new SelectStep((queryContext.where as Predicate).getId());
@@ -295,7 +295,7 @@ describe('IndexRangeScanPass', () => {
       const selectStep =
           new SelectStep((queryContext.where as Predicate).getId());
       selectStep.addChild(crossProductStep);
-      const rootNode = new ProjectStep([], null as any as Column[]);
+      const rootNode = new ProjectStep([], null as any as BaseColumn[]);
       rootNode.addChild(selectStep);
 
       return {
@@ -554,7 +554,7 @@ describe('IndexRangeScanPass', () => {
     selectNode4.addChild(tableAccessNode2);
 
     // Constructing the overall tree.
-    const rootNode = new ProjectStep([], null as any as Column[]);
+    const rootNode = new ProjectStep([], null as any as BaseColumn[]);
     const orderByNode3 =
         new OrderByStep([{column: e['salary'], order: Order.ASC}]);
     const joinPredicate =
@@ -618,7 +618,7 @@ describe('IndexRangeScanPass', () => {
     queryContext.from = [e];
     queryContext.where = predicate;
 
-    const projectNode = new ProjectStep([], null as any as Column[]);
+    const projectNode = new ProjectStep([], null as any as BaseColumn[]);
     const selectNode = new SelectStep(queryContext.where.getId());
     projectNode.addChild(selectNode);
     const tableAccessNode =

@@ -18,7 +18,7 @@ import {ErrorCode} from '../../base/enum';
 import {Exception} from '../../base/exception';
 import {Global} from '../../base/global';
 import {Context} from '../../query/context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {TreeHelper} from '../../structs/tree_helper';
 import {AggregationNode} from '../lp/aggregation_node';
 import {CrossProductNode} from '../lp/cross_product_node';
@@ -127,7 +127,7 @@ export class PhysicalPlanFactory {
   // execution step.
   private mapFn(node: LogicalQueryPlanNode): PhysicalQueryPlanNode {
     if (node instanceof ProjectNode) {
-      return new ProjectStep(node.columns, node.groupByColumns as Column[]);
+      return new ProjectStep(node.columns, node.groupByColumns as BaseColumn[]);
     } else if (node instanceof GroupByNode) {
       return new GroupByStep(node.columns);
     } else if (node instanceof AggregationNode) {

@@ -17,7 +17,7 @@
 import {FnType} from '../../base/private_enum';
 import {AggregatedColumn} from '../../fn/aggregated_column';
 import {StarColumn} from '../../fn/star_column';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {MathHelper} from '../../structs/math_helper';
 import {AggregationResult, Relation} from '../relation';
 import {RelationEntry} from '../relation_entry';
@@ -60,7 +60,7 @@ export class AggregationCalculator {
 
   private evalAggregation(
       aggregatorType: FnType, relation: Relation,
-      column: Column): AggregationResult {
+      column: BaseColumn): AggregationResult {
     let result: AggregationResult = null as any as AggregationResult;
 
     switch (aggregatorType) {
@@ -105,7 +105,7 @@ export class AggregationCalculator {
 
   // Reduces the input relation to a single value. Null values are ignored.
   private reduce(
-      relation: Relation, column: Column,
+      relation: Relation, column: BaseColumn,
       reduceFn: (cur: any, v: any) => ValueType): ValueType {
     return relation.entries.reduce((soFar: ValueType, entry) => {
       const value: ValueType = entry.getField(column);
@@ -119,7 +119,7 @@ export class AggregationCalculator {
   // Calculates the count of the given column for the given relation.
   // COUNT(*) returns count of all rows but COUNT(column) ignores nulls
   // in that column.
-  private count(relation: Relation, column: Column): number {
+  private count(relation: Relation, column: BaseColumn): number {
     if (column instanceof StarColumn) {
       return relation.entries.length;
     }
@@ -131,7 +131,7 @@ export class AggregationCalculator {
   // Calculates the sum of the given column for the given relation.
   // If all rows have only value null for that column, then null is returned.
   // If the table is empty, null is returned.
-  private sum(relation: Relation, column: Column): number|string {
+  private sum(relation: Relation, column: BaseColumn): number|string {
     return this.reduce(relation, column, (soFar, value) => value + soFar) as
         number |
         string;
@@ -140,7 +140,7 @@ export class AggregationCalculator {
   // Calculates the standard deviation of the given column for the given
   // relation. If all rows have only value null for that column, then null is
   // returned. If the table is empty, null is returned.
-  private stddev(relation: Relation, column: Column): number|null {
+  private stddev(relation: Relation, column: BaseColumn): number|null {
     const values: number[] = [];
     relation.entries.forEach((entry) => {
       const value = entry.getField(column);
@@ -157,7 +157,7 @@ export class AggregationCalculator {
   // Calculates the geometrical mean of the given column for the given relation.
   // Zero values are ignored. If all values given are zero, or if the input
   // relation is empty, null is returned.
-  private geomean(relation: Relation, column: Column): number|null {
+  private geomean(relation: Relation, column: BaseColumn): number|null {
     let nonZeroEntriesCount = 0;
 
     const reduced = relation.entries.reduce((soFar, entry) => {
@@ -176,7 +176,7 @@ export class AggregationCalculator {
   }
 
   // Keeps only distinct entries with regards to the given column.
-  private distinct(relation: Relation, column: Column): Relation {
+  private distinct(relation: Relation, column: BaseColumn): Relation {
     const distinctMap = new Map<any, RelationEntry>();
 
     relation.entries.forEach((entry) => {

@@ -27,7 +27,7 @@ import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_i
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Column} from '../../../lib/schema/column';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
@@ -146,7 +146,7 @@ describe('MultiColumnOrPass', () => {
         new TableAccessFullStep(global, queryContext.from[0]);
     const selectNodes =
         predicates.map((predicate) => new SelectStep(predicate.getId()));
-    const projectNode = new ProjectStep([], null as any as Column[]);
+    const projectNode = new ProjectStep([], null as any as BaseColumn[]);
     let lastSelectNode = selectNodes[0];
     projectNode.addChild(lastSelectNode);
     for (let i = 1; i < selectNodes.length; i++) {
@@ -181,7 +181,7 @@ describe('MultiColumnOrPass', () => {
       const orPredicate = op.or(e['salary'].lte(1000), j['maxSalary'].gte(200));
       queryContext.where = op.and(orPredicate, joinPredicate);
 
-      const projectStep = new ProjectStep([], null as any as Column[]);
+      const projectStep = new ProjectStep([], null as any as BaseColumn[]);
       const selectStep = new SelectStep(orPredicate.getId());
       const joinStep = new JoinStep(global, joinPredicate, false);
       const tableAccessStep1 =
@@ -223,7 +223,7 @@ describe('MultiColumnOrPass', () => {
       const orPredicate = op.or(j['id'].eq('2'), j['maxSalary'].eq(100));
       queryContext.where = op.and(simplePredicate, orPredicate);
 
-      const projectStep = new ProjectStep([], null as any as Column[]);
+      const projectStep = new ProjectStep([], null as any as BaseColumn[]);
       const selectStep = new SelectStep(orPredicate.getId());
       const tableAccessByRowIdStep =
           new TableAccessByRowIdStep(global, queryContext.from[0]);

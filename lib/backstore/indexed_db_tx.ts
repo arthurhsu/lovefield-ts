@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../../lib/base/enum';
+import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
 import {TableType} from '../base/private_enum';
 import {RawRow, Row} from '../base/row';

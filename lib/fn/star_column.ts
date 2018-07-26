@@ -15,14 +15,14 @@
  */
 
 import {Type} from '../base/enum';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Index} from '../schema/index';
 import {Table} from '../schema/table';
 import {UnknownTable} from './unknown_table';
 
 //  A dummy Column implementation to be used as a substitute for '*',
 // for example in COUNT(*).
-export class StarColumn implements Column {
+export class StarColumn implements BaseColumn {
   private alias: string|null;
   private table: UnknownTable;
 

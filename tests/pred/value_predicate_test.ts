@@ -22,8 +22,8 @@ import {Row} from '../../lib/base/row';
 import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {Relation} from '../../lib/proc/relation';
+import {BaseColumn} from '../../lib/schema/base_column';
 import {Builder} from '../../lib/schema/builder';
-import {Column} from '../../lib/schema/column';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
@@ -69,7 +69,7 @@ describe('ValuePredicate', () => {
     assert.sameMembers([tableA['id']], p.getColumns());
 
     // Test case where optional parameter is provided.
-    const columns: Column[] = [];
+    const columns: BaseColumn[] = [];
     assert.equal(columns, p.getColumns(columns));
     assert.sameMembers([tableA['id']], columns);
   });

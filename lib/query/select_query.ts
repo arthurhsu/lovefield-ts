@@ -17,7 +17,7 @@
 import {Binder} from '../base/bind';
 import {Order} from '../base/enum';
 import {Predicate} from '../pred/predicate';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 import {QueryBuilder} from './query_builder';
 
@@ -46,8 +46,8 @@ export interface SelectQuery extends QueryBuilder {
   skip(numberOfRows: number|Binder): SelectQuery;
 
   // Specify sorting order of returned results.
-  orderBy(column: Column, order?: Order): SelectQuery;
+  orderBy(column: BaseColumn, order?: Order): SelectQuery;
 
   // Specify grouping of returned results.
-  groupBy(...columns: Column[]): SelectQuery;
+  groupBy(...columns: BaseColumn[]): SelectQuery;
 }

@@ -33,7 +33,7 @@ import {SkipStep} from '../../../lib/proc/pp/skip_step';
 import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Column} from '../../../lib/schema/column';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Database} from '../../../lib/schema/database';
 import {IndexImpl} from '../../../lib/schema/index_impl';
 import {Table} from '../../../lib/schema/table';
@@ -98,7 +98,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as Column[]);
+      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode =
           new TableAccessByRowIdStep(global, queryContext.from[0]);
@@ -144,7 +144,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as Column[]);
+      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
       skipNode.addChild(projectNode);
       const selectNode =
           new SelectStep((queryContext.where as Predicate).getId());
@@ -229,7 +229,7 @@ describe('LimitSkipByIndexPass', () => {
             fn.max(e['salary']),
             fn.min(e['salary']),
           ],
-          null as any as Column[]);
+          null as any as BaseColumn[]);
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(global, e);
       projectNode.addChild(tableAccessByRowIdNode);
@@ -267,7 +267,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as Column[]);
+      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
       skipNode.addChild(projectNode);
       const orderByNode = new OrderByStep([{
         column: e['salary'],

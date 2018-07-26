@@ -15,8 +15,8 @@
  */
 
 import {RawRow, Row} from '../base/row';
+import {BaseColumn} from './base_column';
 import {BaseTable} from './base_table';
-import {Column} from './column';
 import {Constraint} from './constraint';
 import {IndexImpl} from './index_impl';
 
@@ -28,7 +28,7 @@ export abstract class Table implements BaseTable {
   protected _alias: string;
 
   constructor(
-      readonly _name: string, protected _columns: Column[],
+      readonly _name: string, protected _columns: BaseColumn[],
       protected _indices: IndexImpl[], readonly _usePersistentIndex: boolean) {
     this._alias = null as any as string;
   }
@@ -46,7 +46,7 @@ export abstract class Table implements BaseTable {
   public getIndices(): IndexImpl[] {
     return this._indices;
   }
-  public getColumns(): Column[] {
+  public getColumns(): BaseColumn[] {
     return this._columns;
   }
   public getRowIdIndexName(): string {

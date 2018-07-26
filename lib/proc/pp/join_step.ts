@@ -24,7 +24,7 @@ import {IndexStore} from '../../index/index_store';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {IndexJoinInfo, JoinPredicate} from '../../pred/join_predicate';
 import {Context} from '../../query/context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {Index} from '../../schema/index';
 import {Relation} from '../relation';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
@@ -76,7 +76,7 @@ export class JoinStep extends PhysicalQueryPlanNode {
 
   // Indicates that this JoinStep should be executed as an INDEX_NESTED_LOOP
   // join. |column| is the column whose index should be queried.
-  public markAsIndexJoin(column: Column): void {
+  public markAsIndexJoin(column: BaseColumn): void {
     this.algorithm = JoinAlgorithm.INDEX_NESTED_LOOP;
     const index =
         this.indexStore.get((column.getIndex() as Index).getNormalizedName());

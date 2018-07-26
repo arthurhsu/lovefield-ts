@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-import {Type} from '../base/enum';
-import {Index} from './index';
-import {Table} from './table';
-
+// Public column interface
 export interface Column {
   getName(): string;
   getNormalizedName(): string;
-  getTable(): Table;
-  getType(): Type;
-  getAlias(): string;
-  getIndices(): Index[];
-  // The index that refers only to this column, or null if such index does
-  // not exist.
-  getIndex(): Index|null;
-  isNullable(): boolean;
-
-  // Additional function call, not existent in original Lovefield.
-  isUnique(): boolean;
 
   // Alias the column, used in query.
   as(alias: string): Column;

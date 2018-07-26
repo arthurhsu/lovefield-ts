@@ -18,7 +18,7 @@ import * as chai from 'chai';
 import {Row} from '../../lib/base/row';
 import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
-import {Column} from '../../lib/schema/column';
+import {BaseColumn} from '../../lib/schema/base_column';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
@@ -49,7 +49,7 @@ describe('Relation', () => {
 
   // Asserts that the given column is populated with the given value.
   function assertPopulated(
-      entry: RelationEntry, column: Column, expectedValue: string,
+      entry: RelationEntry, column: BaseColumn, expectedValue: string,
       isPrefixApplied: boolean): void {
     assert.equal(expectedValue, entry.getField(column));
 

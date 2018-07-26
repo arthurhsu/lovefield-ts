@@ -18,7 +18,7 @@ import {DeleteQuery} from '../query/delete_query';
 import {InsertQuery} from '../query/insert_query';
 import {SelectQuery} from '../query/select_query';
 import {UpdateQuery} from '../query/update_query';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Database} from '../schema/database';
 import {Table} from '../schema/table';
 import {TransactionType} from './enum';
@@ -29,7 +29,7 @@ import {Transaction} from './transaction';
 // value of connect().
 export interface DatabaseConnection {
   getSchema(): Database;
-  select(...columns: Column[]): SelectQuery;
+  select(...columns: BaseColumn[]): SelectQuery;
   insert(): InsertQuery;
   insertOrReplace(): InsertQuery;
   update(table: Table): UpdateQuery;

@@ -29,8 +29,8 @@ import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_i
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Builder} from '../../../lib/schema/builder';
-import {Column} from '../../../lib/schema/column';
 import {IndexImpl} from '../../../lib/schema/index_impl';
 import {Table} from '../../../lib/schema/table';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
@@ -42,7 +42,7 @@ describe('OrderByIndexPass', () => {
   let simpleTable: Table;
   let crossColumnTable: Table;
   let pass: OrderByIndexPass;
-  const NULL = null as any as Column[];
+  const NULL = null as any as BaseColumn[];
 
   beforeEach(async () => {
     const schemaBuilder = getSchemaBuilder();
@@ -339,7 +339,7 @@ describe('OrderByIndexPass', () => {
         constructTree3(Order.ASC, Order.DESC), treeBefore, treeBefore, pass);
   });
 
-  function constructTree1(sortColumn: Column, sortOrder: Order): TestTree {
+  function constructTree1(sortColumn: BaseColumn, sortOrder: Order): TestTree {
     const queryContext = new SelectContext(db.getSchema());
     queryContext.from = [simpleTable];
     queryContext.orderBy = [{

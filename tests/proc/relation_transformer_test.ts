@@ -22,7 +22,7 @@ import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 import {RelationTransformer} from '../../lib/proc/relation_transformer';
-import {Column} from '../../lib/schema/column';
+import {BaseColumn} from '../../lib/schema/base_column';
 import {Table} from '../../lib/schema/table';
 import {EmployeeDataGenerator} from '../../testing/hr_schema/employee_data_generator';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
@@ -141,7 +141,7 @@ describe('RelationTransformer', () => {
       relations.push(relation);
     }
 
-    const columns: Column[] = [
+    const columns: BaseColumn[] = [
       e['jobId'],
       fn.min(e['salary']),
       fn.max(e['salary']),
@@ -158,7 +158,7 @@ describe('RelationTransformer', () => {
   // result of a natural join, results in a relation with fields that are
   // populated as expected.
   function checkTransformationWithoutJoin(
-      columns: Column[], expectedResultCount: number): Relation {
+      columns: BaseColumn[], expectedResultCount: number): Relation {
     const transformer = new RelationTransformer(getRelation(), columns);
     const transformedRelation = transformer.getTransformed();
 
@@ -172,7 +172,7 @@ describe('RelationTransformer', () => {
   // result of a natural join, results in a relation with fields that are
   // populated as expected.
   function checkTransformationWithJoin(
-      columns: Column[], expectedResultCount: number): Relation {
+      columns: BaseColumn[], expectedResultCount: number): Relation {
     const transformer = new RelationTransformer(getJoinedRelation(), columns);
     const transformedRelation = transformer.getTransformed();
 
@@ -184,7 +184,8 @@ describe('RelationTransformer', () => {
 
   // Asserts that all requested columns are populated in the given relation's
   // entries.
-  function assertColumnsPopulated(columns: Column[], relation: Relation): void {
+  function assertColumnsPopulated(
+      columns: BaseColumn[], relation: Relation): void {
     relation.entries.forEach((entry, index) => {
       columns.forEach((column) => {
         // Checking that all requested columns are populated.

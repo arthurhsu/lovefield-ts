@@ -27,8 +27,8 @@ import {SelectStep} from '../../../lib/proc/pp/select_step';
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Builder} from '../../../lib/schema/builder';
-import {Column} from '../../../lib/schema/column';
 import {Database} from '../../../lib/schema/database';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
@@ -88,7 +88,7 @@ describe('GetRowCountPass', () => {
       const aggregationStep =
           new AggregationStep(queryContext.columns as AggregatedColumn[]);
       const projectStep =
-          new ProjectStep(queryContext.columns, null as any as Column[]);
+          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
 
@@ -123,7 +123,7 @@ describe('GetRowCountPass', () => {
       const aggregationStep =
           new AggregationStep(queryContext.columns as AggregatedColumn[]);
       const projectStep =
-          new ProjectStep(queryContext.columns, null as any as Column[]);
+          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
 
@@ -162,7 +162,7 @@ describe('GetRowCountPass', () => {
       const aggregationStep =
           new AggregationStep(queryContext.columns as AggregatedColumn[]);
       const projectStep =
-          new ProjectStep(queryContext.columns, null as any as Column[]);
+          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(selectStep);
       selectStep.addChild(tableAccessStep);

@@ -17,7 +17,7 @@
 import {FnType} from '../base/private_enum';
 import {Row} from '../base/row';
 import {AggregatedColumn} from '../fn/aggregated_column';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Relation} from './relation';
 import {RelationEntry} from './relation_entry';
 
@@ -27,7 +27,7 @@ export class RelationTransformer {
   // Note: Projection columns must include at least one aggregated column.
   // |relations|: The relations to be transformed.
   // |columns|: The columns to include in the transformed relation.
-  public static transformMany(relations: Relation[], columns: Column[]):
+  public static transformMany(relations: Relation[], columns: BaseColumn[]):
       Relation {
     const entries = relations.map((relation) => {
       const relationTransformer = new RelationTransformer(relation, columns);
@@ -38,7 +38,7 @@ export class RelationTransformer {
     return new Relation(entries, relations[0].getTables());
   }
 
-  constructor(private relation: Relation, private columns: Column[]) {}
+  constructor(private relation: Relation, private columns: BaseColumn[]) {}
 
   // Calculates a transformed Relation based on the columns that are requested.
   // The type of the requested columns affect the output (non-aggregate only VS

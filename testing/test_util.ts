@@ -26,7 +26,7 @@ import {Service} from '../lib/base/service';
 import {IndexStats} from '../lib/index/index_stats';
 import {IndexStore} from '../lib/index/index_store';
 import {RuntimeIndex} from '../lib/index/runtime_index';
-import {Index} from '../lib/schema/index';
+import {Index} from '../lib/schema';
 import {Table} from '../lib/schema/table';
 
 export class TestUtil {

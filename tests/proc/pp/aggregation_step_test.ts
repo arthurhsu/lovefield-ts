@@ -23,7 +23,7 @@ import {JoinPredicate} from '../../../lib/pred/join_predicate';
 import {AggregationStep} from '../../../lib/proc/pp/aggregation_step';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
-import {Column} from '../../../lib/schema/column';
+import {BaseColumn} from '../../../lib/schema/base_column';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
@@ -56,7 +56,7 @@ describe('AggregationStep', () => {
   }
 
   function checkCalculation(
-      aggregatedColumn: Column, expectedValue: number|number[],
+      aggregatedColumn: BaseColumn, expectedValue: number|number[],
       assertFn: (expected: any, actual: any) => boolean): Promise<any> {
     return Promise.all([
       checkCalculationWithoutJoin(aggregatedColumn, expectedValue, assertFn),
@@ -68,7 +68,7 @@ describe('AggregationStep', () => {
   // result of a natural join, results in a relation with fields that are
   // populated as expected.
   function checkCalculationWithoutJoin(
-      aggregatedColumn: Column, expectedValue: number|number[],
+      aggregatedColumn: BaseColumn, expectedValue: number|number[],
       assertFn: (expected: any, actual: any) => boolean): Promise<any> {
     const inputRelation =
         Relation.fromRows(dataGenerator.sampleJobs, [j.getName()]);
@@ -80,7 +80,7 @@ describe('AggregationStep', () => {
   // result of a natural join, results in a relation with fields that are
   // populated as expected.
   function checkCalculationWithJoin(
-      aggregatedColumn: Column, expectedValue: number|number[],
+      aggregatedColumn: BaseColumn, expectedValue: number|number[],
       assertFn: (expected: any, actual: any) => boolean): Promise<any> {
     const relationLeft =
         Relation.fromRows(dataGenerator.sampleEmployees, [e.getName()]);
@@ -94,7 +94,7 @@ describe('AggregationStep', () => {
   }
 
   function checkCalculationForRelation(
-      inputRelation: Relation, aggregatedColumn: Column, expectedValue: any,
+      inputRelation: Relation, aggregatedColumn: BaseColumn, expectedValue: any,
       assertFn: (expected: any, actual: any) => boolean): Promise<any> {
     const childStep = new NoOpStep([inputRelation]);
     const aggregationStep =

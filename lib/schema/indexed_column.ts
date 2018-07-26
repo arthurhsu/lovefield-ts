@@ -15,7 +15,7 @@
  */
 
 import {Order} from '../base/enum';
-import {Column} from './column';
+import {BaseColumn} from './base_column';
 
 export interface IndexedColumnSpec {
   name: string;
@@ -24,7 +24,7 @@ export interface IndexedColumnSpec {
 }
 
 export interface IndexedColumn {
-  schema: Column;
+  schema: BaseColumn;
   order: Order;
   autoIncrement: boolean;
 }

@@ -18,13 +18,14 @@ import {ExecType} from '../../base/private_enum';
 import {Journal} from '../../cache/journal';
 import {AggregatedColumn} from '../../fn/aggregated_column';
 import {Context} from '../../query/context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {Relation} from '../relation';
 import {RelationTransformer} from '../relation_transformer';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class ProjectStep extends PhysicalQueryPlanNode {
-  constructor(private columns: Column[], private groupByColumns: Column[]) {
+  constructor(
+      private columns: BaseColumn[], private groupByColumns: BaseColumn[]) {
     super(PhysicalQueryPlanNode.ANY, ExecType.FIRST_CHILD);
   }
 

@@ -18,7 +18,7 @@ import {assert} from '../base/assert';
 import {Operator} from '../base/private_enum';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 import {TreeHelper} from '../structs/tree_helper';
 import {PredicateNode} from './predicate_node';
@@ -76,7 +76,7 @@ export class CombinedPredicate extends PredicateNode {
     return copy;
   }
 
-  public getColumns(results?: Column[]): Column[] {
+  public getColumns(results?: BaseColumn[]): BaseColumn[] {
     const columns = results || [];
     this.traverse((child) => {
       if (child === this) {
@@ -85,7 +85,7 @@ export class CombinedPredicate extends PredicateNode {
       (child as PredicateNode).getColumns(columns);
     });
 
-    const columnSet = new Set<Column>(columns);
+    const columnSet = new Set<BaseColumn>(columns);
     return Array.from(columnSet.values());
   }
 
@@ -158,7 +158,7 @@ export class CombinedPredicate extends PredicateNode {
   //  2) All children refer to the same table and column.
   //  3) All children are key range compatible.
   private isKeyRangeCompatibleOr(): boolean {
-    let predicateColumn: Column|null = null;
+    let predicateColumn: BaseColumn|null = null;
     return this.getChildren().every((child) => {
       const isCandidate =
           child instanceof ValuePredicate && child.isKeyRangeCompatible();

@@ -17,7 +17,7 @@
 import {Relation} from '../proc/relation';
 import {RelationEntry} from '../proc/relation_entry';
 import {SelectContext} from '../query/select_context';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {MathHelper} from '../structs/math_helper';
 import {ChangeRecord} from './change_record';
 import {Type} from './enum';
@@ -27,7 +27,7 @@ import {EvalRegistry, EvalType} from './eval';
 // between old and new results for a given query.
 export class DiffCalculator {
   private evalRegistry: EvalRegistry;
-  private columns: Column[];
+  private columns: BaseColumn[];
 
   constructor(private query: SelectContext, private observableResults: any[]) {
     this.evalRegistry = EvalRegistry.get();
@@ -88,12 +88,12 @@ export class DiffCalculator {
   }
 
   // Detects the columns present in each result entry.
-  private detectColumns(): Column[] {
+  private detectColumns(): BaseColumn[] {
     if (this.query.columns.length > 0) {
       return this.query.columns;
     } else {
       // Handle the case where all columns are being projected.
-      const columns: Column[] = [];
+      const columns: BaseColumn[] = [];
       this.query.from.forEach((table) => {
         table.getColumns().forEach((column) => columns.push(column));
       });

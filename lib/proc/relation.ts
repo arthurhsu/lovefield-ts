@@ -16,7 +16,7 @@
 
 import {assert} from '../base/assert';
 import {Row} from '../base/row';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {setEquals} from '../structs/set_util';
 
 import {RelationEntry} from './relation_entry';
@@ -143,7 +143,8 @@ export class Relation {
   }
 
   // Adds an aggregated result to this relation.
-  public setAggregationResult(column: Column, result: AggregationResult): void {
+  public setAggregationResult(column: BaseColumn, result: AggregationResult):
+      void {
     if (this.aggregationResults === null) {
       this.aggregationResults = new Map<string, AggregationResult>();
     }
@@ -151,7 +152,7 @@ export class Relation {
   }
 
   // Gets an already calculated aggregated result for this relation.
-  public getAggregationResult(column: Column): AggregationResult {
+  public getAggregationResult(column: BaseColumn): AggregationResult {
     assert(
         this.aggregationResults !== null,
         'getAggregationResult called before any results have been calculated.');
@@ -164,7 +165,7 @@ export class Relation {
 
   // Whether an aggregation result for the given aggregated column has been
   // calculated.
-  public hasAggregationResult(column: Column): boolean {
+  public hasAggregationResult(column: BaseColumn): boolean {
     return this.aggregationResults !== null &&
         this.aggregationResults.has(column.getNormalizedName());
   }

@@ -16,10 +16,10 @@
 
 import {Binder} from '../base/bind';
 import {Predicate} from '../pred/predicate';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {QueryBuilder} from './query_builder';
 
 export interface UpdateQuery extends QueryBuilder {
-  set(column: Column, value: Binder|any): UpdateQuery;
+  set(column: BaseColumn, value: Binder|any): UpdateQuery;
   where(predicate: Predicate): UpdateQuery;
 }

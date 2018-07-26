@@ -22,7 +22,7 @@ import {Service} from '../base/service';
 import {IndexStore} from '../index/index_store';
 import {Key} from '../index/key_range';
 import {RuntimeIndex} from '../index/runtime_index';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Database} from '../schema/database';
 import {ForeignKeySpec} from '../schema/foreign_key_spec';
 import {Index} from '../schema/index';
@@ -243,7 +243,7 @@ export class ConstraintChecker {
   // given foreign key constraint.
   private findParentIndex(foreignKeySpec: ForeignKeySpec): RuntimeIndex {
     const parentTable = this.schema.table(foreignKeySpec.parentTable);
-    const parentColumn: Column = parentTable[foreignKeySpec.parentColumn];
+    const parentColumn: BaseColumn = parentTable[foreignKeySpec.parentColumn];
     // getIndex() must find an index since the parent of a foreign key
     // constraint must have a dedicated index.
     const parentIndexSchema: Index = parentColumn.getIndex() as Index;

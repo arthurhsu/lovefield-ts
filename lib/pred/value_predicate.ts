@@ -22,7 +22,7 @@ import {Exception} from '../base/exception';
 import {SingleKey, SingleKeyRange} from '../index/key_range';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
-import {Column} from '../schema/column';
+import {BaseColumn} from '../schema/base_column';
 import {Table} from '../schema/table';
 import {Predicate} from './predicate';
 import {PredicateNode} from './predicate_node';
@@ -33,7 +33,7 @@ export class ValuePredicate extends PredicateNode {
   private binder: Binder|any;
 
   constructor(
-      readonly column: Column, private value: any,
+      readonly column: BaseColumn, private value: any,
       readonly evaluatorType: EvalType) {
     super();
     this.evaluatorFn = EvalRegistry.get().getEvaluator(
@@ -71,7 +71,7 @@ export class ValuePredicate extends PredicateNode {
     return clone;
   }
 
-  public getColumns(results?: Column[]): Column[] {
+  public getColumns(results?: BaseColumn[]): BaseColumn[] {
     if (results) {
       results.push(this.column);
       return results;

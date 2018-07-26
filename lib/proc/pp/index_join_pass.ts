@@ -16,7 +16,7 @@
 
 import {EvalType} from '../../base/eval';
 import {SelectContext} from '../../query/select_context';
-import {Column} from '../../schema/column';
+import {BaseColumn} from '../../schema/base_column';
 import {Table} from '../../schema/table';
 import {TreeHelper} from '../../structs/tree_helper';
 import {Relation} from '../relation';
@@ -67,7 +67,7 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     }
 
     // Finds which of the two joined columns corresponds to the given table.
-    const getColumnForTable = (table: Table): Column => {
+    const getColumnForTable = (table: Table): BaseColumn => {
       return table.getEffectiveName() ===
               joinStep.predicate.rightColumn.getTable().getEffectiveName() ?
           joinStep.predicate.rightColumn :
@@ -75,14 +75,14 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     };
 
     // Extracts the candidate indexed column for the given execution step node.
-    const getCandidate = (executionStep: PhysicalQueryPlanNode): Column => {
+    const getCandidate = (executionStep: PhysicalQueryPlanNode): BaseColumn => {
       // In order to use and index for implementing a join, the entire relation
       // must be fed to the JoinStep, otherwise the index can't be used.
       if (!(executionStep instanceof TableAccessFullStep)) {
-        return null as any as Column;
+        return null as any as BaseColumn;
       }
       const candidateColumn = getColumnForTable(executionStep.table);
-      return candidateColumn.getIndex() === null ? null as any as Column :
+      return candidateColumn.getIndex() === null ? null as any as BaseColumn :
                                                    candidateColumn;
     };
 
