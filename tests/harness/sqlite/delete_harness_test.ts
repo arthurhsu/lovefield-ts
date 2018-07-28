@@ -20,14 +20,14 @@ import {DatabaseConnection} from '../../../lib/base/database_connection';
 import {DataStoreType, Type} from '../../../lib/base/enum';
 import {Row} from '../../../lib/base/row';
 import {fn} from '../../../lib/fn/fn';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
-import {Table} from '../../../lib/schema/table';
 
 const assert = chai.assert;
 
 describe('DeleteHarness', () => {
   let db: DatabaseConnection;
-  let t1: Table;
+  let t1: BaseTable;
 
   before(async () => {
     const builder = new Builder('delete', 1);

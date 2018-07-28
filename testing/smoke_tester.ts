@@ -24,7 +24,7 @@ import {Global} from '../lib/base/global';
 import {TableType} from '../lib/base/private_enum';
 import {Row} from '../lib/base/row';
 import {Service} from '../lib/base/service';
-import {Table} from '../lib/schema/table';
+import {BaseTable} from '../lib/schema/base_table';
 
 const assert = chai.assert;
 
@@ -32,7 +32,7 @@ const assert = chai.assert;
 export class SmokeTester {
   private db: DatabaseConnection;
   private backStore: BackStore;
-  private r: Table;
+  private r: BaseTable;
 
   constructor(global: Global, db: DatabaseConnection) {
     this.db = db;

@@ -16,7 +16,7 @@
 
 import {Relation} from '../proc/relation';
 import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {TreeNode} from '../structs/tree_node';
 import {Predicate} from './predicate';
 
@@ -37,7 +37,7 @@ export abstract class PredicateNode extends TreeNode implements Predicate {
   public abstract setComplement(isComplement: boolean): void;
   public abstract copy(): Predicate;
   public abstract getColumns(results?: BaseColumn[]): BaseColumn[];
-  public abstract getTables(results?: Set<Table>): Set<Table>;
+  public abstract getTables(results?: Set<BaseTable>): Set<BaseTable>;
 
   public setId(id: number): void {
     this.id = id;

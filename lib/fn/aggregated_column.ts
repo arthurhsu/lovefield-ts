@@ -17,8 +17,8 @@
 import {Type} from '../base/enum';
 import {FnType} from '../base/private_enum';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Index} from '../schema/index';
-import {Table} from '../schema/table';
 
 export class AggregatedColumn implements BaseColumn {
   public alias: string|null;
@@ -35,7 +35,7 @@ export class AggregatedColumn implements BaseColumn {
     return `${this.aggregatorType}(${this.child.getNormalizedName()})`;
   }
 
-  public getTable(): Table {
+  public getTable(): BaseTable {
     return this.child.getTable();
   }
 

@@ -23,7 +23,7 @@ import {Journal} from '../../cache/journal';
 import {IndexStore} from '../../index/index_store';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {Context} from '../../query/context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {Relation} from '../relation';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
@@ -31,7 +31,7 @@ export class TableAccessFullStep extends PhysicalQueryPlanNode {
   private cache: Cache;
   private indexStore: IndexStore;
 
-  constructor(global: Global, readonly table: Table) {
+  constructor(global: Global, readonly table: BaseTable) {
     super(0, ExecType.NO_CHILD);
     this.cache = global.getService(Service.CACHE);
     this.indexStore = global.getService(Service.INDEX_STORE);

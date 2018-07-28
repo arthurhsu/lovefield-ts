@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class PhysicalQueryPlan {
   // Calculates the combined scope of the given list of physical query plans.
-  public static getCombinedScope(plans: PhysicalQueryPlan[]): Set<Table> {
-    const tableSet = new Set<Table>();
+  public static getCombinedScope(plans: PhysicalQueryPlan[]): Set<BaseTable> {
+    const tableSet = new Set<BaseTable>();
     plans.forEach((plan) => {
       plan.getScope().forEach(tableSet.add.bind(tableSet));
     });
@@ -28,14 +28,14 @@ export class PhysicalQueryPlan {
   }
 
   constructor(
-      private rootNode: PhysicalQueryPlanNode, private scope: Set<Table>) {}
+      private rootNode: PhysicalQueryPlanNode, private scope: Set<BaseTable>) {}
 
   public getRoot(): PhysicalQueryPlanNode {
     return this.rootNode;
   }
 
   // Returns scope of this plan (i.e. tables involved)
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 }

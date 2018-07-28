@@ -20,7 +20,7 @@ import {Resolver} from '../base/resolver';
 import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {TransactionStats} from './transaction_stats';
 import {Tx} from './tx';
 
@@ -114,7 +114,7 @@ export abstract class BaseTx implements Tx {
     const journal = this.journal as Journal;
     const diff = journal.getDiff();
     diff.forEach((tableDiff, tableName) => {
-      const tableSchema = journal.getScope().get(tableName) as Table;
+      const tableSchema = journal.getScope().get(tableName) as BaseTable;
       const table = this.getTable(
           tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
           TableType.DATA);

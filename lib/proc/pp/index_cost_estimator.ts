@@ -23,7 +23,8 @@ import {CombinedPredicate} from '../../pred/combined_predicate';
 import {Predicate} from '../../pred/predicate';
 import {ValuePredicate} from '../../pred/value_predicate';
 import {Context} from '../../query/context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
+import {IndexImpl} from '../../schema/index_impl';
 
 import {IndexRangeCandidate} from './index_range_candidate';
 
@@ -40,7 +41,7 @@ const INDEX_QUERY_THRESHOLD_PERCENT = 0.02;
 export class IndexCostEstimator {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private tableSchema: Table) {
+  constructor(global: Global, private tableSchema: BaseTable) {
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
@@ -87,7 +88,7 @@ export class IndexCostEstimator {
 
   private generateIndexRangeCandidates(predicates: ValuePredicate[]):
       IndexRangeCandidate[] {
-    const indexSchemas = this.tableSchema.getIndices();
+    const indexSchemas = this.tableSchema.getIndices() as IndexImpl[];
     return indexSchemas
         .map(
             (indexSchema) => {

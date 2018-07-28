@@ -15,7 +15,7 @@
  */
 
 import {LockType} from '../base/private_enum';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {LockTableEntry} from './lock_table_entry';
 
 // LockManager is responsible for granting locks to tasks. Each lock corresponds
@@ -46,8 +46,8 @@ export class LockManager {
   }
 
   // Returns whether the requested lock was acquired.
-  public requestLock(taskId: number, dataItems: Set<Table>, lockType: LockType):
-      boolean {
+  public requestLock(
+      taskId: number, dataItems: Set<BaseTable>, lockType: LockType): boolean {
     const canAcquireLock = this.canAcquireLock(taskId, dataItems, lockType);
     if (canAcquireLock) {
       this.grantLock(taskId, dataItems, lockType);
@@ -55,7 +55,7 @@ export class LockManager {
     return canAcquireLock;
   }
 
-  public releaseLock(taskId: number, dataItems: Set<Table>): void {
+  public releaseLock(taskId: number, dataItems: Set<BaseTable>): void {
     dataItems.forEach(
         (dataItem) => this.getEntry(dataItem).releaseLock(taskId));
   }
@@ -63,12 +63,12 @@ export class LockManager {
   // Removes any reserved locks for the given data items. This is needed in
   // order to prioritize a taskId higher than a taskId that already holds a
   // reserved lock.
-  public clearReservedLocks(dataItems: Set<Table>): void {
+  public clearReservedLocks(dataItems: Set<BaseTable>): void {
     dataItems.forEach(
         (dataItem) => this.getEntry(dataItem).reservedReadWriteLock = null);
   }
 
-  private getEntry(dataItem: Table): LockTableEntry {
+  private getEntry(dataItem: BaseTable): LockTableEntry {
     let lockTableEntry = this.lockTable.get(dataItem.getName()) || null;
     if (lockTableEntry === null) {
       lockTableEntry = new LockTableEntry();
@@ -77,14 +77,14 @@ export class LockManager {
     return lockTableEntry;
   }
 
-  private grantLock(taskId: number, dataItems: Set<Table>, lockType: LockType):
-      void {
+  private grantLock(
+      taskId: number, dataItems: Set<BaseTable>, lockType: LockType): void {
     dataItems.forEach(
         (dataItem) => this.getEntry(dataItem).grantLock(taskId, lockType));
   }
 
   private canAcquireLock(
-      taskId: number, dataItems: Set<Table>, lockType: LockType): boolean {
+      taskId: number, dataItems: Set<BaseTable>, lockType: LockType): boolean {
     let canAcquireLock = true;
     dataItems.forEach((dataItem) => {
       if (canAcquireLock) {

@@ -21,6 +21,7 @@ import {RawRow, Row} from '../base/row';
 import {Key, SingleKey} from '../index/key_range';
 
 import {BaseColumn} from './base_column';
+import {BaseTable} from './base_table';
 import {ColumnDef} from './column_def';
 import {ColumnImpl} from './column_impl';
 import {Constraint} from './constraint';
@@ -28,11 +29,13 @@ import {ForeignKeySpec} from './foreign_key_spec';
 import {IndexImpl} from './index_impl';
 import {IndexedColumn, IndexedColumnSpec} from './indexed_column';
 import {RowImpl} from './row_impl';
-import {Table} from './table';
 
-export class TableImpl extends Table {
+export class TableImpl implements BaseTable {
+  public static ROW_ID_INDEX_PATTERN = '#';
   private static EMPTY_INDICES: IndexImpl[] = [];
 
+  private _alias: string;
+  private _columns: BaseColumn[];
   private _constraint: Constraint;
 
   private _referencingFK: ForeignKeySpec[];
@@ -40,9 +43,9 @@ export class TableImpl extends Table {
   private _evalRegistry: EvalRegistry;
 
   constructor(
-      name: string, cols: ColumnDef[], indices: IndexImpl[],
-      persistentIndex: boolean, alias?: string) {
-    super(name, [], indices || TableImpl.EMPTY_INDICES, persistentIndex);
+      readonly _name: string, cols: ColumnDef[], private _indices: IndexImpl[],
+      readonly _usePersistentIndex: boolean, alias?: string) {
+    this._columns = [];
     cols.forEach((col) => {
       const colSchema =
           new ColumnImpl(this, col.name, col.unique, col.nullable, col.type);
@@ -53,13 +56,38 @@ export class TableImpl extends Table {
     this._functionMap = null as any as Map<string, (column: any) => Key>;
     this._constraint = null as any as Constraint;
     this._evalRegistry = EvalRegistry.get();
+    this._alias = alias ? alias : null as any as string;
+  }
+
+  public getName(): string {
+    return this._name;
+  }
+
+  public getAlias(): string {
+    return this._alias;
+  }
+
+  public getEffectiveName(): string {
+    return this._alias || this._name;
+  }
+
+  public getIndices(): IndexImpl[] {
+    return this._indices || TableImpl.EMPTY_INDICES;
+  }
+
+  public getColumns(): BaseColumn[] {
+    return this._columns;
   }
 
   public getConstraint(): Constraint {
     return this._constraint;
   }
 
-  public as(name: string): Table {
+  public persistentIndex(): boolean {
+    return this._usePersistentIndex;
+  }
+
+  public as(name: string): BaseTable {
     const colDef = this._columns.map((col) => {
       return {
         name: col.getName(),

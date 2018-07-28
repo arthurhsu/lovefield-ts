@@ -23,7 +23,7 @@ import {SingleKey, SingleKeyRange} from '../index/key_range';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
 import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {Predicate} from './predicate';
 import {PredicateNode} from './predicate_node';
 
@@ -79,8 +79,8 @@ export class ValuePredicate extends PredicateNode {
     return [this.column];
   }
 
-  public getTables(results?: Set<Table>): Set<Table> {
-    const tables = results ? results : new Set<Table>();
+  public getTables(results?: Set<BaseTable>): Set<BaseTable> {
+    const tables = results ? results : new Set<BaseTable>();
     tables.add(this.column.getTable());
     return tables;
   }

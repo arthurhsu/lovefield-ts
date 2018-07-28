@@ -17,7 +17,7 @@
 import {JoinPredicate} from '../../pred/join_predicate';
 import {Context} from '../../query/context';
 import {SelectContext} from '../../query/select_context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {isSubset} from '../../structs/set_util';
 import {TreeHelper} from '../../structs/tree_helper';
 import {TreeNode} from '../../structs/tree_node';
@@ -131,11 +131,11 @@ export class PushDownSelectionsPass extends RewritePass<LogicalQueryPlanNode> {
 
   // Whether the subtree that starts at root refers to all tables in the given
   // list.
-  private doesReferToTables(root: LogicalQueryPlanNode, tables: Set<Table>):
+  private doesReferToTables(root: LogicalQueryPlanNode, tables: Set<BaseTable>):
       boolean {
     // Finding all tables that are involved in the subtree starting at the given
     // root.
-    const referredTables = new Set<Table>();
+    const referredTables = new Set<BaseTable>();
     TreeHelper.getLeafNodes(root).forEach(
         (tableAccessNode) =>
             referredTables.add((tableAccessNode as TableAccessNode).table));

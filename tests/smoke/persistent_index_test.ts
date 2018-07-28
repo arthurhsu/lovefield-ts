@@ -27,16 +27,16 @@ import {ComparatorFactory} from '../../lib/index/comparator_factory';
 import {Key} from '../../lib/index/key_range';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {BaseTable} from '../../lib/schema/base_table';
 import {IndexImpl} from '../../lib/schema/index_impl';
-import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('PersistentIndex', () => {
   let db: RuntimeDatabase;
-  let table: Table;
-  let table2: Table;
+  let table: BaseTable;
+  let table2: BaseTable;
   let backStore: BackStore;
   let sampleRows: Row[];
   let sampleRows2: Row[];
@@ -178,7 +178,7 @@ describe('PersistentIndex', () => {
   // |rows| are the only rows that should be present in the persistent index
   // tables.
   function assertAllIndicesPopulated(
-      targetTable: Table, rows: Row[]): Promise<void> {
+      targetTable: BaseTable, rows: Row[]): Promise<void> {
     const tx = backStore.createTx(TransactionType.READ_ONLY, [table]);
 
     const tableIndices = targetTable.getIndices();
@@ -196,7 +196,7 @@ describe('PersistentIndex', () => {
       assertRowIdIndex(targetTable, rowIdIndexResults, rows.length);
 
       results.forEach((indexResults, i) => {
-        const indexSchema = tableIndices[i];
+        const indexSchema = tableIndices[i] as IndexImpl;
         assertIndexContents(indexSchema, indexResults, rows);
       });
     });
@@ -227,7 +227,8 @@ describe('PersistentIndex', () => {
   // Asserts that the contents of the RowId index appear as expected in the
   // backing store.
   function assertRowIdIndex(
-      targetTable: Table, serializedRows: Row[], expectedSize: number): void {
+      targetTable: BaseTable, serializedRows: Row[],
+      expectedSize: number): void {
     assert.equal(1, serializedRows.length);
     const rowIdIndex =
         RowId.deserialize(targetTable.getRowIdIndexName(), serializedRows);

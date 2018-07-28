@@ -16,7 +16,7 @@
 
 import {TransactionStats} from '../backstore/transaction_stats';
 import {QueryBuilder} from '../query/query_builder';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 export interface Transaction {
   // Executes a list of queries and commits the transaction.
@@ -29,7 +29,7 @@ export interface Transaction {
   // An exclusive lock will be obtained on all tables before any queries
   // belonging to this transaction can be served.
   // @return {!IThenable}
-  begin(scope: Table[]): Promise<void>;
+  begin(scope: BaseTable[]): Promise<void>;
 
   // Attaches |query| to an existing transaction and runs it.
   attach(query: QueryBuilder): Promise<any>;

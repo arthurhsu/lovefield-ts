@@ -14,51 +14,11 @@
  * limitations under the License.
  */
 
-import {RawRow, Row} from '../base/row';
-import {BaseColumn} from './base_column';
-import {BaseTable} from './base_table';
-import {Constraint} from './constraint';
-import {IndexImpl} from './index_impl';
+import {Row} from '../base/row';
 
-export abstract class Table implements BaseTable {
-  // Row id index is named <tableName>.#, which is an invalid name for JS vars
-  // and therefore user-defined indices can never collide with it.
-  public static ROW_ID_INDEX_PATTERN = '#';
-
-  protected _alias: string;
-
-  constructor(
-      readonly _name: string, protected _columns: BaseColumn[],
-      protected _indices: IndexImpl[], readonly _usePersistentIndex: boolean) {
-    this._alias = null as any as string;
-  }
-
-  public getName(): string {
-    return this._name;
-  }
-  public getAlias(): string {
-    return this._alias;
-  }
-  public getEffectiveName(): string {
-    return this._alias || this._name;
-  }
-
-  public getIndices(): IndexImpl[] {
-    return this._indices;
-  }
-  public getColumns(): BaseColumn[] {
-    return this._columns;
-  }
-  public getRowIdIndexName(): string {
-    return `${this._name}.${Table.ROW_ID_INDEX_PATTERN}`;
-  }
-
-  public persistentIndex(): boolean {
-    return this._usePersistentIndex;
-  }
-
-  public abstract createRow(value?: object): Row;
-  public abstract deserializeRow(dbRecord: RawRow): Row;
-  public abstract getConstraint(): Constraint;
-  public abstract as(alias: string): Table;
+// Public table interface.
+export interface Table {
+  getName(): string;
+  as(alias: string): Table;
+  createRow(value?: object): Row;
 }

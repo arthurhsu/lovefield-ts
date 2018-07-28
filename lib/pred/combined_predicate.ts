@@ -19,7 +19,7 @@ import {Operator} from '../base/private_enum';
 import {SingleKeyRangeSet} from '../index/single_key_range_set';
 import {Relation} from '../proc/relation';
 import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {TreeHelper} from '../structs/tree_helper';
 import {PredicateNode} from './predicate_node';
 import {ValuePredicate} from './value_predicate';
@@ -89,8 +89,8 @@ export class CombinedPredicate extends PredicateNode {
     return Array.from(columnSet.values());
   }
 
-  public getTables(results?: Set<Table>): Set<Table> {
-    const tables = results ? results : new Set<Table>();
+  public getTables(results?: Set<BaseTable>): Set<BaseTable> {
+    const tables = results ? results : new Set<BaseTable>();
     this.traverse((child) => {
       if (child === this) {
         return;

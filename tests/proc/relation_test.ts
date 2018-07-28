@@ -15,10 +15,12 @@
  */
 
 import * as chai from 'chai';
+
 import {Row} from '../../lib/base/row';
 import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
@@ -60,7 +62,8 @@ describe('Relation', () => {
     assert.equal(expectedValue, value);
   }
 
-  function checkGetSetValue_MultipleTables(tables: Table[]): void {
+  function checkGetSetValue_MultipleTables(t: Table[]): void {
+    const tables = t as BaseTable[];
     const rows: Row[] = new Array(10);
     for (let i = 0; i < rows.length; i++) {
       rows[i] = Row.create();

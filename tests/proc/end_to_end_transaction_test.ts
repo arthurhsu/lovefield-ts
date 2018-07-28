@@ -25,7 +25,7 @@ import {Row} from '../../lib/base/row';
 import {Transaction} from '../../lib/base/transaction';
 import {fn} from '../../lib/fn/fn';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
@@ -35,9 +35,9 @@ const assert = chai.assert;
 
 describe('EndToEndTransaction', () => {
   let db: RuntimeDatabase;
-  let e: Table;
-  let j: Table;
-  let d: Table;
+  let e: BaseTable;
+  let j: BaseTable;
+  let d: BaseTable;
   let sampleJobs: Row[];
   let sampleEmployees: Row[];
   let sampleDepartments: Row[];

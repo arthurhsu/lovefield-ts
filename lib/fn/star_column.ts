@@ -16,8 +16,9 @@
 
 import {Type} from '../base/enum';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Index} from '../schema/index';
-import {Table} from '../schema/table';
+
 import {UnknownTable} from './unknown_table';
 
 //  A dummy Column implementation to be used as a substitute for '*',
@@ -43,7 +44,7 @@ export class StarColumn implements BaseColumn {
     return this.getNormalizedName();
   }
 
-  public getTable(): Table {
+  public getTable(): BaseTable {
     // NOTE: The table here does not have a useful meaning, since the StarColumn
     // represents all columns that are available, which could be the result of a
     // join, therefore a dummy Table instance is used.

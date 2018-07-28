@@ -19,8 +19,9 @@ import {InsertQuery} from '../query/insert_query';
 import {SelectQuery} from '../query/select_query';
 import {UpdateQuery} from '../query/update_query';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {TransactionType} from './enum';
 import {ObserverCallback} from './observer_registry_entry';
 import {Transaction} from './transaction';
@@ -32,7 +33,7 @@ export interface DatabaseConnection {
   select(...columns: BaseColumn[]): SelectQuery;
   insert(): InsertQuery;
   insertOrReplace(): InsertQuery;
-  update(table: Table): UpdateQuery;
+  update(table: BaseTable): UpdateQuery;
   delete(): DeleteQuery;
 
   // Registers an observer for the given query.

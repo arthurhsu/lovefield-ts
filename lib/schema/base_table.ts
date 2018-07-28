@@ -15,20 +15,19 @@
  */
 
 import {RawRow, Row} from '../base/row';
+
 import {BaseColumn} from './base_column';
 import {Constraint} from './constraint';
 import {Index} from './index';
+import {Table} from './table';
 
-export interface BaseTable {
-  getName(): string;
+export interface BaseTable extends Table {
   getColumns(): BaseColumn[];
   getIndices(): Index[];
   persistentIndex(): boolean;
   getAlias(): string;
   getConstraint(): Constraint;
   getEffectiveName(): string;
-  as(alias: string): BaseTable;
   getRowIdIndexName(): string;
-  createRow(value?: object): Row;
   deserializeRow(dbRecord: RawRow): Row;
 }

@@ -17,8 +17,9 @@
 import {Binder} from '../base/bind';
 import {Order} from '../base/enum';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {Context} from './context';
 
 export interface SelectContextOrderBy {
@@ -42,7 +43,7 @@ export class SelectContext extends Context {
   }
 
   public columns!: BaseColumn[];
-  public from!: Table[];
+  public from!: BaseTable[];
   public limit!: number;
   public skip!: number;
   public orderBy!: SelectContextOrderBy[];
@@ -55,8 +56,8 @@ export class SelectContext extends Context {
     super(schema);
   }
 
-  public getScope(): Set<Table> {
-    return new Set<Table>(this.from);
+  public getScope(): Set<BaseTable> {
+    return new Set<BaseTable>(this.from);
   }
 
   public clone(): SelectContext {

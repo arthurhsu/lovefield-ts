@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class LogicalQueryPlan {
   constructor(
-      readonly rootNode: LogicalQueryPlanNode, readonly scope: Set<Table>) {}
+      readonly rootNode: LogicalQueryPlanNode, readonly scope: Set<BaseTable>) {
+  }
 
   public getRoot(): LogicalQueryPlanNode {
     return this.rootNode;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 }

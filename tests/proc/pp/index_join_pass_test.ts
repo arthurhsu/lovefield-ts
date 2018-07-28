@@ -26,6 +26,7 @@ import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
@@ -228,7 +229,9 @@ describe('IndexJoinPass', () => {
   // order (table2 refrred on the left side of the predicate, table1 on the
   // right)
   function constructTree1(
-      table1: Table, table2: Table, predicateReverseOrder: boolean): TestTree {
+      t1: Table, t2: Table, predicateReverseOrder: boolean): TestTree {
+    const table1 = t1 as BaseTable;
+    const table2 = t2 as BaseTable;
     const queryContext = new SelectContext(schema);
     queryContext.from = [table1, table2];
     queryContext.columns = [];

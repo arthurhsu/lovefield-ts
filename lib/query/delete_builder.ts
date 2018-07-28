@@ -19,7 +19,7 @@ import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Service} from '../base/service';
 import {Predicate} from '../pred/predicate';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {BaseBuilder} from './base_builder';
 import {DeleteContext} from './delete_context';
 
@@ -28,7 +28,7 @@ export class DeleteBuilder extends BaseBuilder<DeleteContext> {
     super(global, new DeleteContext(global.getService(Service.SCHEMA)));
   }
 
-  public from(table: Table): DeleteBuilder {
+  public from(table: BaseTable): DeleteBuilder {
     this.assertFromPreconditions();
     this.query.from = table;
     return this;

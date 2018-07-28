@@ -47,7 +47,7 @@ export class MemoryIndexStore implements IndexStore {
         tableIndices.push(index);
         this.store.set(rowIdIndexName, index);
       }
-      table.getIndices().forEach((indexSchema) => {
+      (table.getIndices() as IndexImpl[]).forEach((indexSchema) => {
         const index = this.createIndex(indexSchema);
         tableIndices.push(index);
         this.store.set(indexSchema.getNormalizedName(), index);

@@ -19,7 +19,7 @@ import {TaskItem} from '../proc/task_item';
 import {SelectBuilder} from '../query/select_builder';
 import {SelectContext} from '../query/select_context';
 import {SelectQuery} from '../query/select_query';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {assert} from './assert';
 import {ObserverCallback, ObserverRegistryEntry} from './observer_registry_entry';
 
@@ -65,7 +65,7 @@ export class ObserverRegistry {
 
   // Finds all the observed queries that reference at least one of the given
   // tables.
-  public getTaskItemsForTables(tables: Table[]): TaskItem[] {
+  public getTaskItemsForTables(tables: BaseTable[]): TaskItem[] {
     const tableSet = new Set<string>();
     tables.forEach((table) => tableSet.add(table.getName()));
 

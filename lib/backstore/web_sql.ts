@@ -22,8 +22,8 @@ import {Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
 import {Database as DatabaseLF} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {BackStore} from './back_store';
 import {RawBackStore} from './raw_back_store';
@@ -87,7 +87,7 @@ export class WebSql implements BackStore {
     return (this.db !== undefined && this.db !== null);
   }
 
-  public createTx(type: TransactionType, scope: Table[], journal?: Journal):
+  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
       Tx {
     if (this.db) {
       return new WebSqlTx(this.db, type, journal);
@@ -122,7 +122,7 @@ export class WebSql implements BackStore {
   }
 
   private getEmptyJournal(): Journal {
-    return new Journal(this.global, new Set<Table>());
+    return new Journal(this.global, new Set<BaseTable>());
   }
 
   // Workaround Chrome's changeVersion problem.

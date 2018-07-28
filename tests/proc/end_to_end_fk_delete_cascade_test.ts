@@ -19,8 +19,8 @@ import * as chai from 'chai';
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {ConstraintAction, DataStoreType, ErrorCode, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
-import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -33,10 +33,10 @@ interface SampleRows {
 
 describe('EndToEndFKDeleteCascade', () => {
   let db: DatabaseConnection;
-  let tA: Table;
-  let tB: Table;
-  let tB1: Table;
-  let tB2: Table;
+  let tA: BaseTable;
+  let tB: BaseTable;
+  let tB1: BaseTable;
+  let tB2: BaseTable;
   let sampleRows: SampleRows;
 
   // Creates a schema that has both CASCADE and RESTRICT constraints as follows.

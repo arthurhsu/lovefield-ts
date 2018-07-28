@@ -27,7 +27,7 @@ import {Cache} from '../../lib/cache/cache';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {TaskItem} from '../../lib/proc/task_item';
 import {UserQueryTask} from '../../lib/proc/user_query_task';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {TestUtil} from '../../testing/test_util';
@@ -39,7 +39,7 @@ describe('UserQueryTask', () => {
   let global: Global;
   let cache: Cache;
   let rows: Row[];
-  let j: Table;
+  let j: BaseTable;
   const ROW_COUNT = 5;
 
   beforeEach(async () => {

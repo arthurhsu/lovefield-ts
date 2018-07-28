@@ -23,11 +23,12 @@ import {IndexStore} from '../index/index_store';
 import {Key} from '../index/key_range';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
 import {ForeignKeySpec} from '../schema/foreign_key_spec';
 import {Index} from '../schema/index';
-import {Table} from '../schema/table';
 import {MapSet} from '../structs/map_set';
+
 import {Cache} from './cache';
 import {CascadeDeletion, CascadeUpdate, CascadeUpdateItem} from './cascade';
 import {Modification} from './modification';
@@ -62,7 +63,7 @@ export class ConstraintChecker {
   // key as the input row, on null if no existing row was found.
   // |table|: the table where the row belongs.
   // |row|: the row whose primary key needs to be checked.
-  public findExistingRowIdInPkIndex(table: Table, row: Row): number|null {
+  public findExistingRowIdInPkIndex(table: BaseTable, row: Row): number|null {
     const pkIndexSchema = table.getConstraint().getPrimaryKey();
     if (pkIndexSchema === null) {
       // There is no primary key for the given table.
@@ -75,7 +76,7 @@ export class ConstraintChecker {
   // inserting/updating the given set of rows.
   // |table|: the table where the row belongs.
   // |rows|: the rows being inserted
-  public checkNotNullable(table: Table, rows: Row[]): void {
+  public checkNotNullable(table: BaseTable, rows: Row[]): void {
     const notNullable = table.getConstraint().getNotNullable();
     rows.forEach((row) => {
       notNullable.forEach((column) => {
@@ -92,7 +93,7 @@ export class ConstraintChecker {
   // Finds all rows in the database that should be updated as a result of
   // cascading updates, taking into account the given foreign key constraints.
   public detectCascadeUpdates(
-      table: Table, modifications: Modification[],
+      table: BaseTable, modifications: Modification[],
       foreignKeySpecs: ForeignKeySpec[]): CascadeUpdate {
     const cascadedUpdates = new MapSet<number, CascadeUpdateItem>();
     this.loopThroughReferringRows(
@@ -113,7 +114,7 @@ export class ConstraintChecker {
   // rows are inserted. Only constraints with |constraintTiming| will be
   // checked.
   public checkForeignKeysForInsert(
-      table: Table, rows: Row[], constraintTiming: ConstraintTiming): void {
+      table: BaseTable, rows: Row[], constraintTiming: ConstraintTiming): void {
     if (rows.length === 0) {
       return;
     }
@@ -128,7 +129,7 @@ export class ConstraintChecker {
   // existing rows being updated. Only constraints with |constraintTiming| will
   // be checked.
   public checkForeignKeysForUpdate(
-      table: Table, modifications: Modification[],
+      table: BaseTable, modifications: Modification[],
       constraintTiming: ConstraintTiming): void {
     if (modifications.length === 0) {
       return;
@@ -143,7 +144,7 @@ export class ConstraintChecker {
   // existing rows being deleted. Only constraints with |constraintTiming| will
   // be checked.
   public checkForeignKeysForDelete(
-      table: Table, rows: Row[], constraintTiming: ConstraintTiming): void {
+      table: BaseTable, rows: Row[], constraintTiming: ConstraintTiming): void {
     if (rows.length === 0) {
       return;
     }
@@ -156,9 +157,9 @@ export class ConstraintChecker {
 
   // Finds all rows in the database that should be deleted as a result of
   // cascading deletions.
-  // |rows| are the original rows being deleted (before taking cascating into
+  // |rows| are the original rows being deleted (before taking cascading into
   // account).
-  public detectCascadeDeletion(table: Table, rows: Row[]): CascadeDeletion {
+  public detectCascadeDeletion(table: BaseTable, rows: Row[]): CascadeDeletion {
     const result: CascadeDeletion = {
       rowIdsPerTable: new MapSet<string, number>(),
       tableOrder: [],
@@ -207,7 +208,7 @@ export class ConstraintChecker {
   // Checks that all referred keys in the given rows actually exist.
   // Only constraints with matching |constraintTiming| will be checked.
   private checkReferredKeys(
-      table: Table, modifications: Modification[],
+      table: BaseTable, modifications: Modification[],
       constraintTiming: ConstraintTiming): void {
     const foreignKeySpecs = table.getConstraint().getForeignKeys();
     foreignKeySpecs.forEach((foreignKeySpec) => {
@@ -271,7 +272,7 @@ export class ConstraintChecker {
   // Only constraints with |constraintAction| will be checked. If not provided
   // both CASCADE and RESTRICT are checked.
   private checkReferringKeys(
-      table: Table, modifications: Modification[],
+      table: BaseTable, modifications: Modification[],
       constraintTiming: ConstraintTiming,
       constraintAction?: ConstraintAction): void {
     let foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
@@ -302,7 +303,7 @@ export class ConstraintChecker {
 
   // Finds row IDs that refer to the given modified rows and specifically only
   // if the refer to a modified column. Returns referring row IDs per table.
-  private findReferringRowIds(table: Table, modifications: Modification[]):
+  private findReferringRowIds(table: BaseTable, modifications: Modification[]):
       MapSet<string, number>|null {
     // Finding foreign key constraints referring to the affected table.
     const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(

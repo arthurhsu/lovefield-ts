@@ -20,14 +20,14 @@ import {Resolver} from '../lib/base/resolver';
 import {UniqueId} from '../lib/base/unique_id';
 import {Relation} from '../lib/proc/relation';
 import {Task} from '../lib/proc/task';
-import {Table} from '../lib/schema/table';
+import {BaseTable} from '../lib/schema/base_table';
 
 export class MockTask extends UniqueId implements Task {
   public name: string;
   private resolver: Resolver<Relation[]>;
 
   constructor(
-      private txType: TransactionType, private scope: Set<Table>,
+      private txType: TransactionType, private scope: Set<BaseTable>,
       private execFn: () => any, private priority: TaskPriority,
       name?: string) {
     super();
@@ -39,7 +39,7 @@ export class MockTask extends UniqueId implements Task {
     return this.txType;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 

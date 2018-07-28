@@ -23,7 +23,7 @@ import {CombinedPredicate} from '../../lib/pred/combined_predicate';
 import {Predicate} from '../../lib/pred/predicate';
 import {PredicateNode} from '../../lib/pred/predicate_node';
 import {Relation} from '../../lib/proc/relation';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {TreeHelper} from '../../lib/structs/tree_helper';
 import {TreeNode} from '../../lib/structs/tree_node';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
@@ -33,9 +33,9 @@ const assert = chai.assert;
 
 describe('CombinedPredicate', () => {
   let db: DatabaseConnection;
-  let e: Table;
-  let j: Table;
-  let d: Table;
+  let e: BaseTable;
+  let j: BaseTable;
+  let d: BaseTable;
 
   before(() => {
     return getHrDbSchemaBuilder()

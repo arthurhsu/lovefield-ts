@@ -17,13 +17,45 @@
 import {ErrorCode} from '../base/enum';
 import {Exception} from '../base/exception';
 import {RawRow, Row} from '../base/row';
+import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Constraint} from '../schema/constraint';
-import {Table} from '../schema/table';
+import {Index} from '../schema/index';
 
-// Pseduo table used for initializing pseudo columns.
-export class UnknownTable extends Table {
+// Pseudo table used for initializing pseudo columns.
+export class UnknownTable implements BaseTable {
+  private _alias: string;
+
   constructor() {
-    super('UnknownTable', [], [], false);
+    this._alias = null as any as string;
+  }
+
+  public getName(): string {
+    return '#UnknownTable';
+  }
+
+  public getColumns(): BaseColumn[] {
+    return [];
+  }
+
+  public getIndices(): Index[] {
+    return [];
+  }
+
+  public persistentIndex(): boolean {
+    return false;
+  }
+
+  public getAlias(): string {
+    return this._alias;
+  }
+
+  public getEffectiveName(): string {
+    return this._alias || this.getName();
+  }
+
+  public getRowIdIndexName(): string {
+    return '#UnknownTable.#';
   }
 
   public createRow(value?: object): Row {
@@ -37,7 +69,7 @@ export class UnknownTable extends Table {
     return null as any as Constraint;
   }
 
-  public as(alias: string): Table {
+  public as(alias: string): BaseTable {
     this._alias = alias;
     return this;
   }

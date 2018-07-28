@@ -27,9 +27,9 @@ import {IndexStore} from '../index/index_store';
 import {Key} from '../index/key_range';
 import {NullableIndex} from '../index/nullable_index';
 import {RowId} from '../index/row_id';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
 import {IndexImpl} from '../schema/index_impl';
-import {Table} from '../schema/table';
 
 import {Cache} from './cache';
 
@@ -53,7 +53,7 @@ export class Prefetcher {
         return Promise.resolve();
       }
 
-      const table = tables.shift() as Table;
+      const table = tables.shift() as BaseTable;
       const whenTableFetched = table.persistentIndex() ?
           this.fetchTableWithPersistentIndices(table) :
           this.fetchTable(table);
@@ -63,7 +63,7 @@ export class Prefetcher {
     return execSequentially();
   }
 
-  private fetchTable(table: Table): Promise<void> {
+  private fetchTable(table: BaseTable): Promise<void> {
     const tx = this.backStore.createTx(TransactionType.READ_ONLY, [table]);
     const store = tx.getTable(
         table.getName(), table.deserializeRow.bind(table), TableType.DATA);
@@ -76,8 +76,8 @@ export class Prefetcher {
   }
 
   // Reconstructs a table's indices by populating them from scratch.
-  private reconstructNonPersistentIndices(tableSchema: Table, tableRows: Row[]):
-      void {
+  private reconstructNonPersistentIndices(
+      tableSchema: BaseTable, tableRows: Row[]): void {
     const indices = this.indexStore.getTableIndices(tableSchema.getName());
     tableRows.forEach((row) => {
       indices.forEach((index) => {
@@ -89,7 +89,8 @@ export class Prefetcher {
 
   // Fetches contents of a table with persistent indices into cache, and
   // reconstructs the indices from disk.
-  private fetchTableWithPersistentIndices(tableSchema: Table): Promise<void> {
+  private fetchTableWithPersistentIndices(tableSchema: BaseTable):
+      Promise<void> {
     const tx =
         this.backStore.createTx(TransactionType.READ_ONLY, [tableSchema]);
 
@@ -100,7 +101,7 @@ export class Prefetcher {
     });
 
     const whenIndicesReconstructed =
-        tableSchema.getIndices()
+        (tableSchema.getIndices() as IndexImpl[])
             .map(
                 (indexSchema: IndexImpl) =>
                     this.reconstructPersistentIndex(indexSchema, tx))
@@ -141,7 +142,7 @@ export class Prefetcher {
   }
 
   // Reconstructs a persistent RowId index by deserializing it from disk.
-  private reconstructPersistentRowIdIndex(tableSchema: Table, tx: Tx):
+  private reconstructPersistentRowIdIndex(tableSchema: BaseTable, tx: Tx):
       Promise<void> {
     const indexTable = tx.getTable(
         tableSchema.getRowIdIndexName(), Row.deserialize, TableType.INDEX);

@@ -20,8 +20,8 @@ import {DatabaseConnection} from '../../lib/base/database_connection';
 import {ConstraintAction, DataStoreType, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {op} from '../../lib/fn/op';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
-import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -84,7 +84,7 @@ describe('EndToEndFKUpdateCascade', () => {
 
   // Generates two rows for TableA and four rows for TableB, where there are two
   // rows referring to each row in TableA.
-  function getSampleRows1(tA: Table, tB: Table): SampleRows {
+  function getSampleRows1(tA: BaseTable, tB: BaseTable): SampleRows {
     const rows: SampleRows = {tableA: [], tableB: []};
 
     for (let i = 0; i < 2; i++) {
@@ -162,7 +162,7 @@ describe('EndToEndFKUpdateCascade', () => {
     return schemaBuilder;
   }
 
-  function getSampleRows2(tA: Table, tB: Table): SampleRows {
+  function getSampleRows2(tA: BaseTable, tB: BaseTable): SampleRows {
     return {
       tableA: [
         tA.createRow({id1: 1, id2: 4}),

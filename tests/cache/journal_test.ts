@@ -21,7 +21,8 @@ import {Row} from '../../lib/base/row';
 import {Journal} from '../../lib/cache/journal';
 import {Key, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
+import {IndexImpl} from '../../lib/schema/index_impl';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {TestUtil} from '../../testing/test_util';
@@ -37,8 +38,8 @@ describe('Journal', () => {
     return env.init();
   });
 
-  function createJournal(tables: Table[]): Journal {
-    return new Journal(env.global, new Set<Table>(tables));
+  function createJournal(tables: BaseTable[]): Journal {
+    return new Journal(env.global, new Set<BaseTable>(tables));
   }
 
   // Tests the case where a journal that has no write operations recorded is
@@ -113,7 +114,7 @@ describe('Journal', () => {
   // declared unique keys that already exist in the database via a previously
   // committed journal.
   function checkInsert_UniqueConstraintViolation(
-      table: Table, rows1: Row[], rows2: Row[]): void {
+      table: BaseTable, rows1: Row[], rows2: Row[]): void {
     // Inserting the row into the journal and committing.
     let journal = createJournal([table]);
     journal.insert(table, rows1);
@@ -189,9 +190,9 @@ describe('Journal', () => {
 
   it('insert_UniqueKeyViolation_IndexOrder', () => {
     const table = env.schema.table('tableE');
-    const pkIndexSchema = table.getIndices()[0];
+    const pkIndexSchema = table.getIndices()[0] as IndexImpl;
     assert.isTrue(pkIndexSchema.isUnique);
-    const emailIndexSchema = table.getIndices()[1];
+    const emailIndexSchema = table.getIndices()[1] as IndexImpl;
     assert.isTrue(emailIndexSchema.isUnique);
 
     const pkIndex =
@@ -238,7 +239,7 @@ describe('Journal', () => {
   // journal.
   it('insert_UniqueKeyViolation_SingleColumn', () => {
     const table = env.schema.table('tableE');
-    const emailIndexSchema = table.getIndices()[1];
+    const emailIndexSchema = table.getIndices()[1] as IndexImpl;
     assert.isTrue(emailIndexSchema.isUnique);
     const emailIndex =
         env.indexStore.get(emailIndexSchema.getNormalizedName()) as
@@ -611,7 +612,7 @@ describe('Journal', () => {
 
   it('insertOrReplace_UniqueKeyViolation', () => {
     const table = env.schema.table('tableE');
-    const emailIndexSchema = table.getIndices()[1];
+    const emailIndexSchema = table.getIndices()[1] as IndexImpl;
     assert.isTrue(emailIndexSchema.isUnique);
     const emailIndex =
         env.indexStore.get(emailIndexSchema.getNormalizedName()) as
@@ -870,7 +871,7 @@ describe('Journal', () => {
 
   // Returns the rows that exist in the given table according to the indexStore
   // and the cache.
-  function getTableRows(table: Table): Row[] {
+  function getTableRows(table: BaseTable): Row[] {
     const rowIds =
         (env.indexStore.get(table.getRowIdIndexName()) as RuntimeIndex)
             .getRange();

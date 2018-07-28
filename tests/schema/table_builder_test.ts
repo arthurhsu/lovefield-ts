@@ -15,8 +15,10 @@
  */
 
 import * as chai from 'chai';
+
 import {ErrorCode, Order, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
+import {IndexImpl} from '../../lib/schema/index_impl';
 import {TableBuilder} from '../../lib/schema/table_builder';
 import {TestUtil} from '../../testing/test_util';
 
@@ -200,7 +202,7 @@ describe('TableBuilder', () => {
         .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
     const indexNames: Set<string> = new Set();
     tableBuilder.getSchema().getIndices().forEach(
-        (index) => indexNames.add(index.name));
+        (index) => indexNames.add((index as IndexImpl).name));
     assert.isTrue(indexNames.has('fkemployeeId'));
     assert.isTrue(indexNames.has('idx_employeeId'));
   });
@@ -236,7 +238,7 @@ describe('TableBuilder', () => {
         .addForeignKey(
             'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'})
         .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
-    const fkIndexSchema = tableBuilder.getSchema().getIndices()[0];
+    const fkIndexSchema = tableBuilder.getSchema().getIndices()[0] as IndexImpl;
     assert.equal('fkemployeeId', fkIndexSchema.name);
     assert.isFalse(fkIndexSchema.isUnique);
   });

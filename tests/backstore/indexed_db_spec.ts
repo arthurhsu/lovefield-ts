@@ -31,7 +31,7 @@ import {DefaultCache} from '../../lib/cache/default_cache';
 import {Journal} from '../../lib/cache/journal';
 import {IndexStore} from '../../lib/index/index_store';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {MockSchema} from '../../testing/backstore/mock_schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {TestUtil} from '../../testing/test_util';
@@ -82,8 +82,8 @@ test('IndexedDB', () => {
     return Promise.resolve();
   });
 
-  function createJournal(tables: Table[]): Journal {
-    return new Journal(Global.get(), new Set<Table>(tables));
+  function createJournal(tables: BaseTable[]): Journal {
+    return new Journal(Global.get(), new Set<BaseTable>(tables));
   }
 
   it('SCUD', () => {

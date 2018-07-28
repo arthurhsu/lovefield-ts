@@ -15,6 +15,7 @@
  */
 
 import * as chai from 'chai';
+
 import {EvalType} from '../../lib/base/eval';
 import {Row} from '../../lib/base/row';
 import {JoinPredicate} from '../../lib/pred/join_predicate';
@@ -22,8 +23,8 @@ import {Predicate} from '../../lib/pred/predicate';
 import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
-import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {NullableDataGenerator} from '../../testing/nullable_data_generator';
@@ -38,9 +39,9 @@ interface SampleDataType {
 
 describe('JoinPredicate', () => {
   let db: Database;
-  let d: Table;
-  let e: Table;
-  let j: Table;
+  let d: BaseTable;
+  let e: BaseTable;
+  let j: BaseTable;
   let schemaWithNullable: Database;
   let nullableGenerator: NullableDataGenerator;
 
@@ -85,7 +86,7 @@ describe('JoinPredicate', () => {
     assert.sameMembers([e, j], Array.from(p.getTables().values()));
 
     // Test case where optional parameter is provided.
-    const tables = new Set<Table>();
+    const tables = new Set<BaseTable>();
     assert.equal(tables, p.getTables(tables));
     assert.sameMembers([e, j], Array.from(tables.values()));
   });
@@ -182,7 +183,7 @@ describe('JoinPredicate', () => {
   // |evalFn| is the join implementation method, should be either
   // evalRelationsNestedLoopJoin or evalRelationsHashJoin.
   function checkJoinPredicate_RelationsInputOrder(
-      employeeSchema: Table, jobSchema: Table,
+      employeeSchema: BaseTable, jobSchema: BaseTable,
       evalFn: (r1: Relation, r2: Relation, outer: boolean) => Relation): void {
     const sampleEmployee = HRSchemaSampleData.generateSampleEmployeeData();
     const sampleJob = HRSchemaSampleData.generateSampleJobData();
@@ -223,8 +224,8 @@ describe('JoinPredicate', () => {
   });
 
   it('joinPredicate_RelationOrder_Alias', () => {
-    const eAlias = e.as('employeeAlias');
-    const jAlias = j.as('jobAlias');
+    const eAlias = e.as('employeeAlias') as BaseTable;
+    const jAlias = j.as('jobAlias') as BaseTable;
     checkJoinPredicate_RelationsInputOrder(
         eAlias, jAlias, JoinPredicate.prototype.evalRelationsNestedLoopJoin);
     checkJoinPredicate_RelationsInputOrder(

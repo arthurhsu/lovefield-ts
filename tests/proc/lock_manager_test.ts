@@ -17,17 +17,17 @@
 import * as chai from 'chai';
 import {LockType} from '../../lib/base/private_enum';
 import {LockManager} from '../../lib/proc/lock_manager';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('LockManager', () => {
-  let j: Set<Table>;
+  let j: Set<BaseTable>;
   let lockManager: LockManager;
 
   beforeEach(() => {
-    j = new Set<Table>();
+    j = new Set<BaseTable>();
     j.add(getHrDbSchemaBuilder().getSchema().table('Job'));
     lockManager = new LockManager();
   });

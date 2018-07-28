@@ -25,7 +25,7 @@ import {Row} from '../../lib/base/row';
 import {Service} from '../../lib/base/service';
 import {Journal} from '../../lib/cache/journal';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {MockStore} from '../../testing/backstore/mock_store';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
@@ -35,7 +35,7 @@ const assert = chai.assert;
 
 describe('ExternalChangeObserver', () => {
   let db: RuntimeDatabase;
-  let j: Table;
+  let j: BaseTable;
   let sampleJobs: Row[];
   let mockStore: MockStore;
 
@@ -157,10 +157,10 @@ describe('ExternalChangeObserver', () => {
 
   // Simulates an external insertion/modification change.
   function simulateInsertionModification(
-      tableSchema: Table, rows: Row[]): Promise<void> {
+      tableSchema: BaseTable, rows: Row[]): Promise<void> {
     const tx = mockStore.createTx(
         TransactionType.READ_WRITE, [tableSchema],
-        new Journal(db.getGlobal(), new Set<Table>([tableSchema])));
+        new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));
     const table = tx.getTable(
         tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
         TableType.DATA);
@@ -169,10 +169,11 @@ describe('ExternalChangeObserver', () => {
   }
 
   // Simulates an external deletion change.
-  function simulateDeletion(tableSchema: Table, rows: Row[]): Promise<void> {
+  function simulateDeletion(
+      tableSchema: BaseTable, rows: Row[]): Promise<void> {
     const tx = mockStore.createTx(
         TransactionType.READ_WRITE, [tableSchema],
-        new Journal(db.getGlobal(), new Set<Table>([tableSchema])));
+        new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));
     const table = tx.getTable(
         tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
         TableType.DATA);

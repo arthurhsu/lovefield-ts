@@ -17,6 +17,7 @@
 import * as chai from 'chai';
 
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
@@ -45,7 +46,8 @@ describe('TableAccessFullStep', () => {
 
   // Checks that a TableAccessByRowIdStep that refers to the given table
   // produces the expected results.
-  function checkTableAccessFullStep(table: Table): Promise<void> {
+  function checkTableAccessFullStep(t: Table): Promise<void> {
+    const table = t as BaseTable;
     const step = new TableAccessFullStep(env.global, table);
 
     return step.exec().then((relations) => {

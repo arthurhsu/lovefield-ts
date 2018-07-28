@@ -17,8 +17,8 @@
 import {Order} from '../../base/enum';
 import {Global} from '../../base/global';
 import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
+import {BaseTable} from '../../schema/base_table';
 import {IndexImpl} from '../../schema/index_impl';
-import {Table} from '../../schema/table';
 import {TreeHelper} from '../../structs/tree_helper';
 import {TreeNode} from '../../structs/tree_node';
 import {RewritePass} from '../rewrite_pass';
@@ -161,11 +161,11 @@ export class OrderByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
   }
 
   private findIndexCandidateForOrderBy(
-      tableSchema: Table,
+      tableSchema: BaseTable,
       orderBy: SelectContextOrderBy[]): OrderByIndexRangeCandidate|null {
     let indexCandidate: OrderByIndexRangeCandidate|null = null;
 
-    const indexSchemas = tableSchema.getIndices();
+    const indexSchemas = tableSchema.getIndices() as IndexImpl[];
     for (let i = 0; i < indexSchemas.length && indexCandidate === null; i++) {
       indexCandidate =
           this.getIndexCandidateForIndexSchema(indexSchemas[i], orderBy);

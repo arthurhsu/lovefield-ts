@@ -19,8 +19,8 @@ import {UniqueId} from '../base/unique_id';
 import {Predicate} from '../pred/predicate';
 import {PredicateNode} from '../pred/predicate_node';
 import {ValuePredicate} from '../pred/value_predicate';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 // Base context for all query types.
 export abstract class Context extends UniqueId {
@@ -74,7 +74,7 @@ export abstract class Context extends UniqueId {
     }
   }
 
-  public abstract getScope(): Set<Table>;
+  public abstract getScope(): Set<BaseTable>;
   public abstract clone(): Context;
 
   protected cloneBase(context: Context): void {

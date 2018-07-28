@@ -30,17 +30,17 @@ import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
 import {IndexImpl} from '../../../lib/schema/index_impl';
-import {Table} from '../../../lib/schema/table';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('OrderByIndexPass', () => {
   let db: RuntimeDatabase;
   let global: Global;
-  let simpleTable: Table;
-  let crossColumnTable: Table;
+  let simpleTable: BaseTable;
+  let crossColumnTable: BaseTable;
   let pass: OrderByIndexPass;
   const NULL = null as any as BaseColumn[];
 
@@ -76,8 +76,9 @@ describe('OrderByIndexPass', () => {
     return schemaBuilder;
   }
 
-  function getIndexByName(table: Table, indexName: string): IndexImpl {
-    return table.getIndices().filter((index) => index.name === indexName)[0];
+  function getIndexByName(table: BaseTable, indexName: string): IndexImpl {
+    return (table.getIndices() as IndexImpl[])
+        .filter((index) => index.name === indexName)[0];
   }
 
   // Tests a tree where the contents of a table are filtered by a value

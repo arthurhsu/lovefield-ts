@@ -15,6 +15,7 @@
  */
 
 import * as chai from 'chai';
+
 import {EvalType} from '../../../lib/base/eval';
 import {Row} from '../../../lib/base/row';
 import {AggregatedColumn} from '../../../lib/fn/aggregated_column';
@@ -24,8 +25,8 @@ import {AggregationStep} from '../../../lib/proc/pp/aggregation_step';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
 import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Database} from '../../../lib/schema/database';
-import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
@@ -33,8 +34,8 @@ import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
 const assert = chai.assert;
 
 describe('AggregationStep', () => {
-  let e: Table;
-  let j: Table;
+  let e: BaseTable;
+  let j: BaseTable;
   let schemaWithNullable: Database;
   let dataGenerator: MockDataGenerator;
   let nullableGenerator: NullableDataGenerator;

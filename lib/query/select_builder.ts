@@ -25,8 +25,9 @@ import {op} from '../fn/op';
 import {JoinPredicate} from '../pred/join_predicate';
 import {Predicate} from '../pred/predicate';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Column} from '../schema/column';
-import {Table} from '../schema/table';
+
 import {BaseBuilder} from './base_builder';
 import {SelectContext} from './select_context';
 
@@ -60,7 +61,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     this.checkProjectionList();
   }
 
-  public from(...tables: Table[]): SelectBuilder {
+  public from(...tables: BaseTable[]): SelectBuilder {
     if (this.fromAlreadyCalled) {
       // 515: from() has already been called.
       throw new Exception(ErrorCode.DUPLICATE_FROM);
@@ -89,7 +90,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public innerJoin(table: Table, predicate: Predicate): SelectBuilder {
+  public innerJoin(table: BaseTable, predicate: Predicate): SelectBuilder {
     // 542: from() has to be called before innerJoin() or leftOuterJoin().
     this.checkFrom(ErrorCode.MISSING_FROM_BEFORE_JOIN);
 
@@ -104,7 +105,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public leftOuterJoin(table: Table, predicate: Predicate): SelectBuilder {
+  public leftOuterJoin(table: BaseTable, predicate: Predicate): SelectBuilder {
     // 542: from() has to be called before innerJoin() or leftOuterJoin().
     this.checkFrom(ErrorCode.MISSING_FROM_BEFORE_JOIN);
 

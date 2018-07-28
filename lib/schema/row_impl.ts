@@ -17,6 +17,7 @@
 import {DEFAULT_VALUES, Type} from '../base/enum';
 import {Row} from '../base/row';
 import {Key} from '../index/key_range';
+
 import {BaseColumn} from './base_column';
 import {Index} from './index';
 

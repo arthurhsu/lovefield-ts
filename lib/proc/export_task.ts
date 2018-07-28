@@ -22,8 +22,8 @@ import {Row} from '../base/row';
 import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';
 import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {Relation} from './relation';
 import {RelationEntry} from './relation_entry';
@@ -31,13 +31,13 @@ import {Task} from './task';
 
 export class ExportTask extends UniqueId implements Task {
   private schema: Database;
-  private scope: Set<Table>;
+  private scope: Set<BaseTable>;
   private resolver: Resolver<Relation[]>;
 
   constructor(private global: Global) {
     super();
     this.schema = global.getService(Service.SCHEMA);
-    this.scope = new Set<Table>(this.schema.tables());
+    this.scope = new Set<BaseTable>(this.schema.tables());
     this.resolver = new Resolver<Relation[]>();
   }
 
@@ -73,7 +73,7 @@ export class ExportTask extends UniqueId implements Task {
     return TransactionType.READ_ONLY;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 

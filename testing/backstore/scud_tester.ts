@@ -24,10 +24,10 @@ import {Row} from '../../lib/base/row';
 import {Service} from '../../lib/base/service';
 import {Cache} from '../../lib/cache/cache';
 import {Journal} from '../../lib/cache/journal';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 
 export class ScudTester {
-  private tableSchema: Table;
+  private tableSchema: BaseTable;
   private cache: Cache;
   private reload: null|(() => BackStore);
 
@@ -67,7 +67,7 @@ export class ScudTester {
   private insert(rows: Row[]): Promise<void> {
     const tx = this.db.createTx(
         TransactionType.READ_WRITE, [this.tableSchema],
-        new Journal(this.global, new Set<Table>([this.tableSchema])));
+        new Journal(this.global, new Set<BaseTable>([this.tableSchema])));
     const store = tx.getTable(
         this.tableSchema.getName(),
         this.tableSchema.deserializeRow.bind(this.tableSchema), TableType.DATA);
@@ -79,7 +79,7 @@ export class ScudTester {
   private remove(rowIds: number[]): Promise<void> {
     const tx = this.db.createTx(
         TransactionType.READ_WRITE, [this.tableSchema],
-        new Journal(this.global, new Set<Table>([this.tableSchema])));
+        new Journal(this.global, new Set<BaseTable>([this.tableSchema])));
     const store = tx.getTable(
         this.tableSchema.getName(),
         this.tableSchema.deserializeRow.bind(this.tableSchema), TableType.DATA);

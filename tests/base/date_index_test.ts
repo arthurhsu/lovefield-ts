@@ -19,14 +19,14 @@ import * as chai from 'chai';
 import {DataStoreType, Order} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('DateIndex', () => {
   let db: RuntimeDatabase;
-  let holiday: Table;
+  let holiday: BaseTable;
 
   beforeEach(async () => {
     db = await getHrDbSchemaBuilder().connect(

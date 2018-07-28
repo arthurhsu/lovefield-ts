@@ -15,9 +15,10 @@
  */
 
 import * as chai from 'chai';
+
 import {ConstraintAction} from '../../lib/base/enum';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Info} from '../../lib/schema/info';
-import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
@@ -54,7 +55,7 @@ describe('Info', () => {
     assert.isNull(getRefs(info, 'Country', ConstraintAction.CASCADE));
   });
 
-  function invoke(toTest: (arg: any) => Table[], arg: any): string[] {
+  function invoke(toTest: (arg: any) => BaseTable[], arg: any): string[] {
     return toTest(arg).map((table) => table.getName());
   }
 

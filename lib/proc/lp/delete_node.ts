@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class DeleteNode extends LogicalQueryPlanNode {
-  constructor(readonly table: Table) {
+  constructor(readonly table: BaseTable) {
     super();
   }
 

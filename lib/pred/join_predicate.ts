@@ -25,7 +25,7 @@ import {RuntimeIndex} from '../index/runtime_index';
 import {Relation} from '../proc/relation';
 import {RelationEntry} from '../proc/relation_entry';
 import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {MapSet} from '../structs/map_set';
 import {PredicateNode} from './predicate_node';
 
@@ -72,10 +72,10 @@ export class JoinPredicate extends PredicateNode {
     return [this.leftColumn, this.rightColumn];
   }
 
-  public getTables(results?: Set<Table>): Set<Table> {
+  public getTables(results?: Set<BaseTable>): Set<BaseTable> {
     const tables = (results !== undefined && results !== null) ?
         results :
-        new Set<Table>();
+        new Set<BaseTable>();
     tables.add(this.leftColumn.getTable());
     tables.add(this.rightColumn.getTable());
     return tables;
@@ -394,7 +394,7 @@ export class JoinPredicate extends PredicateNode {
   }
 
   // Creates a row with null columns with column names obtained from the table.
-  private createNullPayload(table: Table): object {
+  private createNullPayload(table: BaseTable): object {
     const payload = {};
     table.getColumns().forEach((column) => payload[column.getName()] = null);
     return payload;

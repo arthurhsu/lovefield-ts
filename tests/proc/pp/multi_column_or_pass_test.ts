@@ -28,8 +28,8 @@ import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Database} from '../../../lib/schema/database';
-import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
@@ -37,8 +37,8 @@ import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 describe('MultiColumnOrPass', () => {
   let db: RuntimeDatabase;
   let schema: Database;
-  let e: Table;
-  let j: Table;
+  let e: BaseTable;
+  let j: BaseTable;
   let pass: MultiColumnOrPass;
   let global: Global;
 

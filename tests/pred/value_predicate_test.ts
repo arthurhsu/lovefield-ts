@@ -15,6 +15,7 @@
  */
 
 import * as chai from 'chai';
+
 import {bind, Binder} from '../../lib/base/bind';
 import {ErrorCode, Type} from '../../lib/base/enum';
 import {EvalType} from '../../lib/base/eval';
@@ -23,17 +24,17 @@ import {JoinPredicate} from '../../lib/pred/join_predicate';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {Relation} from '../../lib/proc/relation';
 import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
 import {Database} from '../../lib/schema/database';
-import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('ValuePredicate', () => {
   let schema: Database;
-  let tableA: Table;
-  let tableB: Table;
+  let tableA: BaseTable;
+  let tableB: BaseTable;
 
   function getSchema(): Database {
     const schemaBuilder = new Builder('valuepredicate', 1);
@@ -79,7 +80,7 @@ describe('ValuePredicate', () => {
     assert.sameMembers([tableA], Array.from(p.getTables().values()));
 
     // Test case where optional parameter is provided.
-    const tables = new Set<Table>();
+    const tables = new Set<BaseTable>();
     assert.equal(tables, p.getTables(tables));
     assert.sameMembers([tableA], Array.from(tables.values()));
   });
@@ -97,7 +98,7 @@ describe('ValuePredicate', () => {
     return sampleRows;
   }
 
-  function checkEval_Eq(table: Table): void {
+  function checkEval_Eq(table: BaseTable): void {
     const sampleRow = getTableARows(1)[0];
     const relation = Relation.fromRows([sampleRow], [table.getEffectiveName()]);
 
@@ -116,13 +117,14 @@ describe('ValuePredicate', () => {
   });
 
   it('eval_eq_alias', () => {
-    checkEval_Eq(tableA.as('SomeTableAlias'));
+    checkEval_Eq(tableA.as('SomeTableAlias') as BaseTable);
   });
 
   // Testing the case where a ValuePredicate is applied on a relation that is
   // the result of a previous join operation.
   // |table1| must be TableA or alias, |table2| must be TableB or alias.
-  function checkEval_Eq_PreviousJoin(table1: Table, table2: Table): void {
+  function checkEval_Eq_PreviousJoin(
+      table1: BaseTable, table2: BaseTable): void {
     const leftRow = table1.createRow({
       id: 'dummyId',
       name: 'dummyName',
@@ -160,7 +162,8 @@ describe('ValuePredicate', () => {
   });
 
   it('eval_Eq_PreviousJoin_Alias', () => {
-    checkEval_Eq_PreviousJoin(tableA.as('table1'), tableB.as('table2'));
+    checkEval_Eq_PreviousJoin(
+        tableA.as('table1') as BaseTable, tableB.as('table2') as BaseTable);
   });
 
   // Tests the conversion of a value predicate to a KeyRange for a column of

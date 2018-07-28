@@ -23,7 +23,7 @@ import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';
 import {InMemoryUpdater} from '../cache/in_memory_updater';
 import {TableDiff} from '../cache/table_diff';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 import {ObserverQueryTask} from './observer_query_task';
 import {Relation} from './relation';
@@ -34,7 +34,7 @@ export class ExternalChangeTask extends UniqueId implements Task {
   private observerRegistry: ObserverRegistry;
   private runner: Runner;
   private inMemoryUpdater: InMemoryUpdater;
-  private scope: Set<Table>;
+  private scope: Set<BaseTable>;
   private resolver: Resolver<Relation[]>;
 
   constructor(private global: Global, private tableDiffs: TableDiff[]) {
@@ -46,7 +46,7 @@ export class ExternalChangeTask extends UniqueId implements Task {
     const schema = this.global.getService(Service.SCHEMA);
     const tableSchemas =
         this.tableDiffs.map((td) => schema.table(td.getName()));
-    this.scope = new Set<Table>(tableSchemas);
+    this.scope = new Set<BaseTable>(tableSchemas);
     this.resolver = new Resolver<Relation[]>();
   }
 
@@ -60,7 +60,7 @@ export class ExternalChangeTask extends UniqueId implements Task {
     return TransactionType.READ_WRITE;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 

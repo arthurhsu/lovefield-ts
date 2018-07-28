@@ -16,9 +16,10 @@
 
 import {ConstraintAction} from '../base/enum';
 import {MapSet} from '../structs/map_set';
+
+import {BaseTable} from './base_table';
 import {Database} from './database';
 import {ForeignKeySpec} from './foreign_key_spec';
-import {Table} from './table';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
@@ -29,15 +30,15 @@ export class Info {
   private restrictReferringFk: MapSet<string, ForeignKeySpec>;
 
   // The map of table name to their parent tables.
-  private parents: MapSet<string, Table>;
+  private parents: MapSet<string, BaseTable>;
 
   // The map of fully qualified column name to its parent table name.
   private colParent: Map<string, string>;
 
   // The map of table to their child tables.
-  private children: MapSet<string, Table>;
-  private cascadeChildren: MapSet<string, Table>;
-  private restrictChildren: MapSet<string, Table>;
+  private children: MapSet<string, BaseTable>;
+  private cascadeChildren: MapSet<string, BaseTable>;
+  private restrictChildren: MapSet<string, BaseTable>;
 
   // The map of full qualified column name to their child table name.
   private colChild: MapSet<string, string>;
@@ -95,12 +96,12 @@ export class Info {
   }
 
   // Look up parent tables for given tables.
-  public getParentTables(tableName: string): Table[] {
+  public getParentTables(tableName: string): BaseTable[] {
     return this.expandScope(tableName, this.parents);
   }
 
   // Looks up parent tables for a given column set.
-  public getParentTablesByColumns(colNames: string[]): Table[] {
+  public getParentTablesByColumns(colNames: string[]): BaseTable[] {
     const tableNames = new Set<string>();
     colNames.forEach((col) => {
       const table = this.colParent.get(col);
@@ -114,7 +115,7 @@ export class Info {
 
   // Looks up child tables for given tables.
   public getChildTables(tableName: string, constraintAction?: ConstraintAction):
-      Table[] {
+      BaseTable[] {
     if (!(constraintAction !== undefined && constraintAction !== null)) {
       return this.expandScope(tableName, this.children);
     } else if (constraintAction === ConstraintAction.RESTRICT) {
@@ -125,7 +126,7 @@ export class Info {
   }
 
   // Looks up child tables for a given column set.
-  public getChildTablesByColumns(colNames: string[]): Table[] {
+  public getChildTablesByColumns(colNames: string[]): BaseTable[] {
     const tableNames = new Set<string>();
     colNames.forEach((col) => {
       const children = this.colChild.get(col);
@@ -137,7 +138,8 @@ export class Info {
     return tables.map((tableName) => this.schema.table(tableName));
   }
 
-  private expandScope(tableName: string, map: MapSet<string, Table>): Table[] {
+  private expandScope(tableName: string, map: MapSet<string, BaseTable>):
+      BaseTable[] {
     const values = map.get(tableName);
     return values === null ? [] : values;
   }

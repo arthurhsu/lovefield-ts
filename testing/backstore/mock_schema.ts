@@ -15,17 +15,17 @@
  */
 
 import {Order, Type} from '../../lib/base/enum';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
 import {Info} from '../../lib/schema/info';
 import {Pragma} from '../../lib/schema/pragma';
-import {Table} from '../../lib/schema/table';
 import {TableBuilder} from '../../lib/schema/table_builder';
 
 // Dummy schema implementation to be used in tests.
 export class MockSchema implements Database {
-  private tableA: Table;
-  private tableB: Table;
-  private tablePlusOne: Table;
+  private tableA: BaseTable;
+  private tableB: BaseTable;
+  private tablePlusOne: BaseTable;
   private name_: string;
   private version_: number;
   private simulateDropTableA: boolean;
@@ -50,7 +50,7 @@ export class MockSchema implements Database {
     return this.version_;
   }
 
-  public tables(): Table[] {
+  public tables(): BaseTable[] {
     const tables = [this.tableB];
 
     if (!this.simulateDropTableA) {
@@ -69,7 +69,7 @@ export class MockSchema implements Database {
     return this.info_;
   }
 
-  public table(tableName: string): Table {
+  public table(tableName: string): BaseTable {
     const tables = {
       tableB: this.tableB,
     };
@@ -102,7 +102,7 @@ export class MockSchema implements Database {
     this.simulateDropTableA = mode;
   }
 
-  private createTable(tableName: string): Table {
+  private createTable(tableName: string): BaseTable {
     return new TableBuilder(tableName)
         .addColumn('id', Type.STRING)
         .addColumn('name', Type.STRING)

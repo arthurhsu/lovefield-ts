@@ -19,6 +19,7 @@ import * as chai from 'chai';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
 import {Relation} from '../../../lib/proc/relation';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Database} from '../../../lib/schema/database';
 import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
@@ -46,7 +47,8 @@ describe('TableAccessByRowId', () => {
 
   // Checks that a TableAccessByRowIdStep that refers to the given table
   // produces the expected results.
-  function checkTableAccessByRowId(table: Table): Promise<void> {
+  function checkTableAccessByRowId(t: Table): Promise<void> {
+    const table = t as BaseTable;
     const step = new TableAccessByRowIdStep(env.global, table);
 
     // Creating a "dummy" child step that will return only two row IDs.

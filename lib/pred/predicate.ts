@@ -16,7 +16,7 @@
 
 import {Relation} from '../proc/relation';
 import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 export interface Predicate {
   // Returns relation that holds only the entries satisfying given predicate.
@@ -39,7 +39,7 @@ export interface Predicate {
   // results array as the parameter holds previous results, given that this
   // function is called recursively.  If provided any table will be added on
   // that array. If not provided a new array will be allocated.
-  getTables(results?: Set<Table>): Set<Table>;
+  getTables(results?: Set<BaseTable>): Set<BaseTable>;
 
   setId(id: number): void;
   getId(): number;

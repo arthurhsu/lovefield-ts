@@ -17,7 +17,7 @@
 import {EvalType} from '../../base/eval';
 import {SelectContext} from '../../query/select_context';
 import {BaseColumn} from '../../schema/base_column';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {TreeHelper} from '../../structs/tree_helper';
 import {Relation} from '../relation';
 import {RewritePass} from '../rewrite_pass';
@@ -67,7 +67,7 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     }
 
     // Finds which of the two joined columns corresponds to the given table.
-    const getColumnForTable = (table: Table): BaseColumn => {
+    const getColumnForTable = (table: BaseTable): BaseColumn => {
       return table.getEffectiveName() ===
               joinStep.predicate.rightColumn.getTable().getEffectiveName() ?
           joinStep.predicate.rightColumn :

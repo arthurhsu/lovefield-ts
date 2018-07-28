@@ -16,11 +16,12 @@
 
 import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../base/enum';
 import {Exception} from '../base/exception';
+
+import {BaseTable} from './base_table';
 import {ColumnDef} from './column_def';
 import {ForeignKeySpec, RawForeignKeySpec} from './foreign_key_spec';
 import {IndexImpl} from './index_impl';
 import {IndexedColumnSpec} from './indexed_column';
-import {Table} from './table';
 import {TableImpl} from './table_impl';
 
 // Dynamic Table schema builder
@@ -165,7 +166,7 @@ export class TableBuilder {
     this.persistIndex = value;
   }
 
-  public getSchema(): Table {
+  public getSchema(): BaseTable {
     this.checkPrimaryKeyNotForeignKey();
     this.checkPrimaryKeyDuplicateIndex();
     this.checkPrimaryKeyNotNullable();
@@ -189,7 +190,7 @@ export class TableBuilder {
     table.constructIndices(
         this.pkName, this.indices, this.uniqueIndices, this.nullable,
         this.fkSpecs);
-    return table as any as Table;
+    return table as any as BaseTable;
   }
 
   public getFkSpecs(): ForeignKeySpec[] {

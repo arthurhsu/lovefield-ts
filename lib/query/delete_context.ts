@@ -15,20 +15,21 @@
  */
 
 import {ConstraintAction} from '../base/enum';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {Context} from './context';
 
 // Internal representation of DELETE query.
 export class DeleteContext extends Context {
-  public from!: Table;
+  public from!: BaseTable;
 
   constructor(schema: Database) {
     super(schema);
   }
 
-  public getScope(): Set<Table> {
-    const scope = new Set<Table>();
+  public getScope(): Set<BaseTable> {
+    const scope = new Set<BaseTable>();
     scope.add(this.from);
     this.expandTableScope(this.from.getName(), scope);
     return scope;
@@ -49,7 +50,8 @@ export class DeleteContext extends Context {
 
   // Expands the scope of the given table recursively. It takes into account
   // CASCADE foreign key constraints.
-  private expandTableScope(tableName: string, scopeSoFar: Set<Table>): void {
+  private expandTableScope(tableName: string, scopeSoFar: Set<BaseTable>):
+      void {
     const cascadeChildTables =
         this.schema.info().getChildTables(tableName, ConstraintAction.CASCADE);
     const childTables = this.schema.info().getChildTables(tableName);

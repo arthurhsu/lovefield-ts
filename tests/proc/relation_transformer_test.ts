@@ -23,7 +23,7 @@ import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 import {RelationTransformer} from '../../lib/proc/relation_transformer';
 import {BaseColumn} from '../../lib/schema/base_column';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {EmployeeDataGenerator} from '../../testing/hr_schema/employee_data_generator';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
@@ -31,8 +31,8 @@ import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 const assert = chai.assert;
 
 describe('RelationTransformer', () => {
-  let j: Table;
-  let e: Table;
+  let j: BaseTable;
+  let e: BaseTable;
   let sampleJobs: Row[];
   let sampleEmployees: Row[];
 

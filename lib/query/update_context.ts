@@ -15,8 +15,9 @@
  */
 
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {Context} from './context';
 
 interface UpdateSetContext {
@@ -27,15 +28,15 @@ interface UpdateSetContext {
 
 // Internal representation of UPDATE query.
 export class UpdateContext extends Context {
-  public table!: Table;
+  public table!: BaseTable;
   public set!: UpdateSetContext[];
 
   constructor(schema: Database) {
     super(schema);
   }
 
-  public getScope(): Set<Table> {
-    const scope = new Set<Table>();
+  public getScope(): Set<BaseTable> {
+    const scope = new Set<BaseTable>();
     scope.add(this.table);
     const columns = this.set.map((col) => col.column.getNormalizedName());
     const info = this.schema.info();

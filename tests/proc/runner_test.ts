@@ -19,7 +19,7 @@ import {TransactionType} from '../../lib/base/enum';
 import {TaskPriority} from '../../lib/base/private_enum';
 import {Resolver} from '../../lib/base/resolver';
 import {Runner} from '../../lib/proc/runner';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockTask} from '../../testing/mock_task';
 
@@ -27,7 +27,7 @@ const assert = chai.assert;
 
 describe('Runner', () => {
   let runner: Runner;
-  let j: Table;
+  let j: BaseTable;
 
   before(() => {
     j = getHrDbSchemaBuilder().getSchema().table('Job');
@@ -37,8 +37,8 @@ describe('Runner', () => {
     runner = new Runner();
   });
 
-  function createScope(): Set<Table> {
-    return new Set<Table>([j]);
+  function createScope(): Set<BaseTable> {
+    return new Set<BaseTable>([j]);
   }
 
   // Tests that SELECT queries are executed after overlapping write transaction

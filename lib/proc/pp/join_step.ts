@@ -27,6 +27,7 @@ import {Context} from '../../query/context';
 import {BaseColumn} from '../../schema/base_column';
 import {Index} from '../../schema/index';
 import {Relation} from '../relation';
+
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 enum JoinAlgorithm {

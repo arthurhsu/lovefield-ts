@@ -21,7 +21,7 @@ import {Journal} from '../../cache/journal';
 import {IndexStore} from '../../index/index_store';
 import {Context} from '../../query/context';
 import {InsertContext} from '../../query/insert_context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {Relation} from '../relation';
 
 import {InsertStep} from './insert_step';
@@ -30,7 +30,7 @@ import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 export class InsertOrReplaceStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: Table) {
+  constructor(global: Global, private table: BaseTable) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }

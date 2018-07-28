@@ -22,17 +22,17 @@ import {JoinPredicate} from '../../../lib/pred/join_predicate';
 import {JoinStep} from '../../../lib/proc/pp/join_step';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
 import {Database} from '../../../lib/schema/database';
-import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
 
 const assert = chai.assert;
 
 describe('JoinStep', () => {
   let env: MockEnv;
-  let ta: Table;
-  let tb: Table;
+  let ta: BaseTable;
+  let tb: BaseTable;
   let tableARows: Row[];
   let tableBRows: Row[];
 
@@ -61,7 +61,7 @@ describe('JoinStep', () => {
 
   // Inserts 3 sample rows to the database, for each table.
   function insertSampleData(): Promise<any> {
-    const generateRowsForTable = (table: Table): Row[] => {
+    const generateRowsForTable = (table: BaseTable): Row[] => {
       const sampleDataCount = 3;
       const rows = new Array(sampleDataCount);
       for (let i = 0; i < sampleDataCount; i++) {

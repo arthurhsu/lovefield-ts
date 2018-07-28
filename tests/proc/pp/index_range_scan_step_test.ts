@@ -19,6 +19,7 @@ import {Order} from '../../../lib/base/enum';
 import {SingleKeyRange} from '../../../lib/index/key_range';
 import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
 import {Database} from '../../../lib/schema/database';
+import {IndexImpl} from '../../../lib/schema/index_impl';
 import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
@@ -55,7 +56,8 @@ describe('IndexRangeScanStep', () => {
         new SingleKeyRange(5, 8, false, false) :
         new SingleKeyRange('dummyName' + 5, 'dummyName' + 8, false, false);
     const step = new IndexRangeScanStep(
-        env.global, index, new MockKeyRangeCalculator([keyRange]), false);
+        env.global, index as IndexImpl, new MockKeyRangeCalculator([keyRange]),
+        false);
 
     return step.exec().then((relations) => {
       const relation = relations[0];

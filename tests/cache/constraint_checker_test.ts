@@ -21,9 +21,9 @@ import {Row} from '../../lib/base/row';
 import {ConstraintChecker} from '../../lib/cache/constraint_checker';
 import {Modification} from '../../lib/cache/modification';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
 import {schema} from '../../lib/schema/schema';
-import {Table} from '../../lib/schema/table';
 import {MockEnv} from '../../testing/mock_env';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 import {TestUtil} from '../../testing/test_util';
@@ -159,7 +159,7 @@ describe('ConstraintChecker', () => {
 
     const checkFn = (timing: ConstraintTiming) =>
         checker.checkForeignKeysForDelete(
-            parentTable as Table, [parentRow as Row], timing);
+            parentTable as BaseTable, [parentRow as Row], timing);
     assertChecks(constraintTiming, checkFn);
   }
 
@@ -196,7 +196,7 @@ describe('ConstraintChecker', () => {
 
     const checkFn = (timing: ConstraintTiming) =>
         checker.checkForeignKeysForUpdate(
-            parentTable as Table, [modification], timing);
+            parentTable as BaseTable, [modification], timing);
     assertChecks(constraintTiming, checkFn);
   }
 

@@ -20,7 +20,7 @@ import {Global} from '../base/global';
 import {Resolver} from '../base/resolver';
 import {RawRow, Row} from '../base/row';
 import {Journal} from '../cache/journal';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
 import {RawBackStore} from './raw_back_store';
@@ -126,7 +126,7 @@ export class WebSqlRawBackStore implements RawBackStore {
   private createTx(): WebSqlTx {
     return new WebSqlTx(
         this.db, TransactionType.READ_WRITE,
-        new Journal(this.global, new Set<Table>()));
+        new Journal(this.global, new Set<BaseTable>()));
   }
 
   private dumpTable(tableName: string): Promise<RawRow[]> {

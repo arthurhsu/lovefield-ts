@@ -23,7 +23,7 @@ import {Exception} from '../../lib/base/exception';
 import {RuntimeTable} from '../../lib/base/runtime_table';
 import {Journal} from '../../lib/cache/journal';
 import {TableDiff} from '../../lib/cache/table_diff';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 
 import {TrackedTx} from './tracked_tx';
 
@@ -48,7 +48,7 @@ export class MockStore implements BackStore {
     return this.store.init(onUpgrade);
   }
 
-  public createTx(type: TransactionType, scope: Table[], journal?: Journal):
+  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
       Tx {
     return new TrackedTx(this, type, journal);
   }

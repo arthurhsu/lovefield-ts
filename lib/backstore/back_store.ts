@@ -18,7 +18,7 @@ import {TransactionType} from '../base/enum';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {RawBackStore} from './raw_back_store';
 import {Tx} from './tx';
 
@@ -30,7 +30,7 @@ export interface BackStore {
   init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<any>;
 
   // Creates backstore native transaction that is tied to a given journal.
-  createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx;
+  createTx(type: TransactionType, scope: BaseTable[], journal?: Journal): Tx;
 
   // Closes the database. This is just best-effort.
   close(): void;

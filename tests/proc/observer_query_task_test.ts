@@ -22,7 +22,7 @@ import {Resolver} from '../../lib/base/resolver';
 import {ObserverQueryTask} from '../../lib/proc/observer_query_task';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {SelectBuilder} from '../../lib/query/select_builder';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
@@ -30,7 +30,7 @@ const assert = chai.assert;
 
 describe('ObserverQueryTask', () => {
   let db: RuntimeDatabase;
-  let j: Table;
+  let j: BaseTable;
   const ROW_COUNT = 3;
 
   beforeEach(async () => {

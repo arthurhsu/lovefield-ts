@@ -16,6 +16,7 @@
 
 import * as chai from 'chai';
 import * as sinon from 'sinon';
+
 import {BTree} from '../../lib/index/btree';
 import {ComparatorFactory} from '../../lib/index/comparator_factory';
 import {IndexStore} from '../../lib/index/index_store';
@@ -23,6 +24,7 @@ import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {Database} from '../../lib/schema/database';
+import {IndexImpl} from '../../lib/schema/index_impl';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
@@ -130,7 +132,7 @@ describe('MemoryIndexStore', () => {
   // Tests that set() is correctly replacing any existing indices.
   it('set', async () => {
     const tableSchema = schema.table('tableA');
-    const indexSchema = tableSchema.getIndices()[0];
+    const indexSchema = tableSchema.getIndices()[0] as IndexImpl;
 
     await indexStore.init(schema);
     const indexBefore = indexStore.get(indexSchema.getNormalizedName());

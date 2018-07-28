@@ -22,8 +22,8 @@ import {Resolver} from '../../lib/base/resolver';
 import {Relation} from '../../lib/proc/relation';
 import {SelectBuilder} from '../../lib/query/select_builder';
 import {SelectContext} from '../../lib/query/select_context';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
-import {Table} from '../../lib/schema/table';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -97,26 +97,27 @@ describe('ObservableRegistry', () => {
     registry.addObserver(builder2, callback);
     registry.addObserver(builder3, callback);
 
-    const getQueriesForTables = (targetSet: Set<Table>): SelectContext[] => {
-      return registry.getTaskItemsForTables(Array.from(targetSet.values()))
-          .map((item) => item.context as SelectContext);
-    };
+    const getQueriesForTables =
+        (targetSet: Set<BaseTable>): SelectContext[] => {
+          return registry.getTaskItemsForTables(Array.from(targetSet.values()))
+              .map((item) => item.context as SelectContext);
+        };
 
-    const scope1 = new Set<Table>();
+    const scope1 = new Set<BaseTable>();
     scope1.add(tables[0]);
     let queries = getQueriesForTables(scope1);
     assert.sameDeepOrderedMembers(
         [builder1.getObservableQuery(), builder2.getObservableQuery()],
         queries);
 
-    const scope2 = new Set<Table>();
+    const scope2 = new Set<BaseTable>();
     scope2.add(tables[1]);
     queries = getQueriesForTables(scope2);
     assert.sameDeepOrderedMembers(
         [builder2.getObservableQuery(), builder3.getObservableQuery()],
         queries);
 
-    const scope3 = new Set<Table>();
+    const scope3 = new Set<BaseTable>();
     scope3.add(tables[0]);
     scope3.add(tables[1]);
     queries = getQueriesForTables(scope3);

@@ -21,8 +21,8 @@ import {Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {BackStore} from './back_store';
 import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
@@ -116,7 +116,7 @@ export class IndexedDB implements BackStore {
     });
   }
 
-  public createTx(type: TransactionType, scope: Table[], journal?: Journal):
+  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
       Tx {
     const nativeTx = this.db.transaction(
         this.getIndexedDBScope(scope),
@@ -192,7 +192,7 @@ export class IndexedDB implements BackStore {
     }, this);
   }
 
-  private createObjectStoresForTable(db: IDBDatabase, tableSchema: Table):
+  private createObjectStoresForTable(db: IDBDatabase, tableSchema: BaseTable):
       void {
     if (!db.objectStoreNames.contains(tableSchema.getName())) {
       db.createObjectStore(tableSchema.getName(), {keyPath: 'id'});
@@ -216,7 +216,7 @@ export class IndexedDB implements BackStore {
     }
   }
 
-  private getIndexedDBScope(scope: Table[]): string[] {
+  private getIndexedDBScope(scope: BaseTable[]): string[] {
     const indexedDBScope = new Set<string>();
 
     scope.forEach((tableSchema) => {

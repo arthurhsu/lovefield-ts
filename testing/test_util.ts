@@ -26,8 +26,8 @@ import {Service} from '../lib/base/service';
 import {IndexStats} from '../lib/index/index_stats';
 import {IndexStore} from '../lib/index/index_store';
 import {RuntimeIndex} from '../lib/index/runtime_index';
-import {Index} from '../lib/schema';
-import {Table} from '../lib/schema/table';
+import {BaseTable} from '../lib/schema/base_table';
+import {Index} from '../lib/schema/index';
 
 export class TestUtil {
   public static assertThrowsError(exceptionCode: number, fn: () => any): void {
@@ -64,7 +64,8 @@ export class TestUtil {
     sandbox.stub(index, 'stats').callsFake(() => indexStats);
   }
 
-  public static selectAll(global: Global, tableSchema: Table): Promise<Row[]> {
+  public static selectAll(global: Global, tableSchema: BaseTable):
+      Promise<Row[]> {
     const backStore = global.getService(Service.BACK_STORE);
     const tx = backStore.createTx(TransactionType.READ_ONLY, [tableSchema]);
     const table = tx.getTable(

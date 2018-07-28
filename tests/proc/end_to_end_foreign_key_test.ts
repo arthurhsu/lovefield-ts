@@ -20,8 +20,8 @@ import {ConstraintTiming, DataStoreType, ErrorCode, Type} from '../../lib/base/e
 import {Global} from '../../lib/base/global';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
-import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -30,8 +30,8 @@ describe('EndToEndForeignKey', () => {
   let db: RuntimeDatabase;
   let global: Global;
   let sampleRows: Row[];
-  let parentTable: Table;
-  let childTable: Table;
+  let parentTable: BaseTable;
+  let childTable: BaseTable;
 
   beforeEach(async () => {
     const builder = getSchemaBuilder();

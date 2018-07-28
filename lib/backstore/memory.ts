@@ -19,8 +19,9 @@ import {Exception} from '../base/exception';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {BackStore} from './back_store';
 import {MemoryTable} from './memory_table';
 import {MemoryTx} from './memory_tx';
@@ -50,7 +51,7 @@ export class Memory implements BackStore {
     return table;
   }
 
-  public createTx(type: TransactionType, scope: Table[], journal?: Journal):
+  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
       Tx {
     return new MemoryTx(this, type, journal);
   }
@@ -90,7 +91,7 @@ export class Memory implements BackStore {
     }
   }
 
-  private initTable(tableSchema: Table): void {
+  private initTable(tableSchema: BaseTable): void {
     this.createTable(tableSchema.getName());
 
     if (tableSchema.persistentIndex()) {

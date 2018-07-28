@@ -23,7 +23,7 @@ import {op} from '../../lib/fn/op';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {DeleteBuilder} from '../../lib/query/delete_builder';
 import {InsertBuilder} from '../../lib/query/insert_builder';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
@@ -31,7 +31,7 @@ const assert = chai.assert;
 
 describe('toSql', () => {
   let db: RuntimeDatabase;
-  let j: Table;
+  let j: BaseTable;
 
   beforeEach(async () => {
     db = await getHrDbSchemaBuilder().connect(

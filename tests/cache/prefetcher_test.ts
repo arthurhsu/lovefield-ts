@@ -25,7 +25,7 @@ import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {NullableIndex} from '../../lib/index/nullable_index';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -131,7 +131,8 @@ describe('Prefetcher', () => {
   });
 
   function getSampleRows(
-      tableSchema: Table, rowCount: number, nullNameRowCount: number): Row[] {
+      tableSchema: BaseTable, rowCount: number,
+      nullNameRowCount: number): Row[] {
     const rows = [];
 
     const rowCountFirstHalf = Math.floor(rowCount / 2);
@@ -172,7 +173,7 @@ describe('Prefetcher', () => {
   // table with dummy data. Used for testing prefetcher#init.
   // Resolves when index contents have been persisted in the backing store.
   function simulatePersistedIndices(
-      tableSchema: Table, tableRows: Row[]): Promise<void> {
+      tableSchema: BaseTable, tableRows: Row[]): Promise<void> {
     const tempIndexStore = new MemoryIndexStore();
     return tempIndexStore.init(env.schema).then(() => {
       const indices = tempIndexStore.getTableIndices(tableSchema.getName());

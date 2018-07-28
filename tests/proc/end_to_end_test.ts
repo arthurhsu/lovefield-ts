@@ -24,8 +24,8 @@ import {Resolver} from '../../lib/base/resolver';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {InsertQuery} from '../../lib/query/insert_query';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
-import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
@@ -38,8 +38,8 @@ type Connector = () => RuntimeDatabase;
 describe('EndToEndTest', () => {
   let connector: (builder: Builder) => Connector;
   let db: RuntimeDatabase;
-  let j: Table;
-  let e: Table;
+  let j: BaseTable;
+  let e: BaseTable;
   let dataGenerator: MockDataGenerator;
   let sampleJobs: Row[];
 

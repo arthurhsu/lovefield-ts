@@ -17,18 +17,18 @@
 import {ErrorCode} from '../base/enum';
 import {Exception} from '../base/exception';
 
+import {BaseTable} from './base_table';
 import {Database} from './database';
 import {Info} from './info';
 import {Pragma} from './pragma';
-import {Table} from './table';
 
 export class DatabaseSchema implements Database {
   public _pragma: Pragma;
   private _info: Info;
-  private tableMap: Map<string, Table>;
+  private tableMap: Map<string, BaseTable>;
 
   constructor(readonly _name: string, readonly _version: number) {
-    this.tableMap = new Map<string, Table>();
+    this.tableMap = new Map<string, BaseTable>();
     this._pragma = {enableBundledMode: false};
     this._info = undefined as any as Info;
   }
@@ -48,11 +48,11 @@ export class DatabaseSchema implements Database {
     return this._info;
   }
 
-  public tables(): Table[] {
+  public tables(): BaseTable[] {
     return Array.from(this.tableMap.values());
   }
 
-  public table(tableName: string): Table {
+  public table(tableName: string): BaseTable {
     const ret = this.tableMap.get(tableName);
     if (!ret) {
       // 101: Table {0} not found.
@@ -61,7 +61,7 @@ export class DatabaseSchema implements Database {
     return ret;
   }
 
-  public setTable(table: Table): void {
+  public setTable(table: BaseTable): void {
     this.tableMap.set(table.getName(), table);
   }
 

@@ -20,7 +20,7 @@ import * as sinon from 'sinon';
 import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {Exception} from '../../lib/base/exception';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
@@ -29,7 +29,7 @@ const assert = chai.assert;
 describe('SimulateError', () => {
   let sandbox: sinon.SinonSandbox;
   let db: RuntimeDatabase;
-  let employee: Table;
+  let employee: BaseTable;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();

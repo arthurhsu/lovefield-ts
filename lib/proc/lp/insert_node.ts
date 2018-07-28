@@ -15,11 +15,11 @@
  */
 
 import {Row} from '../../base/row';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class InsertNode extends LogicalQueryPlanNode {
-  constructor(readonly table: Table, readonly values: Row[]) {
+  constructor(readonly table: BaseTable, readonly values: Row[]) {
     super();
   }
 

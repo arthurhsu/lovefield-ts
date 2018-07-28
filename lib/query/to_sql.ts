@@ -25,7 +25,7 @@ import {JoinPredicate} from '../pred/join_predicate';
 import {Predicate} from '../pred/predicate';
 import {PredicateNode} from '../pred/predicate_node';
 import {ValuePredicate} from '../pred/value_predicate';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {TreeHelper} from '../structs/tree_helper';
 import {TreeNode} from '../structs/tree_node';
 
@@ -292,7 +292,7 @@ export class SqlHelper {
     return sql;
   }
 
-  private static getTableNameToSql(table: Table): string {
+  private static getTableNameToSql(table: BaseTable): string {
     return table.getEffectiveName() !== table.getName() ?
         (table.getName() + ' AS ' + table.getEffectiveName()) :
         table.getName();

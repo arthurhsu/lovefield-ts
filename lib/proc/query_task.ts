@@ -26,7 +26,7 @@ import {UniqueId} from '../base/unique_id';
 import {Journal} from '../cache/journal';
 import {Context} from '../query/context';
 import {SelectContext} from '../query/select_context';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {PhysicalQueryPlan} from './pp/physical_query_plan';
 import {Relation} from './relation';
 import {Task} from './task';
@@ -38,7 +38,7 @@ export abstract class QueryTask extends UniqueId implements Task {
   protected backStore: BackStore;
   protected queries: Context[];
   private plans: PhysicalQueryPlan[];
-  private combinedScope: Set<Table>;
+  private combinedScope: Set<BaseTable>;
   private txType: TransactionType;
   private resolver: Resolver<Relation[]>;
   private tx!: Tx;
@@ -97,7 +97,7 @@ export abstract class QueryTask extends UniqueId implements Task {
     return this.txType;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.combinedScope;
   }
 

@@ -26,7 +26,7 @@ import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';
 import {Journal} from '../cache/journal';
 import {QueryBuilder} from '../query/query_builder';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 import {ObserverQueryTask} from './observer_query_task';
 import {Relation} from './relation';
@@ -45,19 +45,19 @@ export class TransactionTask extends UniqueId implements Task {
   private backStore: BackStore;
   private runner: Runner;
   private observerRegistry: ObserverRegistry;
-  private scope: Set<Table>;
+  private scope: Set<BaseTable>;
   private journal: Journal;
   private resolver: Resolver<Relation[]>;
   private execResolver: Resolver<Relation[]>;
   private acquireScopeResolver: Resolver<void>;
   private tx!: Tx;
 
-  constructor(private global: Global, scope: Table[]) {
+  constructor(private global: Global, scope: BaseTable[]) {
     super();
     this.backStore = global.getService(Service.BACK_STORE);
     this.runner = global.getService(Service.RUNNER);
     this.observerRegistry = global.getService(Service.OBSERVER_REGISTRY);
-    this.scope = new Set<Table>(scope);
+    this.scope = new Set<BaseTable>(scope);
     this.journal = new Journal(this.global, this.scope);
     this.resolver = new Resolver<Relation[]>();
     this.execResolver = new Resolver<Relation[]>();
@@ -73,7 +73,7 @@ export class TransactionTask extends UniqueId implements Task {
     return TransactionType.READ_WRITE;
   }
 
-  public getScope(): Set<Table> {
+  public getScope(): Set<BaseTable> {
     return this.scope;
   }
 

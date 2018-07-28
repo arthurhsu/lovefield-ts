@@ -15,7 +15,7 @@
  */
 
 import {RuntimeIndex} from '../index/runtime_index';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {Global} from './global';
 import {Row} from './row';
 import {Service} from './service';
@@ -98,7 +98,7 @@ export class Inspector {
     const global = Inspector.getGlobal(dbName);
     let contents: object[] = [];
     if (global !== undefined && global !== null) {
-      let table: Table|null = null;
+      let table: BaseTable|null = null;
       try {
         table = global.getService(Service.SCHEMA).table(tableName);
       } catch (e) {

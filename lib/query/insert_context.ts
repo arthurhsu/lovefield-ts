@@ -16,13 +16,14 @@
 
 import {Binder} from '../base/bind';
 import {Row} from '../base/row';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {Context} from './context';
 
 // Internal representation of INSERT and INSERT_OR_REPLACE queries.
 export class InsertContext extends Context {
-  public into!: Table;
+  public into!: BaseTable;
   public binder!: Binder|Binder[]|Row[];
   public values!: Row[];
   public allowReplace!: boolean;
@@ -31,8 +32,8 @@ export class InsertContext extends Context {
     super(schema);
   }
 
-  public getScope(): Set<Table> {
-    const scope = new Set<Table>();
+  public getScope(): Set<BaseTable> {
+    const scope = new Set<BaseTable>();
     scope.add(this.into);
     const info = this.schema.info();
     info.getParentTables(this.into.getName()).forEach(scope.add.bind(scope));

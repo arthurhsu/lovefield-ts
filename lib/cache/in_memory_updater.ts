@@ -20,8 +20,8 @@ import {Row} from '../base/row';
 import {Service} from '../base/service';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {Cache} from './cache';
 import {Modification} from './modification';
@@ -50,7 +50,7 @@ export class InMemoryUpdater {
   // Updates all indices that are affefted as a result of the given
   // modification. In the case where an exception is thrown (constraint
   // violation) all the indices are unaffected.
-  public updateTableIndicesForRow(table: Table, modification: Modification):
+  public updateTableIndicesForRow(table: BaseTable, modification: Modification):
       void {
     const indices = this.indexStore.getTableIndices(table.getName());
     let updatedIndices = 0;

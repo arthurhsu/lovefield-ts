@@ -20,9 +20,10 @@ import {EvalType} from '../base/eval';
 import {createPredicate} from '../pred/pred';
 import {Predicate} from '../pred/predicate';
 import {OperandType, ValueOperandType} from '../pred/predicate_provider';
+
 import {BaseColumn} from './base_column';
+import {BaseTable} from './base_table';
 import {IndexImpl} from './index_impl';
-import {Table} from './table';
 
 export class ColumnImpl implements BaseColumn {
   public readonly alias: string;
@@ -31,8 +32,9 @@ export class ColumnImpl implements BaseColumn {
   private index: IndexImpl;
 
   constructor(
-      readonly table: Table, readonly name: string, readonly unique: boolean,
-      readonly nullable: boolean, readonly type: Type, alias?: string) {
+      readonly table: BaseTable, readonly name: string,
+      readonly unique: boolean, readonly nullable: boolean, readonly type: Type,
+      alias?: string) {
     this.alias = alias || null as any as string;
     this.indices = [];
     this.index = undefined as any as IndexImpl;
@@ -50,7 +52,7 @@ export class ColumnImpl implements BaseColumn {
     return this.getNormalizedName();
   }
 
-  public getTable(): Table {
+  public getTable(): BaseTable {
     return this.table;
   }
 
@@ -71,7 +73,7 @@ export class ColumnImpl implements BaseColumn {
   }
 
   public getIndices(): IndexImpl[] {
-    this.table.getIndices().forEach((index) => {
+    (this.table.getIndices() as IndexImpl[]).forEach((index) => {
       const colNames = index.columns.map((col) => col.schema.getName());
       if (colNames.indexOf(this.name) !== -1) {
         this.indices.push(index);

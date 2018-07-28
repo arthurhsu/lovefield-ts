@@ -23,6 +23,7 @@ import {PushDownSelectionsPass} from '../../../lib/proc/lp/push_down_selections_
 import {SelectNode} from '../../../lib/proc/lp/select_node';
 import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
 import {SelectContext} from '../../../lib/query/select_context';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {Database} from '../../../lib/schema/database';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
@@ -428,14 +429,14 @@ describe('ImplicitJoinsPass', () => {
 
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
-      queryContext.from = [j1, j2];
+      queryContext.from = [j1 as BaseTable, j2 as BaseTable];
       const predicate1 = j1['maxSalary'].lt(30000);
       const predicate2 = j1['maxSalary'].eq(j2['minSalary']);
       queryContext.where = op.and(predicate1, predicate2);
 
       const crossProductNode = new CrossProductNode();
-      crossProductNode.addChild(new TableAccessNode(j1));
-      crossProductNode.addChild(new TableAccessNode(j2));
+      crossProductNode.addChild(new TableAccessNode(j1 as BaseTable));
+      crossProductNode.addChild(new TableAccessNode(j2 as BaseTable));
       const selectNode1 = new SelectNode(predicate1);
       selectNode1.addChild(crossProductNode);
       const selectNode2 = new SelectNode(predicate2);

@@ -22,14 +22,14 @@ import {Journal} from '../../cache/journal';
 import {IndexStore} from '../../index/index_store';
 import {RuntimeIndex} from '../../index/runtime_index';
 import {InsertContext} from '../../query/insert_context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {Relation} from '../relation';
 
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class InsertStep extends PhysicalQueryPlanNode {
   public static assignAutoIncrementPks(
-      table: Table, values: Row[], indexStore: IndexStore): void {
+      table: BaseTable, values: Row[], indexStore: IndexStore): void {
     const pkIndexSchema = table.getConstraint().getPrimaryKey();
     const autoIncrement =
         pkIndexSchema === null ? false : pkIndexSchema.columns[0].autoIncrement;
@@ -53,7 +53,7 @@ export class InsertStep extends PhysicalQueryPlanNode {
 
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: Table) {
+  constructor(global: Global, private table: BaseTable) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }

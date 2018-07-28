@@ -25,7 +25,7 @@ import {op} from '../../lib/fn/op';
 import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {SelectBuilder} from '../../lib/query/select_builder';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
@@ -464,7 +464,7 @@ describe('Select', () => {
 
   function checkAggregators(
       invalidAggregators: AggregatedColumn[],
-      validAggregators: AggregatedColumn[], table: Table): void {
+      validAggregators: AggregatedColumn[], table: BaseTable): void {
     invalidAggregators.forEach((aggregator) => {
       const buildQuery = () =>
           new SelectBuilder(db.getGlobal(), [aggregator]).from(table);

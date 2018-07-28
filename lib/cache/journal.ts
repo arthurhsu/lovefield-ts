@@ -23,8 +23,9 @@ import {Row} from '../base/row';
 import {Service} from '../base/service';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
+
 import {Cache} from './cache';
 import {CascadeUpdateItem} from './cascade';
 import {ConstraintChecker} from './constraint_checker';
@@ -37,7 +38,7 @@ import {TableDiff} from './table_diff';
 // backing store. Caches and indices are updated as soon as a change is
 // recorded in the journal.
 export class Journal {
-  private scope: Map<string, Table>;
+  private scope: Map<string, BaseTable>;
   private schema: Database;
   private cache: Cache;
   private indexStore: IndexStore;
@@ -61,8 +62,8 @@ export class Journal {
   // table.
   private tableDiffs: Map<string, TableDiff>;
 
-  constructor(global: Global, txScope: Set<Table>) {
-    this.scope = new Map<string, Table>();
+  constructor(global: Global, txScope: Set<BaseTable>) {
+    this.scope = new Map<string, BaseTable>();
     txScope.forEach(
         (tableSchema) => this.scope.set(tableSchema.getName(), tableSchema));
 
@@ -89,7 +90,7 @@ export class Journal {
 
     const indices: RuntimeIndex[] = [];
     tableSchemas.forEach((schema) => {
-      const tableSchema = schema as Table;
+      const tableSchema = schema as BaseTable;
       if (tableSchema.persistentIndex()) {
         const tableIndices = tableSchema.getIndices();
         tableIndices.forEach((indexSchema) => {
@@ -104,11 +105,11 @@ export class Journal {
     return indices;
   }
 
-  public getScope(): Map<string, Table> {
+  public getScope(): Map<string, BaseTable> {
     return this.scope;
   }
 
-  public insert(table: Table, rows: Row[]): void {
+  public insert(table: BaseTable, rows: Row[]): void {
     this.assertJournalWritable();
     this.checkScope(table);
     this.constraintChecker.checkNotNullable(table, rows);
@@ -120,7 +121,7 @@ export class Journal {
     }, this);
   }
 
-  public update(table: Table, rows: Row[]): void {
+  public update(table: BaseTable, rows: Row[]): void {
     this.assertJournalWritable();
     this.checkScope(table);
     this.constraintChecker.checkNotNullable(table, rows);
@@ -137,7 +138,7 @@ export class Journal {
         (modification) => this.modifyRow(table, modification));
   }
 
-  public insertOrReplace(table: Table, rows: Row[]): void {
+  public insertOrReplace(table: BaseTable, rows: Row[]): void {
     this.assertJournalWritable();
     this.checkScope(table);
     this.constraintChecker.checkNotNullable(table, rows);
@@ -163,7 +164,7 @@ export class Journal {
     }, this);
   }
 
-  public remove(table: Table, rows: Row[]): void {
+  public remove(table: BaseTable, rows: Row[]): void {
     this.assertJournalWritable();
     this.checkScope(table);
 
@@ -178,7 +179,7 @@ export class Journal {
 
   public checkDeferredConstraints(): void {
     this.tableDiffs.forEach((tableDiff, tableName) => {
-      const table = this.scope.get(tableDiff.getName()) as Table;
+      const table = this.scope.get(tableDiff.getName()) as BaseTable;
       this.constraintChecker.checkForeignKeysForInsert(
           table, Array.from(tableDiff.getAdded().values()),
           ConstraintTiming.DEFERRABLE);
@@ -219,7 +220,7 @@ export class Journal {
   }
 
   // Checks that the given table is within the declared scope.
-  private checkScope(tableSchema: Table): void {
+  private checkScope(tableSchema: BaseTable): void {
     if (!this.scope.has(tableSchema.getName())) {
       // 106: Attempt to access {0} outside of specified scope.
       throw new Exception(ErrorCode.OUT_OF_SCOPE, tableSchema.getName());
@@ -228,7 +229,7 @@ export class Journal {
 
   // Updates the journal to reflect a modification (insertion, update, deletion)
   // of a single row.
-  private modifyRow(table: Table, modification: Modification): void {
+  private modifyRow(table: BaseTable, modification: Modification): void {
     const tableName = table.getName();
     const diff = this.tableDiffs.get(tableName) || new TableDiff(tableName);
     this.tableDiffs.set(tableName, diff);
@@ -260,7 +261,8 @@ export class Journal {
   // Updates rows in the DB as a result of cascading foreign key constraints.
   // |table| refers to the table where the update is initiated.
   // |modifications| means the initial modifications.
-  private updateByCascade(table: Table, modifications: Modification[]): void {
+  private updateByCascade(table: BaseTable, modifications: Modification[]):
+      void {
     const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
         table.getName(), ConstraintAction.CASCADE);
     if (foreignKeySpecs === null) {
@@ -287,7 +289,7 @@ export class Journal {
   // Removes rows in the DB as a result of cascading foreign key constraints.
   // |table| refers to the table where the update is initiated.
   // |rows| means the initial rows to be deleted.
-  private removeByCascade(table: Table, deletedRows: Row[]): void {
+  private removeByCascade(table: BaseTable, deletedRows: Row[]): void {
     const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
         table.getName(), ConstraintAction.CASCADE);
     if (foreignKeySpecs === null) {

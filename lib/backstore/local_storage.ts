@@ -19,8 +19,8 @@ import {Exception} from '../base/exception';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {BackStore} from './back_store';
 import {LocalStorageTable} from './local_storage_table';
@@ -57,7 +57,7 @@ export class LocalStorage implements BackStore {
     });
   }
 
-  public createTx(type: TransactionType, scope: Table[], journal?: Journal):
+  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
       Tx {
     return new LocalStorageTx(this, type, journal);
   }

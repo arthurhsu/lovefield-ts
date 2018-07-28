@@ -21,7 +21,7 @@ import {Global} from '../base/global';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {QueryBuilder} from '../query/query_builder';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 
 import {Runner} from './runner';
 import {TaskItem} from './task_item';
@@ -68,7 +68,7 @@ export class RuntimeTransaction implements Transaction {
         });
   }
 
-  public begin(scope: Table[]): Promise<void> {
+  public begin(scope: BaseTable[]): Promise<void> {
     this.updateState(TransactionState.ACQUIRING_SCOPE);
 
     this.task = new TransactionTask(this.global, scope);

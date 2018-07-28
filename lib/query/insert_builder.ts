@@ -20,7 +20,7 @@ import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {Row} from '../base/row';
 import {Service} from '../base/service';
-import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
 import {BaseBuilder} from './base_builder';
 import {InsertContext} from './insert_context';
 
@@ -49,7 +49,7 @@ export class InsertBuilder extends BaseBuilder<InsertContext> {
     }
   }
 
-  public into(table: Table): InsertBuilder {
+  public into(table: BaseTable): InsertBuilder {
     this.assertIntoPreconditions();
     this.query.into = table;
     return this;

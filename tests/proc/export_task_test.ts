@@ -19,7 +19,7 @@ import * as chai from 'chai';
 import {DataStoreType} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
@@ -27,7 +27,7 @@ const assert = chai.assert;
 
 describe('ExportTask', () => {
   let db: RuntimeDatabase;
-  let j: Table;
+  let j: BaseTable;
   const ROW_COUNT = 2;
 
   beforeEach(async () => {

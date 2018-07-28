@@ -21,14 +21,14 @@ import {Service} from '../../base/service';
 import {Cache} from '../../cache/cache';
 import {Journal} from '../../cache/journal';
 import {Context} from '../../query/context';
-import {Table} from '../../schema/table';
+import {BaseTable} from '../../schema/base_table';
 import {Relation} from '../relation';
 
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class TableAccessByRowIdStep extends PhysicalQueryPlanNode {
   private cache: Cache;
-  constructor(global: Global, private table: Table) {
+  constructor(global: Global, private table: BaseTable) {
     super(1, ExecType.FIRST_CHILD);
     this.cache = global.getService(Service.CACHE);
   }

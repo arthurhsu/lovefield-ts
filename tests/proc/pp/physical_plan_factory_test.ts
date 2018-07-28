@@ -26,7 +26,7 @@ import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
 import {PhysicalPlanFactory} from '../../../lib/proc/pp/physical_plan_factory';
 import {PhysicalQueryPlanNode} from '../../../lib/proc/pp/physical_query_plan_node';
 import {DeleteContext} from '../../../lib/query/delete_context';
-import {Table} from '../../../lib/schema/table';
+import {BaseTable} from '../../../lib/schema/base_table';
 import {TreeHelper} from '../../../lib/structs/tree_helper';
 import {TreeNode} from '../../../lib/structs/tree_node';
 import {MockEnv} from '../../../testing/mock_env';
@@ -95,7 +95,7 @@ describe('PhysicalPlanFactory', () => {
     selectNode2.addChild(tableAccessNode);
 
     assert.equal(logicalTree, TreeHelper.toString(deleteNode));
-    const testScope = new Set<Table>();
+    const testScope = new Set<BaseTable>();
     testScope.add(table);
     const logicalPlan = new LogicalQueryPlan(deleteNode, testScope);
     const physicalPlan = physicalPlanFactory.create(logicalPlan, queryContext);

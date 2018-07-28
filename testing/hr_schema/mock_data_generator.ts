@@ -15,7 +15,7 @@
  */
 
 import {Row} from '../../lib/base/row';
-import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
 import {MathHelper} from '../../lib/structs/math_helper';
 import {DepartmentDataGenerator} from './department_data_generator';
 import {EmployeeDataGenerator} from './employee_data_generator';
@@ -63,7 +63,7 @@ interface ExportData {
 export class MockDataGenerator {
   public static fromExportData(data: ExportData): MockDataGenerator {
     const schema = getHrDbSchemaBuilder().getSchema();
-    const deserialize = (tableSchema: Table, obj: object) => {
+    const deserialize = (tableSchema: BaseTable, obj: object) => {
       return tableSchema.deserializeRow({
         id: Row.getNextId(),
         value: obj,

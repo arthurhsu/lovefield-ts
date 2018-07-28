@@ -39,10 +39,10 @@ import {InsertBuilder} from '../query/insert_builder';
 import {SelectBuilder} from '../query/select_builder';
 import {SelectQuery} from '../query/select_query';
 import {UpdateBuilder} from '../query/update_builder';
+import {BaseTable} from '../schema/base_table';
 import {Column} from '../schema/column';
 import {ConnectOptions} from '../schema/connect_options';
 import {Database} from '../schema/database';
-import {Table} from '../schema/table';
 
 import {DefaultQueryEngine} from './default_query_engine';
 import {ExportTask} from './export_task';
@@ -131,7 +131,7 @@ export class RuntimeDatabase implements DatabaseConnection {
     return new InsertBuilder(this.global, /* allowReplace */ true);
   }
 
-  public update(table: Table): UpdateBuilder {
+  public update(table: BaseTable): UpdateBuilder {
     this.checkActive();
     return new UpdateBuilder(this.global, table);
   }

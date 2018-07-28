@@ -27,8 +27,8 @@ import {Cache} from '../../lib/cache/cache';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {Journal} from '../../lib/cache/journal';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Database} from '../../lib/schema/database';
-import {Table} from '../../lib/schema/table';
 import {MockStore} from '../../testing/backstore/mock_store';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
@@ -110,7 +110,7 @@ describe('MockStore', () => {
     // the actual backing store observers.
     const tx = mockStore.createTx(
         TransactionType.READ_WRITE, [tableSchema],
-        new Journal(Global.get(), new Set<Table>([tableSchema])));
+        new Journal(Global.get(), new Set<BaseTable>([tableSchema])));
     const table = tx.getTable(
         tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
         TableType.DATA);

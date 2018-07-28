@@ -15,9 +15,12 @@
  */
 
 import * as chai from 'chai';
+
 import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../../lib/base/enum';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
 import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
+import {IndexImpl} from '../../lib/schema/index_impl';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -341,7 +344,7 @@ describe('Builder', () => {
     assert.isTrue(emp['email'].unique);
     assert.isTrue(emp['hireDate'].nullable);
 
-    const e = emp.as('e');
+    const e = emp.as('e') as BaseTable;
     assert.equal('e', e.getEffectiveName());
     assert.equal(4, emp.getIndices().length);
     assert.equal(12, emp.getColumns().length);
@@ -366,14 +369,16 @@ describe('Builder', () => {
 
     // Test case of DESC index.
     const job = schema.table('Job');
-    const maxSalaryIndexSchema = job.getIndices().filter(
-        (indexSchema) => indexSchema.name === 'idx_maxSalary')[0];
+    const maxSalaryIndexSchema =
+        (job.getIndices() as IndexImpl[])
+            .filter((indexSchema) => indexSchema.name === 'idx_maxSalary')[0];
     assert.equal(Order.DESC, maxSalaryIndexSchema.columns[0].order);
 
     // Test case of ASC index.
     const dummyTable = schema.table('DummyTable');
-    const stringIndexSchema = dummyTable.getIndices().filter(
-        (indexSchema) => indexSchema.name === 'idx_string')[0];
+    const stringIndexSchema =
+        (dummyTable.getIndices() as IndexImpl[])
+            .filter((indexSchema) => indexSchema.name === 'idx_string')[0];
     assert.equal(Order.ASC, stringIndexSchema.columns[0].order);
   });
 

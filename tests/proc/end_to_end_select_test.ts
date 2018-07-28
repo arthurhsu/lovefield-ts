@@ -24,6 +24,7 @@ import {op} from '../../lib/fn/op';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {SelectQuery} from '../../lib/query/select_query';
 import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
 import {Table} from '../../lib/schema/table';
 import {ArrayHelper} from '../../lib/structs/array_helper';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
@@ -33,13 +34,13 @@ const assert = chai.assert;
 
 describe('EndToEndSelectTest', () => {
   let db: RuntimeDatabase;
-  let j: Table;
-  let e: Table;
-  let d: Table;
-  let c: Table;
-  let r: Table;
-  let l: Table;
-  let cct: Table;
+  let j: BaseTable;
+  let e: BaseTable;
+  let d: BaseTable;
+  let c: BaseTable;
+  let r: BaseTable;
+  let l: BaseTable;
+  let cct: BaseTable;
   let dataGenerator: MockDataGenerator;
 
   beforeEach(async () => {
@@ -328,8 +329,8 @@ describe('EndToEndSelectTest', () => {
 
   // Tests the case where a SELECT query with a self-table join is being issued.
   it('SelfJoin', async () => {
-    const j1 = j.as('j1');
-    const j2 = j.as('j2');
+    const j1 = j.as('j1') as BaseTable;
+    const j2 = j.as('j2') as BaseTable;
 
     const queryBuilder = db.select()
                              .from(j1, j2)
@@ -462,7 +463,9 @@ describe('EndToEndSelectTest', () => {
   });
 
   function assertOuterJoinResult(
-      leftTable: Table, rightTable: Table, results: object[]): void {
+      lTable: Table, rTable: Table, results: object[]): void {
+    const leftTable = lTable as BaseTable;
+    const rightTable = rTable as BaseTable;
     assert.equal(dataGenerator.sampleRegions.length + 1, results.length);
     const expectedMatched = 2;
     const matchedRows = results.slice(0, expectedMatched);
@@ -487,7 +490,8 @@ describe('EndToEndSelectTest', () => {
   }
 
   function assertOuterInnerJoinResult(
-      table1: Table, table2: Table, table3: Table, results: object[]): void {
+      table1: BaseTable, table2: BaseTable, table3: BaseTable,
+      results: object[]): void {
     assert.equal(dataGenerator.sampleLocations.length, results.length);
     // All are non-null.
     results.forEach((resultRow) => {
@@ -504,7 +508,8 @@ describe('EndToEndSelectTest', () => {
   }
 
   function assertInnerOuterJoinResult(
-      table1: Table, table2: Table, table3: Table, results: object[]): void {
+      table1: BaseTable, table2: BaseTable, table3: BaseTable,
+      results: object[]): void {
     assert.equal(dataGenerator.sampleCountries.length, results.length);
     const expectedMatched = 1;
     // The matched rows are non-null.
@@ -995,7 +1000,8 @@ describe('EndToEndSelectTest', () => {
   }
 
   function assertEmployeesForJob(
-      employeeSchema: Table, jobId: string, actualEmployees: object[]): void {
+      schema: Table, jobId: string, actualEmployees: object[]): void {
+    const employeeSchema = schema as BaseTable;
     const expectedEmployeeIds =
         dataGenerator.employeeGroundTruth.employeesPerJob.get(jobId) as
         string[];
