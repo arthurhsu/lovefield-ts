@@ -76,8 +76,8 @@ export class JoinPredicate extends PredicateNode {
     const tables = (results !== undefined && results !== null) ?
         results :
         new Set<BaseTable>();
-    tables.add(this.leftColumn.getTable());
-    tables.add(this.rightColumn.getTable());
+    tables.add(this.leftColumn.getTable() as BaseTable);
+    tables.add(this.rightColumn.getTable() as BaseTable);
     return tables;
   }
 
@@ -258,7 +258,7 @@ export class JoinPredicate extends PredicateNode {
 
     // Detecting which relation should be used as outer (non-indexed) and which
     // as inner (indexed).
-    const indexedTable = indexJoinInfo.indexedColumn.getTable();
+    const indexedTable = indexJoinInfo.indexedColumn.getTable() as BaseTable;
     let outerRelation = leftRelation;
     let innerRelation = rightRelation;
     if (leftRelation.getTables().indexOf(indexedTable.getEffectiveName()) !==
@@ -340,14 +340,16 @@ export class JoinPredicate extends PredicateNode {
   // this predicate.
   private appliesToLeft(relation: Relation): boolean {
     return relation.getTables().indexOf(
-               this.leftColumn.getTable().getEffectiveName()) !== -1;
+               (this.leftColumn.getTable() as BaseTable).getEffectiveName()) !==
+        -1;
   }
 
   // Returns whether the given relation can be used as the "right" parameter of
   // this predicate.
   private appliesToRight(relation: Relation): boolean {
     return relation.getTables().indexOf(
-               this.rightColumn.getTable().getEffectiveName()) !== -1;
+               (this.rightColumn.getTable() as BaseTable)
+                   .getEffectiveName()) !== -1;
   }
 
   // Asserts that the given relations are applicable to this join predicate.
@@ -405,7 +407,8 @@ export class JoinPredicate extends PredicateNode {
   private createCombinedEntryForUnmatched(
       entry: RelationEntry, leftRelationTables: string[]): RelationEntry {
     if (this.nullPayload === null) {
-      this.nullPayload = this.createNullPayload(this.rightColumn.getTable());
+      this.nullPayload =
+          this.createNullPayload(this.rightColumn.getTable() as BaseTable);
     }
     // The right relation is guaranteed to never be the result
     // of a previous join.
@@ -413,7 +416,7 @@ export class JoinPredicate extends PredicateNode {
         new RelationEntry(new Row(Row.DUMMY_ID, this.nullPayload), false);
     const combinedEntry = RelationEntry.combineEntries(
         entry, leftRelationTables, nullEntry,
-        [this.rightColumn.getTable().getEffectiveName()]);
+        [(this.rightColumn.getTable() as BaseTable).getEffectiveName()]);
     return combinedEntry;
   }
 }

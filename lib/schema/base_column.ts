@@ -16,12 +16,12 @@
 
 import {Type} from '../base/enum';
 
-import {BaseTable} from './base_table';
 import {Column} from './column';
 import {Index} from './index';
+import {Table} from './table';
 
 export interface BaseColumn extends Column {
-  getTable(): BaseTable;
+  getTable(): Table;
   getType(): Type;
   getAlias(): string;
   getIndices(): Index[];

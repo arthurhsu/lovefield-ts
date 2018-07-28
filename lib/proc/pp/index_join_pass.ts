@@ -69,7 +69,8 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     // Finds which of the two joined columns corresponds to the given table.
     const getColumnForTable = (table: BaseTable): BaseColumn => {
       return table.getEffectiveName() ===
-              joinStep.predicate.rightColumn.getTable().getEffectiveName() ?
+              (joinStep.predicate.rightColumn.getTable() as BaseTable)
+                  .getEffectiveName() ?
           joinStep.predicate.rightColumn :
           joinStep.predicate.leftColumn;
     };
@@ -104,8 +105,8 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
         rightCandidate !== null ? rightCandidate : leftCandidate;
 
     joinStep.markAsIndexJoin(chosenColumn);
-    const dummyRelation =
-        new Relation([], [chosenColumn.getTable().getEffectiveName()]);
+    const dummyRelation = new Relation(
+        [], [(chosenColumn.getTable() as BaseTable).getEffectiveName()]);
     joinStep.replaceChildAt(
         new NoOpStep([dummyRelation]), chosenColumn === leftCandidate ? 0 : 1);
   }

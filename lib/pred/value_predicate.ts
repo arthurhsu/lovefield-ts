@@ -81,7 +81,7 @@ export class ValuePredicate extends PredicateNode {
 
   public getTables(results?: Set<BaseTable>): Set<BaseTable> {
     const tables = results ? results : new Set<BaseTable>();
-    tables.add(this.column.getTable());
+    tables.add(this.column.getTable() as BaseTable);
     return tables;
   }
 

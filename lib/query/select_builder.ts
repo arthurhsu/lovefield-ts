@@ -124,7 +124,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     }
     let normalizedPredicate = predicate;
     if (table.getEffectiveName() !==
-        predicate.rightColumn.getTable().getEffectiveName()) {
+        (predicate.rightColumn.getTable() as BaseTable).getEffectiveName()) {
       normalizedPredicate = predicate.reverse();
     }
     this.query.outerJoinPredicates.add(normalizedPredicate.getId());

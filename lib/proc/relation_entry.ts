@@ -17,6 +17,7 @@
 import {assert} from '../base/assert';
 import {Row} from '../base/row';
 import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
 
 /**
  * Each RelationEntry represents a row that is passed from one execution step
@@ -81,8 +82,8 @@ export class RelationEntry {
     }
 
     if (this.isPrefixApplied) {
-      return this.row
-          .payload()[column.getTable().getEffectiveName()][column.getName()];
+      return this.row.payload()[(column.getTable() as BaseTable)
+                                    .getEffectiveName()][column.getName()];
     } else {
       return this.row.payload()[column.getName()];
     }
@@ -96,7 +97,7 @@ export class RelationEntry {
     }
 
     if (this.isPrefixApplied) {
-      const tableName = column.getTable().getEffectiveName();
+      const tableName = (column.getTable() as BaseTable).getEffectiveName();
       let containerObj = this.row.payload()[tableName];
       if (!(containerObj !== undefined && containerObj !== null)) {
         containerObj = {};

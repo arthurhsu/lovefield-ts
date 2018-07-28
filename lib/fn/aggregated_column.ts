@@ -36,7 +36,7 @@ export class AggregatedColumn implements BaseColumn {
   }
 
   public getTable(): BaseTable {
-    return this.child.getTable();
+    return this.child.getTable() as BaseTable;
   }
 
   public toString(): string {

@@ -55,7 +55,7 @@ describe('Relation', () => {
       isPrefixApplied: boolean): void {
     assert.equal(expectedValue, entry.getField(column));
 
-    const tableName = column.getTable().getEffectiveName();
+    const tableName = (column.getTable() as BaseTable).getEffectiveName();
     const value = isPrefixApplied ?
         entry.row.payload()[tableName][column.getName()] :
         entry.row.payload()[column.getName()];
