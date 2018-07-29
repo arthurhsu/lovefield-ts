@@ -20,7 +20,7 @@ import {Predicate} from '../pred/predicate';
 import {PredicateNode} from '../pred/predicate_node';
 import {ValuePredicate} from '../pred/value_predicate';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 // Base context for all query types.
 export abstract class Context extends UniqueId {
@@ -41,7 +41,7 @@ export abstract class Context extends UniqueId {
   // A map used for locating predicates by ID. Instantiated lazily.
   private predicateMap: Map<number, Predicate>;
 
-  constructor(public schema: Database) {
+  constructor(public schema: DatabaseSchema) {
     super();
     this.clonedFrom = null;
     this.where = null;

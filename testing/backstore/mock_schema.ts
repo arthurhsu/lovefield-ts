@@ -16,13 +16,13 @@
 
 import {Order, Type} from '../../lib/base/enum';
 import {BaseTable} from '../../lib/schema/base_table';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {Info} from '../../lib/schema/info';
 import {Pragma} from '../../lib/schema/pragma';
 import {TableBuilder} from '../../lib/schema/table_builder';
 
 // Dummy schema implementation to be used in tests.
-export class MockSchema implements Database {
+export class MockSchema implements DatabaseSchema {
   private tableA: BaseTable;
   private tableB: BaseTable;
   private tablePlusOne: BaseTable;

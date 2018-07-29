@@ -24,12 +24,12 @@ import {SelectNode} from '../../../lib/proc/lp/select_node';
 import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseTable} from '../../../lib/schema/base_table';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('ImplicitJoinsPass', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
   let pass: PushDownSelectionsPass;
 
   before(() => {

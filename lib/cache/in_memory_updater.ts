@@ -21,7 +21,7 @@ import {Service} from '../base/service';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {Cache} from './cache';
 import {Modification} from './modification';
@@ -30,7 +30,7 @@ import {TableDiff} from './table_diff';
 export class InMemoryUpdater {
   private readonly cache: Cache;
   private readonly indexStore: IndexStore;
-  private readonly schema: Database;
+  private readonly schema: DatabaseSchema;
 
   constructor(global: Global) {
     this.cache = global.getService(Service.CACHE);

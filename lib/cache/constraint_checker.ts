@@ -24,7 +24,7 @@ import {Key} from '../index/key_range';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {ForeignKeySpec} from '../schema/foreign_key_spec';
 import {Index} from '../schema/index';
 import {Info} from '../schema/info';
@@ -44,7 +44,7 @@ export class ConstraintChecker {
   }
 
   private indexStore: IndexStore;
-  private schema: Database;
+  private schema: DatabaseSchema;
   private cache: Cache;
 
   // A map where the keys are normalized lf.schema.ForeignKeySpec names, and the

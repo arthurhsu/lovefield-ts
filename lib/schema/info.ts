@@ -18,14 +18,14 @@ import {ConstraintAction} from '../base/enum';
 import {MapSet} from '../structs/map_set';
 
 import {BaseTable} from './base_table';
-import {Database} from './database';
 import {DatabaseSchema} from './database_schema';
+import {DatabaseSchemaImpl} from './database_schema_impl';
 import {ForeignKeySpec} from './foreign_key_spec';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
-  public static from(schema: Database): Info {
-    return (schema as DatabaseSchema).info();
+  public static from(schema: DatabaseSchema): Info {
+    return (schema as DatabaseSchemaImpl).info();
   }
 
   // A mapping from table name to its referencing CASCADE foreign keys.
@@ -48,7 +48,7 @@ export class Info {
   // The map of full qualified column name to their child table name.
   private colChild: MapSet<string, string>;
 
-  constructor(private schema: Database) {
+  constructor(private schema: DatabaseSchema) {
     this.cascadeReferringFk = new MapSet();
     this.restrictReferringFk = new MapSet();
     this.parents = new MapSet();

@@ -38,14 +38,14 @@ import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
 import {BaseTable} from '../../../lib/schema/base_table';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../../testing/test_util';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('IndexRangeScanPass', () => {
   let db: DatabaseConnection;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let global: Global;
   let e: BaseTable;
   let j: BaseTable;

@@ -16,7 +16,7 @@
 
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {Info} from '../schema/info';
 
 import {Context} from './context';
@@ -32,7 +32,7 @@ export class UpdateContext extends Context {
   public table!: BaseTable;
   public set!: UpdateSetContext[];
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     super(schema);
   }
 

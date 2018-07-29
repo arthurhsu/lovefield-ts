@@ -25,7 +25,7 @@ import {IndexStore} from '../lib/index/index_store';
 import {QueryEngine} from '../lib/proc/query_engine';
 import {Runner} from '../lib/proc/runner';
 import {RuntimeDatabase} from '../lib/proc/runtime_database';
-import {Database} from '../lib/schema/database';
+import {DatabaseSchema} from '../lib/schema/database_schema';
 
 export class MockEnv {
   public queryEngine!: QueryEngine;
@@ -37,7 +37,7 @@ export class MockEnv {
   public db!: RuntimeDatabase;
   public global!: Global;
 
-  constructor(public schema: Database) {}
+  constructor(public schema: DatabaseSchema) {}
 
   public init(): Promise<void> {
     const global = Global.get();

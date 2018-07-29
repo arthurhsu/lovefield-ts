@@ -35,7 +35,7 @@ import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
 import {BaseTable} from '../../../lib/schema/base_table';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {IndexImpl} from '../../../lib/schema/index_impl';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
@@ -43,7 +43,7 @@ import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('LimitSkipByIndexPass', () => {
   let db: DatabaseConnection;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let global: Global;
   let e: BaseTable;
   let pass: LimitSkipByIndexPass;

@@ -19,7 +19,7 @@ import {Cache} from '../cache/cache';
 import {IndexStore} from '../index/index_store';
 import {QueryEngine} from '../proc/query_engine';
 import {Runner} from '../proc/runner';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {ObserverRegistry} from './observer_registry';
 import {ServiceId} from './service_id';
 
@@ -45,5 +45,5 @@ export class Service {
       new ServiceId<ObserverRegistry>('observerregistry');
 
   // Finalized schema associated with this connection.
-  public static SCHEMA = new ServiceId<Database>('schema');
+  public static SCHEMA = new ServiceId<DatabaseSchema>('schema');
 }

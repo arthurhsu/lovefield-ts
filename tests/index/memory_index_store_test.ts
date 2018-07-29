@@ -23,7 +23,7 @@ import {IndexStore} from '../../lib/index/index_store';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -31,7 +31,7 @@ const assert = chai.assert;
 
 describe('MemoryIndexStore', () => {
   let indexStore: IndexStore;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let sandbox: sinon.SinonSandbox;
 
   before(() => {

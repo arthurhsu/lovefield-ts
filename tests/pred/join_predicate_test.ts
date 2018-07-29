@@ -24,7 +24,7 @@ import {Relation} from '../../lib/proc/relation';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 import {BaseColumn} from '../../lib/schema/base_column';
 import {BaseTable} from '../../lib/schema/base_table';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {NullableDataGenerator} from '../../testing/nullable_data_generator';
@@ -38,11 +38,11 @@ interface SampleDataType {
 }
 
 describe('JoinPredicate', () => {
-  let db: Database;
+  let db: DatabaseSchema;
   let d: BaseTable;
   let e: BaseTable;
   let j: BaseTable;
-  let schemaWithNullable: Database;
+  let schemaWithNullable: DatabaseSchema;
   let nullableGenerator: NullableDataGenerator;
 
   before(() => {

@@ -20,7 +20,7 @@ import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {BackStore} from './back_store';
 import {MemoryTable} from './memory_table';
@@ -31,7 +31,7 @@ import {Tx} from './tx';
 export class Memory implements BackStore {
   private tables: Map<string, MemoryTable>;
 
-  constructor(private schema: Database) {
+  constructor(private schema: DatabaseSchema) {
     this.schema = schema;
     this.tables = new Map<string, MemoryTable>();
   }

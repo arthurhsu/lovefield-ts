@@ -20,14 +20,14 @@ import {DeleteContext} from '../../lib/query/delete_context';
 import {InsertContext} from '../../lib/query/insert_context';
 import {UpdateContext} from '../../lib/query/update_context';
 import {Builder} from '../../lib/schema/builder';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 
 const assert = chai.assert;
 
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.
-  function getSchemaWithoutForeignKeys(): Database {
+  function getSchemaWithoutForeignKeys(): DatabaseSchema {
     const schemaBuilder = new Builder('contexttest', 1);
     schemaBuilder.createTable('TableA').addColumn('id', Type.STRING);
     schemaBuilder.createTable('TableB').addColumn('id', Type.STRING);

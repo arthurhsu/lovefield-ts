@@ -21,7 +21,7 @@ import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {SkipStep} from '../../../lib/proc/pp/skip_step';
 import {Relation} from '../../../lib/proc/relation';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
@@ -29,7 +29,7 @@ const assert = chai.assert;
 
 describe('LimitStep', () => {
   let env: MockEnv;
-  let schema: Database;
+  let schema: DatabaseSchema;
 
   beforeEach(() => {
     schema = getMockSchemaBuilder().getSchema();

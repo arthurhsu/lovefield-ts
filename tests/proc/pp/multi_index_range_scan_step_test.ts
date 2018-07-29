@@ -18,7 +18,7 @@ import * as chai from 'chai';
 import {SingleKeyRange} from '../../../lib/index/key_range';
 import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
 import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {IndexImpl} from '../../../lib/schema/index_impl';
 import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
@@ -28,7 +28,7 @@ const assert = chai.assert;
 
 describe('MultiIndexRangeScanStep', () => {
   let env: MockEnv;
-  let schema: Database;
+  let schema: DatabaseSchema;
 
   beforeEach(() => {
     env = new MockEnv(getMockSchemaBuilder().getSchema());

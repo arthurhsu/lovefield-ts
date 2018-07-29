@@ -28,7 +28,7 @@ import {Key} from '../index/key_range';
 import {NullableIndex} from '../index/nullable_index';
 import {RowId} from '../index/row_id';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {IndexImpl} from '../schema/index_impl';
 
 import {Cache} from './cache';
@@ -45,7 +45,7 @@ export class Prefetcher {
     this.cache = global.getService(Service.CACHE);
   }
 
-  public init(schema: Database): Promise<void> {
+  public init(schema: DatabaseSchema): Promise<void> {
     // Sequentially load tables
     const tables = schema.tables();
     const execSequentially = (): Promise<void> => {

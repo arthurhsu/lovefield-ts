@@ -20,7 +20,7 @@ import {SelectQuery} from '../query/select_query';
 import {UpdateQuery} from '../query/update_query';
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {TransactionType} from './enum';
 import {ObserverCallback} from './observer_registry_entry';
@@ -29,7 +29,7 @@ import {Transaction} from './transaction';
 // Defines the interface of a runtime database instance. This models the return
 // value of connect().
 export interface DatabaseConnection {
-  getSchema(): Database;
+  getSchema(): DatabaseSchema;
   select(...columns: BaseColumn[]): SelectQuery;
   insert(): InsertQuery;
   insertOrReplace(): InsertQuery;

@@ -25,14 +25,14 @@ import {Relation} from '../../lib/proc/relation';
 import {SelectBuilder} from '../../lib/query/select_builder';
 import {SelectContext} from '../../lib/query/select_context';
 import {Builder} from '../../lib/schema/builder';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
 describe('DiffCalculator', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
 
   beforeEach(() => {
     schema = getMockSchemaBuilder().getSchema();

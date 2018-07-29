@@ -29,12 +29,12 @@ import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
 import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
 import {Builder} from '../../../lib/schema/builder';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('GetRowCountPass', () => {
   let conn: DatabaseConnection;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let global: Global;
   let pass: GetRowCountPass;
 

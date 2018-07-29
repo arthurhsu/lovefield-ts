@@ -16,14 +16,14 @@
 
 import {assert} from '../base/assert';
 import {Row} from '../base/row';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {Cache} from './cache';
 
 export class DefaultCache implements Cache {
   private map: Map<number, Row>;
   private tableRows: Map<string, Set<number>>;
 
-  constructor(dbSchema: Database) {
+  constructor(dbSchema: DatabaseSchema) {
     this.map = new Map<number, Row>();
     this.tableRows = new Map<string, Set<number>>();
 

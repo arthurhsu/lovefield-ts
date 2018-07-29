@@ -18,7 +18,7 @@ import {Binder} from '../base/bind';
 import {Order} from '../base/enum';
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {Context} from './context';
 
@@ -52,7 +52,7 @@ export class SelectContext extends Context {
   public skipBinder!: Binder;
   public outerJoinPredicates!: Set<number>;
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     super(schema);
   }
 

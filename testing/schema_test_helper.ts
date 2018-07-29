@@ -15,13 +15,13 @@
  */
 
 import {ConstraintAction, ConstraintTiming, Type} from '../lib/base/enum';
-import {Database} from '../lib/schema/database';
+import {DatabaseSchema} from '../lib/schema/database_schema';
 import {schema} from '../lib/schema/schema';
 
 export class SchemaTestHelper {
   // Returns a schema where TableC refers to TableB, and TableB refers to
   // TableA.
-  public static getTableChain(constraintAction: ConstraintAction): Database {
+  public static getTableChain(constraintAction: ConstraintAction): DatabaseSchema {
     const schemaBuilder = schema.create('contexttest', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.STRING)
@@ -48,7 +48,7 @@ export class SchemaTestHelper {
 
   // Generates a schema with two tables, Parent and Child, linked with a
   // RESTRICT constraint of the given constraint timing.
-  public static getOneForeignKey(constraintTiming: ConstraintTiming): Database {
+  public static getOneForeignKey(constraintTiming: ConstraintTiming): DatabaseSchema {
     const schemaBuilder = schema.create('testschema', 1);
     schemaBuilder.createTable('Child')
         .addColumn('id', Type.STRING)
@@ -66,7 +66,7 @@ export class SchemaTestHelper {
 
   // Returns a schema where TableB1 and TableB2 both refer to TableA.
   public static getTwoForeignKeys(constraintAction: ConstraintAction):
-      Database {
+      DatabaseSchema {
     const schemaBuilder = schema.create('contexttest', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id1', Type.STRING)

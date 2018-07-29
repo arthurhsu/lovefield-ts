@@ -20,7 +20,7 @@ import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {BackStore} from './back_store';
 import {LocalStorageTable} from './local_storage_table';
@@ -38,12 +38,12 @@ type StorageEventHandler = (ev: StorageEvent) => any;
 // namespace.version# Version of this database
 // namespace.tableName Serialized object of the table
 export class LocalStorage implements BackStore {
-  private schema: Database;
+  private schema: DatabaseSchema;
   private tables: Map<string, LocalStorageTable>;
   private changeHandler: null|((changes: TableDiff[]) => void);
   private listener: null|StorageEventHandler;
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     this.schema = schema;
     this.tables = new Map<string, LocalStorageTable>();
     this.changeHandler = null;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 The Lovefield Project Authors. All Rights Reserved.
+ * Copyright 2018 The Lovefield Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,58 +14,14 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-
 import {BaseTable} from './base_table';
-import {Database} from './database';
-import {Info} from './info';
 import {Pragma} from './pragma';
 
-export class DatabaseSchema implements Database {
-  public _pragma: Pragma;
-  private _info: Info;
-  private tableMap: Map<string, BaseTable>;
-
-  constructor(readonly _name: string, readonly _version: number) {
-    this.tableMap = new Map<string, BaseTable>();
-    this._pragma = {enableBundledMode: false};
-    this._info = undefined as any as Info;
-  }
-
-  public name(): string {
-    return this._name;
-  }
-
-  public version(): number {
-    return this._version;
-  }
-
-  public info(): Info {
-    if (this._info === undefined) {
-      this._info = new Info(this);
-    }
-    return this._info;
-  }
-
-  public tables(): BaseTable[] {
-    return Array.from(this.tableMap.values());
-  }
-
-  public table(tableName: string): BaseTable {
-    const ret = this.tableMap.get(tableName);
-    if (!ret) {
-      // 101: Table {0} not found.
-      throw new Exception(ErrorCode.TABLE_NOT_FOUND, tableName);
-    }
-    return ret;
-  }
-
-  public setTable(table: BaseTable): void {
-    this.tableMap.set(table.getName(), table);
-  }
-
-  public pragma(): Pragma {
-    return this._pragma;
-  }
+// Models the return value of Database.getSchema().
+export interface DatabaseSchema {
+  name(): string;
+  version(): number;
+  tables(): BaseTable[];
+  table(name: string): BaseTable;
+  pragma(): Pragma;
 }

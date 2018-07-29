@@ -22,7 +22,7 @@ import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {BackStore} from './back_store';
 import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
@@ -64,7 +64,7 @@ export class IndexedDB implements BackStore {
   private db!: IDBDatabase;
   private bundledMode: boolean;
 
-  constructor(private global: Global, private schema: Database) {
+  constructor(private global: Global, private schema: DatabaseSchema) {
     this.bundledMode = schema.pragma().enableBundledMode || false;
   }
 

@@ -20,14 +20,14 @@ import {Row} from '../../../lib/base/row';
 import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
 describe('CrossProductStep', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
   let env: MockEnv;
 
   beforeEach(() => {

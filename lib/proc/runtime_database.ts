@@ -42,7 +42,7 @@ import {UpdateBuilder} from '../query/update_builder';
 import {BaseTable} from '../schema/base_table';
 import {Column} from '../schema/column';
 import {ConnectOptions} from '../schema/connect_options';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {DefaultQueryEngine} from './default_query_engine';
 import {ExportTask} from './export_task';
@@ -51,7 +51,7 @@ import {Runner} from './runner';
 import {RuntimeTransaction} from './runtime_transaction';
 
 export class RuntimeDatabase implements DatabaseConnection {
-  private schema: Database;
+  private schema: DatabaseSchema;
   private isActive: boolean;
   private runner!: Runner;
   private observeExternalChanges: boolean;
@@ -112,7 +112,7 @@ export class RuntimeDatabase implements DatabaseConnection {
     return this.global;
   }
 
-  public getSchema(): Database {
+  public getSchema(): DatabaseSchema {
     return this.schema;
   }
 
@@ -197,7 +197,7 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   private createBackStore(
-      schema: Database, options?: ConnectOptions): BackStore {
+      schema: DatabaseSchema, options?: ConnectOptions): BackStore {
     let backStore: BackStore;
 
     if (Flags.MEMORY_ONLY) {

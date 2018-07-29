@@ -23,7 +23,7 @@ import {Relation} from '../../lib/proc/relation';
 import {SelectBuilder} from '../../lib/query/select_builder';
 import {SelectContext} from '../../lib/query/select_context';
 import {BaseTable} from '../../lib/schema/base_table';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -31,7 +31,7 @@ const assert = chai.assert;
 
 describe('ObservableRegistry', () => {
   let registry: ObserverRegistry;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let env: MockEnv;
 
   beforeEach(async () => {

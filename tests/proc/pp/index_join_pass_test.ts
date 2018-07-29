@@ -28,13 +28,13 @@ import {SelectContext} from '../../../lib/query/select_context';
 import {BaseColumn} from '../../../lib/schema/base_column';
 import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {Table} from '../../../lib/schema/table';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('IndexJoinPass', () => {
   let conn: DatabaseConnection;
-  let schema: Database;
+  let schema: DatabaseSchema;
   let global: Global;
   let pass: IndexJoinPass;
 

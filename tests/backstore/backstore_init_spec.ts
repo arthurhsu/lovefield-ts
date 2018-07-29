@@ -22,7 +22,7 @@ import {Capability} from '../../lib/base/capability';
 import {Service} from '../../lib/base/service';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {Builder} from '../../lib/schema/builder';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
@@ -75,7 +75,7 @@ describe('BackStoreInit', () => {
   });
 
   // Asserts that an object store was created for each user-defined table.
-  function assertUserTables(schema: Database, tableNames: Set<string>): void {
+  function assertUserTables(schema: DatabaseSchema, tableNames: Set<string>): void {
     schema.tables().forEach((tableSchema) => {
       assert.isTrue(tableNames.has(tableSchema.getName()));
     });
@@ -83,7 +83,7 @@ describe('BackStoreInit', () => {
 
   // Asserts that an object store was created for each Index instance
   // that belongs to a user-defined table that has "persistentIndex" enabled.
-  function assertIndexTables(schema: Database, tableNames: Set<string>): void {
+  function assertIndexTables(schema: DatabaseSchema, tableNames: Set<string>): void {
     schema.tables().forEach((tableSchema) => {
       tableSchema.getIndices().forEach((indexSchema) => {
         assert.equal(

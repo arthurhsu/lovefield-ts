@@ -15,7 +15,7 @@
  */
 
 import {TableDiff} from '../cache/table_diff';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {Memory} from './memory';
 
@@ -25,7 +25,7 @@ import {Memory} from './memory';
 export class ObservableStore extends Memory {
   private observer: null|((changes: TableDiff[]) => void);
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     super(schema);
     this.observer = null;
   }

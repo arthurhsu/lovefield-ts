@@ -23,7 +23,7 @@ import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {TableDiff} from '../cache/table_diff';
 import {BaseTable} from '../schema/base_table';
-import {Database as DatabaseLF} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {BackStore} from './back_store';
 import {RawBackStore} from './raw_back_store';
@@ -43,7 +43,7 @@ export class WebSql implements BackStore {
   private db!: Database;
 
   constructor(
-      private global: Global, private schema: DatabaseLF, size?: number) {
+      private global: Global, private schema: DatabaseSchema, size?: number) {
     // Estimated size of WebSQL store. It is defaulted to 1 for a reason:
     // http://pouchdb.com/2014/10/26/10-things-i-learned-from-reading-and-writing-the-pouchdb-source.html
     this.size = size || 1;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {RuntimeIndex} from './runtime_index';
 
 export interface IndexStore {
   // Initializes index store. This will create empty index instances.
-  init(schema: Database): Promise<void>;
+  init(schema: DatabaseSchema): Promise<void>;
 
   // Returns the index by full qualified name. Returns null if not found.
   get(name: string): RuntimeIndex|null;

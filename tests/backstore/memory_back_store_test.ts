@@ -20,7 +20,7 @@ import {Global} from '../../lib/base/global';
 import {Service} from '../../lib/base/service';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -29,7 +29,7 @@ const assert = chai.assert;
 describe('MemoryStore', () => {
   let db: Memory;
   let cache: DefaultCache;
-  let schema: Database;
+  let schema: DatabaseSchema;
 
   beforeEach(() => {
     const indexStore = new MemoryIndexStore();

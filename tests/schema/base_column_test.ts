@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
 describe('BaseColumn', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
   before(() => {
     schema = getMockSchemaBuilder().getSchema();
   });

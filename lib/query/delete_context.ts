@@ -16,7 +16,7 @@
 
 import {ConstraintAction} from '../base/enum';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {Info} from '../schema/info';
 
 import {Context} from './context';
@@ -25,7 +25,7 @@ import {Context} from './context';
 export class DeleteContext extends Context {
   public from!: BaseTable;
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     super(schema);
   }
 

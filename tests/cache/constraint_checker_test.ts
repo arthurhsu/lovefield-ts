@@ -22,7 +22,7 @@ import {ConstraintChecker} from '../../lib/cache/constraint_checker';
 import {Modification} from '../../lib/cache/modification';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {BaseTable} from '../../lib/schema/base_table';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {schema} from '../../lib/schema/schema';
 import {MockEnv} from '../../testing/mock_env';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
@@ -35,7 +35,7 @@ describe('ConstraintChecker', () => {
   let checker: ConstraintChecker;
   const TIMINGS = [ConstraintTiming.IMMEDIATE, ConstraintTiming.DEFERRABLE];
 
-  async function setUpEnvForSchema(schema1: Database): Promise<void> {
+  async function setUpEnvForSchema(schema1: DatabaseSchema): Promise<void> {
     env = new MockEnv(schema1);
     await env.init();
     checker = new ConstraintChecker(env.global);

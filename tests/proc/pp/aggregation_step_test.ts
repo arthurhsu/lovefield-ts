@@ -26,7 +26,7 @@ import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
 import {BaseColumn} from '../../../lib/schema/base_column';
 import {BaseTable} from '../../../lib/schema/base_table';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
@@ -36,7 +36,7 @@ const assert = chai.assert;
 describe('AggregationStep', () => {
   let e: BaseTable;
   let j: BaseTable;
-  let schemaWithNullable: Database;
+  let schemaWithNullable: DatabaseSchema;
   let dataGenerator: MockDataGenerator;
   let nullableGenerator: NullableDataGenerator;
 

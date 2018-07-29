@@ -28,14 +28,14 @@ import {Journal} from '../cache/journal';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {Relation} from './relation';
 import {Task} from './task';
 
 // Imports table/rows from given JavaScript object to an empty database.
 export class ImportTask extends UniqueId implements Task {
-  private schema: Database;
+  private schema: DatabaseSchema;
   private scope: Set<BaseTable>;
   private resolver: Resolver<Relation[]>;
   private backStore: BackStore;

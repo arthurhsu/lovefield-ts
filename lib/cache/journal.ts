@@ -24,7 +24,7 @@ import {Service} from '../base/service';
 import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {Info} from '../schema/info';
 
 import {Cache} from './cache';
@@ -40,7 +40,7 @@ import {TableDiff} from './table_diff';
 // recorded in the journal.
 export class Journal {
   private scope: Map<string, BaseTable>;
-  private schema: Database;
+  private schema: DatabaseSchema;
   private cache: Cache;
   private indexStore: IndexStore;
   private constraintChecker: ConstraintChecker;

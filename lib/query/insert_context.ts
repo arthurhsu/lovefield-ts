@@ -17,7 +17,7 @@
 import {Binder} from '../base/bind';
 import {Row} from '../base/row';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {Info} from '../schema/info';
 
 import {Context} from './context';
@@ -29,7 +29,7 @@ export class InsertContext extends Context {
   public values!: Row[];
   public allowReplace!: boolean;
 
-  constructor(schema: Database) {
+  constructor(schema: DatabaseSchema) {
     super(schema);
   }
 

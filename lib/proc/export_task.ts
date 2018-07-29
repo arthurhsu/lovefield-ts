@@ -23,14 +23,14 @@ import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseTable} from '../schema/base_table';
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 
 import {Relation} from './relation';
 import {RelationEntry} from './relation_entry';
 import {Task} from './task';
 
 export class ExportTask extends UniqueId implements Task {
-  private schema: Database;
+  private schema: DatabaseSchema;
   private scope: Set<BaseTable>;
   private resolver: Resolver<Relation[]>;
 

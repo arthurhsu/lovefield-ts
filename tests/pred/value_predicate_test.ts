@@ -26,17 +26,17 @@ import {Relation} from '../../lib/proc/relation';
 import {BaseColumn} from '../../lib/schema/base_column';
 import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('ValuePredicate', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
   let tableA: BaseTable;
   let tableB: BaseTable;
 
-  function getSchema(): Database {
+  function getSchema(): DatabaseSchema {
     const schemaBuilder = new Builder('valuepredicate', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.STRING)

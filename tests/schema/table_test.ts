@@ -17,13 +17,13 @@
 import * as chai from 'chai';
 
 import {BaseTable} from '../../lib/schema/base_table';
-import {Database} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('Table', () => {
-  const checkAlias = (schema: Database) => {
+  const checkAlias = (schema: DatabaseSchema) => {
     const noAliasTable = schema.table('Job');
     const name = noAliasTable.getName();
     const alias = 'OtherJob';

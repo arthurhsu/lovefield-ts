@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Database} from '../schema/database';
+import {DatabaseSchema} from '../schema/database_schema';
 import {IndexImpl} from '../schema/index_impl';
 import {BTree} from './btree';
 import {ComparatorFactory} from './comparator_factory';
@@ -33,7 +33,7 @@ export class MemoryIndexStore implements IndexStore {
     this.tableIndices = new Map<string, RuntimeIndex[]>();
   }
 
-  public init(schema: Database): Promise<void> {
+  public init(schema: DatabaseSchema): Promise<void> {
     const tables = schema.tables();
 
     tables.forEach((table) => {

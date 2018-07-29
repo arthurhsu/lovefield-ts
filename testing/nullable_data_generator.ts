@@ -16,7 +16,7 @@
 
 import {Type} from '../lib/base/enum';
 import {Row} from '../lib/base/row';
-import {Database} from '../lib/schema/database';
+import {DatabaseSchema} from '../lib/schema/database_schema';
 import {schema} from '../lib/schema/schema';
 
 // A helper class for generating sample database rows for tables with
@@ -26,7 +26,7 @@ export class NullableDataGenerator {
   public sampleTableBRows: Row[];
   public sampleTableCRows: Row[];
   public tableAGroundTruth: TableAGroundTruth;
-  public schema: Database;
+  public schema: DatabaseSchema;
 
   constructor() {
     const schemaBuilder = schema.create('NullableSchema', 1);

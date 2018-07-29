@@ -28,7 +28,7 @@ import {ServiceId} from '../../lib/base/service_id';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {Builder} from '../../lib/schema/builder';
-import {Database as DatabaseLF} from '../../lib/schema/database';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
 
 const assert = chai.assert;
 
@@ -72,7 +72,7 @@ describe('WebSqlRawBackStore', () => {
     sandbox.restore();
   });
 
-  function getOldSchema(name?: string): DatabaseLF {
+  function getOldSchema(name?: string): DatabaseSchema {
     const builder = new Builder(name || `test${Date.now()}`, 1);
     builder.createTable('A')
         .addColumn('id', Type.STRING)

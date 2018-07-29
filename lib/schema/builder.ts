@@ -23,28 +23,28 @@ import {ServiceId} from '../base/service_id';
 import {RuntimeDatabase} from '../proc/runtime_database';
 
 import {ConnectOptions} from './connect_options';
-import {Database} from './database';
 import {DatabaseSchema} from './database_schema';
+import {DatabaseSchemaImpl} from './database_schema_impl';
 import {GraphNode} from './graph_node';
 import {Pragma} from './pragma';
 import {TableBuilder} from './table_builder';
 
 export class Builder {
-  private schema: DatabaseSchema;
+  private schema: DatabaseSchemaImpl;
   private tableBuilders: Map<string, TableBuilder>;
   private finalized: boolean;
   private db: RuntimeDatabase;
   private connectInProgress: boolean;
 
   constructor(dbName: string, dbVersion: number) {
-    this.schema = new DatabaseSchema(dbName, dbVersion);
+    this.schema = new DatabaseSchemaImpl(dbName, dbVersion);
     this.tableBuilders = new Map<string, TableBuilder>();
     this.finalized = false;
     this.db = null as any as RuntimeDatabase;
     this.connectInProgress = false;
   }
 
-  public getSchema(): Database {
+  public getSchema(): DatabaseSchema {
     if (!this.finalized) {
       this.finalize();
     }

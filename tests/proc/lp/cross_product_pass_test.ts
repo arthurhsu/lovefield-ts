@@ -20,12 +20,12 @@ import {CrossProductPass} from '../../../lib/proc/lp/cross_product_pass';
 import {SelectNode} from '../../../lib/proc/lp/select_node';
 import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
 import {SelectContext} from '../../../lib/query/select_context';
-import {Database} from '../../../lib/schema/database';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('CrossProductPass', () => {
-  let schema: Database;
+  let schema: DatabaseSchema;
 
   before(() => {
     schema = getHrDbSchemaBuilder().getSchema();
