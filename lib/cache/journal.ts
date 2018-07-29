@@ -25,6 +25,7 @@ import {IndexStore} from '../index/index_store';
 import {RuntimeIndex} from '../index/runtime_index';
 import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
+import {Info} from '../schema/info';
 
 import {Cache} from './cache';
 import {CascadeUpdateItem} from './cascade';
@@ -263,8 +264,9 @@ export class Journal {
   // |modifications| means the initial modifications.
   private updateByCascade(table: BaseTable, modifications: Modification[]):
       void {
-    const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
-        table.getName(), ConstraintAction.CASCADE);
+    const foreignKeySpecs = Info.from(this.schema)
+                                .getReferencingForeignKeys(
+                                    table.getName(), ConstraintAction.CASCADE);
     if (foreignKeySpecs === null) {
       // The affected table does not appear as the parent in any CASCADE foreign
       // key constraint, therefore no cascading detection is needed.
@@ -290,8 +292,9 @@ export class Journal {
   // |table| refers to the table where the update is initiated.
   // |rows| means the initial rows to be deleted.
   private removeByCascade(table: BaseTable, deletedRows: Row[]): void {
-    const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
-        table.getName(), ConstraintAction.CASCADE);
+    const foreignKeySpecs = Info.from(this.schema)
+                                .getReferencingForeignKeys(
+                                    table.getName(), ConstraintAction.CASCADE);
     if (foreignKeySpecs === null) {
       // The affected table does not appear as the parent in any CASCADE foreign
       // key constraint, therefore no cascading detection is needed.

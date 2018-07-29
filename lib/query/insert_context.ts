@@ -18,6 +18,7 @@ import {Binder} from '../base/bind';
 import {Row} from '../base/row';
 import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
+import {Info} from '../schema/info';
 
 import {Context} from './context';
 
@@ -35,7 +36,7 @@ export class InsertContext extends Context {
   public getScope(): Set<BaseTable> {
     const scope = new Set<BaseTable>();
     scope.add(this.into);
-    const info = this.schema.info();
+    const info = Info.from(this.schema);
     info.getParentTables(this.into.getName()).forEach(scope.add.bind(scope));
     if (this.allowReplace) {
       info.getChildTables(this.into.getName()).forEach(scope.add.bind(scope));

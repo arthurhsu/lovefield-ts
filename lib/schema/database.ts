@@ -15,7 +15,6 @@
  */
 
 import {BaseTable} from './base_table';
-import {Info} from './info';
 import {Pragma} from './pragma';
 
 // Models the return value of Database.getSchema().
@@ -23,7 +22,6 @@ export interface Database {
   name(): string;
   version(): number;
   tables(): BaseTable[];
-  info(): Info;
   table(name: string): BaseTable;
   pragma(): Pragma;
 }

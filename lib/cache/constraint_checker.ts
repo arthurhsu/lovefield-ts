@@ -27,6 +27,7 @@ import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
 import {ForeignKeySpec} from '../schema/foreign_key_spec';
 import {Index} from '../schema/index';
+import {Info} from '../schema/info';
 import {MapSet} from '../structs/map_set';
 
 import {Cache} from './cache';
@@ -275,8 +276,9 @@ export class ConstraintChecker {
       table: BaseTable, modifications: Modification[],
       constraintTiming: ConstraintTiming,
       constraintAction?: ConstraintAction): void {
-    let foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
-        table.getName(), constraintAction);
+    let foreignKeySpecs =
+        Info.from(this.schema)
+            .getReferencingForeignKeys(table.getName(), constraintAction);
     if (foreignKeySpecs === null) {
       return;
     }
@@ -306,8 +308,9 @@ export class ConstraintChecker {
   private findReferringRowIds(table: BaseTable, modifications: Modification[]):
       MapSet<string, number>|null {
     // Finding foreign key constraints referring to the affected table.
-    const foreignKeySpecs = this.schema.info().getReferencingForeignKeys(
-        table.getName(), ConstraintAction.CASCADE);
+    const foreignKeySpecs = Info.from(this.schema)
+                                .getReferencingForeignKeys(
+                                    table.getName(), ConstraintAction.CASCADE);
     if (foreignKeySpecs === null) {
       return null;
     }

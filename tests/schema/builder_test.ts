@@ -21,6 +21,7 @@ import {BaseTable} from '../../lib/schema/base_table';
 import {Builder} from '../../lib/schema/builder';
 import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
 import {IndexImpl} from '../../lib/schema/index_impl';
+import {Info} from '../../lib/schema/info';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -144,7 +145,8 @@ describe('Builder', () => {
 
   it('getParentForeignKeys', () => {
     const schema = createBuilder().getSchema();
-    const parentForeignKeys = schema.info().getReferencingForeignKeys('Job');
+    const parentForeignKeys =
+        Info.from(schema).getReferencingForeignKeys('Job');
     const spec = new ForeignKeySpec(
         {
           action: ConstraintAction.CASCADE,

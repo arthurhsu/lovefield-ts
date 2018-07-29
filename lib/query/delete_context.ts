@@ -17,6 +17,7 @@
 import {ConstraintAction} from '../base/enum';
 import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
+import {Info} from '../schema/info';
 
 import {Context} from './context';
 
@@ -53,8 +54,9 @@ export class DeleteContext extends Context {
   private expandTableScope(tableName: string, scopeSoFar: Set<BaseTable>):
       void {
     const cascadeChildTables =
-        this.schema.info().getChildTables(tableName, ConstraintAction.CASCADE);
-    const childTables = this.schema.info().getChildTables(tableName);
+        Info.from(this.schema)
+            .getChildTables(tableName, ConstraintAction.CASCADE);
+    const childTables = Info.from(this.schema).getChildTables(tableName);
     childTables.forEach(scopeSoFar.add.bind(scopeSoFar));
     cascadeChildTables.forEach((childTable) => {
       this.expandTableScope(childTable.getName(), scopeSoFar);

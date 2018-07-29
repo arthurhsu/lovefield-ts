@@ -19,10 +19,15 @@ import {MapSet} from '../structs/map_set';
 
 import {BaseTable} from './base_table';
 import {Database} from './database';
+import {DatabaseSchema} from './database_schema';
 import {ForeignKeySpec} from './foreign_key_spec';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
+  public static from(schema: Database): Info {
+    return (schema as DatabaseSchema).info();
+  }
+
   // A mapping from table name to its referencing CASCADE foreign keys.
   private cascadeReferringFk: MapSet<string, ForeignKeySpec>;
 
@@ -53,7 +58,8 @@ export class Info {
     this.restrictChildren = new MapSet();
     this.colChild = new MapSet();
 
-    this.schema.tables().forEach((table) => {
+    this.schema.tables().forEach((t) => {
+      const table = t as BaseTable;
       const tableName = table.getName();
       table.getConstraint().getForeignKeys().forEach((fkSpec) => {
         this.parents.set(tableName, this.schema.table(fkSpec.parentTable));

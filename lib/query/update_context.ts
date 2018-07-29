@@ -17,6 +17,7 @@
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
 import {Database} from '../schema/database';
+import {Info} from '../schema/info';
 
 import {Context} from './context';
 
@@ -39,7 +40,7 @@ export class UpdateContext extends Context {
     const scope = new Set<BaseTable>();
     scope.add(this.table);
     const columns = this.set.map((col) => col.column.getNormalizedName());
-    const info = this.schema.info();
+    const info = Info.from(this.schema);
     info.getParentTablesByColumns(columns).forEach(scope.add.bind(scope));
     info.getChildTablesByColumns(columns).forEach(scope.add.bind(scope));
     return scope;
