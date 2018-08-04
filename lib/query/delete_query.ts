@@ -18,6 +18,7 @@ import {Predicate} from '../pred/predicate';
 import {BaseTable} from '../schema/base_table';
 import {QueryBuilder} from './query_builder';
 
+// @export
 export interface DeleteQuery extends QueryBuilder {
   from(table: BaseTable): DeleteQuery;
   where(predicate: Predicate): DeleteQuery;

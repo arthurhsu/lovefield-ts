@@ -18,6 +18,9 @@ import {Builder} from './builder';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
+// TODO(arthurhsu): FIXME: Builder should be a public interface, not concrete
+// class. Currently Builder has no @export.
+// @export
 export class schema {
   // Returns a builder.
   // Note that Lovefield builder is a stateful object, and it remembers it has

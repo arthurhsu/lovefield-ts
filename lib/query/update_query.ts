@@ -19,6 +19,7 @@ import {Predicate} from '../pred/predicate';
 import {BaseColumn} from '../schema/base_column';
 import {QueryBuilder} from './query_builder';
 
+// @export
 export interface UpdateQuery extends QueryBuilder {
   set(column: BaseColumn, value: Binder|any): UpdateQuery;
   where(predicate: Predicate): UpdateQuery;

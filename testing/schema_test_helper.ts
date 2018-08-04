@@ -21,7 +21,8 @@ import {schema} from '../lib/schema/schema';
 export class SchemaTestHelper {
   // Returns a schema where TableC refers to TableB, and TableB refers to
   // TableA.
-  public static getTableChain(constraintAction: ConstraintAction): DatabaseSchema {
+  public static getTableChain(constraintAction: ConstraintAction):
+      DatabaseSchema {
     const schemaBuilder = schema.create('contexttest', 1);
     schemaBuilder.createTable('TableA')
         .addColumn('id', Type.STRING)
@@ -48,7 +49,8 @@ export class SchemaTestHelper {
 
   // Generates a schema with two tables, Parent and Child, linked with a
   // RESTRICT constraint of the given constraint timing.
-  public static getOneForeignKey(constraintTiming: ConstraintTiming): DatabaseSchema {
+  public static getOneForeignKey(constraintTiming: ConstraintTiming):
+      DatabaseSchema {
     const schemaBuilder = schema.create('testschema', 1);
     schemaBuilder.createTable('Child')
         .addColumn('id', Type.STRING)

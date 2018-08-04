@@ -18,6 +18,7 @@ import {Relation} from '../proc/relation';
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
 
+// @emptyExport
 export interface Predicate {
   // Returns relation that holds only the entries satisfying given predicate.
   eval(relation: Relation): Relation;

@@ -25,6 +25,8 @@ import {IndexedColumnSpec} from './indexed_column';
 import {TableImpl} from './table_impl';
 
 // Dynamic Table schema builder
+// TODO(arthurhsu): FIXME: use a public interface here.
+// @export
 export class TableBuilder {
   private static NULLABLE_TYPES_BY_DEFAULT: Set<Type> = new Set<Type>([
     Type.ARRAY_BUFFER,

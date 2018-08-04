@@ -23,6 +23,7 @@ export interface IndexedColumnSpec {
   autoIncrement?: boolean;
 }
 
+// @export
 export interface IndexedColumn {
   schema: BaseColumn;
   order: Order;

@@ -17,6 +17,7 @@
 import {ConstraintAction, ConstraintTiming, ErrorCode} from '../base/enum';
 import {Exception} from '../base/exception';
 
+// @export
 export interface RawForeignKeySpec {
   local: string;
   ref: string;

@@ -18,6 +18,7 @@ import {TransactionStats} from '../backstore/transaction_stats';
 import {QueryBuilder} from '../query/query_builder';
 import {BaseTable} from '../schema/base_table';
 
+// @export
 export interface Transaction {
   // Executes a list of queries and commits the transaction.
   exec(queries: QueryBuilder[]): Promise<any>;

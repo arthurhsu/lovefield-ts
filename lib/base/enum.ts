@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
+// @export
 export enum ConstraintAction {
   RESTRICT = 0,
   CASCADE = 1,
 }
 
+// @export
 export enum ConstraintTiming {
   IMMEDIATE = 0,
   DEFERRABLE = 1,
 }
 
+// @export
 export enum DataStoreType {
   INDEXED_DB = 0,
   MEMORY = 1,
@@ -33,11 +36,13 @@ export enum DataStoreType {
   OBSERVABLE_STORE = 5,
 }
 
+// @export
 export enum Order {
   DESC = 0,
   ASC = 1,
 }
 
+// @export
 export enum Type {
   ARRAY_BUFFER = 0,
   BOOLEAN = 1,
@@ -58,11 +63,13 @@ export const DEFAULT_VALUES: Map<Type, any> = new Map([
   [Type.OBJECT, null],                           // nullable
 ]);
 
+// @export
 export enum TransactionType {
   READ_ONLY = 0,
   READ_WRITE = 1,
 }
 
+// @export
 export enum ErrorCode {
   // System level errors
   SYSTEM_ERROR = 0,

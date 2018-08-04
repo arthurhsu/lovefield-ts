@@ -15,6 +15,8 @@
  */
 
 // Public column interface
+// TODO(arthurhsu): FIXME: should extend PredicateProvider
+// @export
 export interface Column {
   getName(): string;
   getNormalizedName(): string;

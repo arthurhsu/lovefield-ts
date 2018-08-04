@@ -24,6 +24,7 @@ import {QueryBuilder} from './query_builder';
 // Query Builder which constructs a SELECT query. The builder is stateful.
 // All member functions, except orderBy(), can only be called once. Otherwise
 // an exception will be thrown.
+// @export
 export interface SelectQuery extends QueryBuilder {
   // Specifies the source of the SELECT query.
   from(...tables: Table[]): SelectQuery;

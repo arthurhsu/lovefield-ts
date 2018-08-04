@@ -17,6 +17,7 @@
 import {Row} from '../base/row';
 
 // Public table interface.
+// @export
 export interface Table {
   getName(): string;
   as(alias: string): Table;

@@ -28,6 +28,7 @@ import {Transaction} from './transaction';
 
 // Defines the interface of a runtime database instance. This models the return
 // value of connect().
+// @export
 export interface DatabaseConnection {
   getSchema(): DatabaseSchema;
   select(...columns: BaseColumn[]): SelectQuery;
@@ -39,8 +40,8 @@ export interface DatabaseConnection {
   // Registers an observer for the given query.
   observe(query: SelectQuery, callback: ObserverCallback): void;
 
-  // Unregisters an observer for the given query.
-  observe(query: SelectQuery, callback: ObserverCallback): void;
+  // Un-registers an observer for the given query.
+  unobserve(query: SelectQuery, callback: ObserverCallback): void;
 
   createTransaction(type?: TransactionType): Transaction;
 

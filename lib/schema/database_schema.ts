@@ -18,6 +18,7 @@ import {BaseTable} from './base_table';
 import {Pragma} from './pragma';
 
 // Models the return value of Database.getSchema().
+// @export
 export interface DatabaseSchema {
   name(): string;
   version(): number;

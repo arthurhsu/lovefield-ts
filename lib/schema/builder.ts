@@ -29,6 +29,8 @@ import {GraphNode} from './graph_node';
 import {Pragma} from './pragma';
 import {TableBuilder} from './table_builder';
 
+// TODO(arthurhsu): FIXME: use a public interface here.
+// @export
 export class Builder {
   private schema: DatabaseSchemaImpl;
   private tableBuilders: Map<string, TableBuilder>;

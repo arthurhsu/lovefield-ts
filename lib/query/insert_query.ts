@@ -19,6 +19,7 @@ import {Row} from '../base/row';
 import {BaseTable} from '../schema/base_table';
 import {QueryBuilder} from './query_builder';
 
+// @export
 export interface InsertQuery extends QueryBuilder {
   into(table: BaseTable): InsertQuery;
   values(rows: Row[]|Binder|Binder[]): InsertQuery;

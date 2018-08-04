@@ -22,6 +22,7 @@ export interface RawRow {
 }
 
 // The base row class for all rows.
+// @emptyExport
 export class Row {
   // An ID to be used when a row that does not correspond to a DB entry is
   // created (for example the result of joining two rows).

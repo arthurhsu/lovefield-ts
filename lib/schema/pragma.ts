@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// @export
 export interface Pragma {
   // Bundled mode has tradeoffs and therefore placed as a pragma.
   enableBundledMode: boolean;

@@ -17,10 +17,10 @@
 import {RawBackStore} from '../backstore/raw_back_store';
 import {DataStoreType} from '../base/enum';
 
+// @export
 export interface ConnectOptions {
   onUpgrade?: (raw: RawBackStore) => Promise<void>;
   storeType: DataStoreType;
-  // firebase?: Firebase;
   websqlDbSize?: number;
   enableInspector?: boolean;
 }

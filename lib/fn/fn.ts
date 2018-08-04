@@ -21,6 +21,8 @@ import {StarColumn} from './star_column';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
+// TODO(arthurhsu): FIXME: use Column instead of BaseColumn.
+// @export
 export class fn {
   public static avg(col: BaseColumn): BaseColumn {
     return new AggregatedColumn(col, FnType.AVG);

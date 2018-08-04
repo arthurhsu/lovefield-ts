@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// TODO(arthurhsu): FIXME: public interface, separate from concrete class.
+// @export
 export class TransactionStats {
   public static getDefault(): TransactionStats {
     return new TransactionStats(false, 0, 0, 0, 0);

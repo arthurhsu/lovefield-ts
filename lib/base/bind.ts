@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+// @export
 export function bind(index: number): Binder {
   return new Binder(index);
 }
 
 // Binder class that instructs the query engine to evaluate bound value at
 // execution time.
+// @export
 export class Binder {
   constructor(readonly index: number) {}
 

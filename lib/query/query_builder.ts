@@ -16,6 +16,7 @@
 
 import {TaskItem} from '../proc/task_item';
 
+// @export
 export interface QueryBuilder {
   // Executes the query, all errors will be passed to the reject function.
   // The resolve function may receive parameters as results of execution, for

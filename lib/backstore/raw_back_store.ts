@@ -16,6 +16,7 @@
 import {Row} from '../base/row';
 
 // Raw data store interface passed to onUpgrade() function.
+// @export
 export interface RawBackStore {
   // Returns original database instance that can be used for low-level data
   // manipulations, not really useful for IndexedDB.

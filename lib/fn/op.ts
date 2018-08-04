@@ -21,6 +21,8 @@ import {PredicateNode} from '../pred/predicate_node';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
+// TODO(arthurhsu): FIXME: use public interface.
+// @export
 export class op {
   public static and(...predicates: Predicate[]): Predicate {
     return op.createPredicate(Operator.AND, predicates as PredicateNode[]);
