@@ -14,34 +14,11 @@
  * limitations under the License.
  */
 
-// TODO(arthurhsu): FIXME: public interface, separate from concrete class.
 // @export
-export class TransactionStats {
-  public static getDefault(): TransactionStats {
-    return new TransactionStats(false, 0, 0, 0, 0);
-  }
-
-  constructor(
-      private success_: boolean,
-      private insertedRowCount_: number,
-      private updatedRowCount_: number,
-      private deletedRowCount_: number,
-      private changedTableCount_: number,
-  ) {}
-
-  public success(): boolean {
-    return this.success_;
-  }
-  public insertedRowCount(): number {
-    return this.insertedRowCount_;
-  }
-  public updatedRowCount(): number {
-    return this.updatedRowCount_;
-  }
-  public deletedRowCount(): number {
-    return this.deletedRowCount_;
-  }
-  public changedTableCount(): number {
-    return this.changedTableCount_;
-  }
+export interface TransactionStats {
+  success(): boolean;
+  insertedRowCount(): number;
+  updatedRowCount(): number;
+  deletedRowCount(): number;
+  changedTableCount(): number;
 }

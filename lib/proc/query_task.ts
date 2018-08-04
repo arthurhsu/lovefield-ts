@@ -15,7 +15,7 @@
  */
 
 import {BackStore} from '../backstore/back_store';
-import {TransactionStats} from '../backstore/transaction_stats';
+import {TransactionStatsImpl} from '../backstore/transaction_stats_impl';
 import {Tx} from '../backstore/tx';
 import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
@@ -112,12 +112,12 @@ export abstract class QueryTask extends UniqueId implements Task {
   public abstract getPriority(): TaskPriority;
 
   // Returns stats for the task. Used in transaction.exec([queries]).
-  public stats(): TransactionStats {
-    let results: TransactionStats|null = null;
+  public stats(): TransactionStatsImpl {
+    let results: TransactionStatsImpl|null = null;
     if (this.tx) {
-      results = this.tx.stats();
+      results = this.tx.stats() as TransactionStatsImpl;
     }
-    return (results === null) ? TransactionStats.getDefault() : results;
+    return (results === null) ? TransactionStatsImpl.getDefault() : results;
   }
 
   // Executes after all queries have finished successfully. Default

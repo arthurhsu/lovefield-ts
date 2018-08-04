@@ -21,7 +21,7 @@ import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 import {Journal} from '../cache/journal';
 import {BaseTable} from '../schema/base_table';
-import {TransactionStats} from './transaction_stats';
+import {TransactionStatsImpl} from './transaction_stats_impl';
 import {Tx} from './tx';
 
 // A base class for all native DB transactions wrappers to subclass.
@@ -30,7 +30,7 @@ export abstract class BaseTx implements Tx {
 
   private journal: Journal|null;
   private success: boolean;
-  private statsObject: TransactionStats|null;
+  private statsObject: TransactionStatsImpl|null;
 
   constructor(protected txType: TransactionType, journal?: Journal) {
     this.journal = journal || null;
@@ -59,12 +59,12 @@ export abstract class BaseTx implements Tx {
     });
   }
 
-  public stats(): TransactionStats|null {
+  public stats(): TransactionStatsImpl|null {
     if (this.statsObject === null) {
       if (!this.success) {
-        this.statsObject = TransactionStats.getDefault();
+        this.statsObject = TransactionStatsImpl.getDefault();
       } else if (this.txType === TransactionType.READ_ONLY) {
-        this.statsObject = new TransactionStats(true, 0, 0, 0, 0);
+        this.statsObject = new TransactionStatsImpl(true, 0, 0, 0, 0);
       } else {
         const diff = (this.journal as Journal).getDiff();
         let insertedRows = 0;
@@ -77,7 +77,7 @@ export abstract class BaseTx implements Tx {
           updatedRows += tableDiff.getModified().size;
           deletedRows += tableDiff.getDeleted().size;
         });
-        this.statsObject = new TransactionStats(
+        this.statsObject = new TransactionStatsImpl(
             true, insertedRows, updatedRows, deletedRows, tablesChanged);
       }
     }

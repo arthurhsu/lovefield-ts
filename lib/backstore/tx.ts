@@ -36,7 +36,7 @@ export interface Tx {
   // to the backing store.
   commit(): Promise<any>;
 
-  // Aborts tranaction. Caller shall listen to rejection of commit() to detect
+  // Aborts transaction. Caller shall listen to rejection of commit() to detect
   // end of transaction.
   abort(): void;
 

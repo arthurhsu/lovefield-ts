@@ -15,7 +15,7 @@
  */
 
 import {BackStore} from '../backstore/back_store';
-import {TransactionStats} from '../backstore/transaction_stats';
+import {TransactionStatsImpl} from '../backstore/transaction_stats_impl';
 import {Tx} from '../backstore/tx';
 import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
@@ -144,12 +144,12 @@ export class TransactionTask extends UniqueId implements Task {
     return this.resolver.promise;
   }
 
-  public stats(): TransactionStats|null {
-    let results: TransactionStats|null = null;
+  public stats(): TransactionStatsImpl|null {
+    let results: TransactionStatsImpl|null = null;
     if (this.tx) {
-      results = this.tx.stats();
+      results = this.tx.stats() as TransactionStatsImpl;
     }
-    return results === null ? TransactionStats.getDefault() : results;
+    return results === null ? TransactionStatsImpl.getDefault() : results;
   }
 
   // Schedules an ObserverTask for any observed queries that need to be
