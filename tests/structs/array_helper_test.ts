@@ -96,7 +96,11 @@ describe('ArrayHelper', () => {
     check(obj2, false, []);
   });
 
-  it('shuffle', () => {
+  it('shuffle', function tester(): void {
+    // Mocha does not like lambda's, so use a real function for retry.
+    // This test needs retry because the shuffle method can fail the expectation
+    // since it uses random numbers.
+    this.retries(3);
     const testArray = [1, 2, 3, 4, 5];
     const testArrayClone: number[] = ArrayHelper.clone(testArray);
     assert.notEqual(testArray, testArrayClone);
