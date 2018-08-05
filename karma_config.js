@@ -11,7 +11,8 @@ module.exports = function(config) {
     ],
 
     exclude: [
-      'node_modules/**/*.ts'
+      'dist/**/**.ts',
+      'node_modules/**/*.ts',
     ],
 
     preprocessors: {

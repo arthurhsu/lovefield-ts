@@ -29,8 +29,8 @@ export class InsertContext extends Context {
   public values!: Row[];
   public allowReplace!: boolean;
 
-  constructor(schema: DatabaseSchema) {
-    super(schema);
+  constructor(dbSchema: DatabaseSchema) {
+    super(dbSchema);
   }
 
   public getScope(): Set<BaseTable> {

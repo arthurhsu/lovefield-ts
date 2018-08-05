@@ -43,8 +43,8 @@ export class LocalStorage implements BackStore {
   private changeHandler: null|((changes: TableDiff[]) => void);
   private listener: null|StorageEventHandler;
 
-  constructor(schema: DatabaseSchema) {
-    this.schema = schema;
+  constructor(dbSchema: DatabaseSchema) {
+    this.schema = dbSchema;
     this.tables = new Map<string, LocalStorageTable>();
     this.changeHandler = null;
     this.listener = null;

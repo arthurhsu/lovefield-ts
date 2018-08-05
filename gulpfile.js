@@ -31,9 +31,10 @@ const nopt = require('nopt');
 const path = require('path');
 const thru = require('through2');
 const Toposort = require('toposort-class');
-const ts = require('typescript');
 
+const DIST_FILE = 'dist/lf.ts';
 let tsProject;
+let deps;
 
 function getProject() {
   if (!tsProject) {
@@ -283,33 +284,104 @@ gulp.task('check', gulp.series('lint', function actualCheck() {
 
 gulp.task('deps', (cb) => {
   glob('lib/**/*.ts', (err, matches) => {
-    let files = ['gen/flags.ts'].concat(matches);
+    let files = ['lib/gen/flags.ts'].concat(matches);
     let fileSet = new Set(files);
-    let options = JSON.parse(fs.readFileSync('tsconfig.json', 'utf-8'));
-    let program = ts.createProgram(files, options.compilerOptions);
-    const t = new Toposort();
     const relativePath = (p) => {
       return path.relative(__dirname, p).replace(/\\/g, '/');
     };
 
-    for (const f of program.getSourceFiles()) {
-      const fPath = relativePath(f.path);
-      if (fileSet.has(fPath)) {
-        f.statements.forEach(s => {
-          if (ts.SyntaxKind[s.kind] === 'ImportDeclaration') {
-            let r = relativePath(
-                path.resolve(
-                    path.dirname(f.path), s.moduleSpecifier.text + '.ts'));
-            if (r !== fPath) {
-              t.add(fPath, r);
-            }
+    let topoGraph = [];
+    fileSet.forEach(f => {
+      const absDir = path.dirname(path.resolve(f));
+      const imports = fs.readFileSync(f, 'utf-8').split('\n')
+          .filter(l => l.startsWith('import '))
+          .map(l => {
+            const tokens = l.split(' ');
+            let child = tokens[tokens.length - 1].substring(1);
+            child = child.substring(0, child.length - 2) + '.ts';
+            child = relativePath(path.resolve(absDir, child));
+            topoGraph.push([f, child]);
+         });
+    });
+
+    let resolved = false;
+    while (!resolved) {
+      try {
+        const t = new Toposort();
+        topoGraph.forEach(pair => {
+          t.add(pair[0], pair[1]);
+        });
+        const res = t.sort();
+        resolved = true;
+        deps = res.reverse();
+      } catch(e) {
+        const chain = e.message.split('\n')[1];
+        // For debug use to check circular dependency.
+        // console.log(chain);
+        const tokens = chain.split(' ');
+        const key = tokens[tokens.length - 3];
+        const value = tokens[tokens.length - 1];
+        let index = -1;
+        topoGraph.forEach((pair, i) => {
+          if (pair[0] == key && pair[1] == value) {
+            index = i;
           }
         });
+        topoGraph.splice(index, 1);
       }
     }
-
-    console.log(t.sort().reverse());
 
     cb();
   });
 });
+
+gulp.task('dist', gulp.series('build', 'deps', function actualDist(cb) {
+  let copyRight = false;  // only need to include copy right header once.
+  // Erase file first.
+  fs.ensureDirSync('dist');
+  let finalResult = [];
+  deps.forEach(file => {
+    console.log(`processing ${file}`);
+    contents = fs.readFileSync(file, 'utf-8').split('\n');
+    if (!copyRight) {
+      copyRight = true;
+    } else if (file != 'lib/gen/flags.ts') {
+      contents.splice(0, 15);
+    }
+
+    let exp = false;
+    contents.forEach(line => {
+      if (line.startsWith('import ') || line.startsWith('// tslint:')) {
+        // no-op
+      } else if (line == '// @export') {
+        exp = true;
+      } else if (line.startsWith('export ')) {
+        if (exp) {
+          exp = false;
+          finalResult.push(line);
+        } else {
+          finalResult.push(line.substring(7));
+        }
+      } else {
+        finalResult.push(line);
+      }
+    });
+  });
+  fs.writeFileSync(DIST_FILE, [
+    '// tslint:disable:class-name',
+    '// tslint:disable:max-classes-per-file',
+    '// tslint:disable:no-consecutive-blank-lines',
+    '// tslint:disable:no-shadowed-variable',
+    '',
+  ].join('\n'), 'utf-8');
+  fs.appendFileSync(DIST_FILE, finalResult.join('\n'), 'utf-8');
+  fs.appendFileSync(DIST_FILE, [
+    '',
+    '// tslint:enable:class-name',
+    '// tslint:enable:max-classes-per-file',
+    '// tslint:enable:no-consecutive-blank-lines',
+    '// tslint:enable:no-shadowed-variable',
+    '',
+  ].join('\n'), 'utf-8');
+  cb();
+}));

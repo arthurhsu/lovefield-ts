@@ -65,7 +65,7 @@ export class IndexedDB implements BackStore {
   private bundledMode: boolean;
 
   constructor(private global: Global, private schema: DatabaseSchema) {
-    this.bundledMode = schema.pragma().enableBundledMode || false;
+    this.bundledMode = this.schema.pragma().enableBundledMode || false;
   }
 
   public init(upgrade?: (db: RawBackStore) => Promise<void>):

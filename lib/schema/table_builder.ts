@@ -187,7 +187,7 @@ export class TableBuilder {
     const table = new TableImpl(
         this.name, columns, null as any as IndexImpl[], this.persistIndex);
 
-    // Columns shall be constructed within TableImpl's ctor, now we can
+    // Columns shall be constructed within TableImpl ctor, now we can
     // instruct it to construct proper index schema.
     table.constructIndices(
         this.pkName, this.indices, this.uniqueIndices, this.nullable,

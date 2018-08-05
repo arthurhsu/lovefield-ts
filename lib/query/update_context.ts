@@ -32,8 +32,8 @@ export class UpdateContext extends Context {
   public table!: BaseTable;
   public set!: UpdateSetContext[];
 
-  constructor(schema: DatabaseSchema) {
-    super(schema);
+  constructor(dbSchema: DatabaseSchema) {
+    super(dbSchema);
   }
 
   public getScope(): Set<BaseTable> {

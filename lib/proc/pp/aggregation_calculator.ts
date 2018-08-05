@@ -22,7 +22,7 @@ import {MathHelper} from '../../structs/math_helper';
 import {AggregationResult, Relation} from '../relation';
 import {RelationEntry} from '../relation_entry';
 
-type ValueType = number|string|Date|null;
+type AggregatorValueType = number|string|Date|null;
 
 export class AggregationCalculator {
   constructor(private relation: Relation, private columns: AggregatedColumn[]) {
@@ -106,9 +106,10 @@ export class AggregationCalculator {
   // Reduces the input relation to a single value. Null values are ignored.
   private reduce(
       relation: Relation, column: BaseColumn,
-      reduceFn: (cur: any, v: any) => ValueType): ValueType {
-    return relation.entries.reduce((soFar: ValueType, entry) => {
-      const value: ValueType = entry.getField(column);
+      reduceFn: (cur: any, v: any) => AggregatorValueType):
+      AggregatorValueType {
+    return relation.entries.reduce((soFar: AggregatorValueType, entry) => {
+      const value: AggregatorValueType = entry.getField(column);
       if (value === null) {
         return soFar;
       }

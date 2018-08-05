@@ -24,8 +24,8 @@ import {ForeignKeySpec} from './foreign_key_spec';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
-  public static from(schema: DatabaseSchema): Info {
-    return (schema as DatabaseSchemaImpl).info();
+  public static from(dbSchema: DatabaseSchema): Info {
+    return (dbSchema as DatabaseSchemaImpl).info();
   }
 
   // A mapping from table name to its referencing CASCADE foreign keys.
@@ -48,7 +48,7 @@ export class Info {
   // The map of full qualified column name to their child table name.
   private colChild: MapSet<string, string>;
 
-  constructor(private schema: DatabaseSchema) {
+  constructor(private dbSchema: DatabaseSchema) {
     this.cascadeReferringFk = new MapSet();
     this.restrictReferringFk = new MapSet();
     this.parents = new MapSet();
@@ -58,11 +58,11 @@ export class Info {
     this.restrictChildren = new MapSet();
     this.colChild = new MapSet();
 
-    this.schema.tables().forEach((t) => {
+    this.dbSchema.tables().forEach((t) => {
       const table = t as BaseTable;
       const tableName = table.getName();
       table.getConstraint().getForeignKeys().forEach((fkSpec) => {
-        this.parents.set(tableName, this.schema.table(fkSpec.parentTable));
+        this.parents.set(tableName, this.dbSchema.table(fkSpec.parentTable));
         this.children.set(fkSpec.parentTable, table);
         if (fkSpec.action === ConstraintAction.RESTRICT) {
           this.restrictReferringFk.set(fkSpec.parentTable, fkSpec);
@@ -116,7 +116,7 @@ export class Info {
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => this.schema.table(tableName));
+    return tables.map((tableName) => this.dbSchema.table(tableName));
   }
 
   // Looks up child tables for given tables.
@@ -141,7 +141,7 @@ export class Info {
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => this.schema.table(tableName));
+    return tables.map((tableName) => this.dbSchema.table(tableName));
   }
 
   private expandScope(tableName: string, map: MapSet<string, BaseTable>):

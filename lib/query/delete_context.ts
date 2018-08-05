@@ -25,8 +25,8 @@ import {Context} from './context';
 export class DeleteContext extends Context {
   public from!: BaseTable;
 
-  constructor(schema: DatabaseSchema) {
-    super(schema);
+  constructor(dbSchema: DatabaseSchema) {
+    super(dbSchema);
   }
 
   public getScope(): Set<BaseTable> {

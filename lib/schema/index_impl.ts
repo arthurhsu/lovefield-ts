@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Index} from '.';
+import {Index} from './index';
 import {IndexedColumn} from './indexed_column';
 
 export class IndexImpl implements Index {

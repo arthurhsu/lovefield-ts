@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2018 The Lovefield Project Authors. All Rights Reserved.
  *
@@ -90,8 +89,8 @@ export class Journal {
                              .map((tableName) => this.scope.get(tableName));
 
     const indices: RuntimeIndex[] = [];
-    tableSchemas.forEach((schema) => {
-      const tableSchema = schema as BaseTable;
+    tableSchemas.forEach((tblSchema) => {
+      const tableSchema = tblSchema as BaseTable;
       if (tableSchema.persistentIndex()) {
         const tableIndices = tableSchema.getIndices();
         tableIndices.forEach((indexSchema) => {

@@ -52,8 +52,8 @@ export class SelectContext extends Context {
   public skipBinder!: Binder;
   public outerJoinPredicates!: Set<number>;
 
-  constructor(schema: DatabaseSchema) {
-    super(schema);
+  constructor(dbSchema: DatabaseSchema) {
+    super(dbSchema);
   }
 
   public getScope(): Set<BaseTable> {

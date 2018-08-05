@@ -32,7 +32,6 @@ export class Memory implements BackStore {
   private tables: Map<string, MemoryTable>;
 
   constructor(private schema: DatabaseSchema) {
-    this.schema = schema;
     this.tables = new Map<string, MemoryTable>();
   }
 

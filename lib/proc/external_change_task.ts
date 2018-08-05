@@ -43,9 +43,9 @@ export class ExternalChangeTask extends UniqueId implements Task {
     this.runner = this.global.getService(Service.RUNNER);
     this.inMemoryUpdater = new InMemoryUpdater(this.global);
 
-    const schema = this.global.getService(Service.SCHEMA);
+    const dbSchema = this.global.getService(Service.SCHEMA);
     const tableSchemas =
-        this.tableDiffs.map((td) => schema.table(td.getName()));
+        this.tableDiffs.map((td) => dbSchema.table(td.getName()));
     this.scope = new Set<BaseTable>(tableSchemas);
     this.resolver = new Resolver<Relation[]>();
   }
