@@ -19,15 +19,17 @@ import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
 import {Index} from '../schema/index';
 
+import {NonPredicateProvider} from './non_predicate_provider';
 import {UnknownTable} from './unknown_table';
 
 //  A dummy Column implementation to be used as a substitute for '*',
 // for example in COUNT(*).
-export class StarColumn implements BaseColumn {
+export class StarColumn extends NonPredicateProvider implements BaseColumn {
   private alias: string|null;
   private table: UnknownTable;
 
   constructor(alias?: string) {
+    super();
     this.alias = alias || null;
     this.table = new UnknownTable();
   }

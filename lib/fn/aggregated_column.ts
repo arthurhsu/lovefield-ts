@@ -19,11 +19,14 @@ import {FnType} from '../base/private_enum';
 import {BaseColumn} from '../schema/base_column';
 import {BaseTable} from '../schema/base_table';
 import {Index} from '../schema/index';
+import {NonPredicateProvider} from './non_predicate_provider';
 
-export class AggregatedColumn implements BaseColumn {
+export class AggregatedColumn extends NonPredicateProvider implements
+    BaseColumn {
   public alias: string|null;
 
   constructor(readonly child: BaseColumn, readonly aggregatorType: FnType) {
+    super();
     this.alias = null;
   }
 

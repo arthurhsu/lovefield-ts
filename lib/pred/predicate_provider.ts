@@ -15,13 +15,8 @@
  */
 
 import {Binder} from '../base/bind';
-import {BaseColumn} from '../schema/base_column';
+import {OperandType, ValueOperandType} from './operand_type';
 import {Predicate} from './predicate';
-
-export type ValueOperandType = Binder|number|string|Date;
-// TODO(arthurhsu): FIXME: use Column instead of BaseColumn.
-// @export
-export type OperandType = BaseColumn|ValueOperandType;
 
 // @export
 export interface PredicateProvider {

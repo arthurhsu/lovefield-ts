@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import {PredicateProvider} from '../pred/predicate_provider';
+import {Binder} from '../base/bind';
+import {Column} from '../schema/column';
 
-// Public column interface
+export type ValueOperandType = Binder|number|string|Date;
 // @export
-export interface Column extends PredicateProvider {
-  getName(): string;
-  getNormalizedName(): string;
-
-  // Alias the column, used in query.
-  as(alias: string): Column;
-}
+export type OperandType = Column|ValueOperandType;
