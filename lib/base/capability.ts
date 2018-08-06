@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// @export
 export class Capability {
   public static get(): Capability {
     if (Capability.instance === undefined) {

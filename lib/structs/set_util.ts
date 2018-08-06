@@ -17,6 +17,7 @@
 // Return the difference between two sets. The return value is a new set
 // containing all the values (primitive or objects) present in set1 but not in
 // set2.
+/*
 export function setDiff<T>(set1: Set<T>, set2: Set<T>): Set<T> {
   const result = new Set<T>();
   Array.from(set1.values()).forEach((v) => {
@@ -26,6 +27,7 @@ export function setDiff<T>(set1: Set<T>, set2: Set<T>): Set<T> {
   });
   return result;
 }
+*/
 
 // Whether set2 is a subset of set1
 export function isSubset<T>(set1: Set<T>, set2: Set<T>): boolean {

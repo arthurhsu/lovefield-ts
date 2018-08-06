@@ -15,11 +15,12 @@
  */
 
 import * as chai from 'chai';
-import {isSubset, setDiff, setEquals} from '../../lib/structs/set_util';
+import {isSubset, setEquals} from '../../lib/structs/set_util';
 
 const assert = chai.assert;
 
 describe('SetUtil', () => {
+  /*
   it('setDiff_number', () => {
     const set = new Set<number>();
     const set2 = new Set<number>();
@@ -82,6 +83,7 @@ describe('SetUtil', () => {
     assert.equal(1, diffSet.size);
     assert.isTrue(diffSet.has(null as any as MyClass));
   });
+  */
 
   it('isSubSet', () => {
     function checker<T>(
