@@ -179,18 +179,28 @@ gulp.task('buildLib', gulp.series('clean', function actualBuildLib() {
       .pipe(sourcemaps.init())
       .pipe(tsProject())
       .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(tsProject.options.outDir));
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'lib')));
 }));
 
-gulp.task('buildTest', () => {
+gulp.task('buildTesting', () => {
   getProject();
-  return gulp.src(['testing/**/*.ts', 'tests/**/*.ts'])
+  return gulp.src(['testing/**/*.ts'])
       .pipe(sourcemaps.init())
       .pipe(tsProject())
       .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(tsProject.options.outDir));
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'testing')));
 });
 
+gulp.task('buildTests', () => {
+  getProject();
+  return gulp.src(['tests/**/*.ts'])
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'tests')));
+});
+
+gulp.task('buildTest', gulp.series(['buildTesting', 'buildTests']));
 gulp.task('build', gulp.series(['buildLib', 'buildTest']));
 
 gulp.task('lint', () => {
