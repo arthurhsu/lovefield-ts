@@ -43,132 +43,168 @@ describe('ApiTester', async () => {
 
   before(() => {
     builder = lf.schema.create('apicheck', 1);
-    tableBuilder = builder.createTable('DummyTable').
-        addColumn('number', lf.Type.NUMBER).
-        addColumn('dateTime', lf.Type.DATE_TIME).
-        addColumn('string', lf.Type.STRING).
-        addColumn('boolean', lf.Type.BOOLEAN).
-        addColumn('arrayBuffer', lf.Type.ARRAY_BUFFER).
-        addColumn('object', lf.Type.OBJECT);
+    tableBuilder = builder.createTable('DummyTable')
+                       .addColumn('number', lf.Type.NUMBER)
+                       .addColumn('dateTime', lf.Type.DATE_TIME)
+                       .addColumn('string', lf.Type.STRING)
+                       .addColumn('boolean', lf.Type.BOOLEAN)
+                       .addColumn('arrayBuffer', lf.Type.ARRAY_BUFFER)
+                       .addColumn('object', lf.Type.OBJECT);
   });
 
   it('hasAttributes', () => {
-    assertAttributes(lf, [
-      // enums
-      'ConstraintAction',
-      'ConstraintTiming',
-      'Order',
-      'TransactionType',
-      'Type',
+    assertAttributes(
+        lf,
+        [
+          // enums
+          'ConstraintAction',
+          'ConstraintTiming',
+          'Order',
+          'TransactionType',
+          'Type',
 
-      // classes
-      'fn',
-      'op',
-      'schema',
-    ], 'lf');
+          // classes
+          'fn',
+          'op',
+          'schema',
+        ],
+        'lf');
 
     assertMethods(lf, ['bind'], 'lf');
   });
 
   it('enumType', () => {
-    assertAttributes(lf.Type, [
-      'ARRAY_BUFFER',
-      'BOOLEAN',
-      'DATE_TIME',
-      'INTEGER',
-      'NUMBER',
-      'STRING',
-      'OBJECT',
-    ], 'lf.Type');
+    assertAttributes(
+        lf.Type,
+        [
+          'ARRAY_BUFFER',
+          'BOOLEAN',
+          'DATE_TIME',
+          'INTEGER',
+          'NUMBER',
+          'STRING',
+          'OBJECT',
+        ],
+        'lf.Type');
   });
 
   it('enumOrder', () => {
-    assertAttributes(lf.Order, [
-      'ASC',
-      'DESC',
-    ], 'lf.Order');
+    assertAttributes(
+        lf.Order,
+        [
+          'ASC',
+          'DESC',
+        ],
+        'lf.Order');
   });
 
   it('enumTransactionType', () => {
-    assertAttributes(lf.TransactionType, [
-      'READ_ONLY',
-      'READ_WRITE',
-    ], 'lf.TransactionType');
+    assertAttributes(
+        lf.TransactionType,
+        [
+          'READ_ONLY',
+          'READ_WRITE',
+        ],
+        'lf.TransactionType');
   });
 
   it('enumDataStoreType', () => {
-    assertAttributes(lf.DataStoreType, [
-      'INDEXED_DB',
-      'MEMORY',
-      'LOCAL_STORAGE',
-      'WEB_SQL',
-    ], 'lf.DataStoreType');
+    assertAttributes(
+        lf.DataStoreType,
+        [
+          'INDEXED_DB',
+          'MEMORY',
+          'LOCAL_STORAGE',
+          'WEB_SQL',
+        ],
+        'lf.DataStoreType');
   });
 
   it('enumConstraintAction', () => {
-    assertAttributes(lf.ConstraintAction, [
-      'RESTRICT',
-      'CASCADE',
-    ], 'lf.ConstraintAction');
+    assertAttributes(
+        lf.ConstraintAction,
+        [
+          'RESTRICT',
+          'CASCADE',
+        ],
+        'lf.ConstraintAction');
   });
 
   it('enumConstraintTiming', () => {
-    assertAttributes(lf.ConstraintTiming, [
-      'IMMEDIATE',
-      'DEFERRABLE',
-    ], 'lf.ConstraintTiming');
+    assertAttributes(
+        lf.ConstraintTiming,
+        [
+          'IMMEDIATE',
+          'DEFERRABLE',
+        ],
+        'lf.ConstraintTiming');
   });
 
   it('apiFn', () => {
-    assertMethods(lf.fn, [
-      'avg',
-      'count',
-      'distinct',
-      'max',
-      'min',
-      'stddev',
-      'sum',
-      'geomean',
-    ], 'lf.fn');
+    assertMethods(
+        lf.fn,
+        [
+          'avg',
+          'count',
+          'distinct',
+          'max',
+          'min',
+          'stddev',
+          'sum',
+          'geomean',
+        ],
+        'lf.fn');
   });
 
   it('apiOp', () => {
-    assertMethods(lf.op, [
-      'and',
-      'or',
-      'not',
-    ], 'lf.op');
+    assertMethods(
+        lf.op,
+        [
+          'and',
+          'or',
+          'not',
+        ],
+        'lf.op');
   });
 
   it('apiSchemaBuilder', () => {
     assertMethods(lf.schema, ['create'], 'lf.schema');
-    assertMethods(builder, [
-      'createTable',
-      'connect',
-      'setPragma',
-      'getSchema',
-    ], 'schemaBuilder');
+    assertMethods(
+        builder,
+        [
+          'createTable',
+          'connect',
+          'setPragma',
+          'getSchema',
+        ],
+        'schemaBuilder');
 
-    assertMethods(tableBuilder, [
-      'addColumn',
-      'addPrimaryKey',
-      'addForeignKey',
-      'addUnique',
-      'addNullable',
-      'addIndex',
-      'persistentIndex',
-    ], 'tableBuilder');
+    assertMethods(
+        tableBuilder,
+        [
+          'addColumn',
+          'addPrimaryKey',
+          'addForeignKey',
+          'addUnique',
+          'addNullable',
+          'addIndex',
+          'persistentIndex',
+        ],
+        'tableBuilder');
   });
 
   it('Capability', () => {
     const cap = lf.Capability.get();
     assert.isDefined(cap);
     assert.isNotNull(cap);
-    assertAttributes(cap, [
-      'supported',
-      'indexedDb',
-      'localStorage',
-      'webSql',
-    ], 'Capability');
+    assertAttributes(
+        cap,
+        [
+          'supported',
+          'indexedDb',
+          'localStorage',
+          'webSql',
+        ],
+        'Capability');
   });
 });

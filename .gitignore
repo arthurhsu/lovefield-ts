@@ -1,5 +1,5 @@
 coverage/
-dist/lf.ts
+dist/
 lib/gen/
 node_modules/
 out/

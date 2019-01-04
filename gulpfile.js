@@ -32,7 +32,10 @@ const path = require('path');
 const thru = require('through2');
 const Toposort = require('toposort-class');
 
-const DIST_FILE = 'dist/lf.ts';
+const DIST_DIR = 'dist';
+const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
+const SRC_PATTERN = ['**/*.ts', `${DIST_DIR}/**`];
+
 let tsProject;
 let deps;
 
@@ -41,6 +44,21 @@ function getProject() {
     tsProject = tsc.createProject('tsconfig.json');
   }
   return tsProject;
+}
+
+function ignoreDist(s) {
+  const distPath = path.resolve(DIST_DIR);
+  let stream = thru.obj(function (file, enc, done) {
+    if (file.path.startsWith(distPath)) {
+      done();
+      return;
+    }
+
+    // Default pass through
+    this.push(file);
+    done();
+  });
+  return stream;
 }
 
 function prettyPrint(patch) {
@@ -178,6 +196,7 @@ gulp.task('build', gulp.series(['buildLib', 'buildTest']));
 gulp.task('lint', () => {
   return getProject()
       .src()
+      .pipe(ignoreDist())
       .pipe(tslint({formatter: 'stylish'}))
       .pipe(tslint.report({
         summarizeFailureOutput: true
@@ -219,7 +238,7 @@ gulp.task('deps', (cb) => {
       } catch(e) {
         const chain = e.message.split('\n')[1];
         // For debug use to check circular dependency.
-        // console.log(chain);
+        console.log(`WARNING: ${chain}`);
         const tokens = chain.split(' ');
         const key = tokens[tokens.length - 3];
         const value = tokens[tokens.length - 1];
@@ -246,10 +265,10 @@ function compile() {
       .pipe(gulp.dest('out/dist'));
 }
 
-gulp.task('dist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
+gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
   let copyRight = false;  // only need to include copy right header once.
   // Erase file first.
-  fs.ensureDirSync('dist');
+  fs.ensureDirSync(DIST_DIR);
   let finalResult = [];
   deps.forEach(file => {
     contents = fs.readFileSync(file, 'utf-8').split('\n');
@@ -287,6 +306,15 @@ gulp.task('dist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
   fs.appendFileSync(DIST_FILE, finalResult.join('\n') + '\n\n', 'utf-8');
   compile();
   cb();
+}));
+
+gulp.task('dist', gulp.series(['genDist'], function actualBuildDist() {
+  getProject();
+  return gulp.src([DIST_FILE])
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(DIST_DIR));
 }));
 
 function quickTest() {
@@ -370,6 +398,7 @@ gulp.task('debug', gulp.series(['dist', 'buildTest'], function actualDebug(cb) {
 gulp.task('fastcheck', () => {
   return getProject()
       .src()
+      .pipe(ignoreDist())
       .pipe(format.checkFormat('file'))
       .on('warning', e => {
         debug(e.message);
@@ -385,6 +414,7 @@ gulp.task('pre-commit', gulp.parallel(['build', 'lint', 'fastcheck'],
 gulp.task('format', () => {
   return getProject()
       .src()
+      .pipe(ignoreDist())
       .pipe(format.format('file'))
       .pipe(gulp.dest('.'));
 });
@@ -392,6 +422,7 @@ gulp.task('format', () => {
 gulp.task('check', gulp.series('lint', function actualCheck() {
   return getProject()
       .src()
+      .pipe(ignoreDist())
       .pipe(format.format('file'))
       .pipe(checkFormat());
 }));
