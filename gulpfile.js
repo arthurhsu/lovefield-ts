@@ -32,7 +32,10 @@ const path = require('path');
 const thru = require('through2');
 const Toposort = require('toposort-class');
 
-const DIST_FILE = 'dist/lf.ts';
+const DIST_DIR = 'dist';
+const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
+const SRC_PATTERN = ['**/*.ts', `${DIST_DIR}/**`];
+
 let tsProject;
 let deps;
 
@@ -41,6 +44,21 @@ function getProject() {
     tsProject = tsc.createProject('tsconfig.json');
   }
   return tsProject;
+}
+
+function ignoreDist(s) {
+  const distPath = path.resolve(DIST_DIR);
+  let stream = thru.obj(function (file, enc, done) {
+    if (file.path.startsWith(distPath)) {
+      done();
+      return;
+    }
+
+    // Default pass through
+    this.push(file);
+    done();
+  });
+  return stream;
 }
 
 function prettyPrint(patch) {
@@ -154,133 +172,46 @@ gulp.task('clean', (cb) => {
   cb();
 });
 
-gulp.task('build', gulp.series('clean', function actualBuild() {
+gulp.task('buildLib', gulp.series('clean', function actualBuildLib() {
   genFlags();
-  return getProject()
-      .src()
+  getProject();
+  return gulp.src(['lib/**/*.ts'])
       .pipe(sourcemaps.init())
       .pipe(tsProject())
       .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(tsProject.options.outDir));
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'lib')));
 }));
+
+gulp.task('buildTesting', () => {
+  getProject();
+  return gulp.src(['testing/**/*.ts'])
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'testing')));
+});
+
+gulp.task('buildTests', () => {
+  getProject();
+  return gulp.src(['tests/**/*.ts'])
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(path.join(tsProject.options.outDir, 'tests')));
+});
+
+gulp.task('buildTest', gulp.series(['buildTesting', 'buildTests']));
+gulp.task('build', gulp.series(['buildLib', 'buildTest']));
 
 gulp.task('lint', () => {
   return getProject()
       .src()
+      .pipe(ignoreDist())
       .pipe(tslint({formatter: 'stylish'}))
       .pipe(tslint.report({
         summarizeFailureOutput: true
       }));
 });
-
-function quickTest() {
-  let mochaOptions = {
-    reporter: getGrepPattern() ? 'spec' : 'dot',
-    require: ['source-map-support/register'],
-    grep: getGrepPattern()
-  };
-
-  return gulp
-      .src(['out/tests/**/*.js', '!out/tests/**/*_spec.js'], {read: false})
-      .pipe(mocha(mochaOptions));
-}
-
-gulp.task('test', gulp.series('build', function actualTest(cb) {
-  if (!fs.existsSync(getProject().options.outDir)) {
-    cb('Compile Error!');
-    return;
-  }
-
-  if (isQuickMode()) {
-    return quickTest();
-  } else {
-    let server = new karma.Server({
-      configFile: path.join(__dirname, 'karma_config.js'),
-      singleRun: true,
-      client: { mocha: { grep: getGrepPattern() } }
-    });
-
-    server.on('run_complete', () => {
-      karma.stopper.stop();
-    });
-    server.start();
-  }
-}));
-
-function errorInSauceBrowserResults(ret) {
-  let result = false;
-  ret.browsers.forEach(browser => {
-    let res = browser.lastResult;
-    console.log(`${browser.name}: ${res.total} [${res.success}/${res.failed}]`);
-    result = (res.failed > 0) ? true : result;
-  });
-  return result;
-}
-
-gulp.task('ci', gulp.series('build', function actualCI(cb) {
-  if (!fs.existsSync(getProject().options.outDir)) {
-    cb('Compile Error!');
-    return;
-  }
-
-  quickTest();
-  const server = new karma.Server({
-    configFile: path.join(__dirname, 'karma_config_ci.js')
-  });
-  server.on('run_complete', (ret) => {
-    karma.stopper.stop();
-    if (errorInSauceBrowserResults(ret)) {
-      console.log('===== TEST FAILED =====');
-      process.exit(1);
-    }
-    cb();
-  });
-  server.start();
-}));
-
-gulp.task('debug', gulp.series('build', function actualDebug(cb) {
-  if (!fs.existsSync(getProject().options.outDir)) {
-    cb('Compile Error!');
-    return;
-  }
-
-  new karma.Server({
-      configFile: path.join(__dirname, 'karma_config.js'),
-      singleRun: false,
-      client: { mocha: { grep: getGrepPattern() } }
-  }).start();
-}));
-
-gulp.task('fastcheck', () => {
-  return getProject()
-      .src()
-      .pipe(format.checkFormat('file'))
-      .on('warning', e => {
-        debug(e.message);
-        process.exit(1);
-      });
-});
-
-gulp.task(
-    'pre-commit',
-    gulp.parallel(['build', 'lint', 'fastcheck'],
-    function preCommitCheck(cb) {
-      cb();
-    }));
-
-gulp.task('format', () => {
-  return getProject()
-      .src()
-      .pipe(format.format('file'))
-      .pipe(gulp.dest('.'));
-});
-
-gulp.task('check', gulp.series('lint', function actualCheck() {
-  return getProject()
-      .src()
-      .pipe(format.format('file'))
-      .pipe(checkFormat());
-}));
 
 gulp.task('deps', (cb) => {
   glob('lib/**/*.ts', (err, matches) => {
@@ -317,7 +248,7 @@ gulp.task('deps', (cb) => {
       } catch(e) {
         const chain = e.message.split('\n')[1];
         // For debug use to check circular dependency.
-        // console.log(chain);
+        console.log(`WARNING: ${chain}`);
         const tokens = chain.split(' ');
         const key = tokens[tokens.length - 3];
         const value = tokens[tokens.length - 1];
@@ -335,13 +266,21 @@ gulp.task('deps', (cb) => {
   });
 });
 
-gulp.task('dist', gulp.series('build', 'deps', function actualDist(cb) {
+function compile() {
+  let compilerOptions = Object.assign(tsProject.config.compilerOptions, {});
+
+  const tsp = tsc.createProject(compilerOptions);
+  gulp.src('dist/lf.ts')
+      .pipe(tsp())
+      .pipe(gulp.dest('out/dist'));
+}
+
+gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
   let copyRight = false;  // only need to include copy right header once.
   // Erase file first.
-  fs.ensureDirSync('dist');
+  fs.ensureDirSync(DIST_DIR);
   let finalResult = [];
   deps.forEach(file => {
-    console.log(`processing ${file}`);
     contents = fs.readFileSync(file, 'utf-8').split('\n');
     if (!copyRight) {
       copyRight = true;
@@ -374,14 +313,126 @@ gulp.task('dist', gulp.series('build', 'deps', function actualDist(cb) {
     '// tslint:disable:no-shadowed-variable',
     '',
   ].join('\n'), 'utf-8');
-  fs.appendFileSync(DIST_FILE, finalResult.join('\n'), 'utf-8');
-  fs.appendFileSync(DIST_FILE, [
-    '',
-    '// tslint:enable:class-name',
-    '// tslint:enable:max-classes-per-file',
-    '// tslint:enable:no-consecutive-blank-lines',
-    '// tslint:enable:no-shadowed-variable',
-    '',
-  ].join('\n'), 'utf-8');
+  fs.appendFileSync(DIST_FILE, finalResult.join('\n') + '\n\n', 'utf-8');
+  compile();
   cb();
+}));
+
+gulp.task('dist', gulp.series(['genDist'], function actualBuildDist() {
+  getProject();
+  return gulp.src([DIST_FILE])
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(DIST_DIR));
+}));
+
+function quickTest() {
+  let mochaOptions = {
+    reporter: getGrepPattern() ? 'spec' : 'dot',
+    require: ['source-map-support/register'],
+    grep: getGrepPattern()
+  };
+
+  return gulp
+      .src(['out/tests/**/*.js', '!out/tests/**/*_spec.js'], {read: false})
+      .pipe(mocha(mochaOptions));
+}
+
+gulp.task('test', gulp.series(['dist', 'buildTest'], function actualTest(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
+  if (isQuickMode()) {
+    return quickTest();
+  } else {
+    let server = new karma.Server({
+      configFile: path.join(__dirname, 'karma_config.js'),
+      singleRun: true,
+      client: { mocha: { grep: getGrepPattern() } }
+    });
+
+    server.on('run_complete', () => {
+      karma.stopper.stop();
+    });
+    server.start();
+  }
+}));
+
+function errorInSauceBrowserResults(ret) {
+  let result = false;
+  ret.browsers.forEach(browser => {
+    let res = browser.lastResult;
+    console.log(`${browser.name}: ${res.total} [${res.success}/${res.failed}]`);
+    result = (res.failed > 0) ? true : result;
+  });
+  return result;
+}
+
+gulp.task('ci', gulp.series(['dist', 'buildTest'], function actualCI(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
+  quickTest();
+  const server = new karma.Server({
+    configFile: path.join(__dirname, 'karma_config_ci.js')
+  });
+  server.on('run_complete', (ret) => {
+    karma.stopper.stop();
+    if (errorInSauceBrowserResults(ret)) {
+      console.log('===== TEST FAILED =====');
+      process.exit(1);
+    }
+    cb();
+  });
+  server.start();
+}));
+
+gulp.task('debug', gulp.series(['dist', 'buildTest'], function actualDebug(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
+  new karma.Server({
+      configFile: path.join(__dirname, 'karma_config.js'),
+      singleRun: false,
+      client: { mocha: { grep: getGrepPattern() } }
+  }).start();
+}));
+
+gulp.task('fastcheck', () => {
+  return getProject()
+      .src()
+      .pipe(ignoreDist())
+      .pipe(format.checkFormat('file'))
+      .on('warning', e => {
+        debug(e.message);
+        process.exit(1);
+      });
+});
+
+gulp.task('pre-commit', gulp.parallel(['build', 'lint', 'fastcheck'],
+    function preCommitCheck(cb) {
+      cb();
+    }));
+
+gulp.task('format', () => {
+  return getProject()
+      .src()
+      .pipe(ignoreDist())
+      .pipe(format.format('file'))
+      .pipe(gulp.dest('.'));
+});
+
+gulp.task('check', gulp.series('lint', function actualCheck() {
+  return getProject()
+      .src()
+      .pipe(ignoreDist())
+      .pipe(format.format('file'))
+      .pipe(checkFormat());
 }));
