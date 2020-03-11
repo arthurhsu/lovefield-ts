@@ -198,7 +198,7 @@ export class WebSql implements BackStore {
         if (existingTables.indexOf(table.getName()) === -1) {
           newTables.push(table.getName());
         }
-        if (table.persistentIndex) {
+        if (table.persistentIndex()) {
           table.getIndices().forEach((index) => {
             const idxTableName =
                 WebSqlTx.escapeTableName(index.getNormalizedName());
