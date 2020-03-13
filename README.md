@@ -10,9 +10,7 @@ name must start with capital I).
 
 ## Port progress
 
-1. Move all files to use Typescript (in progress, almost done):
-  [Detailed port progress can be found here](https://docs.google.com/spreadsheets/d/10m_fW8lPfiFzbgXsW8tbE5im5EUmYuvA10NzJhY1xwQ/edit?usp=sharing).
-
+1. Move all files to use Typescript
 2. Design dist mechanism and publish npm package (not started)
 3. Release and improve upon, [tracked by issues](https://github.com/arthurhsu/lovefield-ts/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
@@ -33,16 +31,12 @@ name must start with capital I).
   * This project is not sponsored by Google and the developers do not have
     unlimited access for this project.
   * Firebase API changed and legacy Lovefield code cannot be used.
-
-### Maybe supported
-
 * Static schema: it was designed for use with Closure compiler. Since the tool
-  chain has moved to TypeScript, it makes no sense to support it unless there
-  are real-world demands.
+  chain has moved to TypeScript, it makes no sense to support it.
 
 ## Building and development instructions
 
-The project is set to use modern Typescript (2.8+) and Mocha/Chai/Sinon/Karma as
+The project is set to use modern Typescript (3.8+) and Mocha/Chai/Sinon/Karma as
 its test framework. Compilation/test speed has improved significantly.
 
 The dist and release mechanism is not developed yet.
