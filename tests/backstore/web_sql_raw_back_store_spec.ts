@@ -120,7 +120,7 @@ describe('WebSqlRawBackStore', () => {
   }
 
   function openDatabaseStub(
-      name: string, version: string, desc: string, size: number,
+      name: DOMString, version: DOMString, desc: DOMString, size: number,
       callback?: (db: Database) => void): Database {
     if (callback) {
       callback(upgradeDb);
@@ -262,6 +262,10 @@ describe('WebSqlRawBackStore', () => {
 
     await runTest(builder, onUpgrade, (results) => {
       const resolver = new Resolver();
+      const reject = (tx: SQLTransaction, e: SQLError) => {
+        resolver.reject(e);
+        return false;
+      };
       upgradeDb.readTransaction((tx) => {
         tx.executeSql(
             'SELECT tbl_name FROM sqlite_master WHERE type="table"',
@@ -273,7 +277,7 @@ describe('WebSqlRawBackStore', () => {
               assert.isTrue(res.indexOf('B') !== -1);
               assert.equal(-1, res.indexOf('A'));
               resolver.resolve();
-            }, resolver.reject.bind(resolver));
+            }, reject);
       });
       return resolver.promise;
     });

@@ -57,7 +57,7 @@ describe('IndexRangeScanPass', () => {
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     const option = {storeType: DataStoreType.MEMORY};
     return getHrDbSchemaBuilder().connect(option).then((conn) => {
       db = conn;

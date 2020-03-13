@@ -968,8 +968,7 @@ export class BTreeNode {
       throw new Exception(ErrorCode.ASSERTION);
     }
 
-    let args: any[] = [keyOffset, 0].concat(this.keys as any[]);
-    Array.prototype.splice.apply(mergeTo.keys, args);
+    mergeTo.keys.splice(keyOffset, 0, ...this.keys);
     let myChildren = null;
     if (this.isLeaf()) {
       myChildren = this.values;
@@ -977,9 +976,11 @@ export class BTreeNode {
       myChildren = this.children;
       myChildren.forEach((node) => node.parent = mergeTo);
     }
-    args = [childOffset, 0].concat(myChildren as any[]);
-    Array.prototype.splice.apply(
-        mergeTo.isLeaf() ? mergeTo.values : mergeTo.children, args);
+    if (mergeTo.isLeaf()) {
+      mergeTo.values.splice(childOffset, 0, ...(myChildren as number[]));
+    } else {
+      mergeTo.children.splice(childOffset, 0, ...(myChildren as BTreeNode[]));
+    }
     BTreeNode.associate(this.prev, this.next);
     if (!mergeTo.isLeaf()) {
       mergeTo.fix();

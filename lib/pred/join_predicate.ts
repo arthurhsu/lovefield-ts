@@ -294,7 +294,7 @@ export class JoinPredicate extends PredicateNode {
         pushCombinedEntry(entry, cache.get(matchingRowIds[0]) as Row);
       } else {
         const rows = cache.getMany(matchingRowIds);
-        rows.forEach(pushCombinedEntry.bind(null, entry));
+        rows.forEach(r => pushCombinedEntry(entry, r as Row));
       }
     }, this);
 

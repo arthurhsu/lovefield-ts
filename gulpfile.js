@@ -416,7 +416,7 @@ gulp.task('fastcheck', () => {
       });
 });
 
-gulp.task('pre-commit', gulp.parallel(['build', 'lint', 'fastcheck'],
+gulp.task('pre-commit', gulp.parallel(['build'],
     function preCommitCheck(cb) {
       cb();
     }));

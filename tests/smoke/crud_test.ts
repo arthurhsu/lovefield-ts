@@ -18,6 +18,7 @@ import * as chai from 'chai';
 
 import {Page} from '../../lib/backstore/page';
 import {Capability} from '../../lib/base/capability';
+import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType, TransactionType} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
@@ -28,16 +29,20 @@ import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
-type Connector = () => RuntimeDatabase;
+type Connector = () => Promise<DatabaseConnection>;
 
 describe('CRUD', () => {
   let connector: (builder: Builder) => Connector;
   let tester: SmokeTester;
-  let db: RuntimeDatabase;
+  let db: DatabaseConnection;
+
+  const getGlobal = (conn: DatabaseConnection) => {
+    return (conn as RuntimeDatabase).getGlobal();
+  };
 
   beforeEach(async () => {
     db = await connector(getHrDbSchemaBuilder())();
-    tester = new SmokeTester(db.getGlobal(), db);
+    tester = new SmokeTester(getGlobal(db), db);
   });
 
   afterEach(async () => {
@@ -135,7 +140,7 @@ describe('CRUD', () => {
       await tx.exec([insert]);
       // Read the entire table directly from IndexedDb and verify that the
       // original record is in place.
-      let results: Row[] = await TestUtil.selectAll(db.getGlobal(), table);
+      let results: Row[] = await TestUtil.selectAll(getGlobal(db), table);
       assert.equal(1, results.length);
       assert.deepEqual(originalRow.payload(), results[0].payload());
 
@@ -149,7 +154,7 @@ describe('CRUD', () => {
 
       // Read the entire table, verify that we have a single row present (not
       // zero rows), and that it is the replacement, not the original.
-      results = await TestUtil.selectAll(db.getGlobal(), table);
+      results = await TestUtil.selectAll(getGlobal(db), table);
 
       assert.equal(1, results.length);
       assert.deepEqual(replacementRow.payload(), results[0].payload());
