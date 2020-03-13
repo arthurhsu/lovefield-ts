@@ -19,6 +19,7 @@ import * as chai from 'chai';
 import {bind} from '../../lib/base/bind';
 import {Capability} from '../../lib/base/capability';
 import {ChangeRecord} from '../../lib/base/change_record';
+import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
 import {Resolver} from '../../lib/base/resolver';
 import {Row} from '../../lib/base/row';
@@ -33,15 +34,19 @@ import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
-type Connector = () => RuntimeDatabase;
+type Connector = () => Promise<DatabaseConnection>;
 
 describe('EndToEndTest', () => {
   let connector: (builder: Builder) => Connector;
-  let db: RuntimeDatabase;
+  let db: DatabaseConnection;
   let j: BaseTable;
   let e: BaseTable;
   let dataGenerator: MockDataGenerator;
   let sampleJobs: Row[];
+
+  const getGlobal = (conn: DatabaseConnection) => {
+    return (conn as RuntimeDatabase).getGlobal();
+  };
 
   before(() => {
     dataGenerator = new MockDataGenerator();
@@ -122,7 +127,7 @@ describe('EndToEndTest', () => {
     const manualRow = c.createRow();
     manualRow.payload()['id'] = manuallyAssignedId;
     manualRow.payload()['regionId'] = 'regionId';
-    const global = db.getGlobal();
+    const global = getGlobal(db);
 
     await db.insert().into(r).values([regionRow]).exec();
     let results: Row[] = await builderFn().into(c).values(firstBatch).exec();
@@ -193,7 +198,7 @@ describe('EndToEndTest', () => {
       assert.equal(1, results.length);
       assert.equal(row.payload()['id'], results[0]['id']);
 
-      results = await TestUtil.selectAll(db.getGlobal(), j);
+      results = await TestUtil.selectAll(getGlobal(db), j);
       assert.equal(1, results.length);
     });
 
@@ -218,7 +223,7 @@ describe('EndToEndTest', () => {
       ]);
       let results: Row[] = await queryBuilder.exec();
       assert.equal(1, results.length);
-      results = await TestUtil.selectAll(db.getGlobal(), jobHistory);
+      results = await TestUtil.selectAll(getGlobal(db), jobHistory);
       assert.equal(1, results.length);
     });
 
@@ -382,7 +387,7 @@ describe('EndToEndTest', () => {
           db.insertOrReplace().into(region).values([bind(0), bind(1)]);
 
       await queryBuilder.bind(rows).exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), region);
+      const results = await TestUtil.selectAll(getGlobal(db), region);
       assert.equal(2, results.length);
     });
 
@@ -397,7 +402,7 @@ describe('EndToEndTest', () => {
       const queryBuilder = db.insertOrReplace().into(region).values(bind(0));
 
       await queryBuilder.bind([rows]).exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), region);
+      const results = await TestUtil.selectAll(getGlobal(db), region);
       assert.equal(2, results.length);
     });
 
@@ -414,7 +419,7 @@ describe('EndToEndTest', () => {
       const maxSalaryName = j['maxSalary'].getName();
 
       await queryBuilder.exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), j);
+      const results = await TestUtil.selectAll(getGlobal(db), j);
       results.forEach((row) => {
         assert.equal(minSalary, row.payload()[minSalaryName]);
         assert.equal(maxSalary, row.payload()[maxSalaryName]);
@@ -465,7 +470,7 @@ describe('EndToEndTest', () => {
                                .set(j['maxSalary'], 20000);
 
       await queryBuilder.exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), j);
+      const results = await TestUtil.selectAll(getGlobal(db), j);
       let verified = false;
       results.some((row) => {
         if (row.payload()['id'] === jobId) {
@@ -529,7 +534,7 @@ describe('EndToEndTest', () => {
       await queryBuilder.bind([jobId, 10000]).exec();
 
       // TODO(arthurhsu): first result was not used in original code, bug?
-      let results = await TestUtil.selectAll(db.getGlobal(), j);
+      let results = await TestUtil.selectAll(getGlobal(db), j);
       results = await db.select().from(j).where(j['id'].eq(jobId)).exec();
       assert.equal(10000, results[0][minSalaryName]);
       assert.equal(20000, results[0][maxSalaryName]);
@@ -563,7 +568,7 @@ describe('EndToEndTest', () => {
       const queryBuilder = db.delete().from(j).where(j['id'].eq(jobId));
 
       await queryBuilder.exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), j);
+      const results = await TestUtil.selectAll(getGlobal(db), j);
       assert.equal(sampleJobs.length - 1, results.length);
     });
 
@@ -574,7 +579,7 @@ describe('EndToEndTest', () => {
       const queryBuilder = db.delete().from(j).where(j['id'].eq(bind(1)));
 
       await queryBuilder.bind(['', jobId]).exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), j);
+      const results = await TestUtil.selectAll(getGlobal(db), j);
       assert.equal(sampleJobs.length - 1, results.length);
     });
 
@@ -600,7 +605,7 @@ describe('EndToEndTest', () => {
       await addSampleData();
 
       await db.delete().from(j).exec();
-      const results = await TestUtil.selectAll(db.getGlobal(), j);
+      const results = await TestUtil.selectAll(getGlobal(db), j);
       assert.equal(0, results.length);
     });
 
