@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import {ChangeRecord} from '../../lib/base/change_record';
-import {ObserverRegistry} from '../../lib/base/observer_registry';
-import {Resolver} from '../../lib/base/resolver';
-import {Relation} from '../../lib/proc/relation';
-import {SelectBuilder} from '../../lib/query/select_builder';
-import {SelectContext} from '../../lib/query/select_context';
-import {BaseTable} from '../../lib/schema/base_table';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {MockEnv} from '../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { ChangeRecord } from '../../lib/base/change_record';
+import { ObserverRegistry } from '../../lib/base/observer_registry';
+import { Resolver } from '../../lib/base/resolver';
+import { Relation } from '../../lib/proc/relation';
+import { SelectBuilder } from '../../lib/query/select_builder';
+import { SelectContext } from '../../lib/query/select_context';
+import { BaseTable } from '../../lib/schema/base_table';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { MockEnv } from '../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -52,16 +52,18 @@ describe('ObservableRegistry', () => {
     const callback = (changes: ChangeRecord[]) => promiseResolver.resolve();
 
     registry.addObserver(builder, callback);
-    const row1 = table.createRow({id: 'dummyId1', value: 'dummyValue1'});
-    const row2 = table.createRow({id: 'dummyId2', value: 'dummyValue2'});
+    const row1 = table.createRow({ id: 'dummyId1', value: 'dummyValue1' });
+    const row2 = table.createRow({ id: 'dummyId2', value: 'dummyValue2' });
 
     const firstResults = Relation.fromRows([row1], [table.getName()]);
     assert.isTrue(
-        registry.updateResultsForQuery(builder.getQuery(), firstResults));
+      registry.updateResultsForQuery(builder.getQuery(), firstResults)
+    );
 
     const secondResults = Relation.fromRows([row1, row2], [table.getName()]);
     assert.isTrue(
-        registry.updateResultsForQuery(builder.getQuery(), secondResults));
+      registry.updateResultsForQuery(builder.getQuery(), secondResults)
+    );
     return promiseResolver.promise;
   });
 
@@ -70,13 +72,14 @@ describe('ObservableRegistry', () => {
     const builder = new SelectBuilder(env.global, []);
     builder.from(table);
 
-    const callback = () => assert.fail(new Error('Observer not removed'));
+    const callback = () => assert.fail('Observer not removed');
     registry.addObserver(builder, callback);
     registry.removeObserver(builder, callback);
-    const row = table.createRow({id: 'dummyId', value: 'dummyValue'});
+    const row = table.createRow({ id: 'dummyId', value: 'dummyValue' });
     const newResults = Relation.fromRows([row], [table.getName()]);
     assert.isFalse(
-        registry.updateResultsForQuery(builder.getQuery(), newResults));
+      registry.updateResultsForQuery(builder.getQuery(), newResults)
+    );
   });
 
   it('getTaskItemsForTables', () => {
@@ -97,36 +100,39 @@ describe('ObservableRegistry', () => {
     registry.addObserver(builder2, callback);
     registry.addObserver(builder3, callback);
 
-    const getQueriesForTables =
-        (targetSet: Set<BaseTable>): SelectContext[] => {
-          return registry.getTaskItemsForTables(Array.from(targetSet.values()))
-              .map((item) => item.context as SelectContext);
-        };
+    const getQueriesForTables = (targetSet: Set<BaseTable>): SelectContext[] => {
+      return registry
+        .getTaskItemsForTables(Array.from(targetSet.values()))
+        .map(item => item.context as SelectContext);
+    };
 
     const scope1 = new Set<BaseTable>();
     scope1.add(tables[0]);
     let queries = getQueriesForTables(scope1);
     assert.sameDeepOrderedMembers(
-        [builder1.getObservableQuery(), builder2.getObservableQuery()],
-        queries);
+      [builder1.getObservableQuery(), builder2.getObservableQuery()],
+      queries
+    );
 
     const scope2 = new Set<BaseTable>();
     scope2.add(tables[1]);
     queries = getQueriesForTables(scope2);
     assert.sameDeepOrderedMembers(
-        [builder2.getObservableQuery(), builder3.getObservableQuery()],
-        queries);
+      [builder2.getObservableQuery(), builder3.getObservableQuery()],
+      queries
+    );
 
     const scope3 = new Set<BaseTable>();
     scope3.add(tables[0]);
     scope3.add(tables[1]);
     queries = getQueriesForTables(scope3);
     assert.sameDeepOrderedMembers(
-        [
-          builder1.getObservableQuery(),
-          builder2.getObservableQuery(),
-          builder3.getObservableQuery(),
-        ],
-        queries);
+      [
+        builder1.getObservableQuery(),
+        builder2.getObservableQuery(),
+        builder3.getObservableQuery(),
+      ],
+      queries
+    );
   });
 });

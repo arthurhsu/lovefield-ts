@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const chalk = require('chalk');
-const diff = require('diff');
 const fs = require('fs-extra');
 const glob = require('glob');
 const gulp = require('gulp');
 const debug = require('gulp-debug');
 const guppy = require('git-guppy')(gulp);
 const mocha = require('gulp-mocha');
-const format = require('gulp-clang-format');
 const sourcemaps = require('gulp-sourcemaps');
-const tslint = require('gulp-tslint');
 const tsc = require('gulp-typescript');
 const yaml = require('js-yaml');
 const karma = require('karma');
 const nopt = require('nopt');
 const path = require('path');
-const thru = require('through2');
 const Toposort = require('toposort-class');
 
 const DIST_DIR = 'dist';
@@ -44,64 +39,6 @@ function getProject() {
     tsProject = tsc.createProject('tsconfig.json');
   }
   return tsProject;
-}
-
-function ignoreDist(s) {
-  const distPath = path.resolve(DIST_DIR);
-  let stream = thru.obj(function (file, enc, done) {
-    if (file.path.startsWith(distPath)) {
-      done();
-      return;
-    }
-
-    // Default pass through
-    this.push(file);
-    done();
-  });
-  return stream;
-}
-
-function prettyPrint(patch) {
-  if (patch.hunks.length) {
-    console.log(chalk.yellow('===== ' + patch.oldFileName));
-    patch.hunks.forEach((hunk) => {
-      let numberOld = hunk.oldStart;
-      let numberNew = hunk.newStart;
-      hunk.lines.forEach((line) => {
-        if (line[0] == '-') {
-          console.log(chalk.bgRed(numberOld + ' ' + line));
-          numberOld++;
-        } else if (line[0] == '+') {
-          console.log(chalk.bgGreen(numberNew + ' ' + line));
-          numberNew++;
-        } else {
-          console.log(numberOld + ' ' + line);
-          numberOld++;
-          numberNew++;
-        }
-      });
-    });
-    console.log();
-  }
-}
-
-function checkFormat() {
-  let stream = thru.obj(function(file, enc, done) {
-    if (file.isBuffer()) {
-      let original = fs.readFileSync(file.path, 'utf8');
-      let formatted = file.contents.toString();
-      let patch = diff.structuredPatch(file.path, null, original, formatted);
-      prettyPrint(patch);
-    } else {
-      console.error('Not supported');
-      process.exit(1);
-    }
-
-    // Make sure the file goes through the next gulp plugin.
-    this.push(file);
-    done();
-  });
-  return stream;
 }
 
 function isQuickMode() {
@@ -146,7 +83,6 @@ function genFlags() {
   fs.ensureDirSync('lib/gen');
   fs.writeFileSync('lib/gen/flags.ts', contents, {encoding: 'utf-8'});
   gulp.src('lib/gen/flags.ts')
-      .pipe(format.format())
       .pipe(gulp.dest('lib/gen'));
 }
 
@@ -156,12 +92,13 @@ gulp.task('default', (cb) => {
   log('  build: build all libraries and tests');
   log('  clean: remove all intermediate files');
   log('  test: run mocha tests (quick mode only)');
-  log('  format: format files using clang-format');
-  log('  check: lint and format check files');
   log('options:');
   log('  --quick, -q: Quick test only');
   log('  --grep, -g: Mocha grep pattern');
   log('  --flag <KEY:VALUE>: Override flags');
+  log('');
+  log('Lovefield-ts uses Google TypeScript Style to lint/format.');
+  log('Run `npx gts help` for its usage.');
   cb();
 });
 
@@ -202,16 +139,6 @@ gulp.task('buildTests', () => {
 
 gulp.task('buildTest', gulp.series(['buildTesting', 'buildTests']));
 gulp.task('build', gulp.series(['buildLib', 'buildTest']));
-
-gulp.task('lint', () => {
-  return getProject()
-      .src()
-      .pipe(ignoreDist())
-      .pipe(tslint({formatter: 'stylish'}))
-      .pipe(tslint.report({
-        summarizeFailureOutput: true
-      }));
-});
 
 gulp.task('deps', (cb) => {
   glob('lib/**/*.ts', (err, matches) => {
@@ -356,6 +283,7 @@ gulp.task('test', gulp.series(['dist', 'buildTest'], function actualTest(cb) {
 
     server.on('run_complete', () => {
       karma.stopper.stop();
+      cb();
     });
     server.start();
   }
@@ -405,34 +333,7 @@ gulp.task('debug', gulp.series(['dist', 'buildTest'], function actualDebug(cb) {
   }).start();
 }));
 
-gulp.task('fastcheck', () => {
-  return getProject()
-      .src()
-      .pipe(ignoreDist())
-      .pipe(format.checkFormat('file'))
-      .on('warning', e => {
-        debug(e.message);
-        process.exit(1);
-      });
-});
-
 gulp.task('pre-commit', gulp.parallel(['build'],
     function preCommitCheck(cb) {
       cb();
     }));
-
-gulp.task('format', () => {
-  return getProject()
-      .src()
-      .pipe(ignoreDist())
-      .pipe(format.format('file'))
-      .pipe(gulp.dest('.'));
-});
-
-gulp.task('check', gulp.series('lint', function actualCheck() {
-  return getProject()
-      .src()
-      .pipe(ignoreDist())
-      .pipe(format.format('file'))
-      .pipe(checkFormat());
-}));

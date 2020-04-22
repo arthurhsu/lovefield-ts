@@ -10,7 +10,7 @@ name must start with capital I).
 
 ## Port progress
 
-1. Move all files to use Typescript
+1. Move all files to use Typescript (except API tester and perf benchmark)
 2. Design dist mechanism and publish npm package (not started)
 3. Release and improve upon, [tracked by issues](https://github.com/arthurhsu/lovefield-ts/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
@@ -19,7 +19,7 @@ name must start with capital I).
 ### Supported
 
 * Most of original Lovefield features (except Firebase and static schema).
-* NEW: NodeJS support: NodeJS 7+ will be supported (with memory store only
+* NEW: NodeJS support: NodeJS 9+ will be supported (with memory store only
   initially).
 
 ### Unsupported
@@ -39,12 +39,13 @@ name must start with capital I).
 The project is set to use modern Typescript (3.8+) and Mocha/Chai/Sinon/Karma as
 its test framework. Compilation/test speed has improved significantly.
 
-The dist and release mechanism is not developed yet.
+The dist and release mechanism is not developed/determined yet (still evaluating
+the usage of WebPack and other technologies).
 
 ### Development set up
 
 * Install Chrome
-* Install Node 9+
+* Install Node 12+
 * `npm install`
 * `node node_modules/guppy-cli/bin/index.js pre-commit`
 
