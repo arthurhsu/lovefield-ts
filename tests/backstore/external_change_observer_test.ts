@@ -16,20 +16,21 @@
 
 import * as chai from 'chai';
 
-import {ExternalChangeObserver} from '../../lib/backstore/external_change_observer';
-import {ObservableStore} from '../../lib/backstore/observable_store';
-import {DataStoreType, ErrorCode, TransactionType} from '../../lib/base/enum';
-import {TableType} from '../../lib/base/private_enum';
-import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {Journal} from '../../lib/cache/journal';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {MockStore} from '../../testing/backstore/mock_store';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
-import {TestUtil} from '../../testing/test_util';
+import { ExternalChangeObserver } from '../../lib/backstore/external_change_observer';
+import { ObservableStore } from '../../lib/backstore/observable_store';
+import { DataStoreType, ErrorCode, TransactionType } from '../../lib/base/enum';
+import { TableType } from '../../lib/base/private_enum';
+import { Resolver } from '../../lib/base/resolver';
+import { PayloadType, Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { Journal } from '../../lib/cache/journal';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Table } from '../../lib/schema/table';
+import { MockStore } from '../../testing/backstore/mock_store';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -40,19 +41,22 @@ describe('ExternalChangeObserver', () => {
   let mockStore: MockStore;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.OBSERVABLE_STORE}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.OBSERVABLE_STORE,
+    })) as RuntimeDatabase;
     j = db.getSchema().table('Job');
 
     const dataGenerator = new MockDataGenerator();
     dataGenerator.generate(
-        /* jobCount */ 10,
-        /* employeeCount */ 10,
-        /* departmentCount */ 0);
+      /* jobCount */ 10,
+      /* employeeCount */ 10,
+      /* departmentCount */ 0
+    );
     sampleJobs = dataGenerator.sampleJobs;
 
-    const backStore =
-        db.getGlobal().getService(Service.BACK_STORE) as ObservableStore;
+    const backStore = db
+      .getGlobal()
+      .getService(Service.BACK_STORE) as ObservableStore;
     mockStore = new MockStore(backStore);
 
     const externalChangeObserver = new ExternalChangeObserver(db.getGlobal());
@@ -70,42 +74,62 @@ describe('ExternalChangeObserver', () => {
     modifiedRow.payload()['id'] = 'DummyJobId';
     modifiedRow.assignRowId(sampleJobs[0].id());
 
-    const extractResultsPk = (res: object[]) => {
-      return res.map((obj: object) => obj[j['id'].getName()]);
+    const extractResultsPk = (res: PayloadType[]) => {
+      return res.map(obj => obj[j['id'].getName()]);
     };
-    const extractRowsPk = (rows: Row[]) =>
-        rows.map((row) => row.payload()['id']);
+    const extractRowsPk = (rows: Row[]) => rows.map(row => row.payload()['id']);
 
     // Simulate an external insertion of rows.
     await simulateInsertionModification(j, sampleJobs);
-    let results: object[] = await db.select().from(j).orderBy(j['id']).exec();
+    let results: PayloadType[] = (await db
+      .select()
+      .from(j)
+      .orderBy(j['id'])
+      .exec()) as PayloadType[];
     // Ensure that external insertion change is detected and applied properly.
     assert.sameDeepOrderedMembers(
-        extractRowsPk(initialRows), extractResultsPk(results));
+      extractRowsPk(initialRows),
+      extractResultsPk(results)
+    );
 
     // Simulate an external deletion of rows.
     await simulateDeletion(j, deletedRows);
-    results = await db.select().from(j).orderBy(j['id']).exec();
+    results = (await db
+      .select()
+      .from(j)
+      .orderBy(j['id'])
+      .exec()) as PayloadType[];
     // Ensure that external deletion change is detected and applied properly.
     assert.sameDeepOrderedMembers(
-        extractRowsPk(notDeletedRows), extractResultsPk(results));
+      extractRowsPk(notDeletedRows),
+      extractResultsPk(results)
+    );
 
     // Simulate an external modification of rows.
     await simulateInsertionModification(j, [modifiedRow]);
-    results = await db.select()
-                  .from(j)
-                  .where(j['id'].eq(modifiedRow.payload()['id']))
-                  .exec();
+    results = (await db
+      .select()
+      .from(j)
+      .where(j['id'].eq(modifiedRow.payload()['id'] as string))
+      .exec()) as PayloadType[];
     // Ensure that external modification change is detected and applied.
     assert.equal(1, results.length);
-    assert.equal(modifiedRow.payload()['id'], results[0][j['id'].getName()]);
+    assert.equal(
+      modifiedRow.payload()['id'],
+      results[0][j['id'].getName()]
+    );
 
     // Attempt to insert a row with an existing primary key.
     // Expecting a constraint error. This ensures that indices are updated
     // as a result of external changes.
     await TestUtil.assertPromiseReject(
-        ErrorCode.DUPLICATE_KEYS,  // 201: Duplicate keys are not allowed.
-        db.insert().into(j).values([modifiedRow]).exec());
+      ErrorCode.DUPLICATE_KEYS, // 201: Duplicate keys are not allowed.
+      db
+        .insert()
+        .into(j)
+        .values([modifiedRow])
+        .exec()
+    );
   });
 
   // Tests that Lovefield observers are firing as a result of an external
@@ -114,9 +138,9 @@ describe('ExternalChangeObserver', () => {
     const resolver = new Resolver<void>();
 
     const query = db.select().from(j);
-    db.observe(query, (changes) => {
+    db.observe(query, changes => {
       assert.equal(sampleJobs.length, changes.length);
-      changes.forEach((changeEvent) => {
+      changes.forEach(changeEvent => {
         assert.equal(1, changeEvent.addedCount);
       });
       resolver.resolve();
@@ -136,7 +160,7 @@ describe('ExternalChangeObserver', () => {
 
     const query = db.select().from(j);
     let counter = 0;
-    db.observe(query, (changes) => {
+    db.observe(query, changes => {
       counter++;
       // Expecting the observer to be called twice, once when the db.insert()
       // query is completed, and once when the external change has been merged.
@@ -149,7 +173,11 @@ describe('ExternalChangeObserver', () => {
     });
 
     Promise.all([
-      db.insert().into(j).values(sampleJobs1).exec(),
+      db
+        .insert()
+        .into(j)
+        .values(sampleJobs1)
+        .exec(),
       simulateInsertionModification(j, sampleJobs2),
     ]);
     return resolver.promise;
@@ -157,28 +185,43 @@ describe('ExternalChangeObserver', () => {
 
   // Simulates an external insertion/modification change.
   function simulateInsertionModification(
-      tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
+    tableSchema: BaseTable,
+    rows: Row[]
+  ): Promise<unknown> {
     const tx = mockStore.createTx(
-        TransactionType.READ_WRITE, [tableSchema],
-        new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));
+      TransactionType.READ_WRITE,
+      [tableSchema],
+      new Journal(
+        db.getGlobal(),
+        new Set<Table>([tableSchema])
+      )
+    );
     const table = tx.getTable(
-        tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
-        TableType.DATA);
+      tableSchema.getName(),
+      (tableSchema as BaseTable).deserializeRow.bind(tableSchema),
+      TableType.DATA
+    );
     table.put(rows);
     return tx.commit();
   }
 
   // Simulates an external deletion change.
-  function simulateDeletion(
-      tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
+  function simulateDeletion(tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
     const tx = mockStore.createTx(
-        TransactionType.READ_WRITE, [tableSchema],
-        new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));
+      TransactionType.READ_WRITE,
+      [tableSchema],
+      new Journal(
+        db.getGlobal(),
+        new Set<Table>([tableSchema])
+      )
+    );
     const table = tx.getTable(
-        tableSchema.getName(), tableSchema.deserializeRow.bind(tableSchema),
-        TableType.DATA);
+      tableSchema.getName(),
+      (tableSchema as BaseTable).deserializeRow.bind(tableSchema),
+      TableType.DATA
+    );
 
-    const rowIds = rows.map((row) => row.id());
+    const rowIds = rows.map(row => row.id());
     table.remove(rowIds);
     return tx.commit();
   }

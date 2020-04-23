@@ -14,45 +14,58 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {Global} from '../base/global';
-import {TableType} from '../base/private_enum';
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
+import { TransactionType } from '../base/enum';
+import { Global } from '../base/global';
+import { TableType } from '../base/private_enum';
+import { RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
 
-import {BaseTx} from './base_tx';
-import {BundledObjectStore} from './bundled_object_store';
-import {ObjectStore} from './object_store';
+import { BaseTx } from './base_tx';
+import { BundledObjectStore } from './bundled_object_store';
+import { ObjectStore } from './object_store';
 
 export class IndexedDBTx extends BaseTx {
   constructor(
-      private global: Global, private tx: IDBTransaction,
-      txType: TransactionType, private bundleMode: boolean, journal?: Journal) {
+    private global: Global,
+    private tx: IDBTransaction,
+    txType: TransactionType,
+    private bundleMode: boolean,
+    journal?: Journal
+  ) {
     super(txType, journal);
-    this.tx.oncomplete = this.resolver.resolve.bind(this.resolver);
-    this.tx.onabort = this.resolver.reject.bind(this.resolver);
+    this.tx.oncomplete = () => {
+      this.resolver.resolve();
+    };
+    this.tx.onabort = (ev: Event) => {
+      this.resolver.reject(ev);
+    };
   }
 
-  public getTable(
-      tableName: string, deserializeFn: (value: RawRow) => Row,
-      type?: TableType): RuntimeTable {
+  getTable(
+    tableName: string,
+    deserializeFn: (value: RawRow) => Row,
+    type?: TableType
+  ): RuntimeTable {
     if (this.bundleMode) {
       const tableType =
-          (type !== undefined && type !== null) ? type : TableType.DATA;
+        type !== undefined && type !== null ? type : TableType.DATA;
       return BundledObjectStore.forTableType(
-          this.global, this.tx.objectStore(tableName), deserializeFn,
-          tableType);
+        this.global,
+        this.tx.objectStore(tableName),
+        deserializeFn,
+        tableType
+      );
     } else {
       return new ObjectStore(this.tx.objectStore(tableName), deserializeFn);
     }
   }
 
-  public abort(): void {
+  abort(): void {
     this.tx.abort();
   }
 
-  public commitInternal(): Promise<any> {
+  commitInternal(): Promise<unknown> {
     return this.resolver.promise;
   }
 }

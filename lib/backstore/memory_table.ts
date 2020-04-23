@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
+import { Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
 
 export class MemoryTable implements RuntimeTable {
   private data: Map<number, Row>;
@@ -24,14 +24,14 @@ export class MemoryTable implements RuntimeTable {
     this.data = new Map();
   }
 
-  public getSync(ids: number[]): Row[] {
+  getSync(ids: number[]): Row[] {
     // Empty array is treated as "return all rows".
     if (ids.length === 0) {
       return Array.from(this.data.values());
     }
 
     const results: Row[] = [];
-    ids.forEach((id) => {
+    ids.forEach(id => {
       const row = this.data.get(id) || null;
       if (row !== null) {
         results.push(row);
@@ -41,38 +41,38 @@ export class MemoryTable implements RuntimeTable {
     return results;
   }
 
-  public getData(): Map<number, Row> {
+  getData(): Map<number, Row> {
     return this.data;
   }
 
-  public get(ids: number[]): Promise<Row[]> {
+  get(ids: number[]): Promise<Row[]> {
     return Promise.resolve(this.getSync(ids));
   }
 
-  public putSync(rows: Row[]): void {
-    rows.forEach((row) => this.data.set(row.id(), row));
+  putSync(rows: Row[]): void {
+    rows.forEach(row => this.data.set(row.id(), row));
   }
 
-  public put(rows: Row[]): Promise<void> {
+  put(rows: Row[]): Promise<void> {
     this.putSync(rows);
     return Promise.resolve();
   }
 
-  public removeSync(ids: number[]): void {
+  removeSync(ids: number[]): void {
     if (ids.length === 0 || ids.length === this.data.size) {
       // Remove all.
       this.data.clear();
     } else {
-      ids.forEach((id) => this.data.delete(id));
+      ids.forEach(id => this.data.delete(id));
     }
   }
 
-  public remove(ids: number[]): Promise<void> {
+  remove(ids: number[]): Promise<void> {
     this.removeSync(ids);
     return Promise.resolve();
   }
 
-  public getMaxRowId(): number {
+  getMaxRowId(): number {
     if (this.data.size === 0) {
       return 0;
     }

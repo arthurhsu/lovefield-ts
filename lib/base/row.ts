@@ -20,12 +20,6 @@ export interface PayloadType {
   [key: string]: unknown;
 }
 
-/*
-export interface NestedPayloadType {
-  [key: string]: PayloadType;
-}
-*/
-
 export interface RawRow {
   id: number;
   value: PayloadType;

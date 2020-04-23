@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-import {TransactionStats} from './transaction_stats';
+import { TransactionStats } from './transaction_stats';
 
 export class TransactionStatsImpl implements TransactionStats {
-  public static getDefault(): TransactionStatsImpl {
+  static getDefault(): TransactionStatsImpl {
     return new TransactionStatsImpl(false, 0, 0, 0, 0);
   }
 
   constructor(
-      private success_: boolean,
-      private insertedRowCount_: number,
-      private updatedRowCount_: number,
-      private deletedRowCount_: number,
-      private changedTableCount_: number,
+    private success_: boolean,
+    private insertedRowCount_: number,
+    private updatedRowCount_: number,
+    private deletedRowCount_: number,
+    private changedTableCount_: number
   ) {}
 
-  public success(): boolean {
+  success(): boolean {
     return this.success_;
   }
-  public insertedRowCount(): number {
+  insertedRowCount(): number {
     return this.insertedRowCount_;
   }
-  public updatedRowCount(): number {
+  updatedRowCount(): number {
     return this.updatedRowCount_;
   }
-  public deletedRowCount(): number {
+  deletedRowCount(): number {
     return this.deletedRowCount_;
   }
-  public changedTableCount(): number {
+  changedTableCount(): number {
     return this.changedTableCount_;
   }
 }

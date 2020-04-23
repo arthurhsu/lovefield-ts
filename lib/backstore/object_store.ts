@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
+import { RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
 
 export class ObjectStore implements RuntimeTable {
   constructor(
-      private store: IDBObjectStore,
-      private deserializeFn: (raw: RawRow) => Row) {}
+    private store: IDBObjectStore,
+    private deserializeFn: (raw: RawRow) => Row
+  ) {}
 
-  public get(ids: number[]): Promise<Row[]> {
+  get(ids: number[]): Promise<Row[]> {
     if (ids.length === 0) {
-      return (this.store['getAll']) ? this.getAllBulk() :
-                                      this.getAllWithCursor();
+      return this.store['getAll'] ? this.getAllBulk() : this.getAllWithCursor();
     }
 
     // Chrome IndexedDB is slower when using a cursor to iterate through a big
@@ -41,20 +41,20 @@ export class ObjectStore implements RuntimeTable {
           return;
         }
         request.onerror = reject;
-        request.onsuccess = (ev) => {
-          resolve(this.deserializeFn((ev.target as any).result));
+        request.onsuccess = ev => {
+          resolve(this.deserializeFn((ev.target as IDBRequest).result));
         };
       });
     }, this);
     return Promise.all(promises) as Promise<Row[]>;
   }
 
-  public put(rows: Row[]): Promise<void> {
+  put(rows: Row[]): Promise<void> {
     if (rows.length === 0) {
       return Promise.resolve();
     }
 
-    const promises = rows.map((row) => {
+    const promises = rows.map(row => {
       return this.performWriteOp(() => {
         // TODO(dpapad): Surround this with try catch, otherwise some errors
         // don't surface to the console.
@@ -67,11 +67,14 @@ export class ObjectStore implements RuntimeTable {
     });
   }
 
-  public remove(ids: number[], disableClearTableOptimization?: boolean):
-      Promise<void> {
+  remove(
+    ids: number[],
+    disableClearTableOptimization?: boolean
+  ): Promise<void> {
     const deleteByIdsFn = () => {
-      const promises =
-          ids.map((id) => this.performWriteOp(() => this.store.delete(id)));
+      const promises = ids.map(id =>
+        this.performWriteOp(() => this.store.delete(id))
+      );
 
       return Promise.all(promises).then(() => {
         return;
@@ -84,8 +87,11 @@ export class ObjectStore implements RuntimeTable {
 
     return new Promise((resolve, reject) => {
       const request = this.store.count();
-      request.onsuccess = (ev) => {
-        if (ids.length === 0 || (ev.target as any).result === ids.length) {
+      request.onsuccess = ev => {
+        if (
+          ids.length === 0 ||
+          (ev.target as IDBRequest).result === ids.length
+        ) {
           // Remove all
           this.performWriteOp(() => this.store.clear()).then(resolve, reject);
           return;
@@ -139,8 +145,9 @@ export class ObjectStore implements RuntimeTable {
 
       request.onerror = reject;
       request.onsuccess = () => {
-        const rows =
-            request.result.map((rawRow: RawRow) => this.deserializeFn(rawRow));
+        const rows = request.result.map((rawRow: RawRow) =>
+          this.deserializeFn(rawRow)
+        );
         resolve(rows);
       };
     });
@@ -155,7 +162,7 @@ export class ObjectStore implements RuntimeTable {
         reject(e);
         return;
       }
-      request.onsuccess = (ev) => resolve();
+      request.onsuccess = ev => resolve();
       request.onerror = reject;
     });
   }

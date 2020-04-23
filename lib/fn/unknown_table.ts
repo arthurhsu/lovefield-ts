@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {RawRow, Row} from '../base/row';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {Constraint} from '../schema/constraint';
-import {Index} from '../schema/index';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { RawRow, Row } from '../base/row';
+import { BaseColumn } from '../schema/base_column';
+import { BaseTable } from '../schema/base_table';
+import { Column } from '../schema/column';
+import { Constraint } from '../schema/constraint';
+import { Index } from '../schema/index';
 
 // Pseudo table used for initializing pseudo columns.
 export class UnknownTable implements BaseTable {
   private _alias: string;
 
   constructor() {
-    this._alias = null as any as string;
+    this._alias = (null as unknown) as string;
   }
 
-  public getName(): string {
+  getName(): string {
     return '#UnknownTable';
   }
 
@@ -38,39 +39,43 @@ export class UnknownTable implements BaseTable {
     return [];
   }
 
-  public getIndices(): Index[] {
+  getIndices(): Index[] {
     return [];
   }
 
-  public persistentIndex(): boolean {
+  persistentIndex(): boolean {
     return false;
   }
 
-  public getAlias(): string {
+  getAlias(): string {
     return this._alias;
   }
 
-  public getEffectiveName(): string {
+  getEffectiveName(): string {
     return this._alias || this.getName();
   }
 
-  public getRowIdIndexName(): string {
+  getRowIdIndexName(): string {
     return '#UnknownTable.#';
   }
 
-  public createRow(value?: object): Row {
+  createRow(value?: object): Row {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
-  public deserializeRow(dbRecord: RawRow): Row {
+  deserializeRow(dbRecord: RawRow): Row {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
 
-  public getConstraint(): Constraint {
-    return null as any as Constraint;
+  getConstraint(): Constraint {
+    return (null as unknown) as Constraint;
   }
 
-  public as(alias: string): BaseTable {
+  as(alias: string): BaseTable {
     this._alias = alias;
     return this;
+  }
+
+  col(name: string): Column {
+    return (null as unknown) as Column;
   }
 }

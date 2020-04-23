@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {TableDiff} from '../cache/table_diff';
-import {ExternalChangeTask} from '../proc/external_change_task';
-import {Runner} from '../proc/runner';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { TableDiff } from '../cache/table_diff';
+import { ExternalChangeTask } from '../proc/external_change_task';
+import { Runner } from '../proc/runner';
 
-import {BackStore} from './back_store';
+import { BackStore } from './back_store';
 
 export class ExternalChangeObserver {
   private backStore: BackStore;
@@ -32,12 +32,12 @@ export class ExternalChangeObserver {
   }
 
   // Starts observing the backing store for any external changes.
-  public startObserving(): void {
+  startObserving(): void {
     this.backStore.subscribe(this.onChange.bind(this));
   }
 
   // Stops observing the backing store.
-  public stopObserving(): void {
+  stopObserving(): void {
     this.backStore.unsubscribe(this.onChange.bind(this));
   }
 

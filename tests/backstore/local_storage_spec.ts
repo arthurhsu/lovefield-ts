@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import {LocalStorage} from '../../lib/backstore/local_storage';
-import {Capability} from '../../lib/base/capability';
-import {Global} from '../../lib/base/global';
-import {Service} from '../../lib/base/service';
-import {Cache} from '../../lib/cache/cache';
-import {DefaultCache} from '../../lib/cache/default_cache';
-import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {ScudTester} from '../../testing/backstore/scud_tester';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { LocalStorage } from '../../lib/backstore/local_storage';
+import { Capability } from '../../lib/base/capability';
+import { Global } from '../../lib/base/global';
+import { Service } from '../../lib/base/service';
+import { Cache } from '../../lib/cache/cache';
+import { DefaultCache } from '../../lib/cache/default_cache';
+import { MemoryIndexStore } from '../../lib/index/memory_index_store';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { ScudTester } from '../../testing/backstore/scud_tester';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -35,7 +35,7 @@ describe('LocalStorage', () => {
   let schema: DatabaseSchema;
 
   if (!Capability.get().localStorage) {
-    return;  // skip this test.
+    return; // skip this test.
   }
 
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe('LocalStorage', () => {
   // instance that is passed into its constructor.
   it('construct', () => {
     assert.isTrue(schema.tables().length > 0);
-    schema.tables().forEach((table) => {
+    schema.tables().forEach(table => {
       assert.isNotNull(db.getTableInternal(table.getName()));
     });
   });

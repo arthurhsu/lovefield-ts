@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Row} from '../base/row';
+import { Row } from '../base/row';
 
 // Raw data store interface passed to onUpgrade() function.
 // @export
 export interface RawBackStore {
   // Returns original database instance that can be used for low-level data
   // manipulations, not really useful for IndexedDB.
-  getRawDBInstance(): any;
+  getRawDBInstance(): unknown;
 
   // Returns original database upgrade transaction.
-  getRawTransaction(): any;
+  getRawTransaction(): unknown;
 
   // Removes a table from data store. Lovefield does not support automatic
   // dropping table. Users must call dropTable manually during upgrade to purge
@@ -35,15 +35,19 @@ export interface RawBackStore {
   // values of |columnName| and |defaultValue| are consistent with the new
   // schema.
   addTableColumn(
-      tableName: string, columnName: string,
-      defaultValue: string|number|boolean|Date|ArrayBuffer|null): Promise<void>;
+    tableName: string,
+    columnName: string,
+    defaultValue: string | number | boolean | Date | ArrayBuffer | null
+  ): Promise<void>;
 
   dropTableColumn(tableName: string, columnName: string): Promise<void>;
 
   // Renames a column for all existing table rows.
   renameTableColumn(
-      tableName: string, oldColumnName: string,
-      newColumnName: string): Promise<void>;
+    tableName: string,
+    oldColumnName: string,
+    newColumnName: string
+  ): Promise<void>;
 
   // Creates a Lovefield row structure that can be stored into raw DB instance
   // via raw transaction.

@@ -15,14 +15,14 @@
  */
 
 import * as chai from 'chai';
-import {Memory} from '../../lib/backstore/memory';
-import {Global} from '../../lib/base/global';
-import {Service} from '../../lib/base/service';
-import {DefaultCache} from '../../lib/cache/default_cache';
-import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {ScudTester} from '../../testing/backstore/scud_tester';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { Memory } from '../../lib/backstore/memory';
+import { Global } from '../../lib/base/global';
+import { Service } from '../../lib/base/service';
+import { DefaultCache } from '../../lib/cache/default_cache';
+import { MemoryIndexStore } from '../../lib/index/memory_index_store';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { ScudTester } from '../../testing/backstore/scud_tester';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -51,7 +51,7 @@ describe('MemoryStore', () => {
   it('construction', () => {
     assert.isTrue(schema.tables().length > 0);
 
-    schema.tables().forEach((table) => {
+    schema.tables().forEach(table => {
       assert.isNotNull(db.getTableInternal(table.getName()));
     });
   });

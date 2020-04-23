@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {RawBackStore} from '../backstore/raw_back_store';
-import {DataStoreType} from '../base/enum';
+import { RawBackStore } from '../backstore/raw_back_store';
+import { DataStoreType } from '../base/enum';
 
 // @export
 export interface ConnectOptions {
-  onUpgrade?: (raw: RawBackStore) => Promise<void>;
+  onUpgrade?: (raw: RawBackStore) => Promise<unknown>;
   storeType: DataStoreType;
   websqlDbSize?: number;
   enableInspector?: boolean;

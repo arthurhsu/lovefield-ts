@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {TableDiff} from '../cache/table_diff';
+import { PayloadType, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { TableDiff } from '../cache/table_diff';
 
 // Tables are stored in LocalStorage as a stringified data object in the format
 // of {id1: row1, id2: row2, ..., idN: rowN}.
 export class LocalStorageTable implements RuntimeTable {
   private key: string;
-  private data: object;
+  private data: PayloadType;
 
   constructor(tableKey: string) {
     this.key = tableKey;
@@ -34,19 +34,19 @@ export class LocalStorageTable implements RuntimeTable {
     }
   }
 
-  public get(ids: number[]): Promise<Row[]> {
+  get(ids: number[]): Promise<Row[]> {
     let results: Row[];
 
     if (ids.length === 0) {
-      results = Object.keys(this.data).map((key) => {
-        const id = parseInt(key, 10);
-        return new Row(id, this.data[key]);
+      results = Object.keys(this.data).map(key => {
+        const id = Number(key);
+        return new Row(id, this.data[key] as PayloadType);
       }, this);
     } else {
       results = [];
-      ids.forEach((id) => {
+      ids.forEach(id => {
         if (this.data.hasOwnProperty(id.toString())) {
-          results.push(new Row(id, this.data[id.toString()]));
+          results.push(new Row(id, this.data[id.toString()] as PayloadType));
         }
       }, this);
     }
@@ -54,55 +54,59 @@ export class LocalStorageTable implements RuntimeTable {
     return Promise.resolve(results);
   }
 
-  public put(rows: Row[]): Promise<void> {
-    rows.forEach((row) => {
+  put(rows: Row[]): Promise<void> {
+    rows.forEach(row => {
       this.data[row.id().toString()] = row.payload();
     }, this);
 
     return Promise.resolve();
   }
 
-  public remove(ids: number[], disableClearTableOptimization?: boolean):
-      Promise<void> {
+  remove(
+    ids: number[],
+    disableClearTableOptimization?: boolean
+  ): Promise<void> {
     if (ids.length === 0 || ids.length === Object.keys(this.data).length) {
       // Remove all.
       this.data = {};
     } else {
-      ids.forEach((id) => delete this.data[id]);
+      ids.forEach(id => delete this.data[id]);
     }
 
     return Promise.resolve();
   }
 
   // Flushes contents to Local Storage.
-  public commit(): void {
+  commit(): void {
     window.localStorage.setItem(this.key, JSON.stringify(this.data));
   }
 
   // Generates table diff from new data.
-  public diff(newData: object): TableDiff {
+  diff(newData: PayloadType): TableDiff {
     const oldIds = Object.keys(this.data);
     const newIds = Object.keys(newData);
 
     const diff = new TableDiff(this.key);
-    newIds.forEach((id) => {
-      const rowId = parseInt(id, 10);
+    newIds.forEach(id => {
+      const rowId = Number(id);
       if (this.data.hasOwnProperty(id)) {
         // A maybe update: the event simply pass back all values of table.
         if (JSON.stringify(this.data[id]) !== JSON.stringify(newData[id])) {
           diff.modify([
-            new Row(rowId, this.data[id]),
-            new Row(rowId, newData[id]),
+            new Row(rowId, this.data[id] as PayloadType),
+            new Row(rowId, newData[id] as PayloadType),
           ]);
         }
       } else {
         // Add
-        diff.add(new Row(rowId, newData[id]));
+        diff.add(new Row(rowId, newData[id] as PayloadType));
       }
     }, this);
-    oldIds.filter((id) => newData.hasOwnProperty(id)).forEach((id) => {
-      diff.delete(new Row(parseInt(id, 10), this.data[id]));
-    }, this);
+    oldIds
+      .filter(id => newData.hasOwnProperty(id))
+      .forEach(id => {
+        diff.delete(new Row(Number(id), this.data[id] as PayloadType));
+      }, this);
     return diff;
   }
 }

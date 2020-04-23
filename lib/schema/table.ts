@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import {Row} from '../base/row';
+import { Row } from '../base/row';
+
+import { Column } from './column';
 
 // Public table interface.
 // @export
@@ -22,4 +24,15 @@ export interface Table {
   getName(): string;
   as(alias: string): Table;
   createRow(value?: object): Row;
+
+  // Individual accessor will return BaseColumn.
+  // This conflicts to private members in TableImpl, therefore use a more
+  // generic unknown type. Caller to dynamic cast public accessor to Column.
+  /*
+  [key: string]: unknown;
+  */
+
+  // Given the indexed type is a big bummer in Typescript, add an additional
+  // method to make life easier.
+  col(name: string): Column;
 }

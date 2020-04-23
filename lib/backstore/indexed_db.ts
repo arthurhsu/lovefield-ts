@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import {ErrorCode, TransactionType} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
-import {TableDiff} from '../cache/table_diff';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { ErrorCode, TransactionType } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
+import { TableDiff } from '../cache/table_diff';
+import { BaseTable } from '../schema/base_table';
+import { DatabaseSchema } from '../schema/database_schema';
 
-import {BackStore} from './back_store';
-import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
-import {IndexedDBTx} from './indexed_db_tx';
-import {Page} from './page';
-import {RawBackStore} from './raw_back_store';
-import {Tx} from './tx';
+import { BackStore } from './back_store';
+import { IndexedDBRawBackStore } from './indexed_db_raw_back_store';
+import { IndexedDBTx } from './indexed_db_tx';
+import { Page } from './page';
+import { RawBackStore } from './raw_back_store';
+import { Tx } from './tx';
 
 // IndexedDB-backed back store.
 //
@@ -68,10 +68,8 @@ export class IndexedDB implements BackStore {
     this.bundledMode = this.schema.pragma().enableBundledMode || false;
   }
 
-  public init(upgrade?: (db: RawBackStore) => Promise<void>):
-      Promise<IDBDatabase> {
-    const indexedDB = window.indexedDB || window['mozIndexedDB'] ||
-        window['webkitIndexedDB'] || window['msIndexedDB'];
+  init(upgrade?: (db: RawBackStore) => Promise<void>): Promise<IDBDatabase> {
+    const indexedDB = window.indexedDB;
     if (indexedDB === undefined || indexedDB === null) {
       // 352: IndexedDB is not supported by platform.
       throw new Exception(ErrorCode.IDB_NOT_PROVIDED);
@@ -95,20 +93,22 @@ export class IndexedDB implements BackStore {
       //   connection)
       //   --> onsuccess
       // As a result the onblocked event is not handled deliberately.
-      request.onerror = (e) => {
-        const error: Error = (e.target as any).error as Error;
+      request.onerror = e => {
+        const error: DOMException = (e.target as IDBRequest)
+          .error as DOMException;
         // 361: Unable to open IndexedDB database.
         reject(
-            new Exception(ErrorCode.CANT_OPEN_IDB, error.name, error.message));
+          new Exception(ErrorCode.CANT_OPEN_IDB, error.name, error.message)
+        );
       };
-      request.onupgradeneeded = (ev) => {
+      request.onupgradeneeded = ev => {
         this.onUpgradeNeeded(onUpgrade, ev).then(() => {
           return;
         }, reject);
       };
-      request.onsuccess = (ev) => {
-        this.db = (ev.target as any).result as IDBDatabase;
-        this.scanRowId().then((rowId) => {
+      request.onsuccess = ev => {
+        this.db = (ev.target as IDBRequest).result as IDBDatabase;
+        this.scanRowId().then(rowId => {
           Row.setNextIdIfGreater(rowId + 1);
           resolve(this.db);
         });
@@ -116,51 +116,61 @@ export class IndexedDB implements BackStore {
     });
   }
 
-  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
-      Tx {
+  createTx(type: TransactionType, scope: BaseTable[], journal?: Journal): Tx {
     const nativeTx = this.db.transaction(
-        this.getIndexedDBScope(scope),
-        type === TransactionType.READ_ONLY ? 'readonly' : 'readwrite');
+      this.getIndexedDBScope(scope),
+      type === TransactionType.READ_ONLY ? 'readonly' : 'readwrite'
+    );
     return new IndexedDBTx(
-        this.global, nativeTx, type, this.bundledMode, journal);
+      this.global,
+      nativeTx,
+      type,
+      this.bundledMode,
+      journal
+    );
   }
 
-  public close(): void {
+  close(): void {
     this.db.close();
   }
 
-  public getTableInternal(tableName: string): RuntimeTable {
+  getTableInternal(tableName: string): RuntimeTable {
     // 511: IndexedDB tables needs to be acquired from transactions.
     throw new Exception(ErrorCode.CANT_GET_IDB_TABLE);
   }
 
-  public subscribe(handler: (diffs: TableDiff[]) => void): void {
+  subscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
-  public unsubscribe(handler: (diffs: TableDiff[]) => void): void {
+  unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
-  public notify(changes: TableDiff[]): void {
+  notify(changes: TableDiff[]): void {
     // Not supported yet.
   }
 
-  public supportsImport(): boolean {
+  supportsImport(): boolean {
     return true;
   }
 
-  public peek(): IDBDatabase {
+  peek(): IDBDatabase {
     return this.db;
   }
 
   private onUpgradeNeeded(
-      onUpgrade: (raw: RawBackStore) => Promise<void>,
-      ev: IDBVersionChangeEvent): Promise<void> {
-    const db = (ev.target as any).result as IDBDatabase;
-    const tx = (ev.target as any).transaction as IDBTransaction;
-    const rawDb =
-        new IndexedDBRawBackStore(ev.oldVersion, db, tx, this.bundledMode);
+    onUpgrade: (raw: RawBackStore) => Promise<void>,
+    ev: IDBVersionChangeEvent
+  ): Promise<void> {
+    const db = (ev.target as IDBRequest).result as IDBDatabase;
+    const tx = (ev.target as IDBRequest).transaction as IDBTransaction;
+    const rawDb = new IndexedDBRawBackStore(
+      ev.oldVersion,
+      db,
+      tx,
+      this.bundledMode
+    );
     this.removeIndexTables(db, tx);
     this.createTables(db);
     return onUpgrade(rawDb);
@@ -176,7 +186,7 @@ export class IndexedDB implements BackStore {
         storeNames.push(name);
       }
     }
-    storeNames.forEach((store) => {
+    storeNames.forEach(store => {
       try {
         db.deleteObjectStore(store);
       } catch (e) {
@@ -187,20 +197,22 @@ export class IndexedDB implements BackStore {
 
   // Creates tables if they had not existed in the database.
   private createTables(db: IDBDatabase): void {
-    this.schema.tables().forEach((table) => {
+    (this.schema.tables() as BaseTable[]).forEach(table => {
       this.createObjectStoresForTable(db, table);
     }, this);
   }
 
-  private createObjectStoresForTable(db: IDBDatabase, tableSchema: BaseTable):
-      void {
+  private createObjectStoresForTable(
+    db: IDBDatabase,
+    tableSchema: BaseTable
+  ): void {
     if (!db.objectStoreNames.contains(tableSchema.getName())) {
-      db.createObjectStore(tableSchema.getName(), {keyPath: 'id'});
+      db.createObjectStore(tableSchema.getName(), { keyPath: 'id' });
     }
 
     if (tableSchema.persistentIndex()) {
       const tableIndices = tableSchema.getIndices();
-      tableIndices.forEach((indexSchema) => {
+      tableIndices.forEach(indexSchema => {
         this.createIndexTable(db, indexSchema.getNormalizedName());
       }, this);
 
@@ -212,14 +224,14 @@ export class IndexedDB implements BackStore {
   // Creates a backing store corresponding to a persisted index.
   private createIndexTable(db: IDBDatabase, indexName: string): void {
     if (!db.objectStoreNames.contains(indexName)) {
-      db.createObjectStore(indexName, {keyPath: 'id'});
+      db.createObjectStore(indexName, { keyPath: 'id' });
     }
   }
 
   private getIndexedDBScope(scope: BaseTable[]): string[] {
     const indexedDBScope = new Set<string>();
 
-    scope.forEach((tableSchema) => {
+    scope.forEach(tableSchema => {
       // Adding user-defined table to the scope.
       indexedDBScope.add(tableSchema.getName());
 
@@ -227,9 +239,9 @@ export class IndexedDB implements BackStore {
       // store tables to the scope too.
       if (tableSchema.persistentIndex()) {
         const tableIndices = tableSchema.getIndices();
-        tableIndices.forEach(
-            (indexSchema) =>
-                indexedDBScope.add(indexSchema.getNormalizedName()));
+        tableIndices.forEach(indexSchema =>
+          indexedDBScope.add(indexSchema.getNormalizedName())
+        );
 
         // Adding RowId backing store name to the scope.
         indexedDBScope.add(tableSchema.getRowIdIndexName());
@@ -240,7 +252,7 @@ export class IndexedDB implements BackStore {
   }
 
   private scanRowId(txIn?: IDBTransaction): Promise<number> {
-    const tableNames = this.schema.tables().map((table) => table.getName());
+    const tableNames = this.schema.tables().map(table => table.getName());
 
     const db = this.db;
     let maxRowId = 0;
@@ -249,7 +261,7 @@ export class IndexedDB implements BackStore {
       if (this.bundledMode) {
         const page = Page.deserialize(cursor.value);
         return Object.keys(page.getPayload()).reduce((prev, cur) => {
-          return Math.max(prev, parseInt(cur, 10));
+          return Math.max(prev, Number(cur));
         }, 0);
       }
 
@@ -266,8 +278,8 @@ export class IndexedDB implements BackStore {
           reject(e);
           return;
         }
-        req.onsuccess = (ev) => {
-          const cursor = (ev.target as any).result as IDBCursorWithValue;
+        req.onsuccess = ev => {
+          const cursor = (ev.target as IDBRequest).result as IDBCursorWithValue;
           if (cursor) {
             // Since the cursor is traversed in the reverse direction, only the
             // first record needs to be examined to determine the max row ID.
@@ -279,7 +291,7 @@ export class IndexedDB implements BackStore {
       });
     };
 
-    const execSequentially = (): Promise<any> => {
+    const execSequentially = (): Promise<void> => {
       if (tableNames.length === 0) {
         return Promise.resolve();
       }

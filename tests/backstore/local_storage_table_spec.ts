@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {LocalStorageTable} from '../../lib/backstore/local_storage_table';
-import {Capability} from '../../lib/base/capability';
-import {TableTester} from '../../testing/backstore/table_tester';
+import { LocalStorageTable } from '../../lib/backstore/local_storage_table';
+import { Capability } from '../../lib/base/capability';
+import { TableTester } from '../../testing/backstore/table_tester';
 
 describe('LocalStorageTable', () => {
   if (!Capability.get().localStorage) {

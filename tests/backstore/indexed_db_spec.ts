@@ -17,27 +17,27 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {IndexedDB} from '../../lib/backstore/indexed_db';
-import {ObjectStore} from '../../lib/backstore/object_store';
-import {Tx} from '../../lib/backstore/tx';
-import {Capability} from '../../lib/base/capability';
-import {TransactionType} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {TableType} from '../../lib/base/private_enum';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {Cache} from '../../lib/cache/cache';
-import {DefaultCache} from '../../lib/cache/default_cache';
-import {Journal} from '../../lib/cache/journal';
-import {IndexStore} from '../../lib/index/index_store';
-import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {BaseTable} from '../../lib/schema/base_table';
-import {MockSchema} from '../../testing/backstore/mock_schema';
-import {ScudTester} from '../../testing/backstore/scud_tester';
-import {TestUtil} from '../../testing/test_util';
+import { IndexedDB } from '../../lib/backstore/indexed_db';
+import { ObjectStore } from '../../lib/backstore/object_store';
+import { Tx } from '../../lib/backstore/tx';
+import { Capability } from '../../lib/base/capability';
+import { TransactionType } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { TableType } from '../../lib/base/private_enum';
+import { Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { Cache } from '../../lib/cache/cache';
+import { DefaultCache } from '../../lib/cache/default_cache';
+import { Journal } from '../../lib/cache/journal';
+import { IndexStore } from '../../lib/index/index_store';
+import { MemoryIndexStore } from '../../lib/index/memory_index_store';
+import { BaseTable } from '../../lib/schema/base_table';
+import { MockSchema } from '../../testing/backstore/mock_schema';
+import { ScudTester } from '../../testing/backstore/scud_tester';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
-const skip = !(Capability.get().indexedDb);
+const skip = !Capability.get().indexedDb;
 const test = skip ? describe.skip : describe;
 
 test('IndexedDB', () => {
@@ -67,11 +67,17 @@ test('IndexedDB', () => {
     sandbox.restore();
     if (db) {
       // Clearing all tables.
-      const promises = schema.tables().map((table) => {
+      const promises = schema.tables().map(table => {
         const tx = db.createTx(
-            TransactionType.READ_WRITE, [table], createJournal([table]));
+          TransactionType.READ_WRITE,
+          [table],
+          createJournal([table])
+        );
         const store = tx.getTable(
-            table.getName(), table.deserializeRow.bind(table), TableType.DATA);
+          table.getName(),
+          table.deserializeRow.bind(table),
+          TableType.DATA
+        );
 
         store.remove([]);
         return tx.commit();
@@ -109,8 +115,8 @@ test('IndexedDB', () => {
     db = new IndexedDB(global, schema);
     global.registerService(Service.BACK_STORE, db);
 
-    const CONTENTS = {id: 'hello', name: 'world'};
-    const CONTENTS2 = {id: 'hello2', name: 'world2'};
+    const CONTENTS = { id: 'hello', name: 'world' };
+    const CONTENTS2 = { id: 'hello2', name: 'world2' };
 
     const tableA = schema.table('tableA');
     const tableB = schema.table('tableB');
@@ -121,26 +127,36 @@ test('IndexedDB', () => {
 
     const getTableA = (tx1: Tx) => {
       return tx1.getTable(
-                 tableA.getName(), tableA.deserializeRow.bind(tableA),
-                 TableType.DATA) as ObjectStore;
+        tableA.getName(),
+        tableA.deserializeRow.bind(tableA),
+        TableType.DATA
+      ) as ObjectStore;
     };
 
     const getTableB = (tx2: Tx) => {
       return tx2.getTable(
-                 tableB.getName(), tableB.deserializeRow.bind(tableB),
-                 TableType.DATA) as ObjectStore;
+        tableB.getName(),
+        tableB.deserializeRow.bind(tableB),
+        TableType.DATA
+      ) as ObjectStore;
     };
 
     await db.init();
     let tx = db.createTx(
-        TransactionType.READ_WRITE, [tableA], createJournal([tableA]));
+      TransactionType.READ_WRITE,
+      [tableA],
+      createJournal([tableA])
+    );
     let store = getTableA(tx);
 
     // insert row1 into table A
     store.put([row]);
     await tx.commit();
     tx = db.createTx(
-        TransactionType.READ_WRITE, [tableB], createJournal([tableB]));
+      TransactionType.READ_WRITE,
+      [tableB],
+      createJournal([tableB])
+    );
     store = getTableB(tx);
 
     // insert row2 into table B
@@ -158,7 +174,10 @@ test('IndexedDB', () => {
     assert.deepEqual(CONTENTS, results[0].payload());
 
     tx = db.createTx(
-        TransactionType.READ_WRITE, [tableA], createJournal([tableA]));
+      TransactionType.READ_WRITE,
+      [tableA],
+      createJournal([tableA])
+    );
     store = getTableA(tx);
 
     // update row1, insert row3 into table A
@@ -175,7 +194,10 @@ test('IndexedDB', () => {
     cache.setMany(tableA.getName(), [row4, row3]);
 
     tx = db.createTx(
-        TransactionType.READ_WRITE, [tableA], createJournal([tableA]));
+      TransactionType.READ_WRITE,
+      [tableA],
+      createJournal([tableA])
+    );
     store = getTableA(tx);
 
     // remove row1
@@ -192,8 +214,8 @@ test('IndexedDB', () => {
     // to the row ID and with the larger rowID in position 0.
     const generateRows = (): Row[] => {
       const rowIds = [200, 9, 1, 3, 2, 20, 100];
-      const CONTENTS = {scan: 'rowid'};
-      return rowIds.map((rowId) => {
+      const CONTENTS = { scan: 'rowid' };
+      return rowIds.map(rowId => {
         return new Row(rowId, CONTENTS);
       });
     };
@@ -201,9 +223,15 @@ test('IndexedDB', () => {
     const insertIntoTable = (values: Row[]) => {
       const table = schema.table('tableA');
       const tx = db.createTx(
-          TransactionType.READ_WRITE, [table], createJournal([table]));
+        TransactionType.READ_WRITE,
+        [table],
+        createJournal([table])
+      );
       const store = tx.getTable(
-          table.getName(), table.deserializeRow.bind(table), TableType.DATA);
+        table.getName(),
+        table.deserializeRow.bind(table),
+        TableType.DATA
+      );
       store.put(values);
       return tx.commit();
     };
@@ -228,7 +256,7 @@ test('IndexedDB', () => {
 
   it('scanRowId_BundledDB', async () => {
     const insertIntoTable = () => {
-      const CONTENTS = {scan: 'rowid'};
+      const CONTENTS = { scan: 'rowid' };
       const rows = [];
       for (let i = 0; i <= 2048; i += 256) {
         rows.push(new Row(i, CONTENTS));
@@ -236,9 +264,15 @@ test('IndexedDB', () => {
 
       const table = schema.table('tableA');
       const tx = db.createTx(
-          TransactionType.READ_WRITE, [table], createJournal([table]));
+        TransactionType.READ_WRITE,
+        [table],
+        createJournal([table])
+      );
       const store = tx.getTable(
-          table.getName(), table.deserializeRow.bind(table), TableType.DATA);
+        table.getName(),
+        table.deserializeRow.bind(table),
+        TableType.DATA
+      );
 
       store.put(rows);
       return tx.commit();
@@ -255,7 +289,10 @@ test('IndexedDB', () => {
   });
 
   function filterTableA(): string[] {
+    // Special hack to access private member
+    // tslint:disable:no-any
     const list = ((db as any).db as IDBDatabase).objectStoreNames;
+    // tslint:enable:no-any
     const results: string[] = [];
     for (let i = 0; i < list.length; ++i) {
       const name = list.item(i) as string;
@@ -272,8 +309,9 @@ test('IndexedDB', () => {
     schema.setName(name);
 
     // Modifying tableA to use persisted indices.
-    sandbox.stub(schema.table('tableA'), 'persistentIndex')
-        .callsFake(() => true);
+    sandbox
+      .stub(schema.table('tableA'), 'persistentIndex')
+      .callsFake(() => true);
 
     db = new IndexedDB(Global.get(), schema);
     await db.init();
@@ -284,7 +322,7 @@ test('IndexedDB', () => {
     db.close();
     sandbox.restore();
 
-    setUpEnv();  // reset the environment
+    setUpEnv(); // reset the environment
     schema.setVersion(2);
     schema.setName(name);
     db = new IndexedDB(Global.get(), schema);
@@ -295,9 +333,15 @@ test('IndexedDB', () => {
     const table = schema.tables().slice(-1)[0];
     assert.equal('tablePlusOne', table.getName());
     const tx = db.createTx(
-        TransactionType.READ_WRITE, [table], createJournal([table]));
+      TransactionType.READ_WRITE,
+      [table],
+      createJournal([table])
+    );
     const store = tx.getTable(
-        table.getName(), table.deserializeRow.bind(table), TableType.DATA);
+      table.getName(),
+      table.deserializeRow.bind(table),
+      TableType.DATA
+    );
     assert.isNotNull(store);
   });
 });

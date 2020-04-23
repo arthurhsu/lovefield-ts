@@ -22,6 +22,7 @@ import {Key, SingleKey} from '../index/key_range';
 
 import {BaseColumn} from './base_column';
 import {BaseTable} from './base_table';
+import {Column} from './column';
 import {ColumnDef} from './column_def';
 import {ColumnImpl} from './column_impl';
 import {Constraint} from './constraint';
@@ -59,19 +60,19 @@ export class TableImpl implements BaseTable {
     this._alias = alias ? alias : null as any as string;
   }
 
-  public getName(): string {
+  getName(): string {
     return this._name;
   }
 
-  public getAlias(): string {
+  getAlias(): string {
     return this._alias;
   }
 
-  public getEffectiveName(): string {
+  getEffectiveName(): string {
     return this._alias || this._name;
   }
 
-  public getIndices(): IndexImpl[] {
+  getIndices(): IndexImpl[] {
     return this._indices || TableImpl.EMPTY_INDICES;
   }
 
@@ -79,11 +80,11 @@ export class TableImpl implements BaseTable {
     return this._columns;
   }
 
-  public getConstraint(): Constraint {
+  getConstraint(): Constraint {
     return this._constraint;
   }
 
-  public persistentIndex(): boolean {
+  persistentIndex(): boolean {
     return this._usePersistentIndex;
   }
 
@@ -104,7 +105,11 @@ export class TableImpl implements BaseTable {
     return clone;
   }
 
-  public getRowIdIndexName(): string {
+  col(name: string): Column {
+    return this[name] as Column;
+  }
+
+  getRowIdIndexName(): string {
     return `${this._name}.${TableImpl.ROW_ID_INDEX_PATTERN}`;
   }
 

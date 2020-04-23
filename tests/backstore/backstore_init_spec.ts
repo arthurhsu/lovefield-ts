@@ -16,14 +16,15 @@
 
 import * as chai from 'chai';
 
-import {IndexedDB} from '../../lib/backstore/indexed_db';
-import {Memory} from '../../lib/backstore/memory';
-import {Capability} from '../../lib/base/capability';
-import {Service} from '../../lib/base/service';
-import {DefaultCache} from '../../lib/cache/default_cache';
-import {Builder} from '../../lib/schema/builder';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { IndexedDB } from '../../lib/backstore/indexed_db';
+import { Memory } from '../../lib/backstore/memory';
+import { Capability } from '../../lib/base/capability';
+import { Service } from '../../lib/base/service';
+import { DefaultCache } from '../../lib/cache/default_cache';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Builder } from '../../lib/schema/builder';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -39,7 +40,7 @@ describe('BackStoreInit', () => {
 
   it('init_IndexedDB_Bundled', () => {
     const builder = getHrDbSchemaBuilder();
-    builder.setPragma({enableBundledMode: true});
+    builder.setPragma({ enableBundledMode: true });
     const cache = new DefaultCache(builder.getSchema());
     builder.getGlobal().registerService(Service.CACHE, cache);
 
@@ -50,7 +51,7 @@ describe('BackStoreInit', () => {
   // tables that were created.
   async function checkInit_IndexedDB(builder: Builder): Promise<void> {
     const schema = builder.getSchema();
-    assert.isTrue(schema.table('Holiday').persistentIndex());
+    assert.isTrue((schema.table('Holiday') as BaseTable).persistentIndex());
 
     const indexedDb = new IndexedDB(builder.getGlobal(), schema);
     await indexedDb.init();
@@ -65,7 +66,7 @@ describe('BackStoreInit', () => {
 
   it('init_Memory', async () => {
     const schema = getHrDbSchemaBuilder().getSchema();
-    assert.isTrue(schema.table('Holiday').persistentIndex());
+    assert.isTrue((schema.table('Holiday') as BaseTable).persistentIndex());
 
     const memoryDb = new Memory(schema);
     await memoryDb.init();
@@ -76,8 +77,10 @@ describe('BackStoreInit', () => {
 
   // Asserts that an object store was created for each user-defined table.
   function assertUserTables(
-      schema: DatabaseSchema, tableNames: Set<string>): void {
-    schema.tables().forEach((tableSchema) => {
+    schema: DatabaseSchema,
+    tableNames: Set<string>
+  ): void {
+    schema.tables().forEach(tableSchema => {
       assert.isTrue(tableNames.has(tableSchema.getName()));
     });
   }
@@ -85,18 +88,23 @@ describe('BackStoreInit', () => {
   // Asserts that an object store was created for each Index instance
   // that belongs to a user-defined table that has "persistentIndex" enabled.
   function assertIndexTables(
-      schema: DatabaseSchema, tableNames: Set<string>): void {
-    schema.tables().forEach((tableSchema) => {
-      tableSchema.getIndices().forEach((indexSchema) => {
+    schema: DatabaseSchema,
+    tableNames: Set<string>
+  ): void {
+    schema.tables().forEach(tableSchema => {
+      const tbl = tableSchema as BaseTable;
+      tbl.getIndices().forEach(indexSchema => {
         assert.equal(
-            tableSchema.persistentIndex(),
-            tableNames.has(indexSchema.getNormalizedName()));
+          tbl.persistentIndex(),
+          tableNames.has(indexSchema.getNormalizedName())
+        );
       });
 
       // Checking whether backing store for RowId index was created.
       assert.equal(
-          tableSchema.persistentIndex(),
-          tableNames.has(tableSchema.getRowIdIndexName()));
+        tbl.persistentIndex(),
+        tableNames.has(tbl.getRowIdIndexName())
+      );
     });
   }
 });

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import {ErrorCode, TransactionType} from '../base/enum';
-import {Exception} from '../base/exception';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
-import {TableDiff} from '../cache/table_diff';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { ErrorCode, TransactionType } from '../base/enum';
+import { Exception } from '../base/exception';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
+import { TableDiff } from '../cache/table_diff';
+import { BaseTable } from '../schema/base_table';
+import { DatabaseSchema } from '../schema/database_schema';
 
-import {BackStore} from './back_store';
-import {LocalStorageTable} from './local_storage_table';
-import {LocalStorageTx} from './local_storage_tx';
-import {RawBackStore} from './raw_back_store';
-import {Tx} from './tx';
+import { BackStore } from './back_store';
+import { LocalStorageTable } from './local_storage_table';
+import { LocalStorageTx } from './local_storage_tx';
+import { RawBackStore } from './raw_back_store';
+import { Tx } from './tx';
 
-type StorageEventHandler = (ev: StorageEvent) => any;
+type StorageEventHandler = (ev: StorageEvent) => unknown;
 
 // A backing store implementation using LocalStorage. It can hold at most 10MB
 // of data, depending on browser. This backing store is experimental.
@@ -40,8 +40,8 @@ type StorageEventHandler = (ev: StorageEvent) => any;
 export class LocalStorage implements BackStore {
   private schema: DatabaseSchema;
   private tables: Map<string, LocalStorageTable>;
-  private changeHandler: null|((changes: TableDiff[]) => void);
-  private listener: null|StorageEventHandler;
+  private changeHandler: null | ((changes: TableDiff[]) => void);
+  private listener: null | StorageEventHandler;
 
   constructor(dbSchema: DatabaseSchema) {
     this.schema = dbSchema;
@@ -50,23 +50,22 @@ export class LocalStorage implements BackStore {
     this.listener = null;
   }
 
-  public init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       this.initSync();
       resolve();
     });
   }
 
-  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
-      Tx {
+  createTx(type: TransactionType, scope: BaseTable[], journal?: Journal): Tx {
     return new LocalStorageTx(this, type, journal);
   }
 
-  public close(): void {
+  close(): void {
     // Do nothing.
   }
 
-  public getTableInternal(tableName: string): RuntimeTable {
+  getTableInternal(tableName: string): RuntimeTable {
     if (!this.tables.has(tableName)) {
       // 101: Table {0} not found.
       throw new Exception(ErrorCode.TABLE_NOT_FOUND, tableName);
@@ -75,7 +74,7 @@ export class LocalStorage implements BackStore {
     return this.tables.get(tableName) as RuntimeTable;
   }
 
-  public subscribe(handler: (diffs: TableDiff[]) => void): void {
+  subscribe(handler: (diffs: TableDiff[]) => void): void {
     this.changeHandler = handler;
     if (this.listener) {
       return;
@@ -85,7 +84,7 @@ export class LocalStorage implements BackStore {
     window.addEventListener('storage', this.listener, false);
   }
 
-  public unsubscribe(handler: (diffs: TableDiff[]) => void): void {
+  unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     if (this.listener) {
       window.removeEventListener('storage', this.listener, false);
       this.listener = null;
@@ -93,19 +92,19 @@ export class LocalStorage implements BackStore {
     }
   }
 
-  public notify(changes: TableDiff[]): void {
+  notify(changes: TableDiff[]): void {
     if (this.changeHandler) {
       this.changeHandler(changes);
     }
   }
 
-  public supportsImport(): boolean {
+  supportsImport(): boolean {
     return false;
   }
 
   // Flushes changes to local storage.
-  public commit(): void {
-    this.tables.forEach((table) => table.commit());
+  commit(): void {
+    this.tables.forEach(table => table.commit());
   }
 
   // Synchronous version of init()
@@ -133,12 +132,12 @@ export class LocalStorage implements BackStore {
 
   private loadTables(): void {
     const prefix = this.schema.name() + '.';
-    this.schema.tables().forEach((table) => {
+    (this.schema.tables() as BaseTable[]).forEach(table => {
       const tableName = table.getName();
       this.tables.set(tableName, new LocalStorageTable(prefix + tableName));
       if (table.persistentIndex()) {
         const indices = table.getIndices();
-        indices.forEach((index) => {
+        indices.forEach(index => {
           const indexName = index.getNormalizedName();
           this.tables.set(indexName, new LocalStorageTable(prefix + indexName));
         }, this);
@@ -148,8 +147,10 @@ export class LocalStorage implements BackStore {
 
   private onStorageEvent(ev: StorageEvent): void {
     const key = ev.key as string;
-    if (ev.storageArea !== window.localStorage ||
-        key.indexOf(this.schema.name() + '.') !== 0) {
+    if (
+      ev.storageArea !== window.localStorage ||
+      key.indexOf(this.schema.name() + '.') !== 0
+    ) {
       return;
     }
 
