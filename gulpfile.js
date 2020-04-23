@@ -77,9 +77,9 @@ function genFlags() {
       quote = '';
     }
     // We do not use readonly so that tests can modify them, esp. DEBUG.
-    contents += `  public static ${key} = ${quote}${value}${quote};\n`;
+    contents += `  static ${key} = ${quote}${value}${quote};\n`;
   }
-  contents += '}  // class Flags\n';
+  contents += '}\n';
   fs.ensureDirSync('lib/gen');
   fs.writeFileSync('lib/gen/flags.ts', contents, {encoding: 'utf-8'});
   gulp.src('lib/gen/flags.ts')
