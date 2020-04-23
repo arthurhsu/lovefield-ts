@@ -8,8 +8,8 @@ module.exports = function(config) {
     sl_chrome_mac: {
       base: 'SauceLabs',
       browserName: 'chrome',
-      platform: 'macOS 10.12',
-      version: '67.0'
+      platform: 'macOS 10.15',
+      version: '81.0'
     }
   };
 
