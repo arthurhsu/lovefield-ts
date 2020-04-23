@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {Key} from './key_range';
+import { Key } from './key_range';
 
 export class IndexStats {
-  public totalRows: number;
+  totalRows: number;
 
   // Useful only for primary key auto-increment indices. Ensures that previously
   // encountered IDs within the same session (application run) are not re-used,
   // even after they have been freed.
-  public maxKeyEncountered: Key|null;
+  maxKeyEncountered: Key | null;
 
   constructor() {
     this.totalRows = 0;
@@ -30,28 +30,31 @@ export class IndexStats {
   }
 
   // Signals that a row had been added to index.
-  public add(key: Key, rowCount: number): void {
+  add(key: Key, rowCount: number): void {
     this.totalRows += rowCount;
 
-    this.maxKeyEncountered = (this.maxKeyEncountered === null) ?
-        key :
-        key > this.maxKeyEncountered ? key : this.maxKeyEncountered;
+    this.maxKeyEncountered =
+      this.maxKeyEncountered === null
+        ? key
+        : key > this.maxKeyEncountered
+        ? key
+        : this.maxKeyEncountered;
   }
 
   // Signals that row(s) had been removed from index.
-  public remove(key: Key, removedCount: number): void {
+  remove(key: Key, removedCount: number): void {
     this.totalRows -= removedCount;
   }
 
   // Signals that the index had been cleared.
-  public clear(): void {
+  clear(): void {
     this.totalRows = 0;
     // this.maxKeyEncountered shall not be updated.
   }
 
   // Combines stats given and put the results into current object.
-  public updateFromList(statsList: IndexStats[]): void {
+  updateFromList(statsList: IndexStats[]): void {
     this.clear();
-    statsList.forEach((stats) => this.totalRows += stats.totalRows);
+    statsList.forEach(stats => (this.totalRows += stats.totalRows));
   }
 }

@@ -15,19 +15,19 @@
  */
 
 import * as chai from 'chai';
-import {Order} from '../../lib/base/enum';
-import {Favor} from '../../lib/base/private_enum';
-import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
-import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
-import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
+import { Order } from '../../lib/base/enum';
+import { Favor } from '../../lib/base/private_enum';
+import { SingleKey, SingleKeyRange } from '../../lib/index/key_range';
+import { MultiKeyComparator } from '../../lib/index/multi_key_comparator';
+import { MultiKeyComparatorWithNull } from '../../lib/index/multi_key_comparator_with_null';
 
 const assert = chai.assert;
 
 describe('MultiKeyComparator', () => {
   function shuffleAndTest(testFn: (c: MultiKeyComparator) => void): void {
     const ORDER = [Order.DESC, Order.ASC];
-    ORDER.forEach((o1) => {
-      ORDER.forEach((o2) => {
+    ORDER.forEach(o1 => {
+      ORDER.forEach(o2 => {
         const c = new MultiKeyComparator([o1, o2]);
         testFn(c);
       });
@@ -141,7 +141,8 @@ describe('MultiKeyComparator', () => {
     const upperBoundExclude = SingleKeyRange.upperBound(2, true);
 
     assert.isTrue(
-        c.isInRange([2, 2], [SingleKeyRange.all(), SingleKeyRange.all()]));
+      c.isInRange([2, 2], [SingleKeyRange.all(), SingleKeyRange.all()])
+    );
     assert.isTrue(c.isInRange([2, 2], [lowerBound, lowerBound]));
     assert.isFalse(c.isInRange([2, 2], [lowerBoundExclude, lowerBound]));
     assert.isFalse(c.isInRange([2, 2], [lowerBound, lowerBoundExclude]));
@@ -173,7 +174,7 @@ describe('MultiKeyComparator', () => {
     // Null specific tests
     const all = SingleKeyRange.all();
     const lowerBound = SingleKeyRange.lowerBound(2);
-    const NULL: SingleKey = null as any as SingleKey;
+    const NULL: SingleKey = (null as unknown) as SingleKey;
     assert.isTrue(c.isInRange([2, NULL], [all, all]));
     assert.isTrue(c.isInRange([NULL, 2], [all, all]));
     assert.isTrue(c.isInRange([2, NULL], [lowerBound, all]));
@@ -197,10 +198,7 @@ describe('MultiKeyComparator', () => {
         SingleKeyRange.lowerBound(90, true),
         SingleKeyRange.lowerBound('X', true),
       ],
-      [
-        SingleKeyRange.only(90),
-        SingleKeyRange.only('X'),
-      ],
+      [SingleKeyRange.only(90), SingleKeyRange.only('X')],
     ];
 
     const expectations = [
@@ -209,7 +207,7 @@ describe('MultiKeyComparator', () => {
       '(90, unbound],(X, unbound]',
     ];
 
-    const actual = c.sortKeyRanges(keyRanges).map((range) => range.toString());
+    const actual = c.sortKeyRanges(keyRanges).map(range => range.toString());
     assert.sameOrderedMembers(expectations, actual);
   });
 
@@ -226,10 +224,7 @@ describe('MultiKeyComparator', () => {
         new SingleKeyRange(24, SingleKeyRange.UNBOUND_VALUE, true, false),
         new SingleKeyRange('X', SingleKeyRange.UNBOUND_VALUE, true, false),
       ],
-      [
-        SingleKeyRange.only(22),
-        SingleKeyRange.only('D'),
-      ],
+      [SingleKeyRange.only(22), SingleKeyRange.only('D')],
     ];
 
     const expectations = [
@@ -238,7 +233,7 @@ describe('MultiKeyComparator', () => {
       '(24, unbound],[unbound, B)',
     ];
 
-    const actual = c.sortKeyRanges(keyRanges).map((range) => range.toString());
+    const actual = c.sortKeyRanges(keyRanges).map(range => range.toString());
     assert.sameOrderedMembers(expectations, actual);
   });
 
@@ -256,42 +251,62 @@ describe('MultiKeyComparator', () => {
 
     // Shuffle of valid conditions shall result in covering both ends.
     const ranges = [all, only2, lowerBound, upperBound];
-    ranges.forEach((r1) => {
-      ranges.forEach((r2) => {
+    ranges.forEach(r1 => {
+      ranges.forEach(r2 => {
         assert.sameOrderedMembers([true, true], c.compareRange(key, [r1, r2]));
       });
     });
 
     assert.sameOrderedMembers(
-        [true, false], c.compareRange(key, [only1, only3]));
+      [true, false],
+      c.compareRange(key, [only1, only3])
+    );
     assert.sameOrderedMembers(
-        [false, true], c.compareRange(key, [only3, only1]));
+      [false, true],
+      c.compareRange(key, [only3, only1])
+    );
     assert.sameOrderedMembers(
-        [false, false], c.compareRange(key, [only1, only1]));
+      [false, false],
+      c.compareRange(key, [only1, only1])
+    );
     assert.sameOrderedMembers(
-        [false, false], c.compareRange(key, [only3, only3]));
+      [false, false],
+      c.compareRange(key, [only3, only3])
+    );
 
     assert.sameOrderedMembers(
-        [false, true], c.compareRange(key, [lowerBoundExclude, lowerBound]));
+      [false, true],
+      c.compareRange(key, [lowerBoundExclude, lowerBound])
+    );
     assert.sameOrderedMembers(
-        [false, false],
-        c.compareRange(key, [lowerBoundExclude, lowerBoundExclude]));
+      [false, false],
+      c.compareRange(key, [lowerBoundExclude, lowerBoundExclude])
+    );
     assert.sameOrderedMembers(
-        [false, true], c.compareRange(key, [lowerBoundExclude, upperBound]));
+      [false, true],
+      c.compareRange(key, [lowerBoundExclude, upperBound])
+    );
     assert.sameOrderedMembers(
-        [false, true],
-        c.compareRange(key, [lowerBoundExclude, upperBoundExclude]));
+      [false, true],
+      c.compareRange(key, [lowerBoundExclude, upperBoundExclude])
+    );
 
     assert.sameOrderedMembers(
-        [true, false], c.compareRange(key, [upperBoundExclude, lowerBound]));
+      [true, false],
+      c.compareRange(key, [upperBoundExclude, lowerBound])
+    );
     assert.sameOrderedMembers(
-        [true, false],
-        c.compareRange(key, [upperBoundExclude, lowerBoundExclude]));
+      [true, false],
+      c.compareRange(key, [upperBoundExclude, lowerBoundExclude])
+    );
     assert.sameOrderedMembers(
-        [true, false], c.compareRange(key, [upperBoundExclude, upperBound]));
+      [true, false],
+      c.compareRange(key, [upperBoundExclude, upperBound])
+    );
     assert.sameOrderedMembers(
-        [false, false],
-        c.compareRange(key, [upperBoundExclude, upperBoundExclude]));
+      [false, false],
+      c.compareRange(key, [upperBoundExclude, upperBoundExclude])
+    );
   });
 
   it('isFirstKeyInRange', () => {
@@ -299,12 +314,13 @@ describe('MultiKeyComparator', () => {
     const all = SingleKeyRange.all();
     const only1 = SingleKeyRange.only(1);
     const only2 = SingleKeyRange.only(2);
-    const NULL: SingleKey = null as any as SingleKey;
+    const NULL: SingleKey = (null as unknown) as SingleKey;
 
     assert.isTrue(c.isFirstKeyInRange([1, 2], [only1, only1]));
     assert.isTrue(c.isFirstKeyInRange([1, 2], [all, only1]));
     assert.isTrue(
-        c.isFirstKeyInRange([1, 2], [only1, null as any as SingleKeyRange]));
+      c.isFirstKeyInRange([1, 2], [only1, (null as unknown) as SingleKeyRange])
+    );
     assert.isTrue(c.isFirstKeyInRange([NULL, 2], [all, only1]));
     assert.isFalse(c.isFirstKeyInRange([1, 2], [only2, all]));
     assert.isFalse(c.isFirstKeyInRange([NULL, 2], [only1, all]));

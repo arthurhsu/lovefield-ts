@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import {DatabaseSchema} from '../schema/database_schema';
-import {IndexImpl} from '../schema/index_impl';
-import {BTree} from './btree';
-import {ComparatorFactory} from './comparator_factory';
-import {IndexStore} from './index_store';
-import {NullableIndex} from './nullable_index';
-import {RowId} from './row_id';
-import {RuntimeIndex} from './runtime_index';
+import { BaseTable } from '../schema/base_table';
+import { DatabaseSchema } from '../schema/database_schema';
+import { IndexImpl } from '../schema/index_impl';
+import { BTree } from './btree';
+import { ComparatorFactory } from './comparator_factory';
+import { IndexStore } from './index_store';
+import { NullableIndex } from './nullable_index';
+import { RowId } from './row_id';
+import { RuntimeIndex } from './runtime_index';
 
 // In-memory index store that builds all indices at the time of init.
 export class MemoryIndexStore implements IndexStore {
@@ -33,21 +34,21 @@ export class MemoryIndexStore implements IndexStore {
     this.tableIndices = new Map<string, RuntimeIndex[]>();
   }
 
-  public init(schema: DatabaseSchema): Promise<void> {
-    const tables = schema.tables();
+  init(schema: DatabaseSchema): Promise<void> {
+    const tables = schema.tables() as BaseTable[];
 
-    tables.forEach((table) => {
+    tables.forEach(table => {
       const tableIndices: RuntimeIndex[] = [];
       this.tableIndices.set(table.getName(), tableIndices);
 
       const rowIdIndexName = table.getRowIdIndexName();
-      const rowIdIndex: RuntimeIndex|null = this.get(rowIdIndexName);
+      const rowIdIndex: RuntimeIndex | null = this.get(rowIdIndexName);
       if (rowIdIndex === null) {
         const index = new RowId(rowIdIndexName);
         tableIndices.push(index);
         this.store.set(rowIdIndexName, index);
       }
-      (table.getIndices() as IndexImpl[]).forEach((indexSchema) => {
+      (table.getIndices() as IndexImpl[]).forEach(indexSchema => {
         const index = this.createIndex(indexSchema);
         tableIndices.push(index);
         this.store.set(indexSchema.getNormalizedName(), index);
@@ -56,11 +57,11 @@ export class MemoryIndexStore implements IndexStore {
     return Promise.resolve();
   }
 
-  public get(name: string): RuntimeIndex|null {
+  get(name: string): RuntimeIndex | null {
     return this.store.get(name) || null;
   }
 
-  public set(tableName: string, index: RuntimeIndex): void {
+  set(tableName: string, index: RuntimeIndex): void {
     let tableIndices = this.tableIndices.get(tableName) || null;
     if (tableIndices === null) {
       tableIndices = [];
@@ -85,18 +86,20 @@ export class MemoryIndexStore implements IndexStore {
     this.store.set(index.getName(), index);
   }
 
-  public getTableIndices(tableName: string): RuntimeIndex[] {
+  getTableIndices(tableName: string): RuntimeIndex[] {
     return this.tableIndices.get(tableName) || [];
   }
 
   private createIndex(indexSchema: IndexImpl): RuntimeIndex {
     const comparator = ComparatorFactory.create(indexSchema);
     const index = new BTree(
-        indexSchema.getNormalizedName(), comparator, indexSchema.isUnique);
+      indexSchema.getNormalizedName(),
+      comparator,
+      indexSchema.isUnique
+    );
 
-    return (indexSchema.hasNullableColumn() &&
-            indexSchema.columns.length === 1) ?
-        new NullableIndex(index) :
-        index;
+    return indexSchema.hasNullableColumn() && indexSchema.columns.length === 1
+      ? new NullableIndex(index)
+      : index;
   }
 }

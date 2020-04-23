@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import {Favor} from '../../lib/base/private_enum';
-import {SingleKeyRange} from '../../lib/index/key_range';
+import { Favor } from '../../lib/base/private_enum';
+import { SingleKeyRange } from '../../lib/index/key_range';
 
 const assert = chai.assert;
 
@@ -100,11 +100,15 @@ describe('KeyRange', () => {
     const keyRange2 = SingleKeyRange.only(40);
     complementKeyRanges = SingleKeyRange.complement([keyRange1, keyRange2]);
     assert.equal(
-        '[unbound, 20),(20, 40),(40, unbound]', complementKeyRanges.join(','));
+      '[unbound, 20),(20, 40),(40, unbound]',
+      complementKeyRanges.join(',')
+    );
 
     complementKeyRanges = SingleKeyRange.complement([keyRange2, keyRange1]);
     assert.equal(
-        '[unbound, 20),(20, 40),(40, unbound]', complementKeyRanges.join(','));
+      '[unbound, 20),(20, 40),(40, unbound]',
+      complementKeyRanges.join(',')
+    );
   });
 
   it('isOnly', () => {
@@ -176,10 +180,16 @@ describe('KeyRange', () => {
   it('equals', () => {
     assert.isTrue(SingleKeyRange.all().equals(SingleKeyRange.all()));
     assert.isTrue(SingleKeyRange.only(1).equals(SingleKeyRange.only(1)));
-    assert.isTrue(new SingleKeyRange(1, 2, true, false)
-                      .equals(new SingleKeyRange(1, 2, true, false)));
-    assert.isFalse(new SingleKeyRange(1, 2, false, false)
-                       .equals(new SingleKeyRange(1, 2, true, false)));
+    assert.isTrue(
+      new SingleKeyRange(1, 2, true, false).equals(
+        new SingleKeyRange(1, 2, true, false)
+      )
+    );
+    assert.isFalse(
+      new SingleKeyRange(1, 2, false, false).equals(
+        new SingleKeyRange(1, 2, true, false)
+      )
+    );
   });
 
   it('xor', () => {
@@ -190,7 +200,7 @@ describe('KeyRange', () => {
     assert.isFalse(xor(false, false));
   });
 
-  function generateTestRanges(): any {
+  function generateTestRanges(): { [key: string]: SingleKeyRange } {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),
@@ -230,7 +240,7 @@ describe('KeyRange', () => {
       r.r3,
       r.r4,
     ];
-    cases.forEach((s) => assert.equal(Favor.TIE, c(s, s), s.toString()));
+    cases.forEach(s => assert.equal(Favor.TIE, c(s, s), s.toString()));
 
     // Test pairs that RHS always wins.
     const pairs = [
@@ -250,7 +260,7 @@ describe('KeyRange', () => {
       [r.only1, r.only2],
     ];
 
-    pairs.forEach((pair) => {
+    pairs.forEach(pair => {
       assert.equal(Favor.RHS, c(pair[0], pair[1]), pair[0].toString());
       assert.equal(Favor.LHS, c(pair[1], pair[0]), pair[0].toString());
     });
@@ -271,7 +281,7 @@ describe('KeyRange', () => {
       r.r3,
       r.r4,
     ];
-    cases.forEach((range) => {
+    cases.forEach(range => {
       assert.isTrue(range.overlaps(range), range.toString());
       assert.isTrue(range.overlaps(r.all), range.toString());
       assert.isTrue(r.all.overlaps(range), range.toString());
@@ -296,7 +306,7 @@ describe('KeyRange', () => {
       [r.r2, r.r3],
       [r.r2, r.r4],
     ];
-    overlapping.forEach((pair) => {
+    overlapping.forEach(pair => {
       assert.isTrue(pair[0].overlaps(pair[1]));
       assert.isTrue(pair[1].overlaps(pair[0]));
     });
@@ -316,7 +326,7 @@ describe('KeyRange', () => {
       [r.r2, r.r6],
       [r.r4, r.r6],
     ];
-    excluding.forEach((pair) => {
+    excluding.forEach(pair => {
       assert.isFalse(pair[0].overlaps(pair[1]));
       assert.isFalse(pair[1].overlaps(pair[0]));
     });
@@ -324,15 +334,20 @@ describe('KeyRange', () => {
 
   it('getBoundingRange', () => {
     const r = generateTestRanges();
-    const check =
-        (expected: SingleKeyRange, r1: SingleKeyRange, r2: SingleKeyRange) => {
-          assert.isTrue(
-              expected.equals(SingleKeyRange.getBoundingRange(r1, r2)),
-              expected.toString());
-          assert.isTrue(
-              expected.equals(SingleKeyRange.getBoundingRange(r2, r1)),
-              expected.toString());
-        };
+    const check = (
+      expected: SingleKeyRange,
+      r1: SingleKeyRange,
+      r2: SingleKeyRange
+    ) => {
+      assert.isTrue(
+        expected.equals(SingleKeyRange.getBoundingRange(r1, r2)),
+        expected.toString()
+      );
+      assert.isTrue(
+        expected.equals(SingleKeyRange.getBoundingRange(r2, r1)),
+        expected.toString()
+      );
+    };
 
     // Self and or with r.all.
     check(r.all, r.all, r.all);
@@ -347,7 +362,7 @@ describe('KeyRange', () => {
       r.r3,
       r.r4,
     ];
-    cases.forEach((range) => {
+    cases.forEach(range => {
       check(range, range, range);
       check(r.all, range, r.all);
     });
@@ -382,13 +397,20 @@ describe('KeyRange', () => {
 
   it('and', () => {
     const r = generateTestRanges();
-    const check =
-        (expected: SingleKeyRange, r1: SingleKeyRange, r2: SingleKeyRange) => {
-          assert.isTrue(
-              expected.equals(SingleKeyRange.and(r1, r2)), expected.toString());
-          assert.isTrue(
-              expected.equals(SingleKeyRange.and(r2, r1)), expected.toString());
-        };
+    const check = (
+      expected: SingleKeyRange,
+      r1: SingleKeyRange,
+      r2: SingleKeyRange
+    ) => {
+      assert.isTrue(
+        expected.equals(SingleKeyRange.and(r1, r2)),
+        expected.toString()
+      );
+      assert.isTrue(
+        expected.equals(SingleKeyRange.and(r2, r1)),
+        expected.toString()
+      );
+    };
 
     // Self and or with r.all.
     check(r.all, r.all, r.all);
@@ -403,7 +425,7 @@ describe('KeyRange', () => {
       r.r3,
       r.r4,
     ];
-    cases.forEach((range) => {
+    cases.forEach(range => {
       check(range, range, range);
       check(range, range, r.all);
     });
@@ -443,7 +465,7 @@ describe('KeyRange', () => {
       [r.r6, r.r2],
       [r.r6, r.r4],
     ];
-    excluding.forEach((pair) => {
+    excluding.forEach(pair => {
       assert.isNull(SingleKeyRange.and(pair[0], pair[1]));
       assert.isNull(SingleKeyRange.and(pair[1], pair[0]));
     });

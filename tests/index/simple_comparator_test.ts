@@ -15,16 +15,16 @@
  */
 
 import * as chai from 'chai';
-import {Order} from '../../lib/base/enum';
-import {Favor} from '../../lib/base/private_enum';
-import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
-import {SimpleComparator} from '../../lib/index/simple_comparator';
-import {SimpleComparatorWithNull} from '../../lib/index/simple_comparator_with_null';
+import { Order } from '../../lib/base/enum';
+import { Favor } from '../../lib/base/private_enum';
+import { SingleKey, SingleKeyRange } from '../../lib/index/key_range';
+import { SimpleComparator } from '../../lib/index/simple_comparator';
+import { SimpleComparatorWithNull } from '../../lib/index/simple_comparator_with_null';
 
 const assert = chai.assert;
 
 describe('SimpleComparator', () => {
-  const NULL: SingleKey = null as any as SingleKey;
+  const NULL: SingleKey = (null as unknown) as SingleKey;
 
   function checkOrderAsc(comparator: SimpleComparator): void {
     const c = comparator.compare.bind(comparator);
@@ -53,7 +53,7 @@ describe('SimpleComparator', () => {
 
     // Null-specific tests
     const c = c2.compare.bind(c2);
-    const n = null as unknown as SingleKey;
+    const n = (null as unknown) as SingleKey;
     assert.equal(Favor.TIE, c(n, n));
     assert.equal(Favor.LHS, c(0, n));
     assert.equal(Favor.RHS, c(n, 0));
@@ -86,7 +86,7 @@ describe('SimpleComparator', () => {
 
     // Null-specific tests
     const c = c2.compare.bind(c2);
-    const n = null as unknown as SingleKey;
+    const n = (null as unknown) as SingleKey;
     assert.equal(Favor.TIE, c(n, n));
     assert.equal(Favor.RHS, c(0, n));
     assert.equal(Favor.LHS, c(n, 0));
@@ -180,28 +180,20 @@ describe('SimpleComparator', () => {
       new SingleKeyRange(-1, 1, false, true),
     ];
 
-    const expectationAsc = [
-      '[-1, 1)',
-      '[1, 5)',
-      '[5, 5]',
-      '[6, 7]',
-    ];
+    const expectationAsc = ['[-1, 1)', '[1, 5)', '[5, 5]', '[6, 7]'];
 
     let dupe = ranges.slice();
-    let actual = dupe.sort(SimpleComparator.orderRangeAscending)
-                     .map((range) => range.toString());
+    let actual = dupe
+      .sort(SimpleComparator.orderRangeAscending)
+      .map(range => range.toString());
     assert.sameOrderedMembers(expectationAsc, actual);
 
-    const expectationDesc = [
-      '[6, 7]',
-      '[5, 5]',
-      '[1, 5)',
-      '[-1, 1)',
-    ];
+    const expectationDesc = ['[6, 7]', '[5, 5]', '[1, 5)', '[-1, 1)'];
 
     dupe = ranges.slice();
-    actual = dupe.sort(SimpleComparator.orderRangeDescending)
-                 .map((range) => range.toString());
+    actual = dupe
+      .sort(SimpleComparator.orderRangeDescending)
+      .map(range => range.toString());
     assert.sameOrderedMembers(expectationDesc, actual);
   });
 
@@ -231,7 +223,7 @@ describe('SimpleComparator', () => {
       SingleKeyRange.upperBound(2, true),
       SingleKeyRange.only(2),
     ];
-    ranges.forEach((range) => {
+    ranges.forEach(range => {
       assert.isFalse(c2.isInRange(NULL, range));
     });
   });
@@ -246,20 +238,12 @@ describe('SimpleComparator', () => {
       SingleKeyRange.only(5),
     ];
 
-    const expectations1 = [
-      '[unbound, 5)',
-      '[5, 5]',
-      '(5, unbound]',
-    ];
+    const expectations1 = ['[unbound, 5)', '[5, 5]', '(5, unbound]'];
 
-    const expectations2 = [
-      '(5, unbound]',
-      '[5, 5]',
-      '[unbound, 5)',
-    ];
+    const expectations2 = ['(5, unbound]', '[5, 5]', '[unbound, 5)'];
 
     const getActual = (c: SimpleComparator, ranges: SingleKeyRange[]) => {
-      return c.sortKeyRanges(ranges).map((range) => range.toString());
+      return c.sortKeyRanges(ranges).map(range => range.toString());
     };
 
     assert.sameOrderedMembers(expectations1, getActual(c1, keyRanges));
@@ -269,20 +253,36 @@ describe('SimpleComparator', () => {
   it('compareRange', () => {
     const c = new SimpleComparator(Order.ASC);
     assert.sameOrderedMembers(
-        [true, true], c.compareRange(2, SingleKeyRange.all()));
+      [true, true],
+      c.compareRange(2, SingleKeyRange.all())
+    );
     assert.sameOrderedMembers(
-        [true, true], c.compareRange(2, SingleKeyRange.only(2)));
+      [true, true],
+      c.compareRange(2, SingleKeyRange.only(2))
+    );
     assert.sameOrderedMembers(
-        [false, true], c.compareRange(2, SingleKeyRange.only(3)));
+      [false, true],
+      c.compareRange(2, SingleKeyRange.only(3))
+    );
     assert.sameOrderedMembers(
-        [true, false], c.compareRange(2, SingleKeyRange.only(1)));
+      [true, false],
+      c.compareRange(2, SingleKeyRange.only(1))
+    );
     assert.sameOrderedMembers(
-        [true, true], c.compareRange(2, SingleKeyRange.lowerBound(2)));
+      [true, true],
+      c.compareRange(2, SingleKeyRange.lowerBound(2))
+    );
     assert.sameOrderedMembers(
-        [false, true], c.compareRange(2, SingleKeyRange.lowerBound(2, true)));
+      [false, true],
+      c.compareRange(2, SingleKeyRange.lowerBound(2, true))
+    );
     assert.sameOrderedMembers(
-        [true, true], c.compareRange(2, SingleKeyRange.upperBound(2)));
+      [true, true],
+      c.compareRange(2, SingleKeyRange.upperBound(2))
+    );
     assert.sameOrderedMembers(
-        [true, false], c.compareRange(2, SingleKeyRange.upperBound(2, true)));
+      [true, false],
+      c.compareRange(2, SingleKeyRange.upperBound(2, true))
+    );
   });
 });

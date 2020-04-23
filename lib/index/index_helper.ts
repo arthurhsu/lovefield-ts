@@ -20,21 +20,21 @@ export class IndexHelper {
   //
   // for each character c in string
   //   hash = hash * 31 + c
-  public static hashCode(value: string): number {
+  static hashCode(value: string): number {
     let hash = 0;
     for (let i = 0; i < value.length; ++i) {
-      hash = ((hash << 5) - hash) + value.charCodeAt(i);
-      hash = hash & hash;  // Convert to 32-bit integer.
+      hash = (hash << 5) - hash + value.charCodeAt(i);
+      hash = hash & hash; // Convert to 32-bit integer.
     }
     return hash;
   }
 
   // Compute hash key for an array.
-  public static hashArray(values: object[]): string {
-    const keys = values.map((value) => {
-      return (value !== undefined && value !== null) ?
-          IndexHelper.hashCode(value.toString()).toString(32) :
-          '';
+  static hashArray(values: object[]): string {
+    const keys = values.map(value => {
+      return value !== undefined && value !== null
+        ? IndexHelper.hashCode(value.toString()).toString(32)
+        : '';
     });
 
     return keys.join('_');
@@ -42,24 +42,31 @@ export class IndexHelper {
 
   // Slice result array by limit and skip.
   // Note: For performance reasons the input array might be modified in place.
-  public static slice(
-      rawArray: number[], reverseOrder?: boolean, limit?: number,
-      skip?: number): number[] {
+  static slice(
+    rawArray: number[],
+    reverseOrder?: boolean,
+    limit?: number,
+    skip?: number
+  ): number[] {
     const array = reverseOrder ? rawArray.reverse() : rawArray;
 
     // First handling case where no limit and no skip parameters have been
     // specified, such that no copying of the input array is performed. This is
     // an optimization such that unnecessary copying can be avoided for the
     // majority case (no limit/skip params).
-    if ((limit === undefined || limit === null) &&
-        (skip === undefined || skip === null)) {
+    if (
+      (limit === undefined || limit === null) &&
+      (skip === undefined || skip === null)
+    ) {
       return array;
     }
 
     // Handling case where at least one of limit/skip parameters has been
     // specified. The input array will have to be sliced.
-    const actualLimit =
-        Math.min((limit !== undefined) ? limit : array.length, array.length);
+    const actualLimit = Math.min(
+      limit !== undefined ? limit : array.length,
+      array.length
+    );
     if (actualLimit === 0) {
       return [];
     }

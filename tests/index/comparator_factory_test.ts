@@ -15,27 +15,33 @@
  */
 
 import * as chai from 'chai';
-import {ComparatorFactory} from '../../lib/index/comparator_factory';
-import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
-import {SimpleComparator} from '../../lib/index/simple_comparator';
-import {IndexImpl} from '../../lib/schema/index_impl';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { ComparatorFactory } from '../../lib/index/comparator_factory';
+import { MultiKeyComparator } from '../../lib/index/multi_key_comparator';
+import { SimpleComparator } from '../../lib/index/simple_comparator';
+import { BaseTable } from '../../lib/schema/base_table';
+import { IndexImpl } from '../../lib/schema/index_impl';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('ComparatorFactory', () => {
   const schema = getHrDbSchemaBuilder().getSchema();
 
-  const maxSalary = schema.table('Job').getIndices().filter((index) => {
-    return index.getNormalizedName() === 'Job.idx_maxSalary';
-  })[0] as IndexImpl;
+  const maxSalary = (schema.table('Job') as BaseTable)
+    .getIndices()
+    .filter(index => {
+      return index.getNormalizedName() === 'Job.idx_maxSalary';
+    })[0] as IndexImpl;
   assert.isTrue(
-      ComparatorFactory.create(maxSalary) instanceof SimpleComparator);
+    ComparatorFactory.create(maxSalary) instanceof SimpleComparator
+  );
 
-  const uqConstraint =
-      schema.table('DummyTable').getIndices().filter((index) => {
-        return index.getNormalizedName() === 'DummyTable.uq_constraint';
-      })[0] as IndexImpl;
+  const uqConstraint = (schema.table('DummyTable') as BaseTable)
+    .getIndices()
+    .filter(index => {
+      return index.getNormalizedName() === 'DummyTable.uq_constraint';
+    })[0] as IndexImpl;
   assert.isTrue(
-      ComparatorFactory.create(uqConstraint) instanceof MultiKeyComparator);
+    ComparatorFactory.create(uqConstraint) instanceof MultiKeyComparator
+  );
 });

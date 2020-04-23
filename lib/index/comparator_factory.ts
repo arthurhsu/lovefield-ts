@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-import {IndexImpl} from '../schema/index_impl';
-import {MultiKeyComparator} from './multi_key_comparator';
-import {MultiKeyComparatorWithNull} from './multi_key_comparator_with_null';
-import {SimpleComparator} from './simple_comparator';
+import { IndexImpl } from '../schema/index_impl';
+import { MultiKeyComparator } from './multi_key_comparator';
+import { MultiKeyComparatorWithNull } from './multi_key_comparator_with_null';
+import { SimpleComparator } from './simple_comparator';
 
 export class ComparatorFactory {
-  public static create(indexSchema: IndexImpl): SimpleComparator
-      |MultiKeyComparator|MultiKeyComparatorWithNull {
+  static create(
+    indexSchema: IndexImpl
+  ): SimpleComparator | MultiKeyComparator | MultiKeyComparatorWithNull {
     if (indexSchema.columns.length === 1) {
       return new SimpleComparator(indexSchema.columns[0].order);
     }
 
-    const orders = indexSchema.columns.map((col) => col.order);
-    const nullable = indexSchema.columns.some((col) => col.schema.isNullable());
-    return nullable ? new MultiKeyComparatorWithNull(orders) :
-                      new MultiKeyComparator(orders);
+    const orders = indexSchema.columns.map(col => col.order);
+    const nullable = indexSchema.columns.some(col => col.schema.isNullable());
+    return nullable
+      ? new MultiKeyComparatorWithNull(orders)
+      : new MultiKeyComparator(orders);
   }
 }

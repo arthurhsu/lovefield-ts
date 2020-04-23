@@ -14,54 +14,56 @@
  * limitations under the License.
  */
 
-import {Order} from '../base/enum';
-import {Favor} from '../base/private_enum';
-import {SingleKey, SingleKeyRange} from './key_range';
-import {SimpleComparator} from './simple_comparator';
+import { Order } from '../base/enum';
+import { Favor } from '../base/private_enum';
+import { SingleKey, SingleKeyRange } from './key_range';
+import { SimpleComparator } from './simple_comparator';
 
 // This comparator is not used to replace existing NullableIndex wrapper
 // because of its compareAscending function requires extra null key
 // checking every time, where the wrapper does it only once. This resulted in
 // performance difference and therefore the NullableIndex is kept.
 export class SimpleComparatorWithNull extends SimpleComparator {
-  public static compareAscending(lhs: SingleKey, rhs: SingleKey): Favor {
+  static compareAscending(lhs: SingleKey, rhs: SingleKey): Favor {
     if (lhs === null) {
       return rhs === null ? Favor.TIE : Favor.RHS;
     }
-    return (rhs === null) ? Favor.LHS :
-                            SimpleComparator.compareAscending(lhs, rhs);
+    return rhs === null
+      ? Favor.LHS
+      : SimpleComparator.compareAscending(lhs, rhs);
   }
 
-  public static compareDescending(lhs: SingleKey, rhs: SingleKey): Favor {
+  static compareDescending(lhs: SingleKey, rhs: SingleKey): Favor {
     return SimpleComparatorWithNull.compareAscending(rhs, lhs);
   }
 
   constructor(order: Order) {
     super(order);
 
-    this.compareFn = (order === Order.DESC) ?
-        SimpleComparatorWithNull.compareDescending :
-        SimpleComparatorWithNull.compareAscending;
+    this.compareFn =
+      order === Order.DESC
+        ? SimpleComparatorWithNull.compareDescending
+        : SimpleComparatorWithNull.compareAscending;
   }
 
-  public isInRange(key: SingleKey, range: SingleKeyRange): boolean {
-    return (key === null) ? range.isAll() : super.isInRange(key, range);
+  isInRange(key: SingleKey, range: SingleKeyRange): boolean {
+    return key === null ? range.isAll() : super.isInRange(key, range);
   }
 
-  public min(lhs: SingleKey, rhs: SingleKey): Favor {
+  min(lhs: SingleKey, rhs: SingleKey): Favor {
     const results = this.minMax(lhs, rhs);
-    return (results === null) ? super.min(lhs, rhs) : results;
+    return results === null ? super.min(lhs, rhs) : results;
   }
 
-  public max(lhs: SingleKey, rhs: SingleKey): Favor {
+  max(lhs: SingleKey, rhs: SingleKey): Favor {
     const results = this.minMax(lhs, rhs);
-    return (results === null) ? super.max(lhs, rhs) : results;
+    return results === null ? super.max(lhs, rhs) : results;
   }
 
-  private minMax(lhs: SingleKey, rhs: SingleKey): Favor|null {
+  private minMax(lhs: SingleKey, rhs: SingleKey): Favor | null {
     if (lhs === null) {
       return rhs === null ? Favor.TIE : Favor.RHS;
     }
-    return (rhs === null) ? Favor.LHS : null;
+    return rhs === null ? Favor.LHS : null;
   }
 }

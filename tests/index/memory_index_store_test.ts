@@ -17,15 +17,16 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {BTree} from '../../lib/index/btree';
-import {ComparatorFactory} from '../../lib/index/comparator_factory';
-import {IndexStore} from '../../lib/index/index_store';
-import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {RowId} from '../../lib/index/row_id';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {IndexImpl} from '../../lib/schema/index_impl';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { BTree } from '../../lib/index/btree';
+import { ComparatorFactory } from '../../lib/index/comparator_factory';
+import { IndexStore } from '../../lib/index/index_store';
+import { MemoryIndexStore } from '../../lib/index/memory_index_store';
+import { RowId } from '../../lib/index/row_id';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
+import { BaseTable } from '../../lib/schema/base_table';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { IndexImpl } from '../../lib/schema/index_impl';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -50,17 +51,17 @@ describe('MemoryIndexStore', () => {
   // Asserts that the indices corresponding to the given index names are of a
   // specific type.
   function assertIndicesType<T>(indexNames: string[], type: string): void {
-    indexNames.forEach((indexName) => {
+    indexNames.forEach(indexName => {
       const index = indexStore.get(indexName) as RuntimeIndex;
       assert.equal(type, index.constructor.name);
     });
   }
 
   it('memoryIndexStore', async () => {
-    const tableA = schema.table('tableA');
-    const tableB = schema.table('tableB');
+    const tableA = schema.table('tableA') as BaseTable;
+    const tableB = schema.table('tableB') as BaseTable;
     sandbox.stub(tableB, 'persistentIndex').callsFake(() => true);
-    const tableF = schema.table('tableF');
+    const tableF = schema.table('tableF') as BaseTable;
 
     assert.isFalse(tableA.persistentIndex());
     assert.isTrue(tableB.persistentIndex());
@@ -90,7 +91,9 @@ describe('MemoryIndexStore', () => {
     const tableJIdIndex = 'tableJ.idxId';
 
     assertIndicesType(
-        [tableARowIdIndex, tableBRowIdIndex, tableFRowIdIndex], 'RowId');
+      [tableARowIdIndex, tableBRowIdIndex, tableFRowIdIndex],
+      'RowId'
+    );
     assertIndicesType([tableAPkIndex], 'BTree');
     assertIndicesType([tableGFkIndex], 'BTree');
     assertIndicesType([tableGFkIndex2], 'BTree');
@@ -106,10 +109,12 @@ describe('MemoryIndexStore', () => {
   // indices.
   it('getTableIndices_NoIndices', async () => {
     await indexStore.init(schema);
-    const tableWithNoIndexName = schema.table('tableC');
+    const tableWithNoIndexName = schema.table('tableC') as BaseTable;
     // There should be at least one row id index.
     assert.equal(
-        1, indexStore.getTableIndices(tableWithNoIndexName.getName()).length);
+      1,
+      indexStore.getTableIndices(tableWithNoIndexName.getName()).length
+    );
     assert.isNotNull(indexStore.get(tableWithNoIndexName.getRowIdIndexName()));
   });
 
@@ -131,14 +136,17 @@ describe('MemoryIndexStore', () => {
 
   // Tests that set() is correctly replacing any existing indices.
   it('set', async () => {
-    const tableSchema = schema.table('tableA');
+    const tableSchema = schema.table('tableA') as BaseTable;
     const indexSchema = tableSchema.getIndices()[0] as IndexImpl;
 
     await indexStore.init(schema);
     const indexBefore = indexStore.get(indexSchema.getNormalizedName());
     const comparator = ComparatorFactory.create(indexSchema);
     const newIndex = new BTree(
-        indexSchema.getNormalizedName(), comparator, indexSchema.isUnique);
+      indexSchema.getNormalizedName(),
+      comparator,
+      indexSchema.isUnique
+    );
     indexStore.set(tableSchema.getName(), newIndex);
 
     const indexAfter = indexStore.get(indexSchema.getNormalizedName());

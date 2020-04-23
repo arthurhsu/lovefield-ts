@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import {SingleKeyRange} from '../../lib/index/key_range';
-import {SingleKeyRangeSet} from '../../lib/index/single_key_range_set';
+import { SingleKeyRange } from '../../lib/index/key_range';
+import { SingleKeyRangeSet } from '../../lib/index/single_key_range_set';
 
 const assert = chai.assert;
 
 describe('SingleKeyRangeSet', () => {
-  function generateTestRanges(): any {
+  function generateTestRanges(): { [key: string]: SingleKeyRange } {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),
@@ -91,8 +91,9 @@ describe('SingleKeyRangeSet', () => {
     check([r.r2], [r.r2, r.r4]);
     check([r.r1], [r.r1, r.r2, r.r3, r.r4]);
     check(
-        [new SingleKeyRange(1, 11, false, false)],
-        [r.r1, r.r2, r.r3, r.r4, r.r5, r.r6]);
+      [new SingleKeyRange(1, 11, false, false)],
+      [r.r1, r.r2, r.r3, r.r4, r.r5, r.r6]
+    );
     check([r.all], [r.atLeast1, r.r1, r.r5, r.r6, r.upTo1]);
 
     const excluding = [
@@ -111,7 +112,7 @@ describe('SingleKeyRangeSet', () => {
       [r.r6, r.r2],
       [r.r6, r.r4],
     ];
-    excluding.forEach((pair) => check(pair, pair));
+    excluding.forEach(pair => check(pair, pair));
     check([r.r7, r.r6, r.r5], [r.r5, r.r7, r.r7, r.r6]);
     check([r.upTo1Ex, r.only1, r.r5], [r.upTo1Ex, r.only1, r.r5]);
   });
@@ -134,10 +135,16 @@ describe('SingleKeyRangeSet', () => {
     const r = generateTestRanges();
 
     assert.isTrue(new SingleKeyRangeSet().equals(new SingleKeyRangeSet()));
-    assert.isTrue(new SingleKeyRangeSet([r.all]).equals(
-        new SingleKeyRangeSet([r.upTo1, r.atLeast1])));
-    assert.isFalse(new SingleKeyRangeSet([r.all]).equals(
-        new SingleKeyRangeSet([r.upTo1Ex, r.atLeast1])));
+    assert.isTrue(
+      new SingleKeyRangeSet([r.all]).equals(
+        new SingleKeyRangeSet([r.upTo1, r.atLeast1])
+      )
+    );
+    assert.isFalse(
+      new SingleKeyRangeSet([r.all]).equals(
+        new SingleKeyRangeSet([r.upTo1Ex, r.atLeast1])
+      )
+    );
   });
 
   it('intersect', () => {
@@ -149,8 +156,10 @@ describe('SingleKeyRangeSet', () => {
      * @param {!Array<!SingleKeyRange>} ranges1
      */
     function check(
-        expected: SingleKeyRange[], ranges0: SingleKeyRange[],
-        ranges1: SingleKeyRange[]): void {
+      expected: SingleKeyRange[],
+      ranges0: SingleKeyRange[],
+      ranges1: SingleKeyRange[]
+    ): void {
       const s0 = new SingleKeyRangeSet(ranges0);
       const s1 = new SingleKeyRangeSet(ranges1);
       const intersected = SingleKeyRangeSet.intersect(s0, s1);
@@ -173,20 +182,28 @@ describe('SingleKeyRangeSet', () => {
 
     // Two overlaps
     check(
-        [r.only1, new SingleKeyRange(1, 5, true, false)], [r.r6],
-        [r.upTo1, r.atLeast1Ex]);
+      [r.only1, new SingleKeyRange(1, 5, true, false)],
+      [r.r6],
+      [r.upTo1, r.atLeast1Ex]
+    );
     check([r.upTo1, r.atLeast2], [r.upTo2, r.atLeast1], [r.upTo1, r.atLeast2]);
     check(
-        [r.upTo1Ex, r.atLeast2], [r.upTo2, r.atLeast1],
-        [r.upTo1Ex, r.atLeast2]);
+      [r.upTo1Ex, r.atLeast2],
+      [r.upTo2, r.atLeast1],
+      [r.upTo1Ex, r.atLeast2]
+    );
     check(
-        [r.upTo1, r.atLeast2Ex], [r.upTo2Ex, r.atLeast1],
-        [r.upTo1, r.atLeast2Ex]);
+      [r.upTo1, r.atLeast2Ex],
+      [r.upTo2Ex, r.atLeast1],
+      [r.upTo1, r.atLeast2Ex]
+    );
     check([r.only1, r.only2], [r.upTo1, r.atLeast2], [r.only1, r.only2]);
 
     // Three overlaps
     check(
-        [r.upTo1Ex, r.only2, r.r4], [r.upTo2Ex, r.only2, r.r1],
-        [r.upTo1Ex, r.only2, r.r4]);
+      [r.upTo1Ex, r.only2, r.r4],
+      [r.upTo2Ex, r.only2, r.r1],
+      [r.upTo1Ex, r.only2, r.r4]
+    );
   });
 });

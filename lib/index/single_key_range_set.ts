@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import {SingleKey, SingleKeyRange} from './key_range';
+import { SingleKey, SingleKeyRange } from './key_range';
 
 export class SingleKeyRangeSet {
   // Intersection of two range sets.
-  public static intersect(s0: SingleKeyRangeSet, s1: SingleKeyRangeSet):
-      SingleKeyRangeSet {
-    const ranges = s0.getValues().map((r0) => {
-      return s1.getValues().map((r1) => SingleKeyRange.and(r0, r1));
+  static intersect(
+    s0: SingleKeyRangeSet,
+    s1: SingleKeyRangeSet
+  ): SingleKeyRangeSet {
+    const ranges = s0.getValues().map(r0 => {
+      return s1.getValues().map(r1 => SingleKeyRange.and(r0, r1));
     });
 
     let results: SingleKeyRange[] = [];
-    ranges.forEach((dimension) => results = results.concat(dimension));
+    ranges.forEach(dimension => (results = results.concat(dimension)));
 
-    return new SingleKeyRangeSet(results.filter((r) => r !== null));
+    return new SingleKeyRangeSet(results.filter(r => r !== null));
   }
 
   private ranges: SingleKeyRange[];
@@ -39,19 +41,19 @@ export class SingleKeyRangeSet {
     }
   }
 
-  public toString(): string {
-    return this.ranges.map((r) => r.toString()).join(',');
+  toString(): string {
+    return this.ranges.map(r => r.toString()).join(',');
   }
 
-  public containsKey(key: SingleKey): boolean {
-    return this.ranges.some((r) => r.contains(key));
+  containsKey(key: SingleKey): boolean {
+    return this.ranges.some(r => r.contains(key));
   }
 
-  public getValues(): SingleKeyRange[] {
+  getValues(): SingleKeyRange[] {
     return this.ranges;
   }
 
-  public add(keyRanges: SingleKeyRange[]): void {
+  add(keyRanges: SingleKeyRange[]): void {
     if (keyRanges.length === 0) {
       return;
     }
@@ -77,17 +79,19 @@ export class SingleKeyRangeSet {
     this.ranges = results;
   }
 
-  public equals(set: SingleKeyRangeSet): boolean {
+  equals(set: SingleKeyRangeSet): boolean {
     if (this.ranges.length === set.ranges.length) {
-      return this.ranges.length === 0 ||
-          this.ranges.every((r, index) => r.equals(set.ranges[index]));
+      return (
+        this.ranges.length === 0 ||
+        this.ranges.every((r, index) => r.equals(set.ranges[index]))
+      );
     }
 
     return false;
   }
 
   // Returns the boundary of this set, null if range set is empty.
-  public getBoundingRange(): SingleKeyRange|null {
+  getBoundingRange(): SingleKeyRange | null {
     if (this.ranges.length <= 1) {
       return this.ranges.length === 0 ? null : this.ranges[0];
     }

@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {IndexHelper} from '../../lib/index/index_helper';
+import { IndexHelper } from '../../lib/index/index_helper';
 
 const assert = chai.assert;
 
@@ -32,10 +32,16 @@ describe('IndexHelper', () => {
 
   it('hashArray', () => {
     assert.equal('', IndexHelper.hashArray([]));
-    assert.equal('', IndexHelper.hashArray([null as any as object]));
-    assert.equal('0_', IndexHelper.hashArray(['', null] as any as object[]));
-    assert.equal('10', IndexHelper.hashArray([' ' as any as object]));
-    assert.equal('10_10', IndexHelper.hashArray([' ', ' '] as any as object[]));
+    assert.equal('', IndexHelper.hashArray([(null as unknown) as object]));
+    assert.equal(
+      '0_',
+      IndexHelper.hashArray((['', null] as unknown) as object[])
+    );
+    assert.equal('10', IndexHelper.hashArray([(' ' as unknown) as object]));
+    assert.equal(
+      '10_10',
+      IndexHelper.hashArray(([' ', ' '] as unknown) as object[])
+    );
   });
 
   function checkSlice(reverseOrder: boolean): void {
@@ -43,38 +49,47 @@ describe('IndexHelper', () => {
     const REVERSE_ARRAY = ARRAY.slice().reverse();
 
     assert.sameOrderedMembers(
-        !reverseOrder ? ARRAY : REVERSE_ARRAY,
-        IndexHelper.slice(ARRAY.slice(), reverseOrder));
+      !reverseOrder ? ARRAY : REVERSE_ARRAY,
+      IndexHelper.slice(ARRAY.slice(), reverseOrder)
+    );
 
     // Test empty array
     assert.sameOrderedMembers([], IndexHelper.slice([]));
     assert.sameOrderedMembers([], IndexHelper.slice([], reverseOrder, 1));
     assert.sameOrderedMembers(
-        [], IndexHelper.slice([], reverseOrder, undefined, 1));
+      [],
+      IndexHelper.slice([], reverseOrder, undefined, 1)
+    );
 
     // Test LIMIT
     assert.sameOrderedMembers(
-        !reverseOrder ? [ARRAY[0]] : [REVERSE_ARRAY[0]],
-        IndexHelper.slice(ARRAY.slice(), reverseOrder, 1));
+      !reverseOrder ? [ARRAY[0]] : [REVERSE_ARRAY[0]],
+      IndexHelper.slice(ARRAY.slice(), reverseOrder, 1)
+    );
     assert.sameOrderedMembers(
-        !reverseOrder ? ARRAY : REVERSE_ARRAY,
-        IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length));
+      !reverseOrder ? ARRAY : REVERSE_ARRAY,
+      IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length)
+    );
     assert.sameOrderedMembers(
-        !reverseOrder ? ARRAY : REVERSE_ARRAY,
-        IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length + 1));
+      !reverseOrder ? ARRAY : REVERSE_ARRAY,
+      IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length + 1)
+    );
 
     // Test SKIP
     assert.sameOrderedMembers(
-        !reverseOrder ? ARRAY : REVERSE_ARRAY,
-        IndexHelper.slice(ARRAY.slice(), reverseOrder, undefined, 0));
+      !reverseOrder ? ARRAY : REVERSE_ARRAY,
+      IndexHelper.slice(ARRAY.slice(), reverseOrder, undefined, 0)
+    );
     assert.sameOrderedMembers(
-        !reverseOrder ? ARRAY : REVERSE_ARRAY,
-        IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length, 0));
+      !reverseOrder ? ARRAY : REVERSE_ARRAY,
+      IndexHelper.slice(ARRAY.slice(), reverseOrder, ARRAY.length, 0)
+    );
 
     for (let i = 0; i < ARRAY.length; ++i) {
       assert.sameOrderedMembers(
-          !reverseOrder ? [ARRAY[i]] : [REVERSE_ARRAY[i]],
-          IndexHelper.slice(ARRAY.slice(), reverseOrder, 1, i));
+        !reverseOrder ? [ARRAY[i]] : [REVERSE_ARRAY[i]],
+        IndexHelper.slice(ARRAY.slice(), reverseOrder, 1, i)
+      );
     }
   }
 
