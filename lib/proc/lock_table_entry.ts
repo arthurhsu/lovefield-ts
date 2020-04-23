@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import {LockType} from '../base/private_enum';
+import { LockType } from '../base/private_enum';
 
 export class LockTableEntry {
-  public exclusiveLock: number|null;
-  public reservedReadWriteLock: number|null;
-  public reservedReadOnlyLocks: Set<number>|null;
-  public sharedLocks: Set<number>|null;
+  exclusiveLock: number | null;
+  reservedReadWriteLock: number | null;
+  reservedReadOnlyLocks: Set<number> | null;
+  sharedLocks: Set<number> | null;
 
   constructor() {
     this.exclusiveLock = null;
@@ -29,7 +29,7 @@ export class LockTableEntry {
     this.sharedLocks = null;
   }
 
-  public releaseLock(taskId: number): void {
+  releaseLock(taskId: number): void {
     if (this.exclusiveLock === taskId) {
       this.exclusiveLock = null;
     }
@@ -44,31 +44,41 @@ export class LockTableEntry {
     }
   }
 
-  public canAcquireLock(taskId: number, lockType: LockType): boolean {
-    const noReservedReadOnlyLocksExist = this.reservedReadOnlyLocks === null ||
-        this.reservedReadOnlyLocks.size === 0;
+  canAcquireLock(taskId: number, lockType: LockType): boolean {
+    const noReservedReadOnlyLocksExist =
+      this.reservedReadOnlyLocks === null ||
+      this.reservedReadOnlyLocks.size === 0;
 
     if (lockType === LockType.EXCLUSIVE) {
       const noSharedLocksExist =
-          this.sharedLocks === null || this.sharedLocks.size === 0;
-      return noSharedLocksExist && noReservedReadOnlyLocksExist &&
-          this.exclusiveLock === null && this.reservedReadWriteLock !== null &&
-          this.reservedReadWriteLock === taskId;
+        this.sharedLocks === null || this.sharedLocks.size === 0;
+      return (
+        noSharedLocksExist &&
+        noReservedReadOnlyLocksExist &&
+        this.exclusiveLock === null &&
+        this.reservedReadWriteLock !== null &&
+        this.reservedReadWriteLock === taskId
+      );
     } else if (lockType === LockType.SHARED) {
-      return this.exclusiveLock === null &&
-          this.reservedReadWriteLock === null &&
-          this.reservedReadOnlyLocks !== null &&
-          this.reservedReadOnlyLocks.has(taskId);
+      return (
+        this.exclusiveLock === null &&
+        this.reservedReadWriteLock === null &&
+        this.reservedReadOnlyLocks !== null &&
+        this.reservedReadOnlyLocks.has(taskId)
+      );
     } else if (lockType === LockType.RESERVED_READ_ONLY) {
       return this.reservedReadWriteLock === null;
-    } else {  // case of lockType == lf.proc.LockType.RESERVED_READ_WRITE
-      return noReservedReadOnlyLocksExist &&
-          (this.reservedReadWriteLock === null ||
-           this.reservedReadWriteLock === taskId);
+    } else {
+      // case of lockType == lf.proc.LockType.RESERVED_READ_WRITE
+      return (
+        noReservedReadOnlyLocksExist &&
+        (this.reservedReadWriteLock === null ||
+          this.reservedReadWriteLock === taskId)
+      );
     }
   }
 
-  public grantLock(taskId: number, lockType: LockType): void {
+  grantLock(taskId: number, lockType: LockType): void {
     if (lockType === LockType.EXCLUSIVE) {
       // TODO(dpapad): Assert that reserved lock was held by this taskId.
       this.reservedReadWriteLock = null;

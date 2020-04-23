@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {LockType, TaskPriority} from '../base/private_enum';
-import {LockManager} from './lock_manager';
-import {Relation} from './relation';
-import {Task} from './task';
-import {TaskQueue} from './task_queue';
+import { TransactionType } from '../base/enum';
+import { LockType, TaskPriority } from '../base/private_enum';
+import { LockManager } from './lock_manager';
+import { Relation } from './relation';
+import { Task } from './task';
+import { TaskQueue } from './task_queue';
 
 // Query/Transaction runner which actually runs the query in a transaction
-// (either implicit or explict) on the back store.
+// (either implicit or explicit) on the back store.
 export class Runner {
   private queue: TaskQueue;
   private lockManager: LockManager;
@@ -33,9 +33,11 @@ export class Runner {
   }
 
   // Schedules a task for this runner.
-  public scheduleTask(task: Task): Promise<Relation[]> {
-    if (task.getPriority() < TaskPriority.USER_QUERY_TASK ||
-        task.getPriority() < TaskPriority.TRANSACTION_TASK) {
+  scheduleTask(task: Task): Promise<Relation[]> {
+    if (
+      task.getPriority() < TaskPriority.USER_QUERY_TASK ||
+      task.getPriority() < TaskPriority.TRANSACTION_TASK
+    ) {
       // Any priority that is higher than USER_QUERY_TASK or TRANSACTION_TASK is
       // considered a "high" priority task and all held reserved locks should be
       // cleared to allow it to execute.
@@ -52,7 +54,7 @@ export class Runner {
   private consumePending(): void {
     const queue = this.queue.getValues();
 
-    queue.forEach((task) => {
+    queue.forEach(task => {
       // Note: Iterating on a shallow copy of this.queue_, because this.queue_
       // will be modified during iteration and therefore iterating on
       // this.queue_ would not guarantee that every task in the queue will be
@@ -60,10 +62,16 @@ export class Runner {
       let acquiredLock = false;
       if (task.getType() === TransactionType.READ_ONLY) {
         acquiredLock = this.requestTwoPhaseLock(
-            task, LockType.RESERVED_READ_ONLY, LockType.SHARED);
+          task,
+          LockType.RESERVED_READ_ONLY,
+          LockType.SHARED
+        );
       } else {
         acquiredLock = this.requestTwoPhaseLock(
-            task, LockType.RESERVED_READ_WRITE, LockType.EXCLUSIVE);
+          task,
+          LockType.RESERVED_READ_WRITE,
+          LockType.EXCLUSIVE
+        );
       }
 
       if (acquiredLock) {
@@ -78,15 +86,24 @@ export class Runner {
   // it is granted, the 2nd lock is requested. Returns false if the 2nd lock was
   // not granted or both 1st and 2nd were not granted.
   private requestTwoPhaseLock(
-      task: Task, lockType1: LockType, lockType2: LockType): boolean {
+    task: Task,
+    lockType1: LockType,
+    lockType2: LockType
+  ): boolean {
     let acquiredLock = false;
-    const acquiredFirstLock =
-        this.lockManager.requestLock(task.getId(), task.getScope(), lockType1);
+    const acquiredFirstLock = this.lockManager.requestLock(
+      task.getId(),
+      task.getScope(),
+      lockType1
+    );
 
     if (acquiredFirstLock) {
       // Escalating the first lock to the second lock.
       acquiredLock = this.lockManager.requestLock(
-          task.getId(), task.getScope(), lockType2);
+        task.getId(),
+        task.getScope(),
+        lockType2
+      );
     }
 
     return acquiredLock;
@@ -95,8 +112,12 @@ export class Runner {
   // Executes a QueryTask. Callers of this method should have already acquired a
   // lock according to the task that is about to be executed.
   private execTask(task: Task): void {
-    task.exec().then(
-        this.onTaskSuccess.bind(this, task), this.onTaskError.bind(this, task));
+    task
+      .exec()
+      .then(
+        this.onTaskSuccess.bind(this, task),
+        this.onTaskError.bind(this, task)
+      );
   }
 
   // Executes when a task finished successfully.

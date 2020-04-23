@@ -14,50 +14,53 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../lib/base/enum';
-import {TaskPriority} from '../lib/base/private_enum';
-import {Resolver} from '../lib/base/resolver';
-import {UniqueId} from '../lib/base/unique_id';
-import {Relation} from '../lib/proc/relation';
-import {Task} from '../lib/proc/task';
-import {BaseTable} from '../lib/schema/base_table';
+import { TransactionType } from '../lib/base/enum';
+import { TaskPriority } from '../lib/base/private_enum';
+import { Resolver } from '../lib/base/resolver';
+import { UniqueId } from '../lib/base/unique_id';
+import { Relation } from '../lib/proc/relation';
+import { Task } from '../lib/proc/task';
+import { Table } from '../lib/schema/table';
 
 export class MockTask extends UniqueId implements Task {
-  public name: string;
+  name: string;
   private resolver: Resolver<Relation[]>;
 
   constructor(
-      private txType: TransactionType, private scope: Set<BaseTable>,
-      private execFn: () => any, private priority: TaskPriority,
-      name?: string) {
+    private txType: TransactionType,
+    private scope: Set<Table>,
+    private execFn: () => unknown,
+    private priority: TaskPriority,
+    name?: string
+  ) {
     super();
     this.resolver = new Resolver<Relation[]>();
     this.name = name || this.getUniqueId();
   }
 
-  public getType(): TransactionType {
+  getType(): TransactionType {
     return this.txType;
   }
 
-  public getScope(): Set<BaseTable> {
+  getScope(): Set<Table> {
     return this.scope;
   }
 
-  public getResolver(): Resolver<Relation[]> {
+  getResolver(): Resolver<Relation[]> {
     return this.resolver;
   }
 
-  public getId(): number {
+  getId(): number {
     return super.getUniqueNumber();
   }
 
-  public getPriority(): TaskPriority {
+  getPriority(): TaskPriority {
     return this.priority;
   }
 
-  public exec(): Promise<Relation[]> {
+  exec(): Promise<Relation[]> {
     return new Promise<Relation[]>((resolve, reject) => {
-      return resolve(this.execFn());
+      return resolve(this.execFn() as Relation[]);
     });
   }
 }

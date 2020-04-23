@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {TableType} from '../base/private_enum';
-import {Resolver} from '../base/resolver';
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
+import { TransactionType } from '../base/enum';
+import { TableType } from '../base/private_enum';
+import { Resolver } from '../base/resolver';
+import { PayloadType, RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
 
-import {BaseTx} from './base_tx';
-import {WebSqlTable} from './web_sql_table';
+import { BaseTx } from './base_tx';
+import { WebSqlTable } from './web_sql_table';
 
 interface WebSqlTxCommand {
   statement: string;
-  params: any[];
-  transform?: (data: object) => Row[];
-  resolver: Resolver<any>;
+  params: unknown[];
+  transform?: (data: PayloadType) => Row[] | string[];
+  resolver: Resolver<unknown>;
 }
 
 // Wrapper for Transaction object obtained from WebSQL.
 export class WebSqlTx extends BaseTx {
-  public static INDEX_MARK = '__d__';
+  static INDEX_MARK = '__d__';
 
   // SQL standards disallow "." and "#" in the name of table. However, Lovefield
   // will name index tables using their canonical name, which contains those
   // illegal characters. As a result, we need to escape the table name.
-  public static escapeTableName(tableName: string): string {
+  static escapeTableName(tableName: string): string {
     return tableName.replace('.', WebSqlTx.INDEX_MARK).replace('#', '__s__');
   }
 
@@ -46,19 +46,27 @@ export class WebSqlTx extends BaseTx {
   private commands: WebSqlTxCommand[];
 
   constructor(
-      private db: Database, txType: TransactionType, journal?: Journal) {
+    private db: Database,
+    txType: TransactionType,
+    journal?: Journal
+  ) {
     super(txType, journal);
     this.tables = new Map<string, WebSqlTable>();
     this.commands = [];
   }
 
-  public getTable(
-      tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType?: TableType): RuntimeTable {
+  getTable(
+    tableName: string,
+    deserializeFn: (value: RawRow) => Row,
+    tableType?: TableType
+  ): RuntimeTable {
     let table = this.tables.get(tableName) || null;
     if (table === null) {
       table = new WebSqlTable(
-          this, WebSqlTx.escapeTableName(tableName), deserializeFn);
+        this,
+        WebSqlTx.escapeTableName(tableName),
+        deserializeFn
+      );
       this.tables.set(tableName, table);
     }
 
@@ -66,38 +74,42 @@ export class WebSqlTx extends BaseTx {
   }
 
   // Queues a SQL statement for the transaction.
-  public queue(
-      statement: string, params: any[],
-      transform?: (raw: object) => any[]): Promise<any> {
-    const resolver = new Resolver<any>();
+  queue(
+    statement: string,
+    params: unknown[],
+    transform?: (raw: PayloadType) => Row[] | string[]
+  ): Promise<unknown> {
+    const resolver = new Resolver<unknown>();
     this.commands.push({
-      params: params,
-      resolver: resolver,
-      statement: statement,
-      transform: transform,
+      params,
+      resolver,
+      statement,
+      transform,
     });
     return resolver.promise;
   }
 
-  public abort(): void {
+  abort(): void {
     this.commands = [];
   }
 
-  public commitInternal(): Promise<any> {
-    let lastCommand: WebSqlTxCommand|null = null;
+  commitInternal(): Promise<unknown> {
+    let lastCommand: WebSqlTxCommand | null = null;
     const onTxError = this.resolver.reject.bind(this.resolver);
-    const onExecError: SQLStatementErrorCallback =
-        (tx: SQLTransaction, e: SQLError) => {
-          this.resolver.reject(e);
-          return false;
-        };
+    const onExecError: SQLStatementErrorCallback = (
+      tx: SQLTransaction,
+      e: SQLError
+    ) => {
+      this.resolver.reject(e);
+      return false;
+    };
 
-    const results: any[] = [];
-    const callback = (tx: SQLTransaction, res: any) => {
+    const results: unknown[] = [];
+    const callback = (tx: SQLTransaction, res: unknown) => {
       if (lastCommand !== null) {
         let ret = res;
         if (lastCommand.transform && res !== null && res !== undefined) {
-          ret = lastCommand.transform(res);
+          ret = lastCommand.transform(res as PayloadType);
         }
         results.push(ret);
         lastCommand.resolver.resolve(ret);
@@ -114,10 +126,14 @@ export class WebSqlTx extends BaseTx {
 
     if (this.txType === TransactionType.READ_ONLY) {
       this.db.readTransaction(
-          (callback as any as SQLTransactionCallback), onTxError);
+        (callback as unknown) as SQLTransactionCallback,
+        onTxError
+      );
     } else {
       this.db.transaction(
-          (callback as any as SQLTransactionCallback), onTxError);
+        (callback as unknown) as SQLTransactionCallback,
+        onTxError
+      );
     }
 
     return this.resolver.promise;

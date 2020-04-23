@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-import {TableType} from '../base/private_enum';
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
-import {TransactionStats} from './transaction_stats';
+import { TableType } from '../base/private_enum';
+import { RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
+import { TransactionStats } from './transaction_stats';
 
 // Tx objects are wrappers of backstore-provided transactions. The interface
 // defines common methods for these wrappers.
 export interface Tx {
   getTable(
-      tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType: TableType): RuntimeTable;
+    tableName: string,
+    deserializeFn: (value: RawRow) => Row,
+    tableType: TableType
+  ): RuntimeTable;
 
   // Returns the journal associated with this transaction.
   // The journal keeps track of all changes happened within the transaction.
   // Returns null if this is a READ_ONLY transaction.
-  getJournal(): Journal|null;
+  getJournal(): Journal | null;
 
   // Commits transaction by applying all changes in this transaction's journal
   // to the backing store.
-  commit(): Promise<any>;
+  commit(): Promise<unknown>;
 
   // Aborts transaction. Caller shall listen to rejection of commit() to detect
   // end of transaction.
   abort(): void;
 
   // Returns transaction stats if transaction is finalized, otherwise null.
-  stats(): TransactionStats|null;
+  stats(): TransactionStats | null;
 }

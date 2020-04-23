@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
+import { RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
 
-import {WebSqlTx} from './web_sql_tx';
+import { WebSqlTx } from './web_sql_tx';
 
 // Table stream based on a given WebSQL table.
 export class WebSqlTable implements RuntimeTable {
   private name: string;
   constructor(
-      private tx: WebSqlTx, name: string,
-      private deserializeFn: (raw: RawRow) => Row) {
+    private tx: WebSqlTx,
+    name: string,
+    private deserializeFn: (raw: RawRow) => Row
+  ) {
     // Escape name string by default.
     this.name = `"${name}"`;
   }
 
-  public get(ids: number[]): Promise<Row[]> {
-    const where = (ids.length === 0) ? '' : `WHERE id IN (${ids.join(',')})`;
+  get(ids: number[]): Promise<Row[]> {
+    const where = ids.length === 0 ? '' : `WHERE id IN (${ids.join(',')})`;
 
     const sql = `SELECT id, value FROM ${this.name} ${where}`;
     const deserializeFn = this.deserializeFn;
@@ -48,25 +50,27 @@ export class WebSqlTable implements RuntimeTable {
       return rows;
     };
 
-    return this.tx.queue(sql, [], transformer);
+    return this.tx.queue(sql, [], transformer) as Promise<Row[]>;
   }
 
-  public put(rows: Row[]): Promise<void> {
+  put(rows: Row[]): Promise<void> {
     if (rows.length === 0) {
       return Promise.resolve();
     }
 
     const sql = `INSERT OR REPLACE INTO ${this.name} (id, value) VALUES (?, ?)`;
-    rows.forEach((row) => {
+    rows.forEach(row => {
       this.tx.queue(sql, [row.id(), JSON.stringify(row.payload())]);
     }, this);
 
     return Promise.resolve();
   }
 
-  public remove(ids: number[], disableClearTableOptimization?: boolean):
-      Promise<void> {
-    const where = (ids.length === 0) ? '' : `WHERE id IN (${ids.join(',')})`;
+  remove(
+    ids: number[],
+    disableClearTableOptimization?: boolean
+  ): Promise<void> {
+    const where = ids.length === 0 ? '' : `WHERE id IN (${ids.join(',')})`;
     const sql = `DELETE FROM ${this.name} ${where}`;
     this.tx.queue(sql, []);
     return Promise.resolve();

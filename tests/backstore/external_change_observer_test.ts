@@ -157,7 +157,7 @@ describe('ExternalChangeObserver', () => {
 
   // Simulates an external insertion/modification change.
   function simulateInsertionModification(
-      tableSchema: BaseTable, rows: Row[]): Promise<void> {
+      tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
     const tx = mockStore.createTx(
         TransactionType.READ_WRITE, [tableSchema],
         new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));
@@ -170,7 +170,7 @@ describe('ExternalChangeObserver', () => {
 
   // Simulates an external deletion change.
   function simulateDeletion(
-      tableSchema: BaseTable, rows: Row[]): Promise<void> {
+      tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
     const tx = mockStore.createTx(
         TransactionType.READ_WRITE, [tableSchema],
         new Journal(db.getGlobal(), new Set<BaseTable>([tableSchema])));

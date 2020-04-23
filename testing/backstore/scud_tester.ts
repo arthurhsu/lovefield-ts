@@ -16,23 +16,27 @@
 
 import * as chai from 'chai';
 
-import {BackStore} from '../../lib/backstore/back_store';
-import {TransactionType} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {TableType} from '../../lib/base/private_enum';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {Cache} from '../../lib/cache/cache';
-import {Journal} from '../../lib/cache/journal';
-import {BaseTable} from '../../lib/schema/base_table';
+import { BackStore } from '../../lib/backstore/back_store';
+import { TransactionType } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { TableType } from '../../lib/base/private_enum';
+import { Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { Cache } from '../../lib/cache/cache';
+import { Journal } from '../../lib/cache/journal';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Table } from '../../lib/schema/table';
 
 export class ScudTester {
-  private tableSchema: BaseTable;
+  private tableSchema: Table;
   private cache: Cache;
-  private reload: null|(() => BackStore);
+  private reload: null | (() => BackStore);
 
   constructor(
-      private db: BackStore, private global: Global, reload?: () => BackStore) {
+    private db: BackStore,
+    private global: Global,
+    reload?: () => BackStore
+  ) {
     this.db = db;
     const schema = global.getService(Service.SCHEMA);
     this.tableSchema = schema.tables()[0];
@@ -40,9 +44,9 @@ export class ScudTester {
     this.reload = reload || null;
   }
 
-  public async run(): Promise<void> {
-    const CONTENTS = {id: 'hello', name: 'world'};
-    const CONTENTS2 = {id: 'hello2', name: 'world2'};
+  async run(): Promise<void> {
+    const CONTENTS = { id: 'hello', name: 'world' };
+    const CONTENTS2 = { id: 'hello2', name: 'world2' };
 
     const row1 = Row.create(CONTENTS);
     const row2 = Row.create(CONTENTS);
@@ -66,26 +70,40 @@ export class ScudTester {
 
   private insert(rows: Row[]): Promise<void> {
     const tx = this.db.createTx(
-        TransactionType.READ_WRITE, [this.tableSchema],
-        new Journal(this.global, new Set<BaseTable>([this.tableSchema])));
+      TransactionType.READ_WRITE,
+      [this.tableSchema as BaseTable],
+      new Journal(
+        this.global,
+        new Set<Table>([this.tableSchema])
+      )
+    );
     const store = tx.getTable(
-        this.tableSchema.getName(),
-        this.tableSchema.deserializeRow.bind(this.tableSchema), TableType.DATA);
+      this.tableSchema.getName(),
+      (this.tableSchema as BaseTable).deserializeRow.bind(this.tableSchema),
+      TableType.DATA
+    );
 
     store.put(rows);
-    return tx.commit();
+    return tx.commit() as Promise<void>;
   }
 
   private remove(rowIds: number[]): Promise<void> {
     const tx = this.db.createTx(
-        TransactionType.READ_WRITE, [this.tableSchema],
-        new Journal(this.global, new Set<BaseTable>([this.tableSchema])));
+      TransactionType.READ_WRITE,
+      [this.tableSchema as BaseTable],
+      new Journal(
+        this.global,
+        new Set<Table>([this.tableSchema])
+      )
+    );
     const store = tx.getTable(
-        this.tableSchema.getName(),
-        this.tableSchema.deserializeRow.bind(this.tableSchema), TableType.DATA);
+      this.tableSchema.getName(),
+      (this.tableSchema as BaseTable).deserializeRow.bind(this.tableSchema),
+      TableType.DATA
+    );
 
     store.remove(rowIds);
-    return tx.commit();
+    return tx.commit() as Promise<void>;
   }
 
   private removeAll(): Promise<void> {
@@ -93,10 +111,14 @@ export class ScudTester {
   }
 
   private select(rowIds: number[]): Promise<Row[]> {
-    const tx = this.db.createTx(TransactionType.READ_ONLY, [this.tableSchema]);
+    const tx = this.db.createTx(TransactionType.READ_ONLY, [
+      this.tableSchema as BaseTable,
+    ]);
     const store = tx.getTable(
-        this.tableSchema.getName(),
-        this.tableSchema.deserializeRow.bind(this.tableSchema), TableType.DATA);
+      this.tableSchema.getName(),
+      (this.tableSchema as BaseTable).deserializeRow.bind(this.tableSchema),
+      TableType.DATA
+    );
 
     const promise = store.get(rowIds);
     tx.commit();
@@ -112,7 +134,7 @@ export class ScudTester {
     if (this.reload !== null) {
       this.db = this.reload();
     }
-    return this.selectAll().then((results) => {
+    return this.selectAll().then(results => {
       chai.assert.equal(rows.length, results.length);
       rows.forEach((row, index) => {
         const retrievedRow = results[index];

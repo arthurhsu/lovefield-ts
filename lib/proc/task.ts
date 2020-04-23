@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {TaskPriority} from '../base/private_enum';
-import {Resolver} from '../base/resolver';
-import {BaseTable} from '../schema/base_table';
-import {Relation} from './relation';
+import { TransactionType } from '../base/enum';
+import { TaskPriority } from '../base/private_enum';
+import { Resolver } from '../base/resolver';
+import { Table } from '../schema/table';
+import { Relation } from './relation';
 
 export interface Task {
   exec(): Promise<Relation[]>;
   getType(): TransactionType;
 
   // Returns the tables that this task refers to.
-  getScope(): Set<BaseTable>;
+  getScope(): Set<Table>;
   getResolver(): Resolver<Relation[]>;
 
   // Returns a unique number for this task.

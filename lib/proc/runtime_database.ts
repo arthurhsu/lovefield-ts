@@ -14,41 +14,49 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../backstore/back_store';
-import {ExternalChangeObserver} from '../backstore/external_change_observer';
-import {IndexedDB} from '../backstore/indexed_db';
-import {Memory} from '../backstore/memory';
-import {ObservableStore} from '../backstore/observable_store';
-import {WebSql} from '../backstore/web_sql';
-import {Capability} from '../base/capability';
-import {DatabaseConnection} from '../base/database_connection';
-import {DataStoreType, ErrorCode, TransactionType} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Inspector} from '../base/inspect';
-import {ObserverRegistry} from '../base/observer_registry';
-import {ObserverCallback} from '../base/observer_registry_entry';
-import {Service} from '../base/service';
-import {Transaction} from '../base/transaction';
-import {DefaultCache} from '../cache/default_cache';
-import {Prefetcher} from '../cache/prefetcher';
-import {Flags} from '../gen/flags';
-import {MemoryIndexStore} from '../index/memory_index_store';
-import {DeleteBuilder} from '../query/delete_builder';
-import {InsertBuilder} from '../query/insert_builder';
-import {SelectBuilder} from '../query/select_builder';
-import {SelectQuery} from '../query/select_query';
-import {UpdateBuilder} from '../query/update_builder';
-import {BaseTable} from '../schema/base_table';
-import {Column} from '../schema/column';
-import {ConnectOptions} from '../schema/connect_options';
-import {DatabaseSchema} from '../schema/database_schema';
+import { BackStore } from '../backstore/back_store';
+import { ExternalChangeObserver } from '../backstore/external_change_observer';
+import { IndexedDB } from '../backstore/indexed_db';
+import { Memory } from '../backstore/memory';
+import { ObservableStore } from '../backstore/observable_store';
+import { WebSql } from '../backstore/web_sql';
+import { Capability } from '../base/capability';
+import { DatabaseConnection } from '../base/database_connection';
+import { DataStoreType, ErrorCode, TransactionType } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Inspector } from '../base/inspect';
+import { ObserverRegistry } from '../base/observer_registry';
+import { ObserverCallback } from '../base/observer_registry_entry';
+import { PayloadType } from '../base/row';
+import { Service } from '../base/service';
+import { Transaction } from '../base/transaction';
+import { DefaultCache } from '../cache/default_cache';
+import { Prefetcher } from '../cache/prefetcher';
+import { Flags } from '../gen/flags';
+import { MemoryIndexStore } from '../index/memory_index_store';
+import { DeleteBuilder } from '../query/delete_builder';
+import { InsertBuilder } from '../query/insert_builder';
+import { SelectBuilder } from '../query/select_builder';
+import { SelectQuery } from '../query/select_query';
+import { UpdateBuilder } from '../query/update_builder';
+import { Table } from '../schema/table';
+import { Column } from '../schema/column';
+import { ConnectOptions } from '../schema/connect_options';
+import { DatabaseSchema } from '../schema/database_schema';
 
-import {DefaultQueryEngine} from './default_query_engine';
-import {ExportTask} from './export_task';
-import {ImportTask} from './import_task';
-import {Runner} from './runner';
-import {RuntimeTransaction} from './runtime_transaction';
+import { DefaultQueryEngine } from './default_query_engine';
+import { ExportTask } from './export_task';
+import { ImportTask } from './import_task';
+import { Runner } from './runner';
+import { RuntimeTransaction } from './runtime_transaction';
+import { BaseTable } from '../schema/base_table';
+
+declare global {
+  interface Window {
+    '#lfInspect': Function;
+  }
+}
 
 export class RuntimeDatabase implements DatabaseConnection {
   private schema: DatabaseSchema;
@@ -68,7 +76,7 @@ export class RuntimeDatabase implements DatabaseConnection {
     this.observeExternalChanges = false;
   }
 
-  public init(options?: ConnectOptions): Promise<RuntimeDatabase> {
+  init(options?: ConnectOptions): Promise<RuntimeDatabase> {
     // The SCHEMA might have been removed from this.global in the case where
     // Database#close() was called, therefore it needs to be re-added.
     this.global.registerService(Service.SCHEMA, this.schema);
@@ -78,87 +86,94 @@ export class RuntimeDatabase implements DatabaseConnection {
     const indexStore = new MemoryIndexStore();
     this.global.registerService(Service.INDEX_STORE, indexStore);
     const onUpgrade = options ? options.onUpgrade : undefined;
-    return backStore.init(onUpgrade)
-        .then(() => {
-          this.global.registerService(
-              Service.QUERY_ENGINE, new DefaultQueryEngine(this.global));
-          this.runner = new Runner();
-          this.global.registerService(Service.RUNNER, this.runner);
-          this.global.registerService(
-              Service.OBSERVER_REGISTRY, new ObserverRegistry());
-          return indexStore.init(this.schema);
-        })
-        .then(() => {
-          if (this.observeExternalChanges) {
-            const externalChangeObserver =
-                new ExternalChangeObserver(this.global);
-            externalChangeObserver.startObserving();
-          }
-          if (options && options['enableInspector'] && window) {
-            // Exposes a global '#lfExport' method, that can be used by the
-            // Lovefield Inspector Devtools Chrome extension.
-            window.top['#lfInspect'] = Inspector.inspect;
-          }
-          const prefetcher = new Prefetcher(this.global);
-          return prefetcher.init(this.schema);
-        })
-        .then(() => {
-          this.isActive = true;
-          return this;
-        });
+    return backStore
+      .init(onUpgrade)
+      .then(() => {
+        this.global.registerService(
+          Service.QUERY_ENGINE,
+          new DefaultQueryEngine(this.global)
+        );
+        this.runner = new Runner();
+        this.global.registerService(Service.RUNNER, this.runner);
+        this.global.registerService(
+          Service.OBSERVER_REGISTRY,
+          new ObserverRegistry()
+        );
+        return indexStore.init(this.schema);
+      })
+      .then(() => {
+        if (this.observeExternalChanges) {
+          const externalChangeObserver = new ExternalChangeObserver(
+            this.global
+          );
+          externalChangeObserver.startObserving();
+        }
+        if (options && options['enableInspector'] && window) {
+          // Exposes a global '#lfExport' method, that can be used by the
+          // Lovefield Inspector Devtools Chrome extension.
+          window.top['#lfInspect'] = Inspector.inspect;
+        }
+        const prefetcher = new Prefetcher(this.global);
+        return prefetcher.init(this.schema);
+      })
+      .then(() => {
+        this.isActive = true;
+        return this;
+      });
   }
 
-  public getGlobal(): Global {
+  getGlobal(): Global {
     return this.global;
   }
 
-  public getSchema(): DatabaseSchema {
+  getSchema(): DatabaseSchema {
     return this.schema;
   }
 
-  public select(...columns: Column[]): SelectQuery {
+  select(...columns: Column[]): SelectQuery {
     this.checkActive();
     return new SelectBuilder(this.global, columns);
   }
 
-  public insert(): InsertBuilder {
+  insert(): InsertBuilder {
     this.checkActive();
     return new InsertBuilder(this.global);
   }
 
-  public insertOrReplace(): InsertBuilder {
+  insertOrReplace(): InsertBuilder {
     this.checkActive();
     return new InsertBuilder(this.global, /* allowReplace */ true);
   }
 
-  public update(table: BaseTable): UpdateBuilder {
+  update(table: Table): UpdateBuilder {
     this.checkActive();
-    return new UpdateBuilder(this.global, table);
+    // TODO(arthurhsu): FIXME: retiring BaseTable from interface.
+    return new UpdateBuilder(this.global, table as BaseTable);
   }
 
-  public delete(): DeleteBuilder {
+  delete(): DeleteBuilder {
     this.checkActive();
     return new DeleteBuilder(this.global);
   }
 
-  public observe(builder: SelectQuery, callback: ObserverCallback): void {
+  observe(builder: SelectQuery, callback: ObserverCallback): void {
     this.checkActive();
     const observerRegistry = this.global.getService(Service.OBSERVER_REGISTRY);
     observerRegistry.addObserver(builder, callback);
   }
 
-  public unobserve(builder: SelectQuery, callback: ObserverCallback): void {
+  unobserve(builder: SelectQuery, callback: ObserverCallback): void {
     this.checkActive();
     const observerRegistry = this.global.getService(Service.OBSERVER_REGISTRY);
     observerRegistry.removeObserver(builder, callback);
   }
 
-  public createTransaction(type?: TransactionType): Transaction {
+  createTransaction(type?: TransactionType): Transaction {
     this.checkActive();
     return new RuntimeTransaction(this.global);
   }
 
-  public close(): void {
+  close(): void {
     try {
       const backStore = this.global.getService(Service.BACK_STORE);
       backStore.close();
@@ -169,24 +184,22 @@ export class RuntimeDatabase implements DatabaseConnection {
     this.isActive = false;
   }
 
-  public export(): Promise<object> {
+  export(): Promise<object> {
     this.checkActive();
     const task = new ExportTask(this.global);
-    return this.runner.scheduleTask(task).then((results) => {
+    return this.runner.scheduleTask(task).then(results => {
       return results[0].getPayloads()[0];
     });
   }
 
-  // TODO(arthurhsu): clang-format is unable to properly format this file after
-  // this import function.
-  // clang-format off
-  public import(data: object): Promise<any> {
+  import(d: object): Promise<object[]> {
+    const data = d as PayloadType;
     this.checkActive();
     const task = new ImportTask(this.global, data);
     return this.runner.scheduleTask(task);
   }
 
-  public isOpen(): boolean {
+  isOpen(): boolean {
     return this.isActive;
   }
 
@@ -197,7 +210,9 @@ export class RuntimeDatabase implements DatabaseConnection {
   }
 
   private createBackStore(
-      schema: DatabaseSchema, options?: ConnectOptions): BackStore {
+    schema: DatabaseSchema,
+    options?: ConnectOptions
+  ): BackStore {
     let backStore: BackStore;
 
     if (Flags.MEMORY_ONLY) {
@@ -207,10 +222,12 @@ export class RuntimeDatabase implements DatabaseConnection {
 
     let dataStoreType: DataStoreType;
     if (options === undefined || options.storeType === undefined) {
-    const capability = Capability.get();
-    dataStoreType = capability.indexedDb ?
-        DataStoreType.INDEXED_DB :
-        (capability.webSql ? DataStoreType.WEB_SQL : DataStoreType.MEMORY);
+      const capability = Capability.get();
+      dataStoreType = capability.indexedDb
+        ? DataStoreType.INDEXED_DB
+        : capability.webSql
+        ? DataStoreType.WEB_SQL
+        : DataStoreType.MEMORY;
     } else {
       dataStoreType = options.storeType;
     }
@@ -230,7 +247,10 @@ export class RuntimeDatabase implements DatabaseConnection {
 
       case DataStoreType.WEB_SQL:
         backStore = new WebSql(
-            this.global, schema, options ? options.websqlDbSize : undefined);
+          this.global,
+          schema,
+          options ? options.websqlDbSize : undefined
+        );
         break;
 
       default:
@@ -241,5 +261,4 @@ export class RuntimeDatabase implements DatabaseConnection {
 
     return backStore;
   }
-  // clang-format on
 }

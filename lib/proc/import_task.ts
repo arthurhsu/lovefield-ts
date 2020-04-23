@@ -14,45 +14,46 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../backstore/back_store';
-import {ErrorCode, TransactionType} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {TableType, TaskPriority} from '../base/private_enum';
-import {Resolver} from '../base/resolver';
-import {Row} from '../base/row';
-import {Service} from '../base/service';
-import {UniqueId} from '../base/unique_id';
-import {Cache} from '../cache/cache';
-import {Journal} from '../cache/journal';
-import {IndexStore} from '../index/index_store';
-import {RuntimeIndex} from '../index/runtime_index';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { BackStore } from '../backstore/back_store';
+import { ErrorCode, TransactionType } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { TableType, TaskPriority } from '../base/private_enum';
+import { Resolver } from '../base/resolver';
+import { PayloadType, Row } from '../base/row';
+import { Service } from '../base/service';
+import { UniqueId } from '../base/unique_id';
+import { Cache } from '../cache/cache';
+import { Journal } from '../cache/journal';
+import { IndexStore } from '../index/index_store';
+import { RuntimeIndex } from '../index/runtime_index';
+import { BaseTable } from '../schema/base_table';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Table } from '../schema/table';
 
-import {Relation} from './relation';
-import {Task} from './task';
+import { Relation } from './relation';
+import { Task } from './task';
 
 // Imports table/rows from given JavaScript object to an empty database.
 export class ImportTask extends UniqueId implements Task {
   private schema: DatabaseSchema;
-  private scope: Set<BaseTable>;
+  private scope: Set<Table>;
   private resolver: Resolver<Relation[]>;
   private backStore: BackStore;
   private cache: Cache;
   private indexStore: IndexStore;
 
-  constructor(private global: Global, private data: object) {
+  constructor(private global: Global, private data: PayloadType) {
     super();
     this.schema = global.getService(Service.SCHEMA);
-    this.scope = new Set<BaseTable>(this.schema.tables());
+    this.scope = new Set<Table>(this.schema.tables());
     this.resolver = new Resolver<Relation[]>();
     this.backStore = global.getService(Service.BACK_STORE);
     this.cache = global.getService(Service.CACHE);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
-  public exec(): Promise<Relation[]> {
+  exec(): Promise<Relation[]> {
     if (!this.backStore.supportsImport()) {
       // Import is supported only on MemoryDB / IndexedDB / WebSql.
       // 300: Not supported.
@@ -64,8 +65,10 @@ export class ImportTask extends UniqueId implements Task {
       throw new Exception(ErrorCode.IMPORT_TO_NON_EMPTY_DB);
     }
 
-    if (this.schema.name() !== this.data['name'] ||
-        this.schema.version() !== this.data['version']) {
+    if (
+      this.schema.name() !== this.data['name'] ||
+      this.schema.version() !== this.data['version']
+    ) {
       // 111: Database name/version mismatch for import.
       throw new Exception(ErrorCode.DB_MISMATCH);
     }
@@ -78,30 +81,32 @@ export class ImportTask extends UniqueId implements Task {
     return this.import();
   }
 
-  public getType(): TransactionType {
+  getType(): TransactionType {
     return TransactionType.READ_WRITE;
   }
 
-  public getScope(): Set<BaseTable> {
+  getScope(): Set<Table> {
     return this.scope;
   }
 
-  public getResolver(): Resolver<Relation[]> {
+  getResolver(): Resolver<Relation[]> {
     return this.resolver;
   }
 
-  public getId(): number {
+  getId(): number {
     return this.getUniqueNumber();
   }
 
-  public getPriority(): TaskPriority {
+  getPriority(): TaskPriority {
     return TaskPriority.IMPORT_TASK;
   }
 
   private isEmptyDB(): boolean {
-    return this.schema.tables().every((table) => {
-      const index =
-          this.indexStore.get(table.getRowIdIndexName()) as RuntimeIndex;
+    return this.schema.tables().every(t => {
+      const table = t as BaseTable;
+      const index = this.indexStore.get(
+        table.getRowIdIndexName()
+      ) as RuntimeIndex;
       if (index.stats().totalRows > 0) {
         return false;
       }
@@ -112,27 +117,36 @@ export class ImportTask extends UniqueId implements Task {
   private import(): Promise<Relation[]> {
     const journal = new Journal(this.global, this.scope);
     const tx = this.backStore.createTx(
-        this.getType(), Array.from(this.scope.values()), journal);
+      this.getType(),
+      Array.from(this.scope.values()),
+      journal
+    );
 
-    Object.keys(this.data['tables']).forEach((tableName) => {
-    const tableSchema = this.schema.table(tableName);
-    const payloads = this.data['tables'][tableName];
-    const rows =
-        payloads.map((value: object) => tableSchema.createRow(value)) as Row[];
+    Object.keys(this.data['tables'] as PayloadType).forEach(tableName => {
+      const tableSchema = this.schema.table(tableName) as BaseTable;
+      const payloads = (this.data['tables'] as PayloadType)[
+        tableName
+      ] as PayloadType[];
+      const rows = payloads.map((value: object) =>
+        tableSchema.createRow(value)
+      ) as Row[];
 
-    const table =
-        tx.getTable(tableName, tableSchema.deserializeRow, TableType.DATA);
-    this.cache.setMany(tableName, rows);
-    const indices = this.indexStore.getTableIndices(tableName);
-    rows.forEach((row) => {
-      indices.forEach((index) => {
-        const key = row.keyOfIndex(index.getName());
-        index.add(key, row.id());
+      const table = tx.getTable(
+        tableName,
+        tableSchema.deserializeRow,
+        TableType.DATA
+      );
+      this.cache.setMany(tableName, rows);
+      const indices = this.indexStore.getTableIndices(tableName);
+      rows.forEach(row => {
+        indices.forEach(index => {
+          const key = row.keyOfIndex(index.getName());
+          index.add(key, row.id());
+        });
       });
-    });
-    table.put(rows);
+      table.put(rows);
     }, this);
 
-    return tx.commit();
+    return tx.commit() as Promise<Relation[]>;
   }
 }

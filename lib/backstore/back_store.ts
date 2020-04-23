@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {RuntimeTable} from '../base/runtime_table';
-import {Journal} from '../cache/journal';
-import {TableDiff} from '../cache/table_diff';
-import {BaseTable} from '../schema/base_table';
-import {RawBackStore} from './raw_back_store';
-import {Tx} from './tx';
+import { TransactionType } from '../base/enum';
+import { RuntimeTable } from '../base/runtime_table';
+import { Journal } from '../cache/journal';
+import { TableDiff } from '../cache/table_diff';
+import { Table } from '../schema/table';
+import { RawBackStore } from './raw_back_store';
+import { Tx } from './tx';
 
 // Interface for all backing stores to implement (Indexed DB, filesystem,
 // memory etc).
 export interface BackStore {
   // Initialize the database and setting up row id.
   // |db| must be instance of RawBackStore.
-  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<any>;
+  // Returned promise contain raw type of the back store, e.g. IDBDatabase,
+  // caller to dynamic cast.
+  init(onUpgrade?: (db: RawBackStore) => Promise<unknown>): Promise<unknown>;
 
   // Creates backstore native transaction that is tied to a given journal.
-  createTx(type: TransactionType, scope: BaseTable[], journal?: Journal): Tx;
+  createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx;
 
   // Closes the database. This is just best-effort.
   close(): void;

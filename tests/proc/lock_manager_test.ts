@@ -15,20 +15,24 @@
  */
 
 import * as chai from 'chai';
-import {LockType} from '../../lib/base/private_enum';
-import {LockManager} from '../../lib/proc/lock_manager';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { LockType } from '../../lib/base/private_enum';
+import { LockManager } from '../../lib/proc/lock_manager';
+import { Table } from '../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('LockManager', () => {
-  let j: Set<BaseTable>;
+  let j: Set<Table>;
   let lockManager: LockManager;
 
   beforeEach(() => {
-    j = new Set<BaseTable>();
-    j.add(getHrDbSchemaBuilder().getSchema().table('Job'));
+    j = new Set<Table>();
+    j.add(
+      getHrDbSchemaBuilder()
+        .getSchema()
+        .table('Job')
+    );
     lockManager = new LockManager();
   });
 
@@ -39,7 +43,8 @@ describe('LockManager', () => {
       // granted.
       assert.isFalse(lockManager.requestLock(taskId, j, LockType.SHARED));
       assert.isTrue(
-          lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY));
+        lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY)
+      );
       assert.isTrue(lockManager.requestLock(taskId, j, LockType.SHARED));
     }
   });
@@ -49,14 +54,20 @@ describe('LockManager', () => {
 
     // Granting the lock to a single task.
     const reservedLockId = 0;
-    assert.isTrue(lockManager.requestLock(
-        reservedLockId, dataItems, LockType.RESERVED_READ_WRITE));
+    assert.isTrue(
+      lockManager.requestLock(
+        reservedLockId,
+        dataItems,
+        LockType.RESERVED_READ_WRITE
+      )
+    );
 
     // Expecting lock to be denied.
     for (let i = 1; i < 5; i++) {
       const taskId = i;
-      assert.isFalse(lockManager.requestLock(
-          taskId, dataItems, LockType.RESERVED_READ_WRITE));
+      assert.isFalse(
+        lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_WRITE)
+      );
     }
 
     // Releasing the lock.
@@ -64,7 +75,8 @@ describe('LockManager', () => {
 
     // Expecting the lock to be granted again.
     assert.isTrue(
-        lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE));
+      lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE)
+    );
   });
 
   it('requestLock_ExclusiveLocksOnly', () => {
@@ -74,11 +86,13 @@ describe('LockManager', () => {
     // already granted.
     assert.isFalse(lockManager.requestLock(0, dataItems, LockType.EXCLUSIVE));
     assert.isTrue(
-        lockManager.requestLock(0, dataItems, LockType.RESERVED_READ_WRITE));
+      lockManager.requestLock(0, dataItems, LockType.RESERVED_READ_WRITE)
+    );
     assert.isTrue(lockManager.requestLock(0, dataItems, LockType.EXCLUSIVE));
 
     assert.isTrue(
-        lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE));
+      lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE)
+    );
     // An EXCLUSIVE lock can't be granted, already held by taskId 0.
     assert.isFalse(lockManager.requestLock(1, dataItems, LockType.EXCLUSIVE));
     lockManager.releaseLock(0, dataItems);
@@ -86,10 +100,12 @@ describe('LockManager', () => {
     // RESERVED_READ_WRITE lock is already being held. Calling requestLock()
     // should still return true for such cases.
     assert.isTrue(
-        lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE));
+      lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE)
+    );
     // EXCLUSIVE lock can now be granted, since taskId 0 has released it.
     assert.isTrue(
-        lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE));
+      lockManager.requestLock(1, dataItems, LockType.RESERVED_READ_WRITE)
+    );
   });
 
   // Checks that for a given resource,
@@ -104,20 +120,27 @@ describe('LockManager', () => {
     for (let i = 0; i < 10; i++) {
       const taskId = i;
       assert.isTrue(
-          lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY));
+        lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY)
+      );
       assert.isTrue(lockManager.requestLock(taskId, j, LockType.SHARED));
     }
 
     // Granting a reserved lock to a single task.
     const reservedLockId = 11;
-    assert.isTrue(lockManager.requestLock(
-        reservedLockId, dataItems, LockType.RESERVED_READ_WRITE));
+    assert.isTrue(
+      lockManager.requestLock(
+        reservedLockId,
+        dataItems,
+        LockType.RESERVED_READ_WRITE
+      )
+    );
 
     // Expecting that no new SHARED locks can be granted.
     for (let i = 20; i < 30; i++) {
       const taskId = i;
       assert.isFalse(
-          lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY));
+        lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY)
+      );
       assert.isFalse(lockManager.requestLock(taskId, j, LockType.SHARED));
     }
 
@@ -128,7 +151,8 @@ describe('LockManager', () => {
     for (let i = 20; i < 30; i++) {
       const taskId = i;
       assert.isTrue(
-          lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY));
+        lockManager.requestLock(taskId, j, LockType.RESERVED_READ_ONLY)
+      );
       assert.isTrue(lockManager.requestLock(taskId, j, LockType.SHARED));
     }
   });
@@ -140,30 +164,36 @@ describe('LockManager', () => {
   it('requestLock_ReservedExclusive', () => {
     const dataItems = j;
     let taskId = 0;
-    assert.isTrue(lockManager.requestLock(
-        taskId, dataItems, LockType.RESERVED_READ_WRITE));
     assert.isTrue(
-        lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE));
+      lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_WRITE)
+    );
+    assert.isTrue(
+      lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE)
+    );
 
     for (let i = 1; i < 5; i++) {
       taskId = i;
       // Acquiring RESERVED_READ_WRITE lock once.
-      assert.isTrue(lockManager.requestLock(
-          taskId, dataItems, LockType.RESERVED_READ_WRITE));
+      assert.isTrue(
+        lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_WRITE)
+      );
       // Ensuring that RESERVED_READ_WRITE lock is re-entrant.
-      assert.isTrue(lockManager.requestLock(
-          taskId, dataItems, LockType.RESERVED_READ_WRITE));
+      assert.isTrue(
+        lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_WRITE)
+      );
 
       // Expecting EXCLUSIVE lock to be denied since it is held by the previous
       // taskId.
       assert.isFalse(
-          lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE));
+        lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE)
+      );
       lockManager.releaseLock(taskId - 1, dataItems);
 
       // Expecting EXCLUSIVE lock to be granted since it was released by the
       // previous taskId.
       assert.isTrue(
-          lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE));
+        lockManager.requestLock(taskId, dataItems, LockType.EXCLUSIVE)
+      );
     }
   });
 
@@ -175,17 +205,25 @@ describe('LockManager', () => {
     const dataItems = j;
 
     const exclusiveLockId = 0;
-    assert.isTrue(lockManager.requestLock(
-        exclusiveLockId, dataItems, LockType.RESERVED_READ_WRITE));
-    assert.isTrue(lockManager.requestLock(
-        exclusiveLockId, dataItems, LockType.EXCLUSIVE));
+    assert.isTrue(
+      lockManager.requestLock(
+        exclusiveLockId,
+        dataItems,
+        LockType.RESERVED_READ_WRITE
+      )
+    );
+    assert.isTrue(
+      lockManager.requestLock(exclusiveLockId, dataItems, LockType.EXCLUSIVE)
+    );
 
     for (let i = 1; i < 5; i++) {
       const taskId = i;
-      assert.isTrue(lockManager.requestLock(
-          taskId, dataItems, LockType.RESERVED_READ_ONLY));
+      assert.isTrue(
+        lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_ONLY)
+      );
       assert.isFalse(
-          lockManager.requestLock(taskId, dataItems, LockType.SHARED));
+        lockManager.requestLock(taskId, dataItems, LockType.SHARED)
+      );
     }
     lockManager.releaseLock(exclusiveLockId, dataItems);
 
@@ -193,17 +231,25 @@ describe('LockManager', () => {
       const taskId = i;
       // RESERVED_READ_ONLY lock is already being held. Calling requestLock()
       // should still return true for such cases.
-      assert.isTrue(lockManager.requestLock(
-          taskId, dataItems, LockType.RESERVED_READ_ONLY));
       assert.isTrue(
-          lockManager.requestLock(taskId, dataItems, LockType.SHARED));
+        lockManager.requestLock(taskId, dataItems, LockType.RESERVED_READ_ONLY)
+      );
+      assert.isTrue(
+        lockManager.requestLock(taskId, dataItems, LockType.SHARED)
+      );
     }
 
     // Ensuring that a RESERVED_READ_WRITE lock can be granted, but can't be
     // escalated yet to an EXCLUSIVE.
-    assert.isTrue(lockManager.requestLock(
-        exclusiveLockId, dataItems, LockType.RESERVED_READ_WRITE));
-    assert.isFalse(lockManager.requestLock(
-        exclusiveLockId, dataItems, LockType.EXCLUSIVE));
+    assert.isTrue(
+      lockManager.requestLock(
+        exclusiveLockId,
+        dataItems,
+        LockType.RESERVED_READ_WRITE
+      )
+    );
+    assert.isFalse(
+      lockManager.requestLock(exclusiveLockId, dataItems, LockType.EXCLUSIVE)
+    );
   });
 });
