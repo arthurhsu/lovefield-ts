@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {Predicate} from '../pred/predicate';
-import {BaseColumn} from '../schema/base_column';
-import {QueryBuilder} from './query_builder';
+import { Predicate } from '../pred/predicate';
+import { Column } from '../schema/column';
+import { QueryBuilder } from './query_builder';
 
 // @export
 export interface UpdateQuery extends QueryBuilder {
-  set(column: BaseColumn, value: Binder|any): UpdateQuery;
+  set(column: Column, value: unknown): UpdateQuery;
   where(predicate: Predicate): UpdateQuery;
 }

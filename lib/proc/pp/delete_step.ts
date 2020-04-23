@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {BaseTable} from '../../schema/base_table';
-import {Relation} from '../relation';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { Table } from '../../schema/table';
+import { Relation } from '../relation';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class DeleteStep extends PhysicalQueryPlanNode {
-  constructor(private table: BaseTable) {
+  constructor(private table: Table) {
     super(1, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
+  toString(): string {
     return `delete(${this.table.getName()})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
-    const rows = relations[0].entries.map((entry) => entry.row);
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
+    const rows = relations[0].entries.map(entry => entry.row);
     (journal as Journal).remove(this.table, rows);
     return [Relation.createEmpty()];
   }

@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {BaseColumn} from '../../schema/base_column';
-import {MapSet} from '../../structs/map_set';
-import {Relation} from '../relation';
-import {RelationEntry} from '../relation_entry';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { Column } from '../../schema/column';
+import { MapSet } from '../../structs/map_set';
+import { Relation } from '../relation';
+import { RelationEntry } from '../relation_entry';
 
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class GroupByStep extends PhysicalQueryPlanNode {
-  constructor(private groupByColumns: BaseColumn[]) {
+  constructor(private groupByColumns: Column[]) {
     super(1, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
-    const columnNames =
-        this.groupByColumns.map((column) => column.getNormalizedName());
+  toString(): string {
+    const columnNames = this.groupByColumns.map(column =>
+      column.getNormalizedName()
+    );
     return `groupBy(${columnNames.toString()})`;
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    ctx?: Context
+  ): Relation[] {
     return this.calculateGroupedRelations(relations[0]);
   }
 
@@ -46,14 +50,16 @@ export class GroupByStep extends PhysicalQueryPlanNode {
     const groupMap = new MapSet<string, RelationEntry>();
 
     const getKey = (entry: RelationEntry) => {
-      const keys = this.groupByColumns.map((column) => entry.getField(column));
+      const keys = this.groupByColumns.map(column => entry.getField(column));
       return keys.join(',');
     };
 
-    relation.entries.forEach((entry) => groupMap.set(getKey(entry), entry));
-    return groupMap.keys().map((key) => {
+    relation.entries.forEach(entry => groupMap.set(getKey(entry), entry));
+    return groupMap.keys().map(key => {
       return new Relation(
-          groupMap.get(key) as RelationEntry[], relation.getTables());
+        groupMap.get(key) as RelationEntry[],
+        relation.getTables()
+      );
     });
   }
 }

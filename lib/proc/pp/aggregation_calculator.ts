@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-import {FnType} from '../../base/private_enum';
-import {AggregatedColumn} from '../../fn/aggregated_column';
-import {StarColumn} from '../../fn/star_column';
-import {BaseColumn} from '../../schema/base_column';
-import {MathHelper} from '../../structs/math_helper';
-import {AggregationResult, Relation} from '../relation';
-import {RelationEntry} from '../relation_entry';
+import { FnType } from '../../base/private_enum';
+import { AggregatedColumn } from '../../fn/aggregated_column';
+import { StarColumn } from '../../fn/star_column';
+import { Column } from '../../schema/column';
+import { MathHelper } from '../../structs/math_helper';
+import { AggregationResult, Relation } from '../relation';
+import { RelationEntry } from '../relation_entry';
 
-type AggregatorValueType = number|string|Date|null;
+type AggregatorValueType = number | string | Date | null;
 
 export class AggregationCalculator {
-  constructor(private relation: Relation, private columns: AggregatedColumn[]) {
-  }
+  constructor(
+    private relation: Relation,
+    private columns: AggregatedColumn[]
+  ) {}
 
   // Calculates all requested aggregations. Results are stored within
   // this.relation.
-  public calculate(): void {
-    this.columns.forEach((column) => {
+  calculate(): void {
+    this.columns.forEach(column => {
       const reverseColumnChain = column.getColumnChain().reverse();
       for (let i = 1; i < reverseColumnChain.length; i++) {
         const currentColumn = reverseColumnChain[i] as AggregatedColumn;
@@ -44,7 +46,10 @@ export class AggregationCalculator {
         }
 
         const result = this.evalAggregation(
-            currentColumn.aggregatorType, inputRelation, leafColumn);
+          currentColumn.aggregatorType,
+          inputRelation,
+          leafColumn
+        );
         this.relation.setAggregationResult(currentColumn, result);
       }
     }, this);
@@ -53,28 +58,32 @@ export class AggregationCalculator {
   // Returns the relation that should be used as input for calculating the
   // given aggregated column.
   private getInputRelationFor(column: AggregatedColumn): Relation {
-    return column.child instanceof AggregatedColumn ?
-        this.relation.getAggregationResult(column.child) as Relation :
-        this.relation;
+    return column.child instanceof AggregatedColumn
+      ? (this.relation.getAggregationResult(column.child) as Relation)
+      : this.relation;
   }
 
   private evalAggregation(
-      aggregatorType: FnType, relation: Relation,
-      column: BaseColumn): AggregationResult {
-    let result: AggregationResult = null as any as AggregationResult;
+    aggregatorType: FnType,
+    relation: Relation,
+    column: Column
+  ): AggregationResult {
+    let result: AggregationResult = (null as unknown) as AggregationResult;
 
     switch (aggregatorType) {
       case FnType.MIN:
-        result = this.reduce(
-                     relation, column,
-                     (soFar, value) => (value < soFar ? value : soFar)) as
-            AggregationResult;
+        result = this.reduce(relation, column, (s, v) => {
+          const soFar = s as number;
+          const value = v as number;
+          return value < soFar ? value : soFar;
+        }) as AggregationResult;
         break;
       case FnType.MAX:
-        result = this.reduce(
-                     relation, column,
-                     (soFar, value) => (value > soFar ? value : soFar)) as
-            AggregationResult;
+        result = this.reduce(relation, column, (s, v) => {
+          const soFar = s as number;
+          const value = v as number;
+          return value > soFar ? value : soFar;
+        }) as AggregationResult;
         break;
       case FnType.DISTINCT:
         result = this.distinct(relation, column);
@@ -88,7 +97,7 @@ export class AggregationCalculator {
       case FnType.AVG:
         const count = this.count(relation, column);
         if (count > 0) {
-          result = this.sum(relation, column) as number / count;
+          result = (this.sum(relation, column) as number) / count;
         }
         break;
       case FnType.GEOMEAN:
@@ -105,22 +114,23 @@ export class AggregationCalculator {
 
   // Reduces the input relation to a single value. Null values are ignored.
   private reduce(
-      relation: Relation, column: BaseColumn,
-      reduceFn: (cur: any, v: any) => AggregatorValueType):
-      AggregatorValueType {
+    relation: Relation,
+    column: Column,
+    reduceFn: (cur: unknown, v: unknown) => AggregatorValueType
+  ): AggregatorValueType {
     return relation.entries.reduce((soFar: AggregatorValueType, entry) => {
-      const value: AggregatorValueType = entry.getField(column);
+      const value = entry.getField(column) as AggregatorValueType;
       if (value === null) {
         return soFar;
       }
-      return (soFar === null) ? value : reduceFn(soFar, value);
+      return soFar === null ? value : reduceFn(soFar, value);
     }, null);
   }
 
   // Calculates the count of the given column for the given relation.
   // COUNT(*) returns count of all rows but COUNT(column) ignores nulls
   // in that column.
-  private count(relation: Relation, column: BaseColumn): number {
+  private count(relation: Relation, column: Column): number {
     if (column instanceof StarColumn) {
       return relation.entries.length;
     }
@@ -132,55 +142,57 @@ export class AggregationCalculator {
   // Calculates the sum of the given column for the given relation.
   // If all rows have only value null for that column, then null is returned.
   // If the table is empty, null is returned.
-  private sum(relation: Relation, column: BaseColumn): number|string {
-    return this.reduce(relation, column, (soFar, value) => value + soFar) as
-        number |
-        string;
+  private sum(relation: Relation, column: Column): number | string {
+    return this.reduce(relation, column, (s, v) => {
+      const soFar = s as number;
+      const value = v as number;
+      return value + soFar;
+    }) as number;
   }
 
   // Calculates the standard deviation of the given column for the given
   // relation. If all rows have only value null for that column, then null is
   // returned. If the table is empty, null is returned.
-  private stddev(relation: Relation, column: BaseColumn): number|null {
+  private stddev(relation: Relation, column: Column): number | null {
     const values: number[] = [];
-    relation.entries.forEach((entry) => {
+    relation.entries.forEach(entry => {
       const value = entry.getField(column);
       if (value !== null) {
-        values.push(value);
+        values.push(value as number);
       }
     });
 
-    return values.length === 0 ?
-        null :
-        MathHelper.standardDeviation.apply(null, values);
+    return values.length === 0
+      ? null
+      : MathHelper.standardDeviation.apply(null, values);
   }
 
   // Calculates the geometrical mean of the given column for the given relation.
   // Zero values are ignored. If all values given are zero, or if the input
   // relation is empty, null is returned.
-  private geomean(relation: Relation, column: BaseColumn): number|null {
+  private geomean(relation: Relation, column: Column): number | null {
     let nonZeroEntriesCount = 0;
 
     const reduced = relation.entries.reduce((soFar, entry) => {
       const value = entry.getField(column);
       if (value !== null && value !== 0) {
         nonZeroEntriesCount++;
-        return soFar + Math.log(value);
+        return soFar + Math.log(value as number);
       } else {
         return soFar;
       }
     }, 0);
 
-    return nonZeroEntriesCount === 0 ?
-        null :
-        Math.pow(Math.E, reduced / nonZeroEntriesCount);
+    return nonZeroEntriesCount === 0
+      ? null
+      : Math.pow(Math.E, reduced / nonZeroEntriesCount);
   }
 
   // Keeps only distinct entries with regards to the given column.
-  private distinct(relation: Relation, column: BaseColumn): Relation {
-    const distinctMap = new Map<any, RelationEntry>();
+  private distinct(relation: Relation, column: Column): Relation {
+    const distinctMap = new Map<unknown, RelationEntry>();
 
-    relation.entries.forEach((entry) => {
+    relation.entries.forEach(entry => {
       const value = entry.getField(column);
       distinctMap.set(value, entry);
     });

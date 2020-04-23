@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {AggregatedColumn} from '../../fn/aggregated_column';
-import {Context} from '../../query/context';
-import {BaseColumn} from '../../schema/base_column';
-import {Relation} from '../relation';
-import {RelationTransformer} from '../relation_transformer';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { AggregatedColumn } from '../../fn/aggregated_column';
+import { Context } from '../../query/context';
+import { Column } from '../../schema/column';
+import { Relation } from '../relation';
+import { RelationTransformer } from '../relation_transformer';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class ProjectStep extends PhysicalQueryPlanNode {
-  constructor(
-      private columns: BaseColumn[], private groupByColumns: BaseColumn[]) {
+  constructor(private columns: Column[], private groupByColumns: Column[]) {
     super(PhysicalQueryPlanNode.ANY, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
+  toString(): string {
     let postfix = '';
     if (this.groupByColumns) {
-      const groupBy =
-          this.groupByColumns.map((col) => col.getNormalizedName()).join(', ');
+      const groupBy = this.groupByColumns
+        .map(col => col.getNormalizedName())
+        .join(', ');
       postfix = `, groupBy(${groupBy})`;
     }
     return `project(${this.columns.toString()}${postfix})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
     if (relations.length === 0) {
       return [Relation.createEmpty()];
     } else if (relations.length === 1) {
@@ -52,8 +55,8 @@ export class ProjectStep extends PhysicalQueryPlanNode {
 
   // Returns whether any aggregators (either columns or groupBy) have been
   // specified.
-  public hasAggregators(): boolean {
-    const hasAggregators = this.columns.some((column) => {
+  hasAggregators(): boolean {
+    const hasAggregators = this.columns.some(column => {
       return column instanceof AggregatedColumn;
     });
     return hasAggregators || this.groupByColumns !== null;

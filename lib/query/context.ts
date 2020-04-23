@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {UniqueId} from '../base/unique_id';
-import {Predicate} from '../pred/predicate';
-import {PredicateNode} from '../pred/predicate_node';
-import {ValuePredicate} from '../pred/value_predicate';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { assert } from '../base/assert';
+import { UniqueId } from '../base/unique_id';
+import { Predicate } from '../pred/predicate';
+import { PredicateNode } from '../pred/predicate_node';
+import { ValuePredicate } from '../pred/value_predicate';
+import { Table } from '../schema/table';
+import { DatabaseSchema } from '../schema/database_schema';
 
 // Base context for all query types.
 export abstract class Context extends UniqueId {
   // Creates predicateMap such that predicates can be located by ID.
-  private static buildPredicateMap(rootPredicate: PredicateNode):
-      Map<number, Predicate> {
+  private static buildPredicateMap(
+    rootPredicate: PredicateNode
+  ): Map<number, Predicate> {
     const predicateMap = new Map<number, Predicate>();
-    rootPredicate.traverse((n) => {
-      const node = n as PredicateNode as Predicate;
+    rootPredicate.traverse(n => {
+      const node = (n as PredicateNode) as Predicate;
       predicateMap.set(node.getId(), node);
     });
     return predicateMap;
   }
 
-  public where: Predicate|null;
-  public clonedFrom: Context|null;
+  where: Predicate | null;
+  clonedFrom: Context | null;
 
   // A map used for locating predicates by ID. Instantiated lazily.
   private predicateMap: Map<number, Predicate>;
@@ -45,28 +46,29 @@ export abstract class Context extends UniqueId {
     super();
     this.clonedFrom = null;
     this.where = null;
-    this.predicateMap = null as any as Map<number, Predicate>;
+    this.predicateMap = (null as unknown) as Map<number, Predicate>;
   }
 
-  public getPredicate(id: number): Predicate {
+  getPredicate(id: number): Predicate {
     if (this.predicateMap === null && this.where !== null) {
-      this.predicateMap =
-          Context.buildPredicateMap(this.where as PredicateNode);
+      this.predicateMap = Context.buildPredicateMap(
+        this.where as PredicateNode
+      );
     }
     const predicate: Predicate = this.predicateMap.get(id) as Predicate;
     assert(predicate !== undefined);
     return predicate;
   }
 
-  public bind(values: any[]): Context {
+  bind(values: unknown[]): Context {
     assert(this.clonedFrom === null);
     return this;
   }
 
-  public bindValuesInSearchCondition(values: any[]): void {
+  bindValuesInSearchCondition(values: unknown[]): void {
     const searchCondition: PredicateNode = this.where as PredicateNode;
     if (searchCondition !== null) {
-      searchCondition.traverse((node) => {
+      searchCondition.traverse(node => {
         if (node instanceof ValuePredicate) {
           node.bind(values);
         }
@@ -74,8 +76,8 @@ export abstract class Context extends UniqueId {
     }
   }
 
-  public abstract getScope(): Set<BaseTable>;
-  public abstract clone(): Context;
+  abstract getScope(): Set<Table>;
+  abstract clone(): Context;
 
   protected cloneBase(context: Context): void {
     if (context.where) {

@@ -14,37 +14,42 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {UpdateContext} from '../../query/update_context';
-import {BaseTable} from '../../schema/base_table';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { UpdateContext } from '../../query/update_context';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
 
-import {Relation} from '../relation';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { Relation } from '../relation';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class UpdateStep extends PhysicalQueryPlanNode {
-  constructor(private table: BaseTable) {
+  constructor(private table: Table) {
     super(1, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
+  toString(): string {
     return `update(${this.table.getName()})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
-    const rows = relations[0].entries.map((entry) => {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
+    const table = this.table as BaseTable;
+    const rows = relations[0].entries.map(entry => {
       // Need to clone the row here before modifying it, because it is a
       // direct reference to the cache's contents.
-      const clone = this.table.deserializeRow(entry.row.serialize());
+      const clone = table.deserializeRow(entry.row.serialize());
 
-      (context as UpdateContext).set.forEach((update) => {
+      (context as UpdateContext).set.forEach(update => {
         clone.payload()[update.column.getName()] = update.value;
       }, this);
       return clone;
     }, this);
-    (journal as Journal).update(this.table, rows);
+    (journal as Journal).update(table, rows);
     return [Relation.createEmpty()];
   }
 }

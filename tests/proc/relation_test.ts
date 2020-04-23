@@ -16,14 +16,15 @@
 
 import * as chai from 'chai';
 
-import {Row} from '../../lib/base/row';
-import {Relation} from '../../lib/proc/relation';
-import {RelationEntry} from '../../lib/proc/relation_entry';
-import {BaseColumn} from '../../lib/schema/base_column';
-import {BaseTable} from '../../lib/schema/base_table';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {Table} from '../../lib/schema/table';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { Row, PayloadType } from '../../lib/base/row';
+import { Relation } from '../../lib/proc/relation';
+import { RelationEntry } from '../../lib/proc/relation_entry';
+import { BaseColumn } from '../../lib/schema/base_column';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Column } from '../../lib/schema/column';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { Table } from '../../lib/schema/table';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -51,14 +52,17 @@ describe('Relation', () => {
 
   // Asserts that the given column is populated with the given value.
   function assertPopulated(
-      entry: RelationEntry, column: BaseColumn, expectedValue: string,
-      isPrefixApplied: boolean): void {
+    entry: RelationEntry,
+    column: Column,
+    expectedValue: string,
+    isPrefixApplied: boolean
+  ): void {
     assert.equal(expectedValue, entry.getField(column));
 
     const tableName = (column.getTable() as BaseTable).getEffectiveName();
-    const value = isPrefixApplied ?
-        entry.row.payload()[tableName][column.getName()] :
-        entry.row.payload()[column.getName()];
+    const value = isPrefixApplied
+      ? (entry.row.payload()[tableName] as PayloadType)[column.getName()]
+      : entry.row.payload()[column.getName()];
     assert.equal(expectedValue, value);
   }
 
@@ -69,30 +73,46 @@ describe('Relation', () => {
       rows[i] = Row.create();
     }
 
-    const tableNames = tables.map((table) => table.getEffectiveName());
+    const tableNames = tables.map(table => table.getEffectiveName());
     const relation = Relation.fromRows(rows, tableNames);
-    relation.entries.forEach((entry) => {
+    relation.entries.forEach(entry => {
       assert.isEmpty(entry.row.payload());
 
       // Tests setting the value when no previous value is specified.
       const field1 = 'Hello';
-      entry.setField(tables[0]['name'], field1);
+      entry.setField(tables[0].col('name'), field1);
       const field2 = 'World';
-      entry.setField(tables[1]['name'], field2);
+      entry.setField(tables[1].col('name'), field2);
       assertPopulated(
-          entry, tables[0]['name'], field1, /* isPrefixApplied */ true);
+        entry,
+        tables[0].col('name'),
+        field1,
+        /* isPrefixApplied */ true
+      );
       assertPopulated(
-          entry, tables[1]['name'], field2, /* isPrefixApplied */ true);
+        entry,
+        tables[1].col('name'),
+        field2,
+        /* isPrefixApplied */ true
+      );
 
       // Tests setting the value when a previous value is specified.
       const field3 = 'olleH';
-      entry.setField(tables[0]['name'], field3);
+      entry.setField(tables[0].col('name'), field3);
       const field4 = 'dlroW';
-      entry.setField(tables[1]['name'], field4);
+      entry.setField(tables[1].col('name'), field4);
       assertPopulated(
-          entry, tables[0]['name'], field3, /* isPrefixApplied */ true);
+        entry,
+        tables[0].col('name'),
+        field3,
+        /* isPrefixApplied */ true
+      );
       assertPopulated(
-          entry, tables[1]['name'], field4, /* isPrefixApplied */ true);
+        entry,
+        tables[1].col('name'),
+        field4,
+        /* isPrefixApplied */ true
+      );
     });
   }
 
@@ -115,18 +135,26 @@ describe('Relation', () => {
 
     const table = schema.table('tableA');
     const relation = Relation.fromRows(rows, [table.getName()]);
-    relation.entries.forEach((entry) => {
+    relation.entries.forEach(entry => {
       assert.isEmpty(entry.row.payload());
 
       const field1 = 'HelloWorld';
-      entry.setField(table['name'], field1);
+      entry.setField(table.col('name'), field1);
       assertPopulated(
-          entry, table['name'], field1, /* isPrefixApplied */ false);
+        entry,
+        table.col('name'),
+        field1,
+        /* isPrefixApplied */ false
+      );
 
       const field2 = 'dlroWolleH';
-      entry.setField(table['name'], field2);
+      entry.setField(table.col('name'), field2);
       assertPopulated(
-          entry, table['name'], field2, /* isPrefixApplied */ false);
+        entry,
+        table.col('name'),
+        field2,
+        /* isPrefixApplied */ false
+      );
     });
   });
 
@@ -137,15 +165,15 @@ describe('Relation', () => {
     }
 
     const table = schema.table('tableA');
-    const col = table['name'].as('nickName');
+    const col = table.col('name').as('nickName');
 
     const relation = Relation.fromRows(rows, [table.getName()]);
-    relation.entries.forEach((entry) => {
+    relation.entries.forEach(entry => {
       assert.isEmpty(entry.row.payload());
 
       const field1 = 'HelloWorld';
       entry.setField(col, field1);
-      assert.equal(field1, entry.row.payload()[col.getAlias()]);
+      assert.equal(field1, entry.row.payload()[(col as BaseColumn).getAlias()]);
       assert.equal(field1, entry.getField(col));
     });
   });
@@ -172,11 +200,17 @@ describe('Relation', () => {
     // Creating 3 relations that only have entry1 in common.
     const tableName = 'dummyTable';
     const relation1 = new Relation(
-        [entries[0], entries[1], entries[2], entries[3]], [tableName]);
-    const relation2 =
-        new Relation([entries[0], entries[3], entries[5]], [tableName]);
-    const relation3 =
-        new Relation([entries[0], entries[4], entries[5]], [tableName]);
+      [entries[0], entries[1], entries[2], entries[3]],
+      [tableName]
+    );
+    const relation2 = new Relation(
+      [entries[0], entries[3], entries[5]],
+      [tableName]
+    );
+    const relation3 = new Relation(
+      [entries[0], entries[4], entries[5]],
+      [tableName]
+    );
 
     const intersection = Relation.intersect([relation1, relation2, relation3]);
     assert.equal(1, intersection.entries.length);
@@ -193,7 +227,9 @@ describe('Relation', () => {
     // Creating 3 relations.
     const tableName = 'dummyTable';
     const relation1 = new Relation(
-        [entries[0], entries[1], entries[2], entries[3]], [tableName]);
+      [entries[0], entries[1], entries[2], entries[3]],
+      [tableName]
+    );
     const relation2 = new Relation([entries[5]], [tableName]);
     const relation3 = new Relation([entries[4], entries[5]], [tableName]);
 

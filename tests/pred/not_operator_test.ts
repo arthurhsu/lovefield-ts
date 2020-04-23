@@ -15,11 +15,11 @@
  */
 
 import * as chai from 'chai';
-import {DataStoreType} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {op} from '../../lib/fn/op';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { DataStoreType } from '../../lib/base/enum';
+import { PayloadType, Row } from '../../lib/base/row';
+import { op } from '../../lib/fn/op';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -28,8 +28,9 @@ describe('NotOperator', () => {
   const rowCount = 8;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     // Delete any left-overs from previous tests.
     await clearDb();
     await populateDatabase();
@@ -40,8 +41,12 @@ describe('NotOperator', () => {
   // Deletes the contents of all tables.
   async function clearDb(): Promise<void> {
     const tables = db.getSchema().tables();
-    const deletePromises =
-        tables.map((table) => db.delete().from(table).exec());
+    const deletePromises = tables.map(table =>
+      db
+        .delete()
+        .from(table)
+        .exec()
+    );
 
     return Promise.all(deletePromises).then(() => {
       return;
@@ -64,9 +69,13 @@ describe('NotOperator', () => {
   }
 
   // Inserts sample records in the database.
-  async function populateDatabase(): Promise<void> {
+  async function populateDatabase(): Promise<unknown> {
     const dummy = db.getSchema().table('DummyTable');
-    return db.insert().into(dummy).values(generateSampleData(rowCount)).exec();
+    return db
+      .insert()
+      .into(dummy)
+      .values(generateSampleData(rowCount))
+      .exec();
   }
 
   it('not_In', async () => {
@@ -75,15 +84,16 @@ describe('NotOperator', () => {
     const expectedIds = ['string0', 'string2', 'string4', 'string6', 'string7'];
 
     // Select records from the database.
-    const selectFn = (): Promise<Row[]> => {
-      return db.select()
-          .from(tableSchema)
-          .where(op.not(tableSchema['string'].in(excludeIds)))
-          .exec();
+    const selectFn = () => {
+      return db
+        .select()
+        .from(tableSchema)
+        .where(op.not(tableSchema.col('string').in(excludeIds)))
+        .exec() as Promise<PayloadType[]>;
     };
 
     const results = await selectFn();
-    const actualIds = results.map((result) => result['string']);
+    const actualIds = results.map(result => result['string']);
     assert.sameMembers(expectedIds, actualIds);
   });
 
@@ -95,16 +105,17 @@ describe('NotOperator', () => {
     const excludedId = 'string1';
 
     // Select records from the database.
-    const selectFn = (): Promise<Row[]> => {
-      return db.select()
-          .from(tableSchema)
-          .where(op.not(tableSchema['string'].eq(excludedId)))
-          .exec();
+    const selectFn = () => {
+      return db
+        .select()
+        .from(tableSchema)
+        .where(op.not(tableSchema.col('string').eq(excludedId)))
+        .exec() as Promise<PayloadType[]>;
     };
 
     const results = await selectFn();
     assert.equal(rowCount - 1, results.length);
-    assert.isFalse(results.some((result) => result['string'] === excludedId));
+    assert.isFalse(results.some(result => result['string'] === excludedId));
   });
 
   it('and_Not', async () => {
@@ -112,20 +123,23 @@ describe('NotOperator', () => {
     const excludedId = 'string1';
 
     // Select records from the database.
-    const selectFn = (): Promise<Row[]> => {
-      return db.select()
-          .from(tableSchema)
-          .where(op.and(
-              op.not(tableSchema['string'].eq(excludedId)),
-              tableSchema['string'].in([excludedId, 'string2', 'string3']),
-              ))
-          .exec();
+    const selectFn = () => {
+      return db
+        .select()
+        .from(tableSchema)
+        .where(
+          op.and(
+            op.not(tableSchema.col('string').eq(excludedId)),
+            tableSchema.col('string').in([excludedId, 'string2', 'string3'])
+          )
+        )
+        .exec() as Promise<PayloadType[]>;
     };
 
     const results = await selectFn();
     assert.equal(2, results.length);
 
-    const actualIds = results.map((result) => result['string']);
+    const actualIds = results.map(result => result['string']);
     assert.sameMembers(actualIds, ['string2', 'string3']);
   });
 
@@ -135,18 +149,23 @@ describe('NotOperator', () => {
     const tableSchema = db.getSchema().table('DummyTable');
 
     // Select records from the database.
-    const selectFn = (): Promise<Row[]> => {
-      return db.select()
-          .from(tableSchema)
-          .where(op.not(op.and(
-              tableSchema['integer'].gte(200),
-              tableSchema['integer'].lte(600),
-              )))
-          .exec();
+    const selectFn = () => {
+      return db
+        .select()
+        .from(tableSchema)
+        .where(
+          op.not(
+            op.and(
+              tableSchema.col('integer').gte(200),
+              tableSchema.col('integer').lte(600)
+            )
+          )
+        )
+        .exec() as Promise<PayloadType[]>;
     };
 
     const results = await selectFn();
-    const actualValues = results.map((result) => result['integer']);
+    const actualValues = results.map(result => result['integer']);
     const expectedValues = [0, 100, 700];
     assert.sameMembers(expectedValues, actualValues);
   });
@@ -156,18 +175,23 @@ describe('NotOperator', () => {
     const tableSchema = db.getSchema().table('DummyTable');
 
     // Select records from the database.
-    const selectFn = (): Promise<Row[]> => {
-      return db.select()
-          .from(tableSchema)
-          .where(op.not(op.or(
-              tableSchema['integer'].lte(200),
-              tableSchema['integer'].gte(600),
-              )))
-          .exec();
+    const selectFn = () => {
+      return db
+        .select()
+        .from(tableSchema)
+        .where(
+          op.not(
+            op.or(
+              tableSchema.col('integer').lte(200),
+              tableSchema.col('integer').gte(600)
+            )
+          )
+        )
+        .exec() as Promise<PayloadType[]>;
     };
 
     const results = await selectFn();
-    const actualValues = results.map((result) => result['integer']);
+    const actualValues = results.map(result => result['integer']);
     const expectedValues = [500, 400, 300];
     assert.sameMembers(expectedValues, actualValues);
   });

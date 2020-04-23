@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {Predicate} from '../pred/predicate';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {BaseBuilder} from './base_builder';
-import {UpdateContext} from './update_context';
+import { Binder } from '../base/bind';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { Predicate } from '../pred/predicate';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
+import { BaseBuilder } from './base_builder';
+import { UpdateContext } from './update_context';
 
 export class UpdateBuilder extends BaseBuilder<UpdateContext> {
-  constructor(global: Global, table: BaseTable) {
+  constructor(global: Global, table: Table) {
     super(global, new UpdateContext(global.getService(Service.SCHEMA)));
     this.query.table = table;
   }
 
-  public set(column: BaseColumn, value: Binder|any): UpdateBuilder {
+  set(column: Column, value: unknown): UpdateBuilder {
     const set = {
       binding: value instanceof Binder ? (value as Binder).index : -1,
-      column: column,
-      value: value,
+      column,
+      value,
     };
 
     if (this.query.set) {
@@ -46,20 +46,20 @@ export class UpdateBuilder extends BaseBuilder<UpdateContext> {
     return this;
   }
 
-  public where(predicate: Predicate): UpdateBuilder {
+  where(predicate: Predicate): UpdateBuilder {
     this.assertWherePreconditions();
     this.query.where = predicate;
     return this;
   }
 
-  public assertExecPreconditions(): void {
+  assertExecPreconditions(): void {
     super.assertExecPreconditions();
     if (this.query.set === undefined || this.query.set === null) {
       // 532: Invalid usage of update().
       throw new Exception(ErrorCode.INVALID_UPDATE);
     }
 
-    const notBound = this.query.set.some((set) => set.value instanceof Binder);
+    const notBound = this.query.set.some(set => set.value instanceof Binder);
     if (notBound) {
       // 501: Value is not bounded.
       throw new Exception(ErrorCode.UNBOUND_VALUE);

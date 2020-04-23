@@ -17,7 +17,7 @@
 import * as chai from 'chai';
 
 import { DataStoreType } from '../../lib/base/enum';
-import { PayloadType, Row } from '../../lib/base/row';
+import { Row, PayloadType } from '../../lib/base/row';
 import { RuntimeDatabase } from '../../lib/proc/runtime_database';
 import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 import { BaseColumn } from '../../lib/schema/base_column';
@@ -114,7 +114,7 @@ describe('NullPredicate', () => {
     // Ensure that the 'datetime' field is not indexed.
     assert.equal(
       0,
-      (tableSchema['datetime'] as BaseColumn).getIndices().length
+      (tableSchema.col('datetime') as BaseColumn).getIndices().length
     );
     const sampleData = generateSampleDummyData();
 
@@ -123,15 +123,15 @@ describe('NullPredicate', () => {
       return db
         .select()
         .from(tableSchema)
-        .where(tableSchema['datetime'].isNull())
-        .exec();
+        .where(tableSchema.col('datetime').isNull())
+        .exec() as Promise<PayloadType[]>;
     };
 
     const result = await selectFn();
     assert.equal(1, result.length);
 
     // Expecting the second sample row to have been retrieved.
-    const retrievedEmployee = result[0] as PayloadType;
+    const retrievedEmployee = result[0];
     assert.equal(
       sampleData[1].payload()['string'],
       retrievedEmployee['string']
@@ -145,7 +145,7 @@ describe('NullPredicate', () => {
     // Ensure that the 'datetime' field is not indexed.
     assert.equal(
       0,
-      (tableSchema['datetime'] as BaseColumn).getIndices().length
+      (tableSchema.col('datetime') as BaseColumn).getIndices().length
     );
     const sampleData = generateSampleDummyData();
 
@@ -154,15 +154,15 @@ describe('NullPredicate', () => {
       return db
         .select()
         .from(tableSchema)
-        .where(tableSchema['datetime'].isNotNull())
-        .exec();
+        .where(tableSchema.col('datetime').isNotNull())
+        .exec() as Promise<PayloadType[]>;
     };
 
     const result = await selectFn();
     assert.equal(1, result.length);
 
     // Expecting the first sample row to have been retrieved.
-    const retrievedEmployee = result[0] as PayloadType;
+    const retrievedEmployee = result[0];
     assert.equal(
       sampleData[0].payload()['string'],
       retrievedEmployee['string']
@@ -174,7 +174,7 @@ describe('NullPredicate', () => {
     const tableSchema = db.getSchema().table('Region');
     // Ensure that the 'id' field is indexed.
     assert.isTrue(
-      (tableSchema['id'] as BaseColumn).getIndices().length >= 1
+      (tableSchema.col('id') as BaseColumn).getIndices().length >= 1
     );
 
     // Select records to the database.
@@ -182,8 +182,8 @@ describe('NullPredicate', () => {
       return db
         .select()
         .from(tableSchema)
-        .where(tableSchema['id'].isNull())
-        .exec();
+        .where(tableSchema.col('id').isNull())
+        .exec() as Promise<PayloadType[]>;
     };
 
     const result = await selectFn();
@@ -195,7 +195,7 @@ describe('NullPredicate', () => {
     const tableSchema = db.getSchema().table('Region');
     // Ensure that the 'id' field is indexed.
     assert.isTrue(
-      (tableSchema['id'] as BaseColumn).getIndices().length >= 1
+      (tableSchema.col('id') as BaseColumn).getIndices().length >= 1
     );
     const sampleData = generateSampleRegionData();
 
@@ -204,8 +204,8 @@ describe('NullPredicate', () => {
       return db
         .select()
         .from(tableSchema)
-        .where(tableSchema['id'].isNotNull())
-        .exec();
+        .where(tableSchema.col('id').isNotNull())
+        .exec() as Promise<PayloadType[]>;
     };
 
     const result = await selectFn();

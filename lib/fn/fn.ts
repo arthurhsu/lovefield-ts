@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-import {FnType} from '../base/private_enum';
-import {BaseColumn} from '../schema/base_column';
-import {AggregatedColumn} from './aggregated_column';
-import {StarColumn} from './star_column';
+import { FnType } from '../base/private_enum';
+import { AggregatedColumn } from './aggregated_column';
+import { Column } from '../schema/column';
+import { StarColumn } from './star_column';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
-// TODO(arthurhsu): FIXME: use Column instead of BaseColumn.
+// TODO(arthurhsu): FIXME: use Column instead of Column.
 // @export
 export class fn {
-  public static avg(col: BaseColumn): BaseColumn {
+  static avg(col: Column): Column {
     return new AggregatedColumn(col, FnType.AVG);
   }
 
-  public static count(column?: BaseColumn): BaseColumn {
-    const col: BaseColumn = column || new StarColumn();
+  static count(column?: Column): Column {
+    const col: Column = column || new StarColumn();
     return new AggregatedColumn(col, FnType.COUNT);
   }
 
-  public static distinct(col: BaseColumn): BaseColumn {
+  static distinct(col: Column): Column {
     return new AggregatedColumn(col, FnType.DISTINCT);
   }
 
-  public static max(col: BaseColumn): BaseColumn {
+  static max(col: Column): Column {
     return new AggregatedColumn(col, FnType.MAX);
   }
 
-  public static min(col: BaseColumn): BaseColumn {
+  static min(col: Column): Column {
     return new AggregatedColumn(col, FnType.MIN);
   }
 
-  public static stddev(col: BaseColumn): BaseColumn {
+  static stddev(col: Column): Column {
     return new AggregatedColumn(col, FnType.STDDEV);
   }
 
-  public static sum(col: BaseColumn): BaseColumn {
+  static sum(col: Column): Column {
     return new AggregatedColumn(col, FnType.SUM);
   }
 
-  public static geomean(col: BaseColumn): BaseColumn {
+  static geomean(col: Column): Column {
     return new AggregatedColumn(col, FnType.GEOMEAN);
   }
 }

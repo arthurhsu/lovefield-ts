@@ -14,33 +14,39 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {ExecType} from '../../base/private_enum';
-import {Row} from '../../base/row';
-import {Service} from '../../base/service';
-import {Cache} from '../../cache/cache';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {BaseTable} from '../../schema/base_table';
-import {Relation} from '../relation';
+import { Global } from '../../base/global';
+import { ExecType } from '../../base/private_enum';
+import { Row } from '../../base/row';
+import { Service } from '../../base/service';
+import { Cache } from '../../cache/cache';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
+import { Relation } from '../relation';
 
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class TableAccessByRowIdStep extends PhysicalQueryPlanNode {
   private cache: Cache;
-  constructor(global: Global, private table: BaseTable) {
+  constructor(global: Global, private table: Table) {
     super(1, ExecType.FIRST_CHILD);
     this.cache = global.getService(Service.CACHE);
   }
 
-  public toString(): string {
+  toString(): string {
     return `table_access_by_row_id(${this.table.getName()})`;
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
-    return [Relation.fromRows(
-        this.cache.getMany(relations[0].getRowIds()) as Row[],
-        [this.table.getEffectiveName()])];
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    ctx?: Context
+  ): Relation[] {
+    return [
+      Relation.fromRows(this.cache.getMany(relations[0].getRowIds()) as Row[], [
+        (this.table as BaseTable).getEffectiveName(),
+      ]),
+    ];
   }
 }

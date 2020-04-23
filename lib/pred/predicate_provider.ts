@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {OperandType, ValueOperandType} from './operand_type';
-import {Predicate} from './predicate';
+import { Binder } from '../base/bind';
+import { OperandType, ValueOperandType } from './operand_type';
+import { Predicate } from './predicate';
 
 // @export
 export interface PredicateProvider {
@@ -39,13 +39,13 @@ export interface PredicateProvider {
   gte(operand: OperandType): Predicate;
 
   // JavaScript regex match
-  match(operand: Binder|RegExp): Predicate;
+  match(operand: Binder | RegExp): Predicate;
 
   // Between test: to must be greater or equals to from.
   between(from: ValueOperandType, to: ValueOperandType): Predicate;
 
   // Array finding
-  in(values: Binder|ValueOperandType[]): Predicate;
+  in(values: Binder | ValueOperandType[]): Predicate;
 
   // Nullity test
   isNull(): Predicate;

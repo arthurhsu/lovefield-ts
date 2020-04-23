@@ -14,13 +14,26 @@
  * limitations under the License.
  */
 
-import {PredicateProvider} from '../pred/predicate_provider';
+import { Type } from '../base/enum';
+import { PredicateProvider } from '../pred/predicate_provider';
+
+import { Table } from './table';
 
 // Public column interface
 // @export
 export interface Column extends PredicateProvider {
   getName(): string;
   getNormalizedName(): string;
+
+  // Different from original Lovefield, moved from BaseColumn to here.
+  // This makes more sense since these getter calls are non-mutable and
+  // easier for TypeScript users to determine how to proper cast.
+  getTable(): Table;
+  getType(): Type;
+  isNullable(): boolean;
+
+  // Additional function call, not existent in original Lovefield.
+  isUnique(): boolean;
 
   // Alias the column, used in query.
   as(alias: string): Column;

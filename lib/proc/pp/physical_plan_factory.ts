@@ -14,53 +14,53 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../../base/enum';
-import {Exception} from '../../base/exception';
-import {Global} from '../../base/global';
-import {Context} from '../../query/context';
-import {BaseColumn} from '../../schema/base_column';
-import {TreeHelper} from '../../structs/tree_helper';
-import {AggregationNode} from '../lp/aggregation_node';
-import {CrossProductNode} from '../lp/cross_product_node';
-import {DeleteNode} from '../lp/delete_node';
-import {GroupByNode} from '../lp/group_by_node';
-import {InsertNode} from '../lp/insert_node';
-import {InsertOrReplaceNode} from '../lp/insert_or_replace_node';
-import {JoinNode} from '../lp/join_node';
-import {LimitNode} from '../lp/limit_node';
-import {LogicalQueryPlan} from '../lp/logical_query_plan';
-import {LogicalQueryPlanNode} from '../lp/logical_query_plan_node';
-import {OrderByNode} from '../lp/orderby_node';
-import {ProjectNode} from '../lp/project_node';
-import {SelectNode} from '../lp/select_node';
-import {SkipNode} from '../lp/skip_node';
-import {TableAccessNode} from '../lp/table_access_node';
-import {UpdateNode} from '../lp/update_node';
-import {RewritePass} from '../rewrite_pass';
+import { ErrorCode } from '../../base/enum';
+import { Exception } from '../../base/exception';
+import { Global } from '../../base/global';
+import { Context } from '../../query/context';
+import { Column } from '../../schema/column';
+import { TreeHelper } from '../../structs/tree_helper';
+import { AggregationNode } from '../lp/aggregation_node';
+import { CrossProductNode } from '../lp/cross_product_node';
+import { DeleteNode } from '../lp/delete_node';
+import { GroupByNode } from '../lp/group_by_node';
+import { InsertNode } from '../lp/insert_node';
+import { InsertOrReplaceNode } from '../lp/insert_or_replace_node';
+import { JoinNode } from '../lp/join_node';
+import { LimitNode } from '../lp/limit_node';
+import { LogicalQueryPlan } from '../lp/logical_query_plan';
+import { LogicalQueryPlanNode } from '../lp/logical_query_plan_node';
+import { OrderByNode } from '../lp/orderby_node';
+import { ProjectNode } from '../lp/project_node';
+import { SelectNode } from '../lp/select_node';
+import { SkipNode } from '../lp/skip_node';
+import { TableAccessNode } from '../lp/table_access_node';
+import { UpdateNode } from '../lp/update_node';
+import { RewritePass } from '../rewrite_pass';
 
-import {AggregationStep} from './aggregation_step';
-import {CrossProductStep} from './cross_product_step';
-import {DeleteStep} from './delete_step';
-import {GetRowCountPass} from './get_row_count_pass';
-import {GroupByStep} from './group_by_step';
-import {IndexJoinPass} from './index_join_pass';
-import {IndexRangeScanPass} from './index_range_scan_pass';
-import {InsertOrReplaceStep} from './insert_or_replace_step';
-import {InsertStep} from './insert_step';
-import {JoinStep} from './join_step';
-import {LimitSkipByIndexPass} from './limit_skip_by_index_pass';
-import {LimitStep} from './limit_step';
-import {MultiColumnOrPass} from './multi_column_or_pass';
-import {OrderByIndexPass} from './order_by_index_pass';
-import {OrderByStep} from './order_by_step';
-import {PhysicalPlanRewriter} from './physical_plan_rewriter';
-import {PhysicalQueryPlan} from './physical_query_plan';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
-import {ProjectStep} from './project_step';
-import {SelectStep} from './select_step';
-import {SkipStep} from './skip_step';
-import {TableAccessFullStep} from './table_access_full_step';
-import {UpdateStep} from './update_step';
+import { AggregationStep } from './aggregation_step';
+import { CrossProductStep } from './cross_product_step';
+import { DeleteStep } from './delete_step';
+import { GetRowCountPass } from './get_row_count_pass';
+import { GroupByStep } from './group_by_step';
+import { IndexJoinPass } from './index_join_pass';
+import { IndexRangeScanPass } from './index_range_scan_pass';
+import { InsertOrReplaceStep } from './insert_or_replace_step';
+import { InsertStep } from './insert_step';
+import { JoinStep } from './join_step';
+import { LimitSkipByIndexPass } from './limit_skip_by_index_pass';
+import { LimitStep } from './limit_step';
+import { MultiColumnOrPass } from './multi_column_or_pass';
+import { OrderByIndexPass } from './order_by_index_pass';
+import { OrderByStep } from './order_by_step';
+import { PhysicalPlanRewriter } from './physical_plan_rewriter';
+import { PhysicalQueryPlan } from './physical_query_plan';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import { ProjectStep } from './project_step';
+import { SelectStep } from './select_step';
+import { SkipStep } from './skip_step';
+import { TableAccessFullStep } from './table_access_full_step';
+import { UpdateStep } from './update_step';
 
 export class PhysicalPlanFactory {
   private selectOptimizationPasses: Array<RewritePass<PhysicalQueryPlanNode>>;
@@ -76,30 +76,42 @@ export class PhysicalPlanFactory {
       new GetRowCountPass(global),
     ];
 
-    this.deleteOptimizationPasses = [
-      new IndexRangeScanPass(global),
-    ];
+    this.deleteOptimizationPasses = [new IndexRangeScanPass(global)];
   }
 
-  public create(logicalQueryPlan: LogicalQueryPlan, queryContext: Context):
-      PhysicalQueryPlan {
+  create(
+    logicalQueryPlan: LogicalQueryPlan,
+    queryContext: Context
+  ): PhysicalQueryPlan {
     const logicalQueryPlanRoot = logicalQueryPlan.getRoot();
-    if ((logicalQueryPlanRoot instanceof InsertOrReplaceNode) ||
-        (logicalQueryPlanRoot instanceof InsertNode)) {
+    if (
+      logicalQueryPlanRoot instanceof InsertOrReplaceNode ||
+      logicalQueryPlanRoot instanceof InsertNode
+    ) {
       return this.createPlan(logicalQueryPlan, queryContext);
     }
 
-    if (logicalQueryPlanRoot instanceof ProjectNode ||
-        logicalQueryPlanRoot instanceof LimitNode ||
-        logicalQueryPlanRoot instanceof SkipNode) {
+    if (
+      logicalQueryPlanRoot instanceof ProjectNode ||
+      logicalQueryPlanRoot instanceof LimitNode ||
+      logicalQueryPlanRoot instanceof SkipNode
+    ) {
       return this.createPlan(
-          logicalQueryPlan, queryContext, this.selectOptimizationPasses);
+        logicalQueryPlan,
+        queryContext,
+        this.selectOptimizationPasses
+      );
     }
 
-    if ((logicalQueryPlanRoot instanceof DeleteNode) ||
-        (logicalQueryPlanRoot instanceof UpdateNode)) {
+    if (
+      logicalQueryPlanRoot instanceof DeleteNode ||
+      logicalQueryPlanRoot instanceof UpdateNode
+    ) {
       return this.createPlan(
-          logicalQueryPlan, queryContext, this.deleteOptimizationPasses);
+        logicalQueryPlan,
+        queryContext,
+        this.deleteOptimizationPasses
+      );
     }
 
     // Should never get here since all cases are handled above.
@@ -108,16 +120,21 @@ export class PhysicalPlanFactory {
   }
 
   private createPlan(
-      logicalPlan: LogicalQueryPlan, queryContext: Context,
-      rewritePasses?: Array<RewritePass<PhysicalQueryPlanNode>>):
-      PhysicalQueryPlan {
-    let rootStep =
-        TreeHelper.map(logicalPlan.getRoot(), this.mapFn.bind(this)) as
-        PhysicalQueryPlanNode;
+    logicalPlan: LogicalQueryPlan,
+    queryContext: Context,
+    rewritePasses?: Array<RewritePass<PhysicalQueryPlanNode>>
+  ): PhysicalQueryPlan {
+    let rootStep = TreeHelper.map(
+      logicalPlan.getRoot(),
+      this.mapFn.bind(this)
+    ) as PhysicalQueryPlanNode;
 
     if (rewritePasses !== undefined && rewritePasses !== null) {
-      const planRewriter =
-          new PhysicalPlanRewriter(rootStep, queryContext, rewritePasses);
+      const planRewriter = new PhysicalPlanRewriter(
+        rootStep,
+        queryContext,
+        rewritePasses
+      );
       rootStep = planRewriter.generate();
     }
     return new PhysicalQueryPlan(rootStep, logicalPlan.getScope());
@@ -127,7 +144,7 @@ export class PhysicalPlanFactory {
   // execution step.
   private mapFn(node: LogicalQueryPlanNode): PhysicalQueryPlanNode {
     if (node instanceof ProjectNode) {
-      return new ProjectStep(node.columns, node.groupByColumns as BaseColumn[]);
+      return new ProjectStep(node.columns, node.groupByColumns as Column[]);
     } else if (node instanceof GroupByNode) {
       return new GroupByStep(node.columns);
     } else if (node instanceof AggregationNode) {

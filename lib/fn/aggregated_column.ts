@@ -14,72 +14,76 @@
  * limitations under the License.
  */
 
-import {Type} from '../base/enum';
-import {FnType} from '../base/private_enum';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {Index} from '../schema/index';
-import {NonPredicateProvider} from './non_predicate_provider';
+import { Type } from '../base/enum';
+import { FnType } from '../base/private_enum';
+import { BaseColumn } from '../schema/base_column';
+import { BaseTable } from '../schema/base_table';
+import { Column } from '../schema/column';
+import { Index } from '../schema/index';
+import { NonPredicateProvider } from './non_predicate_provider';
 
-export class AggregatedColumn extends NonPredicateProvider implements
-    BaseColumn {
-  public alias: string|null;
+export class AggregatedColumn extends NonPredicateProvider
+  implements BaseColumn {
+  alias: string | null;
 
-  constructor(readonly child: BaseColumn, readonly aggregatorType: FnType) {
+  // Make TypeScript happy.
+  [key: string]: unknown;
+
+  constructor(readonly child: Column, readonly aggregatorType: FnType) {
     super();
     this.alias = null;
   }
 
-  public getName(): string {
+  getName(): string {
     return `${this.aggregatorType}(${this.child.getName()})`;
   }
 
-  public getNormalizedName(): string {
+  getNormalizedName(): string {
     return `${this.aggregatorType}(${this.child.getNormalizedName()})`;
   }
 
-  public getTable(): BaseTable {
+  getTable(): BaseTable {
     return this.child.getTable() as BaseTable;
   }
 
-  public toString(): string {
+  toString(): string {
     return this.getNormalizedName();
   }
 
-  public getType(): Type {
+  getType(): Type {
     return this.child.getType();
   }
 
-  public getAlias(): string {
+  getAlias(): string {
     return this.alias as string;
   }
 
-  public getIndices(): Index[] {
+  getIndices(): Index[] {
     return [];
   }
 
-  public getIndex(): Index|null {
+  getIndex(): Index | null {
     return null;
   }
 
-  public isNullable(): boolean {
+  isNullable(): boolean {
     return false;
   }
 
-  public isUnique(): boolean {
+  isUnique(): boolean {
     return false;
   }
 
-  public as(name: string): AggregatedColumn {
+  as(name: string): AggregatedColumn {
     this.alias = name;
     return this;
   }
 
   // Returns The chain of columns that starts from this column. All columns
   // are of type AggregatedColumn except for the last column.
-  public getColumnChain(): BaseColumn[] {
-    const columnChain: BaseColumn[] = [this];
-    let currentColumn: BaseColumn = this;
+  getColumnChain(): Column[] {
+    const columnChain: Column[] = [this];
+    let currentColumn: Column = this;
     while (currentColumn instanceof AggregatedColumn) {
       columnChain.push(currentColumn.child);
       currentColumn = currentColumn.child;

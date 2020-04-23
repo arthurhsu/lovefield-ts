@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Row} from '../base/row';
-import {BaseColumn} from '../schema/base_column';
-import {setEquals} from '../structs/set_util';
+import { assert } from '../base/assert';
+import { Row } from '../base/row';
+import { Column } from '../schema/column';
+import { setEquals } from '../structs/set_util';
 
-import {RelationEntry} from './relation_entry';
+import { RelationEntry } from './relation_entry';
 
-export type AggregationResult = Relation|string|number;
+export type AggregationResult = Relation | string | number;
 
 export class Relation {
   // Creates an empty Relation instance. Since a relation is immutable, a
   // singleton "empty" relation instance is lazily instantiated and returned in
   // all subsequent calls.
-  public static createEmpty(): Relation {
+  static createEmpty(): Relation {
     if (Relation.emptyRelation === null) {
       Relation.emptyRelation = new Relation([], []);
     }
@@ -35,7 +35,7 @@ export class Relation {
   }
 
   // Finds the intersection of a given list of relations.
-  public static intersect(relations: Relation[]): Relation {
+  static intersect(relations: Relation[]): Relation {
     if (relations.length === 0) {
       return Relation.createEmpty();
     }
@@ -49,9 +49,9 @@ export class Relation {
 
     // Creating a map [entry.id --> entry] for each relation, and at the same
     // time populating the allEntries array.
-    const relationMaps = relations.map((relation) => {
+    const relationMaps = relations.map(relation => {
       const map = new Map<number, RelationEntry>();
-      relation.entries.forEach((entry) => {
+      relation.entries.forEach(entry => {
         allEntries[entryCounter++] = entry;
         map.set(entry.id, entry);
       });
@@ -59,50 +59,55 @@ export class Relation {
     });
 
     const intersection = new Map<number, RelationEntry>();
-    allEntries.forEach((entry) => {
-      const existsInAll =
-          relationMaps.every((relation) => relation.has(entry.id));
+    allEntries.forEach(entry => {
+      const existsInAll = relationMaps.every(relation =>
+        relation.has(entry.id)
+      );
       if (existsInAll) {
         intersection.set(entry.id, entry);
       }
     });
 
     return new Relation(
-        Array.from(intersection.values()),
-        Array.from(relations[0].tables.values()));
+      Array.from(intersection.values()),
+      Array.from(relations[0].tables.values())
+    );
   }
 
   // Finds the union of a given list of relations.
-  public static union(relations: Relation[]): Relation {
+  static union(relations: Relation[]): Relation {
     if (relations.length === 0) {
       return Relation.createEmpty();
     }
 
     const union = new Map<number, RelationEntry>();
-    relations.forEach((relation) => {
+    relations.forEach(relation => {
       Relation.assertCompatible(relations[0], relation);
-      relation.entries.forEach((entry) => union.set(entry.id, entry));
+      relation.entries.forEach(entry => union.set(entry.id, entry));
     });
 
     return new Relation(
-        Array.from(union.values()), Array.from(relations[0].tables.values()));
+      Array.from(union.values()),
+      Array.from(relations[0].tables.values())
+    );
   }
 
   // Creates an lf.proc.Relation instance from a set of lf.Row instances.
-  public static fromRows(rows: Row[], tables: string[]): Relation {
+  static fromRows(rows: Row[], tables: string[]): Relation {
     const isPrefixApplied = tables.length > 1;
-    const entries = rows.map((row) => new RelationEntry(row, isPrefixApplied));
+    const entries = rows.map(row => new RelationEntry(row, isPrefixApplied));
     return new Relation(entries, tables);
   }
 
-  private static emptyRelation: Relation = null as any as Relation;
+  private static emptyRelation: Relation = (null as unknown) as Relation;
 
   // Asserts that two relations are compatible with regards to
   // union/intersection operations.
   private static assertCompatible(lhs: Relation, rhs: Relation): void {
     assert(
-        lhs.isCompatible(rhs),
-        'Intersection/union operations only apply to compatible relations.');
+      lhs.isCompatible(rhs),
+      'Intersection/union operations only apply to compatible relations.'
+    );
   }
 
   private tables: Set<string>;
@@ -115,36 +120,38 @@ export class Relation {
 
   constructor(readonly entries: RelationEntry[], tables: string[]) {
     this.tables = new Set(tables);
-    this.aggregationResults = null as any as Map<string, AggregationResult>;
+    this.aggregationResults = (null as unknown) as Map<
+      string,
+      AggregationResult
+    >;
   }
 
   // Whether this is compatible with given relation in terms of calculating
   // union/intersection.
-  public isCompatible(relation: Relation): boolean {
+  isCompatible(relation: Relation): boolean {
     return setEquals(this.tables, relation.tables);
   }
 
   // Returns the names of all source tables of this relation.
-  public getTables(): string[] {
+  getTables(): string[] {
     return Array.from(this.tables.values());
   }
 
   // Whether prefixes have been applied to the payloads in this relation.
-  public isPrefixApplied(): boolean {
+  isPrefixApplied(): boolean {
     return this.tables.size > 1;
   }
 
-  public getPayloads(): object[] {
-    return this.entries.map((entry) => entry.row.payload());
+  getPayloads(): object[] {
+    return this.entries.map(entry => entry.row.payload());
   }
 
-  public getRowIds(): number[] {
-    return this.entries.map((entry) => entry.row.id());
+  getRowIds(): number[] {
+    return this.entries.map(entry => entry.row.id());
   }
 
   // Adds an aggregated result to this relation.
-  public setAggregationResult(column: BaseColumn, result: AggregationResult):
-      void {
+  setAggregationResult(column: Column, result: AggregationResult): void {
     if (this.aggregationResults === null) {
       this.aggregationResults = new Map<string, AggregationResult>();
     }
@@ -152,21 +159,24 @@ export class Relation {
   }
 
   // Gets an already calculated aggregated result for this relation.
-  public getAggregationResult(column: BaseColumn): AggregationResult {
+  getAggregationResult(column: Column): AggregationResult {
     assert(
-        this.aggregationResults !== null,
-        'getAggregationResult called before any results have been calculated.');
-    const result = this.aggregationResults.get(column.getNormalizedName());
-    assert(
-        result !== undefined,
-        `Could not find result for ${column.getNormalizedName()}`);
-    return result as any as AggregationResult;
+      this.aggregationResults !== null,
+      'getAggregationResult called before any results have been calculated.'
+    );
+
+    const colName = column.getNormalizedName();
+    const result = this.aggregationResults.get(colName);
+    assert(result !== undefined, `Could not find result for ${colName}`);
+    return result as AggregationResult;
   }
 
   // Whether an aggregation result for the given aggregated column has been
   // calculated.
-  public hasAggregationResult(column: BaseColumn): boolean {
-    return this.aggregationResults !== null &&
-        this.aggregationResults.has(column.getNormalizedName());
+  hasAggregationResult(column: Column): boolean {
+    return (
+      this.aggregationResults !== null &&
+      this.aggregationResults.has(column.getNormalizedName())
+    );
   }
 }

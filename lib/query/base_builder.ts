@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {PhysicalQueryPlan} from '../proc/pp/physical_query_plan';
-import {PhysicalQueryPlanNode} from '../proc/pp/physical_query_plan_node';
-import {QueryEngine} from '../proc/query_engine';
-import {Runner} from '../proc/runner';
-import {TaskItem} from '../proc/task_item';
-import {UserQueryTask} from '../proc/user_query_task';
-import {TreeHelper} from '../structs/tree_helper';
-import {TreeNode} from '../structs/tree_node';
-import {Context} from './context';
-import {QueryBuilder} from './query_builder';
-import {SqlHelper} from './to_sql';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { PhysicalQueryPlan } from '../proc/pp/physical_query_plan';
+import { PhysicalQueryPlanNode } from '../proc/pp/physical_query_plan_node';
+import { QueryEngine } from '../proc/query_engine';
+import { Runner } from '../proc/runner';
+import { TaskItem } from '../proc/task_item';
+import { UserQueryTask } from '../proc/user_query_task';
+import { TreeHelper } from '../structs/tree_helper';
+import { TreeNode } from '../structs/tree_node';
+import { Context } from './context';
+import { QueryBuilder } from './query_builder';
+import { SqlHelper } from './to_sql';
 
 export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   protected query: CONTEXT;
@@ -41,7 +41,7 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
     this.query = context as CONTEXT;
   }
 
-  public exec(): Promise<any> {
+  exec(): Promise<unknown> {
     try {
       this.assertExecPreconditions();
     } catch (e) {
@@ -50,48 +50,49 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
 
     return new Promise((resolve, reject) => {
       const queryTask = new UserQueryTask(this.global, [this.getTaskItem()]);
-      this.runner.scheduleTask(queryTask).then(
-          (results) => resolve(results[0].getPayloads()), reject);
+      this.runner
+        .scheduleTask(queryTask)
+        .then(results => resolve(results[0].getPayloads()), reject);
     });
   }
 
-  public explain(): string {
+  explain(): string {
     const stringFn = (node: TreeNode) =>
-        `${(node as PhysicalQueryPlanNode).toContextString(this.query)}\n`;
+      `${(node as PhysicalQueryPlanNode).toContextString(this.query)}\n`;
     return TreeHelper.toString(this.getPlan().getRoot(), stringFn);
   }
 
-  public bind(values: any[]): QueryBuilder {
+  bind(values: unknown[]): QueryBuilder {
     this.query.bind(values);
     return this;
   }
 
-  public toSql(stripValueInfo = false): string {
+  toSql(stripValueInfo = false): string {
     return SqlHelper.toSql(this, stripValueInfo);
   }
 
   // Asserts whether the preconditions for executing this query are met. Should
   // be overridden by subclasses.
-  public assertExecPreconditions(): void {
+  assertExecPreconditions(): void {
     // No-op default implementation.
   }
 
-  public getQuery(): CONTEXT {
+  getQuery(): CONTEXT {
     return this.query.clone() as CONTEXT;
   }
 
-  public getObservableQuery(): CONTEXT {
+  getObservableQuery(): CONTEXT {
     return this.query as CONTEXT;
   }
 
-  public getTaskItem(): TaskItem {
+  getTaskItem(): TaskItem {
     return {
       context: this.getQuery(),
       plan: this.getPlan(),
     };
   }
 
-  public getObservableTaskItem(): TaskItem {
+  getObservableTaskItem(): TaskItem {
     return {
       context: this.getObservableQuery(),
       plan: this.getPlan(),

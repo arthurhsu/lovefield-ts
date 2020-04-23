@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-import {Type} from '../base/enum';
-
-import {Column} from './column';
-import {Index} from './index';
-import {Table} from './table';
+import { Column } from './column';
+import { Index } from './index';
 
 export interface BaseColumn extends Column {
-  getTable(): Table;
-  getType(): Type;
   getAlias(): string;
   getIndices(): Index[];
   // The index that refers only to this column, or null if such index does
   // not exist.
-  getIndex(): Index|null;
-  isNullable(): boolean;
+  getIndex(): Index | null;
 
-  // Additional function call, not existent in original Lovefield.
-  isUnique(): boolean;
+  // Accessor returns unknown to meet the design of DEFAULT_VALUES.
+  [key: string]: unknown;
 }

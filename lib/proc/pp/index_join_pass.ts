@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import {EvalType} from '../../base/eval';
-import {SelectContext} from '../../query/select_context';
-import {BaseColumn} from '../../schema/base_column';
-import {BaseTable} from '../../schema/base_table';
-import {TreeHelper} from '../../structs/tree_helper';
-import {Relation} from '../relation';
-import {RewritePass} from '../rewrite_pass';
+import { EvalType } from '../../base/eval';
+import { SelectContext } from '../../query/select_context';
+import { BaseColumn } from '../../schema/base_column';
+import { BaseTable } from '../../schema/base_table';
+import { Column } from '../../schema/column';
+import { TreeHelper } from '../../structs/tree_helper';
+import { Relation } from '../relation';
+import { RewritePass } from '../rewrite_pass';
 
-import {JoinStep} from './join_step';
-import {NoOpStep} from './no_op_step';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
-import {TableAccessFullStep} from './table_access_full_step';
+import { JoinStep } from './join_step';
+import { NoOpStep } from './no_op_step';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import { TableAccessFullStep } from './table_access_full_step';
 
 // An optimization pass responsible for identifying JoinSteps that can be
 // calculated as index nested loop joins. It transforms the tree by specifying
@@ -37,17 +38,20 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     super();
   }
 
-  public rewrite(rootNode: PhysicalQueryPlanNode, queryContext: SelectContext):
-      PhysicalQueryPlanNode {
+  rewrite(
+    rootNode: PhysicalQueryPlanNode,
+    queryContext: SelectContext
+  ): PhysicalQueryPlanNode {
     this.rootNode = rootNode;
 
     if (!this.canOptimize(queryContext)) {
       return rootNode;
     }
 
-    const joinSteps =
-        TreeHelper.find(rootNode, (node) => node instanceof JoinStep) as
-        JoinStep[];
+    const joinSteps = TreeHelper.find(
+      rootNode,
+      node => node instanceof JoinStep
+    ) as JoinStep[];
     joinSteps.forEach(this.processJoinStep, this);
 
     return this.rootNode;
@@ -61,36 +65,42 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
   // an index-join.
   private processJoinStep(joinStep: JoinStep): void {
     // Currently ONLY inner EQ join can be calculated using index join.
-    if (joinStep.predicate.evaluatorType !== EvalType.EQ ||
-        joinStep.isOuterJoin) {
+    if (
+      joinStep.predicate.evaluatorType !== EvalType.EQ ||
+      joinStep.isOuterJoin
+    ) {
       return;
     }
 
     // Finds which of the two joined columns corresponds to the given table.
-    const getColumnForTable = (table: BaseTable): BaseColumn => {
+    const getColumnForTable = (table: BaseTable): Column => {
       return table.getEffectiveName() ===
-              (joinStep.predicate.rightColumn.getTable() as BaseTable)
-                  .getEffectiveName() ?
-          joinStep.predicate.rightColumn :
-          joinStep.predicate.leftColumn;
+        (joinStep.predicate.rightColumn.getTable() as BaseTable).getEffectiveName()
+        ? joinStep.predicate.rightColumn
+        : joinStep.predicate.leftColumn;
     };
 
     // Extracts the candidate indexed column for the given execution step node.
-    const getCandidate = (executionStep: PhysicalQueryPlanNode): BaseColumn => {
+    const getCandidate = (executionStep: PhysicalQueryPlanNode): Column => {
       // In order to use and index for implementing a join, the entire relation
       // must be fed to the JoinStep, otherwise the index can't be used.
       if (!(executionStep instanceof TableAccessFullStep)) {
-        return null as any as BaseColumn;
+        return (null as unknown) as Column;
       }
-      const candidateColumn = getColumnForTable(executionStep.table);
-      return candidateColumn.getIndex() === null ? null as any as BaseColumn :
-                                                   candidateColumn;
+      const candidateColumn = getColumnForTable(
+        executionStep.table as BaseTable
+      );
+      return (candidateColumn as BaseColumn).getIndex() === null
+        ? ((null as unknown) as Column)
+        : candidateColumn;
     };
 
-    const leftCandidate =
-        getCandidate(joinStep.getChildAt(0) as PhysicalQueryPlanNode);
-    const rightCandidate =
-        getCandidate(joinStep.getChildAt(1) as PhysicalQueryPlanNode);
+    const leftCandidate = getCandidate(
+      joinStep.getChildAt(0) as PhysicalQueryPlanNode
+    );
+    const rightCandidate = getCandidate(
+      joinStep.getChildAt(1) as PhysicalQueryPlanNode
+    );
 
     if (leftCandidate === null && rightCandidate === null) {
       // None of the two involved columns can be used for an index join.
@@ -102,12 +112,16 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     // bigger incoming relation, such that index accesses are minimized. Use
     // index stats to figure out the size of each relation.
     const chosenColumn =
-        rightCandidate !== null ? rightCandidate : leftCandidate;
+      rightCandidate !== null ? rightCandidate : leftCandidate;
 
     joinStep.markAsIndexJoin(chosenColumn);
     const dummyRelation = new Relation(
-        [], [(chosenColumn.getTable() as BaseTable).getEffectiveName()]);
+      [],
+      [(chosenColumn.getTable() as BaseTable).getEffectiveName()]
+    );
     joinStep.replaceChildAt(
-        new NoOpStep([dummyRelation]), chosenColumn === leftCandidate ? 0 : 1);
+      new NoOpStep([dummyRelation]),
+      chosenColumn === leftCandidate ? 0 : 1
+    );
   }
 }

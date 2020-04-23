@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {BaseTable} from '../../schema/base_table';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { Table } from '../../schema/table';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class UpdateNode extends LogicalQueryPlanNode {
-  constructor(readonly table: BaseTable) {
+  constructor(readonly table: Table) {
     super();
   }
 
-  public toString(): string {
+  toString(): string {
     return `update(${this.table.getName()})`;
   }
 }

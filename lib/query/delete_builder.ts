@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {Predicate} from '../pred/predicate';
-import {BaseTable} from '../schema/base_table';
-import {BaseBuilder} from './base_builder';
-import {DeleteContext} from './delete_context';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { Predicate } from '../pred/predicate';
+import { Table } from '../schema/table';
+import { BaseBuilder } from './base_builder';
+import { DeleteContext } from './delete_context';
 
 export class DeleteBuilder extends BaseBuilder<DeleteContext> {
   constructor(global: Global) {
     super(global, new DeleteContext(global.getService(Service.SCHEMA)));
   }
 
-  public from(table: BaseTable): DeleteBuilder {
+  from(table: Table): DeleteBuilder {
     this.assertFromPreconditions();
     this.query.from = table;
     return this;
   }
 
-  public where(predicate: Predicate): DeleteBuilder {
+  where(predicate: Predicate): DeleteBuilder {
     this.assertWherePreconditions();
     this.query.where = predicate;
     return this;
   }
 
-  public assertExecPreconditions(): void {
+  assertExecPreconditions(): void {
     super.assertExecPreconditions();
     if (this.query.from === undefined || this.query.from === null) {
       // 517: Invalid usage of delete().

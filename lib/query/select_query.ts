@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {Order} from '../base/enum';
-import {Predicate} from '../pred/predicate';
-import {BaseColumn} from '../schema/base_column';
-import {Table} from '../schema/table';
-import {QueryBuilder} from './query_builder';
+import { Binder } from '../base/bind';
+import { Order } from '../base/enum';
+import { Predicate } from '../pred/predicate';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
+import { QueryBuilder } from './query_builder';
 
 // Query Builder which constructs a SELECT query. The builder is stateful.
 // All member functions, except orderBy(), can only be called once. Otherwise
@@ -40,15 +40,15 @@ export interface SelectQuery extends QueryBuilder {
 
   // Limits the number of rows returned in select results. If there are fewer
   // rows than limit, all rows will be returned.
-  limit(numberOfRows: number|Binder): SelectQuery;
+  limit(numberOfRows: number | Binder): SelectQuery;
 
   // Skips the number of rows returned in select results from the beginning. If
   // there are fewer rows than skip, no row will be returned.
-  skip(numberOfRows: number|Binder): SelectQuery;
+  skip(numberOfRows: number | Binder): SelectQuery;
 
   // Specify sorting order of returned results.
-  orderBy(column: BaseColumn, order?: Order): SelectQuery;
+  orderBy(column: Column, order?: Order): SelectQuery;
 
   // Specify grouping of returned results.
-  groupBy(...columns: BaseColumn[]): SelectQuery;
+  groupBy(...columns: Column[]): SelectQuery;
 }

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-import {Relation} from '../proc/relation';
-import {RelationEntry} from '../proc/relation_entry';
-import {SelectContext} from '../query/select_context';
-import {BaseColumn} from '../schema/base_column';
-import {MathHelper} from '../structs/math_helper';
-import {ChangeRecord} from './change_record';
-import {Type} from './enum';
-import {EvalRegistry, EvalType} from './eval';
+import { Relation } from '../proc/relation';
+import { RelationEntry } from '../proc/relation_entry';
+import { SelectContext } from '../query/select_context';
+import { Column } from '../schema/column';
+import { MathHelper } from '../structs/math_helper';
+import { ChangeRecord } from './change_record';
+import { Type } from './enum';
+import { EvalRegistry, EvalType } from './eval';
+import { BaseTable } from '../schema/base_table';
 
 // A DiffCalculator is responsible for detecting and applying the difference
 // between old and new results for a given query.
 export class DiffCalculator {
   private evalRegistry: EvalRegistry;
-  private columns: BaseColumn[];
+  private columns: Column[];
 
-  constructor(private query: SelectContext, private observableResults: any[]) {
+  constructor(
+    private query: SelectContext,
+    private observableResults: object[]
+  ) {
     this.evalRegistry = EvalRegistry.get();
     this.columns = this.detectColumns();
   }
@@ -42,13 +46,16 @@ export class DiffCalculator {
   // twice, with different collectorFn each time, because comparisons are done
   // based on object reference, there might be a cheaper way, such that
   // longestCommonSubsequence is only called once.
-  public applyDiff(oldResults: Relation, newResults: Relation): ChangeRecord[] {
+  applyDiff(oldResults: Relation, newResults: Relation): ChangeRecord[] {
     const oldEntries = oldResults === null ? [] : oldResults.entries;
 
     // Detecting and applying deletions.
     const longestCommonSubsequenceLeft = MathHelper.longestCommonSubsequence(
-        oldEntries, newResults.entries, this.comparator.bind(this),
-        (indexLeft, indexRight) => oldEntries[indexLeft]);
+      oldEntries,
+      newResults.entries,
+      this.comparator.bind(this),
+      (indexLeft, indexRight) => oldEntries[indexLeft]
+    );
 
     const changeRecords: ChangeRecord[] = [];
     let commonIndex = 0;
@@ -59,16 +66,23 @@ export class DiffCalculator {
         continue;
       } else {
         const removed = this.observableResults.splice(commonIndex, 1);
-        const changeRecord =
-            this.createChangeRecord(i, removed, 0, this.observableResults);
+        const changeRecord = this.createChangeRecord(
+          i,
+          removed,
+          0,
+          this.observableResults
+        );
         changeRecords.push(changeRecord);
       }
     }
 
     // Detecting and applying additions.
     const longestCommonSubsequenceRight = MathHelper.longestCommonSubsequence(
-        oldEntries, newResults.entries, this.comparator.bind(this),
-        (indexLeft, indexRight) => newResults.entries[indexRight]);
+      oldEntries,
+      newResults.entries,
+      this.comparator.bind(this),
+      (indexLeft, indexRight) => newResults.entries[indexRight]
+    );
 
     commonIndex = 0;
     for (let i = 0; i < newResults.entries.length; i++) {
@@ -78,8 +92,12 @@ export class DiffCalculator {
         continue;
       } else {
         this.observableResults.splice(i, 0, entry.row.payload());
-        const changeRecord =
-            this.createChangeRecord(i, [], 1, this.observableResults);
+        const changeRecord = this.createChangeRecord(
+          i,
+          [],
+          1,
+          this.observableResults
+        );
         changeRecords.push(changeRecord);
       }
     }
@@ -88,14 +106,15 @@ export class DiffCalculator {
   }
 
   // Detects the columns present in each result entry.
-  private detectColumns(): BaseColumn[] {
+  private detectColumns(): Column[] {
     if (this.query.columns.length > 0) {
       return this.query.columns;
     } else {
       // Handle the case where all columns are being projected.
-      const columns: BaseColumn[] = [];
-      this.query.from.forEach((table) => {
-        table.getColumns().forEach((column) => columns.push(column));
+      const columns: Column[] = [];
+      this.query.from.forEach(t => {
+        const table = t as BaseTable;
+        table.getColumns().forEach(column => columns.push(column));
       });
       return columns;
     }
@@ -105,17 +124,21 @@ export class DiffCalculator {
   // same. Returns whether the two entries are identical, taking only into
   // account the columns that are being projected.
   private comparator(left: RelationEntry, right: RelationEntry): boolean {
-    return this.columns.every((column) => {
+    return this.columns.every(column => {
       // For OBJECT and ARRAY_BUFFER columns, don't bother detecting changes
       // within the object. Trigger observers only if the object reference
       // changed.
-      if (column.getType() === Type.OBJECT ||
-          column.getType() === Type.ARRAY_BUFFER) {
+      if (
+        column.getType() === Type.OBJECT ||
+        column.getType() === Type.ARRAY_BUFFER
+      ) {
         return left.getField(column) === right.getField(column);
       }
 
-      const evalFn =
-          this.evalRegistry.getEvaluator(column.getType(), EvalType.EQ);
+      const evalFn = this.evalRegistry.getEvaluator(
+        column.getType(),
+        EvalType.EQ
+      );
       return evalFn(left.getField(column), right.getField(column));
     }, this);
   }
@@ -126,13 +149,16 @@ export class DiffCalculator {
   // |addedCount| is the number of elements added to the observed array.
   // |object| is the array that is being observed.
   private createChangeRecord(
-      index: number, removed: any[], addedCount: number,
-      object: any[]): ChangeRecord {
+    index: number,
+    removed: object[],
+    addedCount: number,
+    object: object[]
+  ): ChangeRecord {
     return {
-      addedCount: addedCount,
-      index: index,
-      object: object,
-      removed: removed,
+      addedCount,
+      index,
+      object,
+      removed,
       type: 'splice',
     };
   }

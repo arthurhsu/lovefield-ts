@@ -17,7 +17,6 @@
 import { ErrorCode } from '../base/enum';
 import { Exception } from '../base/exception';
 import { RawRow, Row } from '../base/row';
-import { BaseColumn } from '../schema/base_column';
 import { BaseTable } from '../schema/base_table';
 import { Column } from '../schema/column';
 import { Constraint } from '../schema/constraint';
@@ -35,7 +34,7 @@ export class UnknownTable implements BaseTable {
     return '#UnknownTable';
   }
 
-  public getColumns(): BaseColumn[] {
+  getColumns(): Column[] {
     return [];
   }
 

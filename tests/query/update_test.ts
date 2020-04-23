@@ -15,14 +15,14 @@
  */
 
 import * as chai from 'chai';
-import {bind} from '../../lib/base/bind';
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {UpdateBuilder} from '../../lib/query/update_builder';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {TestUtil} from '../../testing/test_util';
+import { bind } from '../../lib/base/bind';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { UpdateBuilder } from '../../lib/query/update_builder';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -31,11 +31,11 @@ describe('UpdateTest', () => {
   let global: Global;
   before(() => {
     return getHrDbSchemaBuilder()
-        .connect({storeType: DataStoreType.MEMORY})
-        .then((conn) => {
-          db = conn;
-          global = (db as RuntimeDatabase).getGlobal();
-        });
+      .connect({ storeType: DataStoreType.MEMORY })
+      .then(conn => {
+        db = conn;
+        global = (db as RuntimeDatabase).getGlobal();
+      });
   });
 
   after(() => {
@@ -46,7 +46,7 @@ describe('UpdateTest', () => {
   it('exec_ThrowsMissingSet', () => {
     const employeeTable = db.getSchema().table('Employee');
     const query = new UpdateBuilder(global, employeeTable);
-    query.where(employeeTable['jobId'].eq('dummyJobId'));
+    query.where(employeeTable.col('jobId').eq('dummyJobId'));
     // 532: Invalid usage of update().
     return TestUtil.assertPromiseReject(ErrorCode.INVALID_UPDATE, query.exec());
   });
@@ -57,7 +57,7 @@ describe('UpdateTest', () => {
     const query = new UpdateBuilder(global, employeeTable);
 
     const buildQuery = () => {
-      const predicate = employeeTable['jobId'].eq('dummyJobId');
+      const predicate = employeeTable.col('jobId').eq('dummyJobId');
       query.where(predicate).where(predicate);
     };
 
@@ -68,17 +68,19 @@ describe('UpdateTest', () => {
   it('wet_ThrowsMissingBinding', () => {
     const employeeTable = db.getSchema().table('Employee');
     const query = new UpdateBuilder(global, employeeTable);
-    query.set(employeeTable['minSalary'], bind(0));
-    query.set(employeeTable['maxSalary'], 20000);
-    query.where(employeeTable['jobId'].eq('dummyJobId'));
+    query.set(employeeTable.col('minSalary'), bind(0));
+    query.set(employeeTable.col('maxSalary'), 20000);
+    query.where(employeeTable.col('jobId').eq('dummyJobId'));
     // 501: Value is not bounded.
     return TestUtil.assertPromiseReject(ErrorCode.UNBOUND_VALUE, query.exec());
   });
 
   it('context_Clone', () => {
     const j = db.getSchema().table('Job');
-    const query =
-        db.update(j).set(j['minSalary'], bind(1)).where(j['id'].eq(bind(0)));
+    const query = db
+      .update(j)
+      .set(j.col('minSalary'), bind(1))
+      .where(j.col('id').eq(bind(0)));
     const context = (query as UpdateBuilder).getQuery();
     const context2 = context.clone();
     assert.deepEqual(context.table, context2.table);

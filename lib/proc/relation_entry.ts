@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Row} from '../base/row';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
+import { assert } from '../base/assert';
+import { PayloadType, Row } from '../base/row';
+import { BaseColumn } from '../schema/base_column';
+import { BaseTable } from '../schema/base_table';
+import { Column } from '../schema/column';
 
 /**
  * Each RelationEntry represents a row that is passed from one execution step
@@ -26,22 +27,27 @@ import {BaseTable} from '../schema/base_table';
  */
 export class RelationEntry {
   // Combines two entries into a single entry.
-  public static combineEntries(
-      leftEntry: RelationEntry, leftEntryTables: string[],
-      rightEntry: RelationEntry, rightEntryTables: string[]): RelationEntry {
-    const result = {};
+  static combineEntries(
+    leftEntry: RelationEntry,
+    leftEntryTables: string[],
+    rightEntry: RelationEntry,
+    rightEntryTables: string[]
+  ): RelationEntry {
+    const result: PayloadType = {};
     const mergeEntry = (entry: RelationEntry, entryTables: string[]) => {
       if (entry.isPrefixApplied) {
         const payload = entry.row.payload();
-        Array.from(Object.keys(payload)).forEach((prefix) => {
+        Array.from(Object.keys(payload)).forEach(prefix => {
           result[prefix] = payload[prefix];
         });
       } else {
         assert(
-            !result.hasOwnProperty(entryTables[0]),
-            'Attempted to join table with itself, without using table alias, ' +
-                'or same alias ' + entryTables[0] +
-                'is reused for multiple tables.');
+          !result.hasOwnProperty(entryTables[0]),
+          'Attempted to join table with itself, without using table alias, ' +
+            'or same alias ' +
+            entryTables[0] +
+            'is reused for multiple tables.'
+        );
 
         // Since the entry is not prefixed, all attributes come from a single
         // table.
@@ -63,7 +69,7 @@ export class RelationEntry {
     return RelationEntry.nextId++;
   }
 
-  public id: number;
+  id: number;
 
   // |isPrefixApplied| Whether the payload in this entry is using prefixes for
   // each attribute. This happens when this entry is the result of a relation
@@ -72,24 +78,27 @@ export class RelationEntry {
     this.id = RelationEntry.getNextId();
   }
 
-  public getField(column: BaseColumn): any {
+  getField(col: Column): unknown {
     // Attempting to get the field from the aliased location first, since it is
     // not guaranteed that setField() has been called for this instance. If not
     // found then look for it in its normal location.
+    const column = col as BaseColumn;
     const alias = column.getAlias();
     if (alias !== null && this.row.payload().hasOwnProperty(alias)) {
       return this.row.payload()[alias];
     }
 
     if (this.isPrefixApplied) {
-      return this.row.payload()[(column.getTable() as BaseTable)
-                                    .getEffectiveName()][column.getName()];
+      return (this.row.payload()[
+        (column.getTable() as BaseTable).getEffectiveName()
+      ] as PayloadType)[column.getName()];
     } else {
       return this.row.payload()[column.getName()];
     }
   }
 
-  public setField(column: BaseColumn, value: any): void {
+  setField(col: Column, value: unknown): void {
+    const column = col as BaseColumn;
     const alias = column.getAlias();
     if (alias !== null) {
       this.row.payload()[alias] = value;
@@ -98,7 +107,7 @@ export class RelationEntry {
 
     if (this.isPrefixApplied) {
       const tableName = (column.getTable() as BaseTable).getEffectiveName();
-      let containerObj = this.row.payload()[tableName];
+      let containerObj = this.row.payload()[tableName] as PayloadType;
       if (!(containerObj !== undefined && containerObj !== null)) {
         containerObj = {};
         this.row.payload()[tableName] = containerObj;

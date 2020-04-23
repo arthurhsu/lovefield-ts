@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import {Row} from '../../base/row';
-import {BaseTable} from '../../schema/base_table';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { Row } from '../../base/row';
+import { Table } from '../../schema/table';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class InsertOrReplaceNode extends LogicalQueryPlanNode {
-  constructor(readonly table: BaseTable, readonly values: Row[]) {
+  constructor(readonly table: Table, readonly values: Row[]) {
     super();
   }
 
-  public toString(): string {
+  toString(): string {
     return `insertOrReplace(${this.table.getName()}, R${this.values.length})`;
   }
 }

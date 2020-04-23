@@ -15,14 +15,14 @@
  */
 
 import * as chai from 'chai';
-import {bind} from '../../lib/base/bind';
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {DeleteBuilder} from '../../lib/query/delete_builder';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {TestUtil} from '../../testing/test_util';
+import { bind } from '../../lib/base/bind';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { DeleteBuilder } from '../../lib/query/delete_builder';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -31,11 +31,11 @@ describe('DeleteTest', () => {
   let global: Global;
   before(() => {
     return getHrDbSchemaBuilder()
-        .connect({storeType: DataStoreType.MEMORY})
-        .then((conn) => {
-          db = conn;
-          global = (db as RuntimeDatabase).getGlobal();
-        });
+      .connect({ storeType: DataStoreType.MEMORY })
+      .then(conn => {
+        db = conn;
+        global = (db as RuntimeDatabase).getGlobal();
+      });
   });
 
   after(() => {
@@ -68,8 +68,11 @@ describe('DeleteTest', () => {
 
     const buildQuery = () => {
       const e = db.getSchema().table('Employee');
-      const predicate = e['jobId'].eq('dummyJobId');
-      query.from(e).where(predicate).where(predicate);
+      const predicate = e.col('jobId').eq('dummyJobId');
+      query
+        .from(e)
+        .where(predicate)
+        .where(predicate);
     };
 
     // 516: where() has already been called.
@@ -81,7 +84,7 @@ describe('DeleteTest', () => {
 
     const buildQuery = () => {
       const e = db.getSchema().table('Employee');
-      const predicate = e['jobId'].eq('dummyJobId');
+      const predicate = e.col('jobId').eq('dummyJobId');
       query.where(predicate).from(e);
     };
 
@@ -91,8 +94,10 @@ describe('DeleteTest', () => {
 
   it('context_Clone', () => {
     const j = db.getSchema().table('Job');
-    const query =
-        db.delete().from(j).where(j['id'].eq(bind(0))) as DeleteBuilder;
+    const query = db
+      .delete()
+      .from(j)
+      .where(j.col('id').eq(bind(0))) as DeleteBuilder;
     const context = query.getQuery();
     const context2 = context.clone();
     assert.deepEqual(context.where, context2.where);

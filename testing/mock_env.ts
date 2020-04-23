@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../lib/backstore/back_store';
-import {DataStoreType} from '../lib/base/enum';
-import {Global} from '../lib/base/global';
-import {ObserverRegistry} from '../lib/base/observer_registry';
-import {Row} from '../lib/base/row';
-import {Service} from '../lib/base/service';
-import {Cache} from '../lib/cache/cache';
-import {IndexStore} from '../lib/index/index_store';
-import {QueryEngine} from '../lib/proc/query_engine';
-import {Runner} from '../lib/proc/runner';
-import {RuntimeDatabase} from '../lib/proc/runtime_database';
-import {DatabaseSchema} from '../lib/schema/database_schema';
+import { BackStore } from '../lib/backstore/back_store';
+import { DataStoreType } from '../lib/base/enum';
+import { Global } from '../lib/base/global';
+import { ObserverRegistry } from '../lib/base/observer_registry';
+import { Row } from '../lib/base/row';
+import { Service } from '../lib/base/service';
+import { Cache } from '../lib/cache/cache';
+import { IndexStore } from '../lib/index/index_store';
+import { QueryEngine } from '../lib/proc/query_engine';
+import { Runner } from '../lib/proc/runner';
+import { RuntimeDatabase } from '../lib/proc/runtime_database';
+import { DatabaseSchema } from '../lib/schema/database_schema';
 
 export class MockEnv {
-  public queryEngine!: QueryEngine;
-  public runner!: Runner;
-  public store!: BackStore;
-  public cache!: Cache;
-  public indexStore!: IndexStore;
-  public observerRegistry!: ObserverRegistry;
-  public db!: RuntimeDatabase;
-  public global!: Global;
+  queryEngine!: QueryEngine;
+  runner!: Runner;
+  store!: BackStore;
+  cache!: Cache;
+  indexStore!: IndexStore;
+  observerRegistry!: ObserverRegistry;
+  db!: RuntimeDatabase;
+  global!: Global;
 
   constructor(public schema: DatabaseSchema) {}
 
-  public init(): Promise<void> {
+  init(): Promise<void> {
     const global = Global.get();
     this.global = global;
     global.registerService(Service.SCHEMA, this.schema);
 
     this.db = new RuntimeDatabase(global);
-    return this.db.init({storeType: DataStoreType.MEMORY}).then(() => {
+    return this.db.init({ storeType: DataStoreType.MEMORY }).then(() => {
       this.cache = global.getService(Service.CACHE);
       this.store = global.getService(Service.BACK_STORE);
       this.queryEngine = global.getService(Service.QUERY_ENGINE);
@@ -55,7 +55,7 @@ export class MockEnv {
     });
   }
 
-  public addSampleData(): Promise<void> {
+  addSampleData(): Promise<unknown> {
     const table = this.schema.tables()[0];
     const sampleDataCount = 9;
     const rows: Row[] = new Array(sampleDataCount);
@@ -66,6 +66,10 @@ export class MockEnv {
       });
       rows[i].assignRowId(i);
     }
-    return this.db.insert().into(table).values(rows).exec();
+    return this.db
+      .insert()
+      .into(table)
+      .values(rows)
+      .exec();
   }
 }

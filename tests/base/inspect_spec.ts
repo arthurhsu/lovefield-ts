@@ -48,7 +48,7 @@ describe('Inspect', () => {
     return [dsHr, dsOrder];
   }
 
-  async function addSample1(db: RuntimeDatabase): Promise<unknown[]> {
+  async function addSample1(db: RuntimeDatabase): Promise<unknown> {
     const table = db.getSchema().table('Region');
     const rows = [];
     for (let i = 0; i < 100; ++i) {
@@ -66,7 +66,7 @@ describe('Inspect', () => {
       .exec();
   }
 
-  async function addSample2(db: RuntimeDatabase): Promise<unknown[]> {
+  async function addSample2(db: RuntimeDatabase): Promise<unknown> {
     expectedDate = new Date();
     const table = db.getSchema().table('Region');
     const rows = [];

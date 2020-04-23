@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import {BaseColumn} from '../../schema/base_column';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { Column } from '../../schema/column';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class ProjectNode extends LogicalQueryPlanNode {
-  constructor(
-      readonly columns: BaseColumn[], readonly groupByColumns?: BaseColumn[]) {
+  constructor(readonly columns: Column[], readonly groupByColumns?: Column[]) {
     super();
   }
 
-  public toString(): string {
-    const columns = this.groupByColumns ?
-        this.groupByColumns.map((col) => col.getNormalizedName()).join(', ') :
-        '';
+  toString(): string {
+    const columns = this.groupByColumns
+      ? this.groupByColumns.map(col => col.getNormalizedName()).join(', ')
+      : '';
     const postfix = columns.length ? `, groupBy(${columns})` : '';
     return `project(${this.columns.toString()}${postfix})`;
   }

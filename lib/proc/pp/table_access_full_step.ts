@@ -14,45 +14,53 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {ExecType} from '../../base/private_enum';
-import {Row} from '../../base/row';
-import {Service} from '../../base/service';
-import {Cache} from '../../cache/cache';
-import {Journal} from '../../cache/journal';
-import {IndexStore} from '../../index/index_store';
-import {RuntimeIndex} from '../../index/runtime_index';
-import {Context} from '../../query/context';
-import {BaseTable} from '../../schema/base_table';
-import {Relation} from '../relation';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { Global } from '../../base/global';
+import { ExecType } from '../../base/private_enum';
+import { Row } from '../../base/row';
+import { Service } from '../../base/service';
+import { Cache } from '../../cache/cache';
+import { Journal } from '../../cache/journal';
+import { IndexStore } from '../../index/index_store';
+import { RuntimeIndex } from '../../index/runtime_index';
+import { Context } from '../../query/context';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
+import { Relation } from '../relation';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class TableAccessFullStep extends PhysicalQueryPlanNode {
   private cache: Cache;
   private indexStore: IndexStore;
 
-  constructor(global: Global, readonly table: BaseTable) {
+  constructor(global: Global, readonly table: Table) {
     super(0, ExecType.NO_CHILD);
     this.cache = global.getService(Service.CACHE);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
-  public toString(): string {
+  toString(): string {
     let postfix = '';
-    if (this.table.getAlias()) {
-      postfix = ` as ${this.table.getAlias()}`;
+    const table = this.table as BaseTable;
+    if (table.getAlias()) {
+      postfix = ` as ${table.getAlias()}`;
     }
     return `table_access(${this.table.getName()}${postfix})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
-    const rowIds =
-        (this.indexStore.get(this.table.getRowIdIndexName()) as RuntimeIndex)
-            .getRange();
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
+    const table = this.table as BaseTable;
+    const rowIds = (this.indexStore.get(
+      table.getRowIdIndexName()
+    ) as RuntimeIndex).getRange();
 
-    return [Relation.fromRows(
-        this.cache.getMany(rowIds) as any as Row[],
-        [this.table.getEffectiveName()])];
+    return [
+      Relation.fromRows(this.cache.getMany(rowIds) as Row[], [
+        table.getEffectiveName(),
+      ]),
+    ];
   }
 }

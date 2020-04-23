@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {Predicate} from '../pred/predicate';
-import {BaseTable} from '../schema/base_table';
-import {QueryBuilder} from './query_builder';
+import { Predicate } from '../pred/predicate';
+import { Table } from '../schema/table';
+import { QueryBuilder } from './query_builder';
 
 // @export
 export interface DeleteQuery extends QueryBuilder {
-  from(table: BaseTable): DeleteQuery;
+  from(table: Table): DeleteQuery;
   where(predicate: Predicate): DeleteQuery;
 }

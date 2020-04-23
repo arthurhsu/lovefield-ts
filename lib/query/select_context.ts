@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {Order} from '../base/enum';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { Binder } from '../base/bind';
+import { Order } from '../base/enum';
+import { Column } from '../schema/column';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Table } from '../schema/table';
 
-import {Context} from './context';
+import { Context } from './context';
 
 export interface SelectContextOrderBy {
-  column: BaseColumn;
+  column: Column;
   order: Order;
 }
 
 // Internal representation of SELECT query.
 export class SelectContext extends Context {
-  public static orderByToString(orderBy: SelectContextOrderBy[]): string {
+  static orderByToString(orderBy: SelectContextOrderBy[]): string {
     let out = '';
     orderBy.forEach((orderByEl, index) => {
       out += orderByEl.column.getNormalizedName() + ' ';
@@ -42,25 +42,25 @@ export class SelectContext extends Context {
     return out;
   }
 
-  public columns!: BaseColumn[];
-  public from!: BaseTable[];
-  public limit!: number;
-  public skip!: number;
-  public orderBy!: SelectContextOrderBy[];
-  public groupBy!: BaseColumn[];
-  public limitBinder!: Binder;
-  public skipBinder!: Binder;
-  public outerJoinPredicates!: Set<number>;
+  columns!: Column[];
+  from!: Table[];
+  limit!: number;
+  skip!: number;
+  orderBy!: SelectContextOrderBy[];
+  groupBy!: Column[];
+  limitBinder!: Binder;
+  skipBinder!: Binder;
+  outerJoinPredicates!: Set<number>;
 
   constructor(dbSchema: DatabaseSchema) {
     super(dbSchema);
   }
 
-  public getScope(): Set<BaseTable> {
-    return new Set<BaseTable>(this.from);
+  getScope(): Set<Table> {
+    return new Set<Table>(this.from);
   }
 
-  public clone(): SelectContext {
+  clone(): SelectContext {
     const context = new SelectContext(this.schema);
     context.cloneBase(this);
     if (this.columns) {
@@ -87,7 +87,7 @@ export class SelectContext extends Context {
     return context;
   }
 
-  public bind(values: any[]): SelectContext {
+  bind(values: unknown[]): SelectContext {
     super.bind(values);
 
     if (this.limitBinder !== undefined && this.limitBinder !== null) {

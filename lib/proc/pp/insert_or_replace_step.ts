@@ -14,36 +14,42 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {ExecType} from '../../base/private_enum';
-import {Service} from '../../base/service';
-import {Journal} from '../../cache/journal';
-import {IndexStore} from '../../index/index_store';
-import {Context} from '../../query/context';
-import {InsertContext} from '../../query/insert_context';
-import {BaseTable} from '../../schema/base_table';
-import {Relation} from '../relation';
+import { Global } from '../../base/global';
+import { ExecType } from '../../base/private_enum';
+import { Service } from '../../base/service';
+import { Journal } from '../../cache/journal';
+import { IndexStore } from '../../index/index_store';
+import { Context } from '../../query/context';
+import { InsertContext } from '../../query/insert_context';
+import { Table } from '../../schema/table';
+import { Relation } from '../relation';
 
-import {InsertStep} from './insert_step';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { InsertStep } from './insert_step';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class InsertOrReplaceStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: BaseTable) {
+  constructor(global: Global, private table: Table) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
-  public toString(): string {
+  toString(): string {
     return `insert_replace(${this.table.getName()})`;
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
-    const queryContext = ctx as any as InsertContext;
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    ctx?: Context
+  ): Relation[] {
+    const queryContext = ctx as InsertContext;
     InsertStep.assignAutoIncrementPks(
-        this.table, queryContext.values, this.indexStore);
+      this.table,
+      queryContext.values,
+      this.indexStore
+    );
     (journal as Journal).insertOrReplace(this.table, queryContext.values);
 
     return [Relation.fromRows(queryContext.values, [this.table.getName()])];

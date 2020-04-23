@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-import {Operator} from '../base/private_enum';
-import {CombinedPredicate} from '../pred/combined_predicate';
-import {Predicate} from '../pred/predicate';
-import {PredicateNode} from '../pred/predicate_node';
+import { Operator } from '../base/private_enum';
+import { CombinedPredicate } from '../pred/combined_predicate';
+import { Predicate } from '../pred/predicate';
+import { PredicateNode } from '../pred/predicate_node';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
 // TODO(arthurhsu): FIXME: use public interface.
 // @export
 export class op {
-  public static and(...predicates: Predicate[]): Predicate {
+  static and(...predicates: Predicate[]): Predicate {
     return op.createPredicate(Operator.AND, predicates as PredicateNode[]);
   }
 
-  public static or(...predicates: Predicate[]): Predicate {
+  static or(...predicates: Predicate[]): Predicate {
     return op.createPredicate(Operator.OR, predicates as PredicateNode[]);
   }
 
-  public static not(operand: Predicate): Predicate {
+  static not(operand: Predicate): Predicate {
     operand.setComplement(true);
     return operand;
   }
 
   private static createPredicate(
-      operator: Operator, predicates: PredicateNode[]): Predicate {
+    operator: Operator,
+    predicates: PredicateNode[]
+  ): Predicate {
     const condition = new CombinedPredicate(operator);
-    predicates.forEach((predicate) => condition.addChild(predicate));
+    predicates.forEach(predicate => condition.addChild(predicate));
     return condition;
   }
 }

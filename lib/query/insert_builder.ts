@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Row} from '../base/row';
-import {Service} from '../base/service';
-import {BaseTable} from '../schema/base_table';
-import {BaseBuilder} from './base_builder';
-import {InsertContext} from './insert_context';
+import { Binder } from '../base/bind';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Row } from '../base/row';
+import { Service } from '../base/service';
+import { Table } from '../schema/table';
+import { BaseTable } from '../schema/base_table';
+import { BaseBuilder } from './base_builder';
+import { InsertContext } from './insert_context';
 
 export class InsertBuilder extends BaseBuilder<InsertContext> {
   constructor(global: Global, allowReplace = false) {
@@ -30,35 +31,43 @@ export class InsertBuilder extends BaseBuilder<InsertContext> {
     this.query.allowReplace = allowReplace;
   }
 
-  public assertExecPreconditions(): void {
+  assertExecPreconditions(): void {
     super.assertExecPreconditions();
     const context = this.query;
 
-    if (context.into === undefined || context.into === null ||
-        context.values === undefined || context.values === null) {
+    if (
+      context.into === undefined ||
+      context.into === null ||
+      context.values === undefined ||
+      context.values === null
+    ) {
       // 518: Invalid usage of insert().
       throw new Exception(ErrorCode.INVALID_INSERT);
     }
 
     // "Insert or replace" makes no sense for tables that do not have a primary
     // key.
-    if (context.allowReplace &&
-        context.into.getConstraint().getPrimaryKey() === null) {
+    if (
+      context.allowReplace &&
+      (context.into as BaseTable).getConstraint().getPrimaryKey() === null
+    ) {
       // 519: Attempted to insert or replace in a table with no primary key.
       throw new Exception(ErrorCode.INVALID_INSERT_OR_REPLACE);
     }
   }
 
-  public into(table: BaseTable): InsertBuilder {
+  into(table: Table): InsertBuilder {
     this.assertIntoPreconditions();
     this.query.into = table;
     return this;
   }
 
-  public values(rows: Binder|Binder[]|Row[]): InsertBuilder {
+  values(rows: Binder | Binder[] | Row[]): InsertBuilder {
     this.assertValuesPreconditions();
-    if (rows instanceof Binder ||
-        (rows as any[]).some((r) => r instanceof Binder)) {
+    if (
+      rows instanceof Binder ||
+      (rows as unknown[]).some(r => r instanceof Binder)
+    ) {
       this.query.binder = rows;
     } else {
       this.query.values = rows as Row[];

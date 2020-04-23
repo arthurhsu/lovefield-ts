@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {FnType} from '../base/private_enum';
-import {Row} from '../base/row';
-import {AggregatedColumn} from '../fn/aggregated_column';
-import {BaseColumn} from '../schema/base_column';
-import {Relation} from './relation';
-import {RelationEntry} from './relation_entry';
+import { FnType } from '../base/private_enum';
+import { Row } from '../base/row';
+import { AggregatedColumn } from '../fn/aggregated_column';
+import { Column } from '../schema/column';
+import { Relation } from './relation';
+import { RelationEntry } from './relation_entry';
 
 export class RelationTransformer {
   // Transforms a list of relations to a single relation. Each input relation is
@@ -27,9 +27,8 @@ export class RelationTransformer {
   // Note: Projection columns must include at least one aggregated column.
   // |relations|: The relations to be transformed.
   // |columns|: The columns to include in the transformed relation.
-  public static transformMany(relations: Relation[], columns: BaseColumn[]):
-      Relation {
-    const entries = relations.map((relation) => {
+  static transformMany(relations: Relation[], columns: Column[]): Relation {
+    const entries = relations.map(relation => {
       const relationTransformer = new RelationTransformer(relation, columns);
       const singleEntryRelation = relationTransformer.getTransformed();
       return singleEntryRelation.entries[0];
@@ -38,18 +37,20 @@ export class RelationTransformer {
     return new Relation(entries, relations[0].getTables());
   }
 
-  constructor(private relation: Relation, private columns: BaseColumn[]) {}
+  constructor(private relation: Relation, private columns: Column[]) {}
 
   // Calculates a transformed Relation based on the columns that are requested.
   // The type of the requested columns affect the output (non-aggregate only VS
   // aggregate and non-aggregate mixed up).
-  public getTransformed(): Relation {
+  getTransformed(): Relation {
     // Determine whether any aggregated columns have been requested.
-    const aggregatedColumnsExist =
-        this.columns.some((column) => column instanceof AggregatedColumn);
+    const aggregatedColumnsExist = this.columns.some(
+      column => column instanceof AggregatedColumn
+    );
 
-    return aggregatedColumnsExist ? this.handleAggregatedColumns() :
-                                    this.handleNonAggregatedColumns();
+    return aggregatedColumnsExist
+      ? this.handleAggregatedColumns()
+      : this.handleNonAggregatedColumns();
   }
 
   // Generates the transformed relation for the case where the requested columns
@@ -57,17 +58,22 @@ export class RelationTransformer {
   private handleAggregatedColumns(): Relation {
     // If the only aggregator that was used was DISTINCT, return the relation
     // corresponding to it.
-    if (this.columns.length === 1 &&
-        (this.columns[0] as AggregatedColumn).aggregatorType ===
-            FnType.DISTINCT) {
-      const distinctRelation: Relation =
-          this.relation.getAggregationResult(this.columns[0]) as Relation;
-      const newEntries = distinctRelation.entries.map((e) => {
+    if (
+      this.columns.length === 1 &&
+      (this.columns[0] as AggregatedColumn).aggregatorType === FnType.DISTINCT
+    ) {
+      const distinctRelation: Relation = this.relation.getAggregationResult(
+        this.columns[0]
+      ) as Relation;
+      const newEntries = distinctRelation.entries.map(e => {
         const newEntry = new RelationEntry(
-            new Row(Row.DUMMY_ID, {}), this.relation.isPrefixApplied());
+          new Row(Row.DUMMY_ID, {}),
+          this.relation.isPrefixApplied()
+        );
         newEntry.setField(
-            this.columns[0],
-            e.getField((this.columns[0] as AggregatedColumn).child));
+          this.columns[0],
+          e.getField((this.columns[0] as AggregatedColumn).child)
+        );
         return newEntry;
       }, this);
 
@@ -77,11 +83,14 @@ export class RelationTransformer {
     // Generate a new relation where there is only one entry, and within that
     // entry there is exactly one field per column.
     const entry = new RelationEntry(
-        new Row(Row.DUMMY_ID, {}), this.relation.isPrefixApplied());
-    this.columns.forEach((column) => {
-      const value = column instanceof AggregatedColumn ?
-          this.relation.getAggregationResult(column) :
-          this.relation.entries[0].getField(column);
+      new Row(Row.DUMMY_ID, {}),
+      this.relation.isPrefixApplied()
+    );
+    this.columns.forEach(column => {
+      const value =
+        column instanceof AggregatedColumn
+          ? this.relation.getAggregationResult(column)
+          : this.relation.entries[0].getField(column);
       entry.setField(column, value);
     }, this);
 
@@ -93,15 +102,18 @@ export class RelationTransformer {
   private handleNonAggregatedColumns(): Relation {
     // Generate a new relation where each entry includes only the specified
     // columns.
-    const transformedEntries: RelationEntry[] =
-        new Array(this.relation.entries.length);
+    const transformedEntries: RelationEntry[] = new Array(
+      this.relation.entries.length
+    );
     const isPrefixApplied = this.relation.isPrefixApplied();
 
     this.relation.entries.forEach((entry, index) => {
-      transformedEntries[index] =
-          new RelationEntry(new Row(entry.row.id(), {}), isPrefixApplied);
+      transformedEntries[index] = new RelationEntry(
+        new Row(entry.row.id(), {}),
+        isPrefixApplied
+      );
 
-      this.columns.forEach((column) => {
+      this.columns.forEach(column => {
         transformedEntries[index].setField(column, entry.getField(column));
       }, this);
     }, this);

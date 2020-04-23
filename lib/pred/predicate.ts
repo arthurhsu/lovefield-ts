@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Relation} from '../proc/relation';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
+import { Relation } from '../proc/relation';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
 
 // @emptyExport
 export interface Predicate {
@@ -34,13 +34,13 @@ export interface Predicate {
   // results array as the parameter holds previous results, given that this
   // function is called recursively.  If provided any column will be added on
   // that array. If not provided a new array will be allocated.
-  getColumns(results?: BaseColumn[]): BaseColumn[];
+  getColumns(results?: Column[]): Column[];
 
   // Returns an array of all tables involved in this predicate. The optional
   // results array as the parameter holds previous results, given that this
   // function is called recursively.  If provided any table will be added on
   // that array. If not provided a new array will be allocated.
-  getTables(results?: Set<BaseTable>): Set<BaseTable>;
+  getTables(results?: Set<Table>): Set<Table>;
 
   setId(id: number): void;
   getId(): number;

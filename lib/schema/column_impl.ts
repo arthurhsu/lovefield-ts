@@ -14,67 +14,73 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {Type} from '../base/enum';
-import {EvalType} from '../base/eval';
-import {OperandType, ValueOperandType} from '../pred/operand_type';
-import {createPredicate} from '../pred/pred';
-import {Predicate} from '../pred/predicate';
+import { Binder } from '../base/bind';
+import { Type } from '../base/enum';
+import { EvalType } from '../base/eval';
+import { OperandType, ValueOperandType } from '../pred/operand_type';
+import { createPredicate } from '../pred/pred';
+import { Predicate } from '../pred/predicate';
 
-import {BaseColumn} from './base_column';
-import {BaseTable} from './base_table';
-import {IndexImpl} from './index_impl';
+import { BaseColumn } from './base_column';
+import { BaseTable } from './base_table';
+import { Column } from './column';
+import { IndexImpl } from './index_impl';
 
 export class ColumnImpl implements BaseColumn {
-  public readonly alias: string;
+  readonly alias: string;
+  [key: string]: unknown;
 
   private indices: IndexImpl[];
   private index: IndexImpl;
 
   constructor(
-      readonly table: BaseTable, readonly name: string,
-      readonly unique: boolean, readonly nullable: boolean, readonly type: Type,
-      alias?: string) {
-    this.alias = alias || null as any as string;
+    readonly table: BaseTable,
+    readonly name: string,
+    readonly unique: boolean,
+    readonly nullable: boolean,
+    readonly type: Type,
+    alias?: string
+  ) {
+    this.alias = alias || ((null as unknown) as string);
     this.indices = [];
-    this.index = undefined as any as IndexImpl;
+    this.index = (undefined as unknown) as IndexImpl;
   }
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public getNormalizedName(): string {
+  getNormalizedName(): string {
     return `${this.table.getEffectiveName()}.${this.name}`;
   }
 
-  public toString(): string {
+  toString(): string {
     return this.getNormalizedName();
   }
 
-  public getTable(): BaseTable {
+  getTable(): BaseTable {
     return this.table;
   }
 
-  public getType(): Type {
+  getType(): Type {
     return this.type;
   }
 
-  public getAlias(): string {
+  getAlias(): string {
     return this.alias;
   }
 
-  public isNullable(): boolean {
+  isNullable(): boolean {
     return this.nullable;
   }
 
-  public isUnique(): boolean {
+  isUnique(): boolean {
     return this.unique;
   }
 
-  public getIndices(): IndexImpl[] {
-    (this.table.getIndices() as IndexImpl[]).forEach((index) => {
-      const colNames = index.columns.map((col) => col.schema.getName());
+  getIndices(): IndexImpl[] {
+    (this.table.getIndices() as IndexImpl[]).forEach(index => {
+      const colNames = index.columns.map(col => col.schema.getName());
       if (colNames.indexOf(this.name) !== -1) {
         this.indices.push(index);
       }
@@ -82,12 +88,12 @@ export class ColumnImpl implements BaseColumn {
     return this.indices;
   }
 
-  public getIndex(): IndexImpl {
+  getIndex(): IndexImpl {
     // Check of undefined is used purposefully here, such that this logic is
     // skipped if this.index has been set to null by a previous execution of
     // getIndex().
     if (this.index === undefined) {
-      const indices = this.getIndices().filter((indexSchema) => {
+      const indices = this.getIndices().filter(indexSchema => {
         if (indexSchema.columns.length !== 1) {
           return false;
         }
@@ -96,57 +102,64 @@ export class ColumnImpl implements BaseColumn {
 
       // Normally there should be only one dedicated index for this column,
       // but if there are more, just grab the first one.
-      this.index = (indices.length > 0) ? indices[0] : null as any as IndexImpl;
+      this.index =
+        indices.length > 0 ? indices[0] : ((null as unknown) as IndexImpl);
     }
     return this.index;
   }
 
-  public eq(operand: OperandType): Predicate {
+  eq(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.EQ);
   }
 
-  public neq(operand: OperandType): Predicate {
+  neq(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.NEQ);
   }
 
-  public lt(operand: OperandType): Predicate {
+  lt(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.LT);
   }
 
-  public lte(operand: OperandType): Predicate {
+  lte(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.LTE);
   }
 
-  public gt(operand: OperandType): Predicate {
+  gt(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.GT);
   }
 
-  public gte(operand: OperandType): Predicate {
+  gte(operand: OperandType): Predicate {
     return createPredicate(this, operand, EvalType.GTE);
   }
 
-  public match(operand: Binder|RegExp): Predicate {
+  match(operand: Binder | RegExp): Predicate {
     return createPredicate(this, operand, EvalType.MATCH);
   }
 
-  public between(from: ValueOperandType, to: ValueOperandType): Predicate {
+  between(from: ValueOperandType, to: ValueOperandType): Predicate {
     return createPredicate(this, [from, to], EvalType.BETWEEN);
   }
 
-  public in(values: Binder|ValueOperandType[]): Predicate {
+  in(values: Binder | ValueOperandType[]): Predicate {
     return createPredicate(this, values, EvalType.IN);
   }
 
-  public isNull(): Predicate {
-    return this.eq(null as any as OperandType);
+  isNull(): Predicate {
+    return this.eq((null as unknown) as OperandType);
   }
 
-  public isNotNull(): Predicate {
-    return this.neq(null as any as OperandType);
+  isNotNull(): Predicate {
+    return this.neq((null as unknown) as OperandType);
   }
 
-  public as(name: string): BaseColumn {
+  as(name: string): Column {
     return new ColumnImpl(
-        this.table, this.name, this.unique, this.nullable, this.type, name);
+      this.table,
+      this.name,
+      this.unique,
+      this.nullable,
+      this.type,
+      name
+    );
   }
 }

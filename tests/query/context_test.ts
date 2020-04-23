@@ -15,28 +15,30 @@
  */
 
 import * as chai from 'chai';
-import {ConstraintAction, ConstraintTiming, Type} from '../../lib/base/enum';
-import {DeleteContext} from '../../lib/query/delete_context';
-import {InsertContext} from '../../lib/query/insert_context';
-import {UpdateContext} from '../../lib/query/update_context';
-import {Builder} from '../../lib/schema/builder';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {SchemaTestHelper} from '../../testing/schema_test_helper';
+import { ConstraintAction, ConstraintTiming, Type } from '../../lib/base/enum';
+import { DeleteContext } from '../../lib/query/delete_context';
+import { InsertContext } from '../../lib/query/insert_context';
+import { UpdateContext } from '../../lib/query/update_context';
+import { Builder } from '../../lib/schema/builder';
+import { Column } from '../../lib/schema/column';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { SchemaTestHelper } from '../../testing/schema_test_helper';
 
 const assert = chai.assert;
 
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.
   function getSchemaWithoutForeignKeys(): DatabaseSchema {
-    const schemaBuilder = new Builder('contexttest', 1);
+    const schemaBuilder = new Builder('contextTest', 1);
     schemaBuilder.createTable('TableA').addColumn('id', Type.STRING);
     schemaBuilder.createTable('TableB').addColumn('id', Type.STRING);
     return schemaBuilder.getSchema();
   }
 
   it('getScope_Insert', () => {
-    const schema =
-        SchemaTestHelper.getOneForeignKey(ConstraintTiming.IMMEDIATE);
+    const schema = SchemaTestHelper.getOneForeignKey(
+      ConstraintTiming.IMMEDIATE
+    );
     const context = new InsertContext(schema);
     const childTable = schema.table('Child');
     const parentTable = schema.table('Parent');
@@ -128,13 +130,14 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateOneColumn', () => {
-    const schema =
-        SchemaTestHelper.getTwoForeignKeys(ConstraintAction.RESTRICT);
+    const schema = SchemaTestHelper.getTwoForeignKeys(
+      ConstraintAction.RESTRICT
+    );
     const context = new UpdateContext(schema);
     const tableA = schema.table('TableA');
     const tableB1 = schema.table('TableB1');
     context.table = tableA;
-    context.set = [{column: tableA['id1'], value: 'test1'}];
+    context.set = [{ column: tableA['id1'] as Column, value: 'test1' }];
     const scope = context.getScope();
     assert.equal(2, scope.size);
     assert.isTrue(scope.has(tableA));
@@ -142,16 +145,17 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateTwoColumns', () => {
-    const schema =
-        SchemaTestHelper.getTwoForeignKeys(ConstraintAction.RESTRICT);
+    const schema = SchemaTestHelper.getTwoForeignKeys(
+      ConstraintAction.RESTRICT
+    );
     const context = new UpdateContext(schema);
     const tableA = schema.table('TableA');
     const tableB1 = schema.table('TableB1');
     const tableB2 = schema.table('TableB2');
     context.table = tableA;
     context.set = [
-      {column: tableA['id1'], value: 'test1'},
-      {column: tableA['id2'], value: 'test2'},
+      { column: tableA['id1'] as Column, value: 'test1' },
+      { column: tableA['id2'] as Column, value: 'test2' },
     ];
     const scope = context.getScope();
     assert.equal(3, scope.size);
@@ -166,7 +170,7 @@ describe('Context', () => {
     const tableB = schema.table('TableB');
     const tableC = schema.table('TableC');
     context.table = tableB;
-    context.set = [{column: tableB['id'], value: 'test'}];
+    context.set = [{ column: tableB['id'] as Column, value: 'test' }];
     const scope = context.getScope();
     assert.equal(2, scope.size);
     assert.isTrue(scope.has(tableB));
@@ -182,8 +186,8 @@ describe('Context', () => {
     const tableC = schema.table('TableC');
     context.table = tableB;
     context.set = [
-      {column: tableB['id'], value: 'test'},
-      {column: tableB['foreignKey'], value: 'test'},
+      { column: tableB['id'] as Column, value: 'test' },
+      { column: tableB['foreignKey'] as Column, value: 'test' },
     ];
     const scope = context.getScope();
     assert.equal(3, scope.size);
@@ -197,7 +201,7 @@ describe('Context', () => {
     const context = new UpdateContext(schema);
     const tableA = schema.table('TableA');
     context.table = tableA;
-    context.set = [{column: tableA['id'], value: 'test'}];
+    context.set = [{ column: tableA['id'] as Column, value: 'test' }];
     const scope = context.getScope();
     assert.equal(1, scope.size);
     assert.isTrue(scope.has(tableA));

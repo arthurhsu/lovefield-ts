@@ -16,36 +16,41 @@
 
 import * as chai from 'chai';
 
-import {DataStoreType} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
+import { DataStoreType } from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { Table } from '../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
 
 const assert = chai.assert;
 
 describe('ExportTask', () => {
   let db: RuntimeDatabase;
-  let j: BaseTable;
+  let j: Table;
   const ROW_COUNT = 2;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder('hr').connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder('hr').connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     j = db.getSchema().table('Job');
   });
 
   afterEach(() => db.close());
 
-  function insertSampleJobs(): Promise<void> {
+  function insertSampleJobs(): Promise<unknown> {
     const rows: Row[] = [];
     for (let i = 0; i < ROW_COUNT; ++i) {
       const job = HRSchemaSampleData.generateSampleJobData();
       job.payload()['id'] = `jobId${i}`;
       rows.push(job);
     }
-    return db.insert().into(j).values(rows).exec();
+    return db
+      .insert()
+      .into(j)
+      .values(rows)
+      .exec();
   }
 
   it('export', async () => {

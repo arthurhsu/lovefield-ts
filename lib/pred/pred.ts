@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-import {EvalType} from '../base/eval';
-import {BaseColumn} from '../schema/base_column';
-import {JoinPredicate} from './join_predicate';
-import {Predicate} from './predicate';
-import {ValuePredicate} from './value_predicate';
+import { EvalType } from '../base/eval';
+import { BaseColumn } from '../schema/base_column';
+import { Column } from '../schema/column';
+import { JoinPredicate } from './join_predicate';
+import { Predicate } from './predicate';
+import { ValuePredicate } from './value_predicate';
 
 export function createPredicate<T>(
-    lhs: BaseColumn, rhs: BaseColumn|T, type: EvalType): Predicate {
+  lhs: Column,
+  rhs: Column | T,
+  type: EvalType
+): Predicate {
   // For the case of .eq(null).
   if (rhs === null) {
     return new ValuePredicate(lhs, rhs, type);
   }
 
-  const r = rhs as any;
+  const r = rhs as BaseColumn;
   if (r.getIndex && r.getIndices) {
-    return new JoinPredicate(lhs, rhs as BaseColumn, type);
+    return new JoinPredicate(lhs, r, type);
   }
 
   // Value predicate, which can be bounded or not.

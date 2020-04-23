@@ -16,34 +16,37 @@
 
 import * as chai from 'chai';
 
-import {bind, Binder} from '../../lib/base/bind';
-import {ErrorCode, Type} from '../../lib/base/enum';
-import {EvalType} from '../../lib/base/eval';
-import {Row} from '../../lib/base/row';
-import {JoinPredicate} from '../../lib/pred/join_predicate';
-import {ValuePredicate} from '../../lib/pred/value_predicate';
-import {Relation} from '../../lib/proc/relation';
-import {BaseColumn} from '../../lib/schema/base_column';
-import {BaseTable} from '../../lib/schema/base_table';
-import {Builder} from '../../lib/schema/builder';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {TestUtil} from '../../testing/test_util';
+import { bind, Binder } from '../../lib/base/bind';
+import { ErrorCode, Type } from '../../lib/base/enum';
+import { EvalType } from '../../lib/base/eval';
+import { PayloadType, Row } from '../../lib/base/row';
+import { JoinPredicate } from '../../lib/pred/join_predicate';
+import { ValuePredicate } from '../../lib/pred/value_predicate';
+import { Relation } from '../../lib/proc/relation';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Column } from '../../lib/schema/column';
+import { Builder } from '../../lib/schema/builder';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { Table } from '../../lib/schema/table';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('ValuePredicate', () => {
   let schema: DatabaseSchema;
-  let tableA: BaseTable;
-  let tableB: BaseTable;
+  let tableA: Table;
+  let tableB: Table;
 
   function getSchema(): DatabaseSchema {
-    const schemaBuilder = new Builder('valuepredicate', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING);
-    schemaBuilder.createTable('TableB')
-        .addColumn('id', Type.STRING)
-        .addColumn('email', Type.STRING);
+    const schemaBuilder = new Builder('valuePredicate', 1);
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING);
+    schemaBuilder
+      .createTable('TableB')
+      .addColumn('id', Type.STRING)
+      .addColumn('email', Type.STRING);
     schemaBuilder.createTable('TableC').addColumn('hireDate', Type.DATE_TIME);
     return schemaBuilder.getSchema();
   }
@@ -55,7 +58,7 @@ describe('ValuePredicate', () => {
   });
 
   it('copy', () => {
-    const original = new ValuePredicate(tableA['id'], 'myId', EvalType.EQ);
+    const original = new ValuePredicate(tableA.col('id'), 'myId', EvalType.EQ);
     const copy = original.copy();
 
     assert.isTrue(copy instanceof ValuePredicate);
@@ -66,17 +69,17 @@ describe('ValuePredicate', () => {
   });
 
   it('getColumns', () => {
-    const p = new ValuePredicate(tableA['id'], 'myId', EvalType.EQ);
-    assert.sameMembers([tableA['id']], p.getColumns());
+    const p = new ValuePredicate(tableA.col('id'), 'myId', EvalType.EQ);
+    assert.sameMembers([tableA.col('id')], p.getColumns());
 
     // Test case where optional parameter is provided.
-    const columns: BaseColumn[] = [];
+    const columns: Column[] = [];
     assert.equal(columns, p.getColumns(columns));
-    assert.sameMembers([tableA['id']], columns);
+    assert.sameMembers([tableA.col('id')], columns);
   });
 
   it('getTables', () => {
-    const p = new ValuePredicate(tableA['id'], 'myId', EvalType.EQ);
+    const p = new ValuePredicate(tableA.col('id'), 'myId', EvalType.EQ);
     assert.sameMembers([tableA], Array.from(p.getTables().values()));
 
     // Test case where optional parameter is provided.
@@ -98,16 +101,24 @@ describe('ValuePredicate', () => {
     return sampleRows;
   }
 
-  function checkEval_Eq(table: BaseTable): void {
+  function checkEval_Eq(t: Table): void {
+    const table = t as BaseTable;
     const sampleRow = getTableARows(1)[0];
     const relation = Relation.fromRows([sampleRow], [table.getEffectiveName()]);
 
     const predicate1 = new ValuePredicate(
-        table['id'], (sampleRow.payload() as any).id, EvalType.EQ);
+      table.col('id'),
+      (sampleRow.payload() as PayloadType)['id'],
+      EvalType.EQ
+    );
     const finalRelation1 = predicate1.eval(relation);
     assert.equal(1, finalRelation1.entries.length);
 
-    const predicate2 = new ValuePredicate(table['id'], 'otherId', EvalType.EQ);
+    const predicate2 = new ValuePredicate(
+      table.col('id'),
+      'otherId',
+      EvalType.EQ
+    );
     const finalRelation2 = predicate2.eval(relation);
     assert.equal(0, finalRelation2.entries.length);
   }
@@ -123,8 +134,9 @@ describe('ValuePredicate', () => {
   // Testing the case where a ValuePredicate is applied on a relation that is
   // the result of a previous join operation.
   // |table1| must be TableA or alias, |table2| must be TableB or alias.
-  function checkEval_Eq_PreviousJoin(
-      table1: BaseTable, table2: BaseTable): void {
+  function checkEval_Eq_PreviousJoin(t1: Table, t2: Table): void {
+    const table1 = t1 as BaseTable;
+    const table2 = t2 as BaseTable;
     const leftRow = table1.createRow({
       id: 'dummyId',
       name: 'dummyName',
@@ -138,23 +150,37 @@ describe('ValuePredicate', () => {
       id: 'dummyId',
     });
 
-    const leftRelation =
-        Relation.fromRows([leftRow], [table1.getEffectiveName()]);
-    const rightRelation =
-        Relation.fromRows([rightRow1, rightRow2], [table2.getEffectiveName()]);
+    const leftRelation = Relation.fromRows(
+      [leftRow],
+      [table1.getEffectiveName()]
+    );
+    const rightRelation = Relation.fromRows(
+      [rightRow1, rightRow2],
+      [table2.getEffectiveName()]
+    );
 
-    const joinPredicate =
-        new JoinPredicate(table1['id'], table2['id'], EvalType.EQ);
-    const joinedRelation =
-        joinPredicate.evalRelationsHashJoin(leftRelation, rightRelation, false);
+    const joinPredicate = new JoinPredicate(
+      table1.col('id'),
+      table2.col('id'),
+      EvalType.EQ
+    );
+    const joinedRelation = joinPredicate.evalRelationsHashJoin(
+      leftRelation,
+      rightRelation,
+      false
+    );
 
     const valuePredicate = new ValuePredicate(
-        table2['email'], rightRow2.payload()['email'], EvalType.EQ);
+      table2.col('email'),
+      rightRow2.payload()['email'],
+      EvalType.EQ
+    );
     const finalRelation = valuePredicate.eval(joinedRelation);
     assert.equal(1, finalRelation.entries.length);
     assert.equal(
-        rightRow2.payload()['email'],
-        finalRelation.entries[0].getField(table2['email']));
+      rightRow2.payload()['email'],
+      finalRelation.entries[0].getField(table2.col('email'))
+    );
   }
 
   it('eval_Eq_PreviousJoin', () => {
@@ -163,7 +189,9 @@ describe('ValuePredicate', () => {
 
   it('eval_Eq_PreviousJoin_Alias', () => {
     checkEval_Eq_PreviousJoin(
-        tableA.as('table1') as BaseTable, tableB.as('table2') as BaseTable);
+      tableA.as('table1') as BaseTable,
+      tableB.as('table2') as BaseTable
+    );
   });
 
   // Tests the conversion of a value predicate to a KeyRange for a column of
@@ -171,27 +199,27 @@ describe('ValuePredicate', () => {
   it('toKeyRange_String', () => {
     const id1 = 'id1';
     const id2 = 'id2';
-    let p = new ValuePredicate(tableA['id'], id1, EvalType.EQ);
+    let p = new ValuePredicate(tableA.col('id'), id1, EvalType.EQ);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[id1, id1]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(tableA['id'], id1, EvalType.GTE);
+    p = new ValuePredicate(tableA.col('id'), id1, EvalType.GTE);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[id1, unbound]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(tableA['id'], id1, EvalType.GT);
+    p = new ValuePredicate(tableA.col('id'), id1, EvalType.GT);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('(id1, unbound]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(tableA['id'], id1, EvalType.LTE);
+    p = new ValuePredicate(tableA.col('id'), id1, EvalType.LTE);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[unbound, id1]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(tableA['id'], id1, EvalType.LT);
+    p = new ValuePredicate(tableA.col('id'), id1, EvalType.LT);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[unbound, id1)', p.toKeyRange().toString());
 
-    p = new ValuePredicate(tableA['id'], [id1, id2], EvalType.BETWEEN);
+    p = new ValuePredicate(tableA.col('id'), [id1, id2], EvalType.BETWEEN);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[id1, id2]', p.toKeyRange().toString());
 
@@ -201,21 +229,31 @@ describe('ValuePredicate', () => {
 
   it('toKeyRange_In_String', () => {
     const values = ['id1', 'id2', 'id3'];
-    const p1 = new ValuePredicate(tableA['id'], values, EvalType.IN);
+    const p1 = new ValuePredicate(tableA.col('id'), values, EvalType.IN);
     assert.equal(
-        '[id1, id1],[id2, id2],[id3, id3]', p1.toKeyRange().toString());
+      '[id1, id1],[id2, id2],[id3, id3]',
+      p1.toKeyRange().toString()
+    );
     p1.setComplement(true);
     assert.equal(
-        '[unbound, id1),(id1, id2),(id2, id3),(id3, unbound]',
-        p1.toKeyRange().toString());
+      '[unbound, id1),(id1, id2),(id2, id3),(id3, unbound]',
+      p1.toKeyRange().toString()
+    );
 
-    const p2 = new ValuePredicate(tableA['id'], values.reverse(), EvalType.IN);
+    const p2 = new ValuePredicate(
+      tableA.col('id'),
+      values.reverse(),
+      EvalType.IN
+    );
     assert.equal(
-        '[id1, id1],[id2, id2],[id3, id3]', p2.toKeyRange().toString());
+      '[id1, id1],[id2, id2],[id3, id3]',
+      p2.toKeyRange().toString()
+    );
     p2.setComplement(true);
     assert.equal(
-        '[unbound, id1),(id1, id2),(id2, id3),(id3, unbound]',
-        p2.toKeyRange().toString());
+      '[unbound, id1),(id1, id2),(id2, id3),(id3, unbound]',
+      p2.toKeyRange().toString()
+    );
   });
 
   // Tests the conversion of a value predicate to a KeyRange for a column of
@@ -224,45 +262,48 @@ describe('ValuePredicate', () => {
     const table = schema.table('TableC');
     const d1 = new Date(1443646468270);
 
-    let p = new ValuePredicate(table['hireDate'], d1, EvalType.EQ);
+    let p = new ValuePredicate(table.col('hireDate'), d1, EvalType.EQ);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal(
-        '[' + d1.getTime() + ', ' + d1.getTime() + ']',
-        p.toKeyRange().toString());
+      '[' + d1.getTime() + ', ' + d1.getTime() + ']',
+      p.toKeyRange().toString()
+    );
 
-    p = new ValuePredicate(table['hireDate'], d1, EvalType.GTE);
+    p = new ValuePredicate(table.col('hireDate'), d1, EvalType.GTE);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[' + d1.getTime() + ', unbound]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(table['hireDate'], d1, EvalType.GT);
+    p = new ValuePredicate(table.col('hireDate'), d1, EvalType.GT);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('(' + d1.getTime() + ', unbound]', p.toKeyRange().toString());
 
-    p = new ValuePredicate(table['hireDate'], d1, EvalType.LTE);
+    p = new ValuePredicate(table.col('hireDate'), d1, EvalType.LTE);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[unbound, ' + d1.getTime() + ']', p.toKeyRange().toString());
 
-    p = new ValuePredicate(table['hireDate'], d1, EvalType.LT);
+    p = new ValuePredicate(table.col('hireDate'), d1, EvalType.LT);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal('[unbound, ' + d1.getTime() + ')', p.toKeyRange().toString());
 
     const d2 = new Date();
-    p = new ValuePredicate(table['hireDate'], [d1, d2], EvalType.BETWEEN);
+    p = new ValuePredicate(table.col('hireDate'), [d1, d2], EvalType.BETWEEN);
     assert.isTrue(p.isKeyRangeCompatible());
     assert.equal(
-        '[' + d1.getTime() + ', ' + d2.getTime() + ']',
-        p.toKeyRange().toString());
+      '[' + d1.getTime() + ', ' + d2.getTime() + ']',
+      p.toKeyRange().toString()
+    );
 
     p.setComplement(true);
     assert.equal(
-        '[unbound, ' + d1.getTime() + '),(' + d2.getTime() + ', unbound]',
-        p.toKeyRange().toString());
+      '[unbound, ' + d1.getTime() + '),(' + d2.getTime() + ', unbound]',
+      p.toKeyRange().toString()
+    );
   });
 
   // Tests that isKeyRangeCompatible() returns false when the predicate involves
   // 'null' values.
   it('isKeyRangeCompatible_False', () => {
-    const p = new ValuePredicate(tableA['id'], null, EvalType.EQ);
+    const p = new ValuePredicate(tableA.col('id'), null, EvalType.EQ);
     assert.isFalse(p.isKeyRangeCompatible());
   });
 
@@ -271,14 +312,14 @@ describe('ValuePredicate', () => {
     const relation = Relation.fromRows([sampleRow], [tableA.getName()]);
 
     const binder = bind(1);
-    const p = new ValuePredicate(tableA['id'], binder, EvalType.EQ);
+    const p = new ValuePredicate(tableA.col('id'), binder, EvalType.EQ);
 
     // Predicate shall be unbound.
     assert.isTrue(p.peek() instanceof Binder);
 
     // Tests binding.
-    p.bind([9999, (sampleRow.payload() as any).id]);
-    assert.equal((sampleRow.payload() as any).id, p.peek());
+    p.bind([9999, (sampleRow.payload() as PayloadType)['id']]);
+    assert.equal((sampleRow.payload() as PayloadType)['id'], p.peek());
     assert.isFalse(p.peek() instanceof Binder);
     const result = p.eval(relation);
     assert.equal(1, result.entries.length);
@@ -291,11 +332,11 @@ describe('ValuePredicate', () => {
 
   it('unboundPredicate_Array', () => {
     const sampleRows = getTableARows(3);
-    const ids = sampleRows.map((row) => (row.payload() as any).id);
+    const ids = sampleRows.map(row => (row.payload() as PayloadType)['id']);
     const relation = Relation.fromRows(sampleRows, [tableA.getName()]);
 
     const binder = [bind(0), bind(1), bind(2)];
-    const p = new ValuePredicate(tableA['id'], binder, EvalType.IN);
+    const p = new ValuePredicate(tableA.col('id'), binder, EvalType.IN);
 
     // Tests binding.
     p.bind(ids);
@@ -306,7 +347,7 @@ describe('ValuePredicate', () => {
     const sampleRow = getTableARows(1)[0];
 
     const binder = bind(1);
-    const p = new ValuePredicate(tableA['id'], binder, EvalType.EQ);
+    const p = new ValuePredicate(tableA.col('id'), binder, EvalType.EQ);
     const p2: ValuePredicate = p.copy() as ValuePredicate;
 
     // Both predicates shall be unbound.
@@ -314,28 +355,28 @@ describe('ValuePredicate', () => {
     assert.isTrue(p2.peek() instanceof Binder);
 
     // Copying a bounded predicate shall still make it bounded.
-    p.bind([9999, (sampleRow.payload() as any).id]);
+    p.bind([9999, (sampleRow.payload() as PayloadType)['id']]);
     const p3: ValuePredicate = p.copy() as ValuePredicate;
-    assert.equal((sampleRow.payload() as any).id, p3.peek());
+    assert.equal((sampleRow.payload() as PayloadType)['id'], p3.peek());
 
     // The clone should also be able to bind to a new array.
     const sampleRow2 = getTableARows(2)[1];
-    p3.bind([9999, (sampleRow2.payload() as any).id]);
-    assert.equal((sampleRow2.payload() as any).id, p3.peek());
+    p3.bind([9999, (sampleRow2.payload() as PayloadType)['id']]);
+    assert.equal((sampleRow2.payload() as PayloadType)['id'], p3.peek());
   });
 
   it('copy_UnboundPredicate_Array', () => {
     const sampleRows = getTableARows(6);
-    const ids = sampleRows.map((row) => (row.payload() as any).id);
+    const ids = sampleRows.map(row => (row.payload() as PayloadType)['id']);
 
     const binder = [bind(0), bind(1), bind(2)];
-    const p = new ValuePredicate(tableA['id'], binder, EvalType.IN);
+    const p = new ValuePredicate(tableA.col('id'), binder, EvalType.IN);
     p.bind(ids);
-    const p2: ValuePredicate = p.copy() as ValuePredicate;
-    assert.sameDeepOrderedMembers(ids.slice(0, 3), p2.peek());
+    const p2 = p.copy() as ValuePredicate;
+    assert.sameDeepOrderedMembers(ids.slice(0, 3), p2.peek() as unknown[]);
 
     // Tests binding.
     p2.bind(ids.slice(3));
-    assert.sameDeepOrderedMembers(ids.slice(3), p2.peek());
+    assert.sameDeepOrderedMembers(ids.slice(3), p2.peek() as unknown[]);
   });
 });

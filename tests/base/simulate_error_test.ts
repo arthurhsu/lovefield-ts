@@ -55,7 +55,7 @@ describe('SimulateError', () => {
 
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn();
+    const results = await selectFn() as unknown[];
     assert.equal(0, results.length);
   });
 

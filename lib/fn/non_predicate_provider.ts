@@ -14,57 +14,57 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {OperandType, ValueOperandType} from '../pred/operand_type';
-import {Predicate} from '../pred/predicate';
-import {PredicateProvider} from '../pred/predicate_provider';
+import { Binder } from '../base/bind';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { OperandType, ValueOperandType } from '../pred/operand_type';
+import { Predicate } from '../pred/predicate';
+import { PredicateProvider } from '../pred/predicate_provider';
 
 // Base class for AggregateColumn and StarColumn which does not support
 // PredicateProvider interface.
 export class NonPredicateProvider implements PredicateProvider {
-  public eq(operand: OperandType): Predicate {
+  eq(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public neq(operand: OperandType): Predicate {
+  neq(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public lt(operand: OperandType): Predicate {
+  lt(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public lte(operand: OperandType): Predicate {
+  lte(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public gt(operand: OperandType): Predicate {
+  gt(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public gte(operand: OperandType): Predicate {
+  gte(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public match(operand: Binder|RegExp): Predicate {
+  match(operand: Binder | RegExp): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public between(from: ValueOperandType, to: ValueOperandType): Predicate {
+  between(from: ValueOperandType, to: ValueOperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public in(values: Binder|ValueOperandType[]): Predicate {
+  in(values: Binder | ValueOperandType[]): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public isNull(): Predicate {
+  isNull(): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
-  public isNotNull(): Predicate {
+  isNotNull(): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 }

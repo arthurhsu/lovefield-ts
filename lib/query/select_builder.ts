@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {ErrorCode, Order, Type} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {FnType} from '../base/private_enum';
-import {Service} from '../base/service';
-import {AggregatedColumn} from '../fn/aggregated_column';
-import {op} from '../fn/op';
-import {JoinPredicate} from '../pred/join_predicate';
-import {Predicate} from '../pred/predicate';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {Column} from '../schema/column';
+import { Binder } from '../base/bind';
+import { ErrorCode, Order, Type } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { FnType } from '../base/private_enum';
+import { Service } from '../base/service';
+import { AggregatedColumn } from '../fn/aggregated_column';
+import { op } from '../fn/op';
+import { JoinPredicate } from '../pred/join_predicate';
+import { Predicate } from '../pred/predicate';
+import { BaseTable } from '../schema/base_table';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
 
-import {BaseBuilder} from './base_builder';
-import {SelectContext} from './select_context';
+import { BaseBuilder } from './base_builder';
+import { SelectContext } from './select_context';
 
 export class SelectBuilder extends BaseBuilder<SelectContext> {
   private fromAlreadyCalled: boolean;
@@ -39,12 +39,12 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     super(global, new SelectContext(global.getService(Service.SCHEMA)));
     this.fromAlreadyCalled = false;
     this.whereAlreadyCalled = false;
-    this.query.columns = columns as BaseColumn[];
+    this.query.columns = columns;
     this.checkDistinctColumn();
     this.checkAggregations();
   }
 
-  public assertExecPreconditions(): void {
+  assertExecPreconditions(): void {
     super.assertExecPreconditions();
     const context = this.query;
     if (context.from === undefined || context.from === null) {
@@ -52,8 +52,10 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
       throw new Exception(ErrorCode.INVALID_SELECT);
     }
 
-    if ((context.limitBinder && context.limit === undefined) ||
-        (context.skipBinder && context.skip === undefined)) {
+    if (
+      (context.limitBinder && context.limit === undefined) ||
+      (context.skipBinder && context.skip === undefined)
+    ) {
       // 523: Binding parameters of limit/skip without providing values.
       throw new Exception(ErrorCode.UNBOUND_LIMIT_SKIP);
     }
@@ -61,7 +63,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     this.checkProjectionList();
   }
 
-  public from(...tables: BaseTable[]): SelectBuilder {
+  from(...tables: Table[]): SelectBuilder {
     if (this.fromAlreadyCalled) {
       // 515: from() has already been called.
       throw new Exception(ErrorCode.DUPLICATE_FROM);
@@ -76,7 +78,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public where(predicate: Predicate): SelectBuilder {
+  where(predicate: Predicate): SelectBuilder {
     // 548: from() has to be called before where().
     this.checkFrom(ErrorCode.FROM_AFTER_WHERE);
 
@@ -90,7 +92,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public innerJoin(table: BaseTable, predicate: Predicate): SelectBuilder {
+  innerJoin(table: Table, predicate: Predicate): SelectBuilder {
     // 542: from() has to be called before innerJoin() or leftOuterJoin().
     this.checkFrom(ErrorCode.MISSING_FROM_BEFORE_JOIN);
 
@@ -105,7 +107,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public leftOuterJoin(table: BaseTable, predicate: Predicate): SelectBuilder {
+  leftOuterJoin(table: Table, predicate: Predicate): SelectBuilder {
     // 542: from() has to be called before innerJoin() or leftOuterJoin().
     this.checkFrom(ErrorCode.MISSING_FROM_BEFORE_JOIN);
 
@@ -118,13 +120,17 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
       throw new Exception(ErrorCode.INVALID_WHERE);
     }
     this.query.from.push(table);
-    if (this.query.outerJoinPredicates === null ||
-        this.query.outerJoinPredicates === undefined) {
+    if (
+      this.query.outerJoinPredicates === null ||
+      this.query.outerJoinPredicates === undefined
+    ) {
       this.query.outerJoinPredicates = new Set<number>();
     }
     let normalizedPredicate = predicate;
-    if (table.getEffectiveName() !==
-        (predicate.rightColumn.getTable() as BaseTable).getEffectiveName()) {
+    if (
+      (table as BaseTable).getEffectiveName() !==
+      (predicate.rightColumn.getTable() as BaseTable).getEffectiveName()
+    ) {
       normalizedPredicate = predicate.reverse();
     }
     this.query.outerJoinPredicates.add(normalizedPredicate.getId());
@@ -132,7 +138,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public limit(numberOfRows: Binder|number): SelectBuilder {
+  limit(numberOfRows: Binder | number): SelectBuilder {
     if (this.query.limit !== undefined || this.query.limitBinder) {
       // 528: limit() has already been called.
       throw new Exception(ErrorCode.DUPLICATE_LIMIT);
@@ -149,7 +155,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public skip(numberOfRows: Binder|number): SelectBuilder {
+  skip(numberOfRows: Binder | number): SelectBuilder {
     if (this.query.skip !== undefined || this.query.skipBinder) {
       // 529: skip() has already been called.
       throw new Exception(ErrorCode.DUPLICATE_SKIP);
@@ -166,7 +172,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     return this;
   }
 
-  public orderBy(column: BaseColumn, order?: Order): SelectBuilder {
+  orderBy(column: Column, order?: Order): SelectBuilder {
     // 549: from() has to be called before orderBy() or groupBy().
     this.checkFrom(ErrorCode.FROM_AFTER_ORDER_GROUPBY);
 
@@ -175,13 +181,13 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     }
 
     this.query.orderBy.push({
-      column: column,
-      order: (order !== undefined && order !== null) ? order : Order.ASC,
+      column,
+      order: order !== undefined && order !== null ? order : Order.ASC,
     });
     return this;
   }
 
-  public groupBy(...columns: BaseColumn[]): SelectBuilder {
+  groupBy(...columns: Column[]): SelectBuilder {
     // 549: from() has to be called before orderBy() or groupBy().
     this.checkFrom(ErrorCode.FROM_AFTER_ORDER_GROUPBY);
 
@@ -199,10 +205,10 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
 
   // Provides a clone of this select builder. This is useful when the user needs
   // to observe the same query with different parameter bindings.
-  public clone(): SelectBuilder {
+  clone(): SelectBuilder {
     const builder = new SelectBuilder(this.global, this.query.columns);
     builder.query = this.query.clone();
-    builder.query.clonedFrom = null;  // The two builders are not related.
+    builder.query.clonedFrom = null; // The two builders are not related.
     return builder;
   }
 
@@ -211,11 +217,14 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // other column.
   private checkDistinctColumn(): void {
     const distinctColumns = this.query.columns.filter(
-        (column) => (column instanceof AggregatedColumn) &&
-            column.aggregatorType === FnType.DISTINCT);
+      column =>
+        column instanceof AggregatedColumn &&
+        column.aggregatorType === FnType.DISTINCT
+    );
 
-    const isValidCombination = distinctColumns.length === 0 ||
-        (distinctColumns.length === 1 && this.query.columns.length === 1);
+    const isValidCombination =
+      distinctColumns.length === 0 ||
+      (distinctColumns.length === 1 && this.query.columns.length === 1);
 
     if (!isValidCombination) {
       // 524: Invalid usage of lf.fn.distinct().
@@ -229,15 +238,16 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // 2) If GROUP_BY is not specified: Aggregate and non-aggregated columns can't
   //    be mixed (result does not make sense).
   private checkProjectionList(): void {
-    (this.query.groupBy) ? this.checkGroupByColumns() :
-                           this.checkProjectionListNotMixed();
+    this.query.groupBy
+      ? this.checkGroupByColumns()
+      : this.checkProjectionListNotMixed();
   }
 
   // Checks that grouped columns are indexable.
   private checkGroupByColumns(): void {
-    const isInvalid = this.query.groupBy.some((column) => {
+    const isInvalid = this.query.groupBy.some(column => {
       const type = column.getType();
-      return (type === Type.OBJECT || type === Type.ARRAY_BUFFER);
+      return type === Type.OBJECT || type === Type.ARRAY_BUFFER;
     });
 
     if (isInvalid) {
@@ -249,12 +259,13 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // Checks that the projection list contains either only non-aggregated
   // columns, or only aggregated columns. See checkProjectionList_ for details.
   private checkProjectionListNotMixed(): void {
-    const aggregatedColumnsExist =
-        this.query.columns.some((column) => column instanceof AggregatedColumn);
+    const aggregatedColumnsExist = this.query.columns.some(
+      column => column instanceof AggregatedColumn
+    );
     const nonAggregatedColumnsExist =
-        this.query.columns.some(
-            (column) => !(column instanceof AggregatedColumn)) ||
-        this.query.columns.length === 0;
+      this.query.columns.some(
+        column => !(column instanceof AggregatedColumn)
+      ) || this.query.columns.length === 0;
 
     if (aggregatedColumnsExist && nonAggregatedColumnsExist) {
       // 526: Invalid projection list: mixing aggregated with non-aggregated
@@ -265,14 +276,17 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // Checks that the specified aggregations are valid, in terms of aggregation
   // type and column type.
   private checkAggregations(): void {
-    this.query.columns.forEach((column) => {
-      const isValidAggregation = !(column instanceof AggregatedColumn) ||
-          this.isAggregationValid(column.aggregatorType, column.getType());
+    this.query.columns.forEach(column => {
+      const isValidAggregation =
+        !(column instanceof AggregatedColumn) ||
+        this.isAggregationValid(column.aggregatorType, column.getType());
 
       if (!isValidAggregation) {
         // 527: Invalid aggregation detected: {0}.
         throw new Exception(
-            ErrorCode.INVALID_AGGREGATION, column.getNormalizedName());
+          ErrorCode.INVALID_AGGREGATION,
+          column.getNormalizedName()
+        );
       }
     }, this);
   }
@@ -284,7 +298,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
     }
   }
 
-  // Augments the where clause by ANDing it with the given predicate.
+  // Augments the where clause by AND with the given predicate.
   private augmentWhereClause(predicate: Predicate): void {
     if (this.query.where) {
       const newPredicate = op.and(predicate, this.query.where);
@@ -295,8 +309,10 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   }
 
   // Checks whether the user specified aggregations are valid.
-  private isAggregationValid(aggregatorType: FnType, columnType: Type):
-      boolean {
+  private isAggregationValid(
+    aggregatorType: FnType,
+    columnType: Type
+  ): boolean {
     switch (aggregatorType) {
       case FnType.COUNT:
       case FnType.DISTINCT:
@@ -308,10 +324,14 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
         return columnType === Type.NUMBER || columnType === Type.INTEGER;
       case FnType.MAX:
       case FnType.MIN:
-        return columnType === Type.NUMBER || columnType === Type.INTEGER ||
-            columnType === Type.STRING || columnType === Type.DATE_TIME;
+        return (
+          columnType === Type.NUMBER ||
+          columnType === Type.INTEGER ||
+          columnType === Type.STRING ||
+          columnType === Type.DATE_TIME
+        );
       default:
-        // NOT REACHED
+      // NOT REACHED
     }
     return false;
   }

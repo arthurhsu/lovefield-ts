@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {Context} from '../../query/context';
-import {TreeHelper} from '../../structs/tree_helper';
-import {RewritePass} from '../rewrite_pass';
+import { Global } from '../../base/global';
+import { Context } from '../../query/context';
+import { TreeHelper } from '../../structs/tree_helper';
+import { RewritePass } from '../rewrite_pass';
 
-import {IndexCostEstimator} from './index_cost_estimator';
-import {IndexRangeCandidate} from './index_range_candidate';
-import {IndexRangeScanStep} from './index_range_scan_step';
-import {JoinStep} from './join_step';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
-import {SelectStep} from './select_step';
-import {TableAccessByRowIdStep} from './table_access_by_row_id_step';
-import {TableAccessFullStep} from './table_access_full_step';
+import { IndexCostEstimator } from './index_cost_estimator';
+import { IndexRangeCandidate } from './index_range_candidate';
+import { IndexRangeScanStep } from './index_range_scan_step';
+import { JoinStep } from './join_step';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import { SelectStep } from './select_step';
+import { TableAccessByRowIdStep } from './table_access_by_row_id_step';
+import { TableAccessFullStep } from './table_access_full_step';
 
 //  An optimization pass that detects if there are any indices that can be used
 // in order to avoid full table scan.
@@ -35,26 +35,30 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
     super();
   }
 
-  public rewrite(rootNode: PhysicalQueryPlanNode, queryContext: Context):
-      PhysicalQueryPlanNode {
+  rewrite(
+    rootNode: PhysicalQueryPlanNode,
+    queryContext: Context
+  ): PhysicalQueryPlanNode {
     this.rootNode = rootNode;
 
-    const tableAccessFullSteps =
-        TreeHelper.find(
-            rootNode, (node) => node instanceof TableAccessFullStep) as
-        TableAccessFullStep[];
-    tableAccessFullSteps.forEach((tableAccessFullStep) => {
+    const tableAccessFullSteps = TreeHelper.find(
+      rootNode,
+      node => node instanceof TableAccessFullStep
+    ) as TableAccessFullStep[];
+    tableAccessFullSteps.forEach(tableAccessFullStep => {
       const selectStepsCandidates = this.findSelectSteps(tableAccessFullStep);
       if (selectStepsCandidates.length === 0) {
         return;
       }
 
-      const costEstimator =
-          new IndexCostEstimator(this.global, tableAccessFullStep.table);
+      const costEstimator = new IndexCostEstimator(
+        this.global,
+        tableAccessFullStep.table
+      );
       const indexRangeCandidate = costEstimator.chooseIndexFor(
-          queryContext,
-          selectStepsCandidates.map(
-              (c) => queryContext.getPredicate(c.predicateId)));
+        queryContext,
+        selectStepsCandidates.map(c => queryContext.getPredicate(c.predicateId))
+      );
       if (indexRangeCandidate === null) {
         // No SelectStep could be optimized for this table.
         return;
@@ -64,13 +68,16 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
       // the predicates that can be replaced by an index-range scan can be
       // mapped back to SelectStep nodes.
       const predicateToSelectStepMap = new Map<number, SelectStep>();
-      selectStepsCandidates.forEach((selectStep) => {
+      selectStepsCandidates.forEach(selectStep => {
         predicateToSelectStepMap.set(selectStep.predicateId, selectStep);
       }, this);
 
       this.rootNode = this.replaceWithIndexRangeScanStep(
-          indexRangeCandidate, predicateToSelectStepMap, tableAccessFullStep,
-          queryContext);
+        indexRangeCandidate,
+        predicateToSelectStepMap,
+        tableAccessFullStep,
+        queryContext
+      );
     }, this);
 
     return this.rootNode;
@@ -98,24 +105,33 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
   // index with two new steps an IndexRangeScanStep and a
   // TableAccessByRowIdStep.
   private replaceWithIndexRangeScanStep(
-      indexRangeCandidate: IndexRangeCandidate,
-      predicateToSelectStepMap: Map<number, SelectStep>,
-      tableAccessFullStep: TableAccessFullStep,
-      queryContext: Context): PhysicalQueryPlanNode {
+    indexRangeCandidate: IndexRangeCandidate,
+    predicateToSelectStepMap: Map<number, SelectStep>,
+    tableAccessFullStep: TableAccessFullStep,
+    queryContext: Context
+  ): PhysicalQueryPlanNode {
     const predicateIds = indexRangeCandidate.getPredicateIds();
-    const selectSteps = predicateIds.map((predicateId) => {
+    const selectSteps = predicateIds.map(predicateId => {
       return predicateToSelectStepMap.get(predicateId) as SelectStep;
     });
     selectSteps.forEach(TreeHelper.removeNode);
 
     const indexRangeScanStep = new IndexRangeScanStep(
-        this.global, indexRangeCandidate.indexSchema,
-        indexRangeCandidate.getKeyRangeCalculator(), false /* reverseOrder */);
-    const tableAccessByRowIdStep =
-        new TableAccessByRowIdStep(this.global, tableAccessFullStep.table);
+      this.global,
+      indexRangeCandidate.indexSchema,
+      indexRangeCandidate.getKeyRangeCalculator(),
+      false /* reverseOrder */
+    );
+    const tableAccessByRowIdStep = new TableAccessByRowIdStep(
+      this.global,
+      tableAccessFullStep.table
+    );
     tableAccessByRowIdStep.addChild(indexRangeScanStep);
     TreeHelper.replaceNodeWithChain(
-        tableAccessFullStep, tableAccessByRowIdStep, indexRangeScanStep);
+      tableAccessFullStep,
+      tableAccessByRowIdStep,
+      indexRangeScanStep
+    );
 
     return indexRangeScanStep.getRoot() as PhysicalQueryPlanNode;
   }

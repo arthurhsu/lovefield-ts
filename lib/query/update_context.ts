@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
-import {Info} from '../schema/info';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Info } from '../schema/info';
 
-import {Context} from './context';
+import { Context } from './context';
 
 interface UpdateSetContext {
   binding?: number;
-  column: BaseColumn;
-  value: any;
+  column: Column;
+  value: unknown;
 }
 
 // Internal representation of UPDATE query.
 export class UpdateContext extends Context {
-  public table!: BaseTable;
-  public set!: UpdateSetContext[];
+  table!: Table;
+  set!: UpdateSetContext[];
 
   constructor(dbSchema: DatabaseSchema) {
     super(dbSchema);
   }
 
-  public getScope(): Set<BaseTable> {
-    const scope = new Set<BaseTable>();
+  getScope(): Set<Table> {
+    const scope = new Set<Table>();
     scope.add(this.table);
-    const columns = this.set.map((col) => col.column.getNormalizedName());
+    const columns = this.set.map(col => col.column.getNormalizedName());
     const info = Info.from(this.schema);
     info.getParentTablesByColumns(columns).forEach(scope.add.bind(scope));
     info.getChildTablesByColumns(columns).forEach(scope.add.bind(scope));
     return scope;
   }
 
-  public clone(): UpdateContext {
+  clone(): UpdateContext {
     const context = new UpdateContext(this.schema);
     context.cloneBase(this);
     context.table = this.table;
@@ -54,10 +54,10 @@ export class UpdateContext extends Context {
     return context;
   }
 
-  public bind(values: any[]): UpdateContext {
+  bind(values: unknown[]): UpdateContext {
     super.bind(values);
 
-    this.set.forEach((set) => {
+    this.set.forEach(set => {
       if (set.binding !== undefined && set.binding !== -1) {
         set.value = values[set.binding as number];
       }
@@ -67,8 +67,8 @@ export class UpdateContext extends Context {
   }
 
   private cloneSet(set: UpdateSetContext[]): UpdateSetContext[] {
-    return set.map((src) => {
-      const clone = {...src};
+    return set.map(src => {
+      const clone = { ...src };
       return clone;
     });
   }

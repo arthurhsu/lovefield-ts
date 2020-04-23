@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {Row} from '../base/row';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
-import {Info} from '../schema/info';
+import { Binder } from '../base/bind';
+import { Row } from '../base/row';
+import { Table } from '../schema/table';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Info } from '../schema/info';
 
-import {Context} from './context';
+import { Context } from './context';
 
 // Internal representation of INSERT and INSERT_OR_REPLACE queries.
 export class InsertContext extends Context {
-  public into!: BaseTable;
-  public binder!: Binder|Binder[]|Row[];
-  public values!: Row[];
-  public allowReplace!: boolean;
+  into!: Table;
+  binder!: Binder | Binder[] | Row[];
+  values!: Row[];
+  allowReplace!: boolean;
 
   constructor(dbSchema: DatabaseSchema) {
     super(dbSchema);
   }
 
-  public getScope(): Set<BaseTable> {
-    const scope = new Set<BaseTable>();
+  getScope(): Set<Table> {
+    const scope = new Set<Table>();
     scope.add(this.into);
     const info = Info.from(this.schema);
     info.getParentTables(this.into.getName()).forEach(scope.add.bind(scope));
@@ -44,28 +44,28 @@ export class InsertContext extends Context {
     return scope;
   }
 
-  public clone(): InsertContext {
+  clone(): InsertContext {
     const context = new InsertContext(this.schema);
     context.cloneBase(this);
     context.into = this.into;
     if (this.values) {
       context.values =
-          (this.values instanceof Binder) ? this.values : this.values.slice();
+        this.values instanceof Binder ? this.values : this.values.slice();
     }
     context.allowReplace = this.allowReplace;
     context.binder = this.binder;
     return context;
   }
 
-  public bind(values: any[]): InsertContext {
+  bind(values: unknown[]): InsertContext {
     super.bind(values);
 
     if (this.binder) {
       if (this.binder instanceof Binder) {
-        this.values = values[this.binder.index];
+        this.values = values[this.binder.index] as Row[];
       } else {
-        this.values = (this.binder as any[]).map((val) => {
-          return val instanceof Binder ? values[val.index] : val;
+        this.values = (this.binder as unknown[]).map(val => {
+          return (val instanceof Binder ? values[val.index] : val) as Row;
         });
       }
     }

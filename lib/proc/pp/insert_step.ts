@@ -14,32 +14,37 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {ExecType} from '../../base/private_enum';
-import {Row} from '../../base/row';
-import {Service} from '../../base/service';
-import {Journal} from '../../cache/journal';
-import {IndexStore} from '../../index/index_store';
-import {RuntimeIndex} from '../../index/runtime_index';
-import {InsertContext} from '../../query/insert_context';
-import {BaseTable} from '../../schema/base_table';
-import {Relation} from '../relation';
+import { Global } from '../../base/global';
+import { ExecType } from '../../base/private_enum';
+import { Row } from '../../base/row';
+import { Service } from '../../base/service';
+import { Journal } from '../../cache/journal';
+import { IndexStore } from '../../index/index_store';
+import { RuntimeIndex } from '../../index/runtime_index';
+import { InsertContext } from '../../query/insert_context';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
+import { Relation } from '../relation';
 
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class InsertStep extends PhysicalQueryPlanNode {
-  public static assignAutoIncrementPks(
-      table: BaseTable, values: Row[], indexStore: IndexStore): void {
+  static assignAutoIncrementPks(
+    t: Table,
+    values: Row[],
+    indexStore: IndexStore
+  ): void {
+    const table = t as BaseTable;
     const pkIndexSchema = table.getConstraint().getPrimaryKey();
     const autoIncrement =
-        pkIndexSchema === null ? false : pkIndexSchema.columns[0].autoIncrement;
+      pkIndexSchema === null ? false : pkIndexSchema.columns[0].autoIncrement;
     if (autoIncrement) {
       const pkColumnName = pkIndexSchema.columns[0].schema.getName();
       const index = indexStore.get(pkIndexSchema.getNormalizedName());
       const max = (index as RuntimeIndex).stats().maxKeyEncountered;
-      let maxKey: number = max === null ? 0 : max as number;
+      let maxKey: number = max === null ? 0 : (max as number);
 
-      values.forEach((row) => {
+      values.forEach(row => {
         // A value of 0, null or undefined indicates that a primary key should
         // automatically be assigned.
         const val = row.payload()[pkColumnName];
@@ -53,20 +58,26 @@ export class InsertStep extends PhysicalQueryPlanNode {
 
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: BaseTable) {
+  constructor(global: Global, private table: Table) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
-  public toString(): string {
+  toString(): string {
     return `insert(${this.table.getName()})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal,
-      queryContext?: InsertContext): Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    queryContext?: InsertContext
+  ): Relation[] {
     const values = (queryContext as InsertContext).values;
-    InsertStep.assignAutoIncrementPks(this.table, values, this.indexStore);
+    InsertStep.assignAutoIncrementPks(
+      this.table as BaseTable,
+      values,
+      this.indexStore
+    );
     (journal as Journal).insert(this.table, values);
 
     return [Relation.fromRows(values, [this.table.getName()])];

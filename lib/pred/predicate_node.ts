@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Relation} from '../proc/relation';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {TreeNode} from '../structs/tree_node';
-import {Predicate} from './predicate';
+import { Relation } from '../proc/relation';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
+import { TreeNode } from '../structs/tree_node';
+import { Predicate } from './predicate';
 
 export abstract class PredicateNode extends TreeNode implements Predicate {
   // The ID to assign to the next predicate that will be created. Note that
@@ -33,17 +33,17 @@ export abstract class PredicateNode extends TreeNode implements Predicate {
     this.id = PredicateNode.nextId++;
   }
 
-  public abstract eval(relation: Relation): Relation;
-  public abstract setComplement(isComplement: boolean): void;
-  public abstract copy(): Predicate;
-  public abstract getColumns(results?: BaseColumn[]): BaseColumn[];
-  public abstract getTables(results?: Set<BaseTable>): Set<BaseTable>;
+  abstract eval(relation: Relation): Relation;
+  abstract setComplement(isComplement: boolean): void;
+  abstract copy(): Predicate;
+  abstract getColumns(results?: Column[]): Column[];
+  abstract getTables(results?: Set<Table>): Set<Table>;
 
-  public setId(id: number): void {
+  setId(id: number): void {
     this.id = id;
   }
 
-  public getId(): number {
+  getId(): number {
     return this.id;
   }
 }

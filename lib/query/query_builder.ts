@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {TaskItem} from '../proc/task_item';
+import { TaskItem } from '../proc/task_item';
 
 // @export
 export interface QueryBuilder {
   // Executes the query, all errors will be passed to the reject function.
   // The resolve function may receive parameters as results of execution, for
   // example, select queries will return results.
-  exec(): Promise<any>;
+  exec(): Promise<unknown>;
 
   // Returns string representation of query execution plan. Similar to EXPLAIN
   // in most SQL engines.
@@ -29,7 +29,7 @@ export interface QueryBuilder {
 
   // Bind values to parameterized queries. Callers are responsible to make sure
   // the types of values match those specified in the query.
-  bind(values: any[]): QueryBuilder;
+  bind(values: unknown[]): QueryBuilder;
 
   // |stripValueInfo| true will remove value info to protect PII, default to
   // false in all implementations.

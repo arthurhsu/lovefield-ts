@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Operator} from '../base/private_enum';
-import {SingleKeyRangeSet} from '../index/single_key_range_set';
-import {Relation} from '../proc/relation';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {TreeHelper} from '../structs/tree_helper';
-import {PredicateNode} from './predicate_node';
-import {ValuePredicate} from './value_predicate';
+import { assert } from '../base/assert';
+import { Operator } from '../base/private_enum';
+import { SingleKeyRangeSet } from '../index/single_key_range_set';
+import { Relation } from '../proc/relation';
+import { Column } from '../schema/column';
+import { Table } from '../schema/table';
+import { TreeHelper } from '../structs/tree_helper';
+import { PredicateNode } from './predicate_node';
+import { ValuePredicate } from './value_predicate';
 
 export class CombinedPredicate extends PredicateNode {
   private isComplement: boolean;
@@ -36,13 +36,14 @@ export class CombinedPredicate extends PredicateNode {
     this.isComplement = false;
   }
 
-  public eval(relation: Relation): Relation {
-    const results = this.getChildren().map(
-        (condition) => (condition as PredicateNode).eval(relation));
+  eval(relation: Relation): Relation {
+    const results = this.getChildren().map(condition =>
+      (condition as PredicateNode).eval(relation)
+    );
     return this.combineResults(results);
   }
 
-  public setComplement(isComplement: boolean): void {
+  setComplement(isComplement: boolean): void {
     if (this.isComplement === isComplement) {
       // Nothing to do.
       return;
@@ -57,41 +58,41 @@ export class CombinedPredicate extends PredicateNode {
     this.operator = this.operator === Operator.AND ? Operator.OR : Operator.AND;
 
     // Toggling children conditions.
-    this.getChildren().forEach(
-        (condition) =>
-            (condition as PredicateNode).setComplement(isComplement));
+    this.getChildren().forEach(condition =>
+      (condition as PredicateNode).setComplement(isComplement)
+    );
   }
 
-  public copy(): CombinedPredicate {
-    const copy = TreeHelper.map(this, (node) => {
+  copy(): CombinedPredicate {
+    const copy = TreeHelper.map(this, node => {
       if (node instanceof CombinedPredicate) {
         const tempCopy = new CombinedPredicate(node.operator);
         tempCopy.isComplement = node.isComplement;
         tempCopy.setId(node.getId());
         return tempCopy;
       } else {
-        return (node as any as PredicateNode).copy() as PredicateNode;
+        return (node as PredicateNode).copy() as PredicateNode;
       }
     }) as CombinedPredicate;
     return copy;
   }
 
-  public getColumns(results?: BaseColumn[]): BaseColumn[] {
+  getColumns(results?: Column[]): Column[] {
     const columns = results || [];
-    this.traverse((child) => {
+    this.traverse(child => {
       if (child === this) {
         return;
       }
       (child as PredicateNode).getColumns(columns);
     });
 
-    const columnSet = new Set<BaseColumn>(columns);
+    const columnSet = new Set<Column>(columns);
     return Array.from(columnSet.values());
   }
 
-  public getTables(results?: Set<BaseTable>): Set<BaseTable> {
-    const tables = results ? results : new Set<BaseTable>();
-    this.traverse((child) => {
+  getTables(results?: Set<Table>): Set<Table> {
+    const tables = results ? results : new Set<Table>();
+    this.traverse(child => {
       if (child === this) {
         return;
       }
@@ -100,27 +101,30 @@ export class CombinedPredicate extends PredicateNode {
     return tables;
   }
 
-  public toString(): string {
+  toString(): string {
     return `combined_pred_${this.operator.toString()}`;
   }
 
   // Converts this predicate to a key range.
   // NOTE: Not all predicates can be converted to a key range, callers must call
   // isKeyRangeCompatible() before calling this method.
-  public toKeyRange(): SingleKeyRangeSet {
+  toKeyRange(): SingleKeyRangeSet {
     assert(
-        this.isKeyRangeCompatible(),
-        'Could not convert combined predicate to key range.');
+      this.isKeyRangeCompatible(),
+      'Could not convert combined predicate to key range.'
+    );
 
     if (this.operator === Operator.OR) {
       const keyRangeSet = new SingleKeyRangeSet();
-      this.getChildren().forEach((child) => {
-        const childKeyRanges =
-            (child as ValuePredicate).toKeyRange().getValues();
+      this.getChildren().forEach(child => {
+        const childKeyRanges = (child as ValuePredicate)
+          .toKeyRange()
+          .getValues();
         keyRangeSet.add(childKeyRanges);
       });
       return keyRangeSet;
-    } else {  // this.operator.lf.pred.Operator.OR
+    } else {
+      // this.operator.lf.pred.Operator.OR
       // Unreachable code, because the assertion above should have already
       // thrown an error if this predicate is of type AND.
       assert(false, 'toKeyRange() called for an AND predicate.');
@@ -129,7 +133,7 @@ export class CombinedPredicate extends PredicateNode {
   }
 
   // Returns whether this predicate can be converted to a set of key ranges.
-  public isKeyRangeCompatible(): boolean {
+  isKeyRangeCompatible(): boolean {
     if (this.operator === Operator.OR) {
       return this.isKeyRangeCompatibleOr();
     }
@@ -158,18 +162,20 @@ export class CombinedPredicate extends PredicateNode {
   //  2) All children refer to the same table and column.
   //  3) All children are key range compatible.
   private isKeyRangeCompatibleOr(): boolean {
-    let predicateColumn: BaseColumn|null = null;
-    return this.getChildren().every((child) => {
+    let predicateColumn: Column | null = null;
+    return this.getChildren().every(child => {
       const isCandidate =
-          child instanceof ValuePredicate && child.isKeyRangeCompatible();
+        child instanceof ValuePredicate && child.isKeyRangeCompatible();
       if (!isCandidate) {
         return false;
       }
       if (predicateColumn === null) {
         predicateColumn = (child as ValuePredicate).column;
       }
-      return predicateColumn.getNormalizedName() ===
-          (child as ValuePredicate).column.getNormalizedName();
+      return (
+        predicateColumn.getNormalizedName() ===
+        (child as ValuePredicate).column.getNormalizedName()
+      );
     });
   }
 }

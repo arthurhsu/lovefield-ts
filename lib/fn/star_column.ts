@@ -14,73 +14,76 @@
  * limitations under the License.
  */
 
-import {Type} from '../base/enum';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {Index} from '../schema/index';
+import { Type } from '../base/enum';
+import { BaseColumn } from '../schema/base_column';
+import { BaseTable } from '../schema/base_table';
+import { Index } from '../schema/index';
 
-import {NonPredicateProvider} from './non_predicate_provider';
-import {UnknownTable} from './unknown_table';
+import { NonPredicateProvider } from './non_predicate_provider';
+import { UnknownTable } from './unknown_table';
 
 //  A dummy Column implementation to be used as a substitute for '*',
 // for example in COUNT(*).
 export class StarColumn extends NonPredicateProvider implements BaseColumn {
-  private alias: string|null;
+  // Make TypeScript happy.
+  [key: string]: unknown;
+
+  private alias: string;
   private table: UnknownTable;
 
   constructor(alias?: string) {
     super();
-    this.alias = alias || null;
+    this.alias = alias || ((null as unknown) as string);
     this.table = new UnknownTable();
   }
 
-  public getName(): string {
+  getName(): string {
     return '*';
   }
 
-  public getNormalizedName(): string {
+  getNormalizedName(): string {
     return this.getName();
   }
 
-  public toString(): string {
+  toString(): string {
     return this.getNormalizedName();
   }
 
-  public getTable(): BaseTable {
+  getTable(): BaseTable {
     // NOTE: The table here does not have a useful meaning, since the StarColumn
     // represents all columns that are available, which could be the result of a
     // join, therefore a dummy Table instance is used.
     return this.table;
   }
 
-  public getType(): Type {
+  getType(): Type {
     // NOTE: The type here does not have a useful meaning, since the notion of a
     // type does not apply to a collection of all columns (which is what this
     // class represents).
     return Type.NUMBER;
   }
 
-  public getAlias(): string {
-    return this.alias as any as string;
+  getAlias(): string {
+    return this.alias;
   }
 
-  public getIndices(): Index[] {
+  getIndices(): Index[] {
     return [];
   }
 
-  public getIndex(): Index|null {
+  getIndex(): Index | null {
     return null;
   }
 
-  public isNullable(): boolean {
+  isNullable(): boolean {
     return false;
   }
 
-  public isUnique(): boolean {
+  isUnique(): boolean {
     return false;
   }
 
-  public as(alias: string): StarColumn {
+  as(alias: string): StarColumn {
     const clone = new StarColumn(alias);
     clone.table = this.table;
     return clone;

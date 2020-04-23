@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-import {Binder} from '../base/bind';
-import {ErrorCode, Order, Type} from '../base/enum';
-import {EvalType} from '../base/eval';
-import {Exception} from '../base/exception';
-import {Operator} from '../base/private_enum';
-import {Row} from '../base/row';
-import {CombinedPredicate} from '../pred/combined_predicate';
-import {JoinPredicate} from '../pred/join_predicate';
-import {Predicate} from '../pred/predicate';
-import {PredicateNode} from '../pred/predicate_node';
-import {ValuePredicate} from '../pred/value_predicate';
-import {BaseTable} from '../schema/base_table';
-import {TreeHelper} from '../structs/tree_helper';
-import {TreeNode} from '../structs/tree_node';
+import { Binder } from '../base/bind';
+import { ErrorCode, Order, Type } from '../base/enum';
+import { EvalType } from '../base/eval';
+import { Exception } from '../base/exception';
+import { Operator } from '../base/private_enum';
+import { Row } from '../base/row';
+import { CombinedPredicate } from '../pred/combined_predicate';
+import { JoinPredicate } from '../pred/join_predicate';
+import { Predicate } from '../pred/predicate';
+import { PredicateNode } from '../pred/predicate_node';
+import { ValuePredicate } from '../pred/value_predicate';
+import { BaseColumn } from '../schema/base_column';
+import { BaseTable } from '../schema/base_table';
+import { Table } from '../schema/table';
+import { TreeHelper } from '../structs/tree_helper';
+import { TreeNode } from '../structs/tree_node';
 
-import {BaseBuilder} from './base_builder';
-import {Context} from './context';
-import {DeleteContext} from './delete_context';
-import {InsertContext} from './insert_context';
-import {SelectContext} from './select_context';
-import {UpdateContext} from './update_context';
+import { BaseBuilder } from './base_builder';
+import { Context } from './context';
+import { DeleteContext } from './delete_context';
+import { InsertContext } from './insert_context';
+import { SelectContext } from './select_context';
+import { UpdateContext } from './update_context';
 
-type V = boolean|number|string|Date|ArrayBuffer;
+type V = boolean | number | string | Date | ArrayBuffer;
 
 export class SqlHelper {
-  public static toSql(builder: BaseBuilder<Context>, stripValueInfo = false):
-      string {
+  static toSql(builder: BaseBuilder<Context>, stripValueInfo = false): string {
     const query = builder.getQuery();
 
     if (query instanceof InsertContext) {
@@ -60,10 +61,10 @@ export class SqlHelper {
     }
 
     // 358: toSql() is not implemented for {0}.
-    throw new Exception(ErrorCode.NOT_IMPL_IN_TOSQL, typeof (query));
+    throw new Exception(ErrorCode.NOT_IMPL_IN_TOSQL, typeof query);
   }
 
-  private static escapeSqlValue(type: Type, val: unknown): string|number {
+  private static escapeSqlValue(type: Type, val: unknown): string | number {
     const value = val as V;
     if (value === undefined || value === null) {
       return 'NULL';
@@ -81,24 +82,29 @@ export class SqlHelper {
         // Note: Oracle format is used here.
         return `'${Row.binToHex(value as ArrayBuffer)}'`;
 
-      default:  // datetime, string
+      default:
+        // datetime, string
         return `'${value.toString()}'`;
     }
   }
 
-  private static insertToSql(query: InsertContext, stripValueInfo: boolean):
-      string {
+  private static insertToSql(
+    query: InsertContext,
+    stripValueInfo: boolean
+  ): string {
     let prefix = query.allowReplace ? 'INSERT OR REPLACE' : 'INSERT';
-    const columns = query.into.getColumns();
+    const columns = (query.into as BaseTable).getColumns();
     prefix += ' INTO ' + query.into.getName() + '(';
-    prefix += columns.map((col) => col.getName()).join(', ');
+    prefix += columns.map(col => col.getName()).join(', ');
     prefix += ') VALUES (';
-    const sqls = query.values.map((row) => {
-      const values = columns.map((col) => {
+    const sqls = query.values.map(row => {
+      const values = columns.map(col => {
         const rawVal = row.payload()[col.getName()];
-        return stripValueInfo ?
-            ((rawVal !== undefined && rawVal !== null) ? '#' : 'NULL') :
-            SqlHelper.escapeSqlValue(col.getType(), rawVal);
+        return stripValueInfo
+          ? rawVal !== undefined && rawVal !== null
+            ? '#'
+            : 'NULL'
+          : SqlHelper.escapeSqlValue(col.getType(), rawVal);
       });
       return prefix + values.join(', ') + ');';
     });
@@ -131,33 +137,46 @@ export class SqlHelper {
   }
 
   private static valueToSql(
-      value: any, op: EvalType, type: Type, stripValueInfo: boolean): string {
+    value: unknown,
+    op: EvalType,
+    type: Type,
+    stripValueInfo: boolean
+  ): string {
     if (value instanceof Binder) {
       return '?' + value.getIndex().toString();
     }
 
     if (stripValueInfo) {
-      return (value !== undefined && value !== null) ? '#' : 'NULL';
+      return value !== undefined && value !== null ? '#' : 'NULL';
     } else if (op === EvalType.MATCH) {
-      return `'${value.toString()}'`;
+      return `'${(value as V).toString()}'`;
     } else if (op === EvalType.IN) {
       const array = value as V[];
-      const vals = array.map((e) => SqlHelper.escapeSqlValue(type, e));
+      const vals = array.map(e => SqlHelper.escapeSqlValue(type, e));
       return `(${vals.join(', ')})`;
     } else if (op === EvalType.BETWEEN) {
-      return SqlHelper.escapeSqlValue(type, value[0]) + ' AND ' +
-          SqlHelper.escapeSqlValue(type, value[1]);
+      return (
+        SqlHelper.escapeSqlValue(type, (value as unknown[])[0]) +
+        ' AND ' +
+        SqlHelper.escapeSqlValue(type, (value as unknown[])[1])
+      );
     }
 
     return SqlHelper.escapeSqlValue(type, value).toString();
   }
 
   private static valuePredicateToSql(
-      pred: ValuePredicate, stripValueInfo: boolean): string {
+    pred: ValuePredicate,
+    stripValueInfo: boolean
+  ): string {
     const column = pred.column.getNormalizedName();
     const op = SqlHelper.evaluatorToSql(pred.evaluatorType);
     const value = SqlHelper.valueToSql(
-        pred.peek(), pred.evaluatorType, pred.column.getType(), stripValueInfo);
+      pred.peek(),
+      pred.evaluatorType,
+      pred.column.getType(),
+      stripValueInfo
+    );
     if (op === '=' && value === 'NULL') {
       return [column, 'IS NULL'].join(' ');
     } else if (op === '<>' && value === 'NULL') {
@@ -168,14 +187,20 @@ export class SqlHelper {
   }
 
   private static combinedPredicateToSql(
-      pred: CombinedPredicate, stripValueInfo: boolean): string {
-    const children = pred.getChildren().map((childNode) => {
-      return '(' +
-          SqlHelper.parseSearchCondition(
-              (childNode as PredicateNode), stripValueInfo) +
-          ')';
+    pred: CombinedPredicate,
+    stripValueInfo: boolean
+  ): string {
+    const children = pred.getChildren().map(childNode => {
+      return (
+        '(' +
+        SqlHelper.parseSearchCondition(
+          childNode as PredicateNode,
+          stripValueInfo
+        ) +
+        ')'
+      );
     });
-    const joinToken = (pred.operator === Operator.AND) ? ' AND ' : ' OR ';
+    const joinToken = pred.operator === Operator.AND ? ' AND ' : ' OR ';
     return children.join(joinToken);
   }
 
@@ -187,8 +212,10 @@ export class SqlHelper {
     ].join(' ');
   }
 
-  private static parseSearchCondition(pred: Predicate, stripValueInfo: boolean):
-      string {
+  private static parseSearchCondition(
+    pred: Predicate,
+    stripValueInfo: boolean
+  ): string {
     if (pred instanceof ValuePredicate) {
       return SqlHelper.valuePredicateToSql(pred, stripValueInfo);
     } else if (pred instanceof CombinedPredicate) {
@@ -198,11 +225,13 @@ export class SqlHelper {
     }
 
     // 357: toSql() does not support predicate type: {0}.
-    throw new Exception(357, typeof (pred));
+    throw new Exception(357, typeof pred);
   }
 
-  private static predicateToSql(pred: Predicate, stripValueInfo: boolean):
-      string {
+  private static predicateToSql(
+    pred: Predicate,
+    stripValueInfo: boolean
+  ): string {
     const whereClause = SqlHelper.parseSearchCondition(pred, stripValueInfo);
     if (whereClause) {
       return ' WHERE ' + whereClause;
@@ -210,8 +239,10 @@ export class SqlHelper {
     return '';
   }
 
-  private static deleteToSql(query: DeleteContext, stripValueInfo: boolean):
-      string {
+  private static deleteToSql(
+    query: DeleteContext,
+    stripValueInfo: boolean
+  ): string {
     let sql = 'DELETE FROM ' + query.from.getName();
     if (query.where) {
       sql += SqlHelper.predicateToSql(query.where, stripValueInfo);
@@ -220,17 +251,23 @@ export class SqlHelper {
     return sql;
   }
 
-  private static updateToSql(query: UpdateContext, stripValueInfo: boolean):
-      string {
+  private static updateToSql(
+    query: UpdateContext,
+    stripValueInfo: boolean
+  ): string {
     let sql = 'UPDATE ' + query.table.getName() + ' SET ';
-    sql += query.set.map((set) => {
-      const setter = set.column.getNormalizedName() + ' = ';
-      if (set.binding !== -1) {
-        return setter + '?' + (set.binding as number).toString();
-      }
-      return setter + SqlHelper.escapeSqlValue(
-          set.column.getType(), set.value).toString();
-    }).join(', ');
+    sql += query.set
+      .map(set => {
+        const c = set.column as BaseColumn;
+        const setter = c.getNormalizedName() + ' = ';
+        if (set.binding !== -1) {
+          return setter + '?' + (set.binding as number).toString();
+        }
+        return (
+          setter + SqlHelper.escapeSqlValue(c.getType(), set.value).toString()
+        );
+      })
+      .join(', ');
     if (query.where) {
       sql += SqlHelper.predicateToSql(query.where, stripValueInfo);
     }
@@ -238,20 +275,22 @@ export class SqlHelper {
     return sql;
   }
 
-  private static selectToSql(query: SelectContext, stripValueInfo: boolean):
-      string {
+  private static selectToSql(
+    query: SelectContext,
+    stripValueInfo: boolean
+  ): string {
     let colList = '*';
     if (query.columns.length) {
-      colList =
-          query.columns
-              .map((col) => {
-                if (col.getAlias()) {
-                  return col.getNormalizedName() + ' AS ' + col.getAlias();
-                } else {
-                  return col.getNormalizedName();
-                }
-              })
-              .join(', ');
+      colList = query.columns
+        .map(c => {
+          const col = c as BaseColumn;
+          if (col.getAlias()) {
+            return col.getNormalizedName() + ' AS ' + col.getAlias();
+          } else {
+            return col.getNormalizedName();
+          }
+        })
+        .join(', ');
     }
 
     let sql = 'SELECT ' + colList + ' FROM ';
@@ -265,19 +304,21 @@ export class SqlHelper {
     }
 
     if (query.orderBy) {
-      const orderBy =
-          query.orderBy
-              .map((order) => {
-                return order.column.getNormalizedName() +
-                    ((order.order === Order.DESC) ? ' DESC' : ' ASC');
-              })
-              .join(', ');
+      const orderBy = query.orderBy
+        .map(order => {
+          return (
+            order.column.getNormalizedName() +
+            (order.order === Order.DESC ? ' DESC' : ' ASC')
+          );
+        })
+        .join(', ');
       sql += ' ORDER BY ' + orderBy;
     }
 
     if (query.groupBy) {
-      const groupBy =
-          query.groupBy.map((col) => col.getNormalizedName()).join(', ');
+      const groupBy = query.groupBy
+        .map(col => col.getNormalizedName())
+        .join(', ');
       sql += ' GROUP BY ' + groupBy;
     }
 
@@ -293,28 +334,35 @@ export class SqlHelper {
     return sql;
   }
 
-  private static getTableNameToSql(table: BaseTable): string {
-    return table.getEffectiveName() !== table.getName() ?
-        (table.getName() + ' AS ' + table.getEffectiveName()) :
-        table.getName();
+  private static getTableNameToSql(t: Table): string {
+    const table = t as BaseTable;
+    return table.getEffectiveName() !== table.getName()
+      ? table.getName() + ' AS ' + table.getEffectiveName()
+      : table.getName();
   }
 
   // Handles Sql queries that have left outer join.
   private static getFromListForOuterJoin(
-      query: SelectContext, stripValueInfo: boolean): string {
+    query: SelectContext,
+    stripValueInfo: boolean
+  ): string {
     // Retrieves all JoinPredicates.
-    const retrievedNodes =
-        TreeHelper.find(
-            (query.where as PredicateNode),
-            (n: TreeNode) => (n instanceof JoinPredicate)) as PredicateNode[];
-    const predicateString = retrievedNodes.map(
-        (n: PredicateNode) => SqlHelper.joinPredicateToSql(n as JoinPredicate));
+    const retrievedNodes = TreeHelper.find(
+      query.where as PredicateNode,
+      (n: TreeNode) => n instanceof JoinPredicate
+    ) as PredicateNode[];
+    const predicateString = retrievedNodes.map((n: PredicateNode) =>
+      SqlHelper.joinPredicateToSql(n as JoinPredicate)
+    );
 
     let fromList = SqlHelper.getTableNameToSql(query.from[0]);
     for (let i = 1; i < query.from.length; i++) {
       const fromName = SqlHelper.getTableNameToSql(query.from[i]);
-      if (query.outerJoinPredicates.has(
-              retrievedNodes[predicateString.length - i].getId())) {
+      if (
+        query.outerJoinPredicates.has(
+          retrievedNodes[predicateString.length - i].getId()
+        )
+      ) {
         fromList += ' LEFT OUTER JOIN ' + fromName;
       } else {
         fromList += ' INNER JOIN ' + fromName;
@@ -327,15 +375,20 @@ export class SqlHelper {
 
     // The following condition checks that where has been called in the query.
     if (!(leftChild instanceof JoinPredicate)) {
-      fromList += ' WHERE ' +
-          SqlHelper.parseSearchCondition(
-              (leftChild as PredicateNode), stripValueInfo);
+      fromList +=
+        ' WHERE ' +
+        SqlHelper.parseSearchCondition(
+          leftChild as PredicateNode,
+          stripValueInfo
+        );
     }
     return fromList;
   }
 
   private static getFromListForInnerJoin(
-      query: SelectContext, stripValueInfo: boolean): string {
+    query: SelectContext,
+    stripValueInfo: boolean
+  ): string {
     return query.from.map(SqlHelper.getTableNameToSql).join(', ');
   }
 }

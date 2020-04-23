@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-import {ConstraintAction} from '../base/enum';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
-import {Info} from '../schema/info';
+import { ConstraintAction } from '../base/enum';
+import { Table } from '../schema/table';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Info } from '../schema/info';
 
-import {Context} from './context';
+import { Context } from './context';
 
 // Internal representation of DELETE query.
 export class DeleteContext extends Context {
-  public from!: BaseTable;
+  from!: Table;
 
   constructor(dbSchema: DatabaseSchema) {
     super(dbSchema);
   }
 
-  public getScope(): Set<BaseTable> {
-    const scope = new Set<BaseTable>();
+  getScope(): Set<Table> {
+    const scope = new Set<Table>();
     scope.add(this.from);
     this.expandTableScope(this.from.getName(), scope);
     return scope;
   }
 
-  public clone(): DeleteContext {
+  clone(): DeleteContext {
     const context = new DeleteContext(this.schema);
     context.cloneBase(this);
     context.from = this.from;
     return context;
   }
 
-  public bind(values: any[]): DeleteContext {
+  bind(values: unknown[]): DeleteContext {
     super.bind(values);
     this.bindValuesInSearchCondition(values);
     return this;
@@ -51,14 +51,14 @@ export class DeleteContext extends Context {
 
   // Expands the scope of the given table recursively. It takes into account
   // CASCADE foreign key constraints.
-  private expandTableScope(tableName: string, scopeSoFar: Set<BaseTable>):
-      void {
-    const cascadeChildTables =
-        Info.from(this.schema)
-            .getChildTables(tableName, ConstraintAction.CASCADE);
+  private expandTableScope(tableName: string, scopeSoFar: Set<Table>): void {
+    const cascadeChildTables = Info.from(this.schema).getChildTables(
+      tableName,
+      ConstraintAction.CASCADE
+    );
     const childTables = Info.from(this.schema).getChildTables(tableName);
     childTables.forEach(scopeSoFar.add.bind(scopeSoFar));
-    cascadeChildTables.forEach((childTable) => {
+    cascadeChildTables.forEach(childTable => {
       this.expandTableScope(childTable.getName(), scopeSoFar);
     }, this);
   }

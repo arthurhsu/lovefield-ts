@@ -15,24 +15,28 @@
  */
 
 import * as chai from 'chai';
-import {Row} from '../../lib/base/row';
-import {RelationEntry} from '../../lib/proc/relation_entry';
+import { Row } from '../../lib/base/row';
+import { RelationEntry } from '../../lib/proc/relation_entry';
 
 const assert = chai.assert;
 
 describe('RelationEntry', () => {
   it('combineEntries', () => {
-    const row1 = new Row(Row.DUMMY_ID, {foo: 'FOO'});
-    const row2 = new Row(Row.DUMMY_ID, {bar: 'BAR'});
-    const row3 = new Row(Row.DUMMY_ID, {baz: 'BAZ'});
+    const row1 = new Row(Row.DUMMY_ID, { foo: 'FOO' });
+    const row2 = new Row(Row.DUMMY_ID, { bar: 'BAR' });
+    const row3 = new Row(Row.DUMMY_ID, { baz: 'BAZ' });
 
     const entry1 = new RelationEntry(row1, false);
     const entry2 = new RelationEntry(row2, false);
     const entry3 = new RelationEntry(row3, false);
 
-    // First combining two unprefixed entries.
-    const combinedEntry12 =
-        RelationEntry.combineEntries(entry1, ['Table1'], entry2, ['Table2']);
+    // First combining two non-prefixed entries.
+    const combinedEntry12 = RelationEntry.combineEntries(
+      entry1,
+      ['Table1'],
+      entry2,
+      ['Table2']
+    );
 
     /* tslint:disable:no-string-literal */
     assert.equal(2, Object.keys(combinedEntry12.row.payload()).length);
@@ -41,9 +45,13 @@ describe('RelationEntry', () => {
     let table2Payload = combinedEntry12.row.payload()['Table2'];
     assert.deepEqual(row2.payload(), table2Payload);
 
-    // Now combining an unprefixed and a prefixed entry.
+    // Now combining an non-prefixed and a prefixed entry.
     const combinedEntry123 = RelationEntry.combineEntries(
-        combinedEntry12, ['Table1', 'Table2'], entry3, ['Table3']);
+      combinedEntry12,
+      ['Table1', 'Table2'],
+      entry3,
+      ['Table3']
+    );
     assert.equal(3, Object.keys(combinedEntry123.row.payload()).length);
 
     table1Payload = combinedEntry123.row.payload()['Table1'];

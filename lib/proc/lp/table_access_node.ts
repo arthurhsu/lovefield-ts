@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import {BaseTable} from '../../schema/base_table';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class TableAccessNode extends LogicalQueryPlanNode {
-  constructor(readonly table: BaseTable) {
+  constructor(readonly table: Table) {
     super();
   }
 
-  public toString(): string {
-    const postfix = this.table.getAlias() ? ` as ${this.table.getAlias()}` : '';
+  toString(): string {
+    const table = this.table as BaseTable;
+    const postfix = table.getAlias() ? ` as ${table.getAlias()}` : '';
     return `table_access(${this.table.getName()}${postfix})`;
   }
 }

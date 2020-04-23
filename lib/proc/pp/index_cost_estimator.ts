@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import {EvalType} from '../../base/eval';
-import {Global} from '../../base/global';
-import {Service} from '../../base/service';
-import {IndexStore} from '../../index/index_store';
-import {RuntimeIndex} from '../../index/runtime_index';
-import {CombinedPredicate} from '../../pred/combined_predicate';
-import {Predicate} from '../../pred/predicate';
-import {ValuePredicate} from '../../pred/value_predicate';
-import {Context} from '../../query/context';
-import {BaseTable} from '../../schema/base_table';
-import {IndexImpl} from '../../schema/index_impl';
+import { EvalType } from '../../base/eval';
+import { Global } from '../../base/global';
+import { Service } from '../../base/service';
+import { IndexStore } from '../../index/index_store';
+import { RuntimeIndex } from '../../index/runtime_index';
+import { CombinedPredicate } from '../../pred/combined_predicate';
+import { Predicate } from '../../pred/predicate';
+import { ValuePredicate } from '../../pred/value_predicate';
+import { Context } from '../../query/context';
+import { BaseTable } from '../../schema/base_table';
+import { Table } from '../../schema/table';
+import { IndexImpl } from '../../schema/index_impl';
 
-import {IndexRangeCandidate} from './index_range_candidate';
+import { IndexRangeCandidate } from './index_range_candidate';
 
 // The maximum percent of
 // 1) values an EvalType.IN predicate can have or
@@ -41,19 +42,22 @@ const INDEX_QUERY_THRESHOLD_PERCENT = 0.02;
 export class IndexCostEstimator {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private tableSchema: BaseTable) {
+  constructor(global: Global, private tableSchema: Table) {
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
-  public chooseIndexFor(queryContext: Context, predicates: Predicate[]):
-      IndexRangeCandidate|null {
+  chooseIndexFor(
+    queryContext: Context,
+    predicates: Predicate[]
+  ): IndexRangeCandidate | null {
     const candidatePredicates = predicates.filter(this.isCandidate, this);
     if (candidatePredicates.length === 0) {
       return null;
     }
 
     const indexRangeCandidates = this.generateIndexRangeCandidates(
-        candidatePredicates as ValuePredicate[]);
+      candidatePredicates as ValuePredicate[]
+    );
     if (indexRangeCandidates.length === 0) {
       return null;
     }
@@ -65,40 +69,44 @@ export class IndexCostEstimator {
 
     let minCost = Number.MAX_VALUE;
     return indexRangeCandidates.reduce(
-        (prev: IndexRangeCandidate|null, curr: IndexRangeCandidate) => {
-          const cost = curr.calculateCost(queryContext);
-          if (cost < minCost) {
-            minCost = cost;
-            return curr;
-          }
-          return prev;
-        },
-        null);
+      (prev: IndexRangeCandidate | null, curr: IndexRangeCandidate) => {
+        const cost = curr.calculateCost(queryContext);
+        if (cost < minCost) {
+          minCost = cost;
+          return curr;
+        }
+        return prev;
+      },
+      null
+    );
   }
 
   // Returns the number of Index#getRange queries that can be performed faster
   // than scanning the entire table instead.
   private getIndexQueryThreshold(): number {
-    const rowIdIndex =
-        this.indexStore.get(this.tableSchema.getRowIdIndexName()) as
-        RuntimeIndex;
+    const rowIdIndex = this.indexStore.get(
+      (this.tableSchema as BaseTable).getRowIdIndexName()
+    ) as RuntimeIndex;
     return Math.floor(
-        rowIdIndex.stats().totalRows * INDEX_QUERY_THRESHOLD_PERCENT);
+      rowIdIndex.stats().totalRows * INDEX_QUERY_THRESHOLD_PERCENT
+    );
   }
 
-  private generateIndexRangeCandidates(predicates: ValuePredicate[]):
-      IndexRangeCandidate[] {
-    const indexSchemas = this.tableSchema.getIndices() as IndexImpl[];
+  private generateIndexRangeCandidates(
+    predicates: ValuePredicate[]
+  ): IndexRangeCandidate[] {
+    const indexSchemas = (this
+      .tableSchema as BaseTable).getIndices() as IndexImpl[];
     return indexSchemas
-        .map(
-            (indexSchema) => {
-              const indexRangeCandidate =
-                  new IndexRangeCandidate(this.indexStore, indexSchema);
-              indexRangeCandidate.consumePredicates(predicates);
-              return indexRangeCandidate;
-            },
-            this)
-        .filter((indexRangeCandidate) => indexRangeCandidate.isUsable());
+      .map(indexSchema => {
+        const indexRangeCandidate = new IndexRangeCandidate(
+          this.indexStore,
+          indexSchema
+        );
+        indexRangeCandidate.consumePredicates(predicates);
+        return indexRangeCandidate;
+      }, this)
+      .filter(indexRangeCandidate => indexRangeCandidate.isUsable());
   }
 
   private isCandidate(predicate: Predicate): boolean {
@@ -125,13 +133,17 @@ export class IndexCostEstimator {
   }
 
   private isCandidateValuePredicate(predicate: ValuePredicate): boolean {
-    if (!predicate.isKeyRangeCompatible() ||
-        predicate.column.getTable() !== this.tableSchema) {
+    if (
+      !predicate.isKeyRangeCompatible() ||
+      predicate.column.getTable() !== this.tableSchema
+    ) {
       return false;
     }
 
-    if (predicate.evaluatorType === EvalType.IN &&
-        predicate.peek().length > this.getIndexQueryThreshold()) {
+    if (
+      predicate.evaluatorType === EvalType.IN &&
+      (predicate.peek() as unknown[]).length > this.getIndexQueryThreshold()
+    ) {
       return false;
     }
 
