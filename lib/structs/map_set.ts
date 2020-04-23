@@ -25,15 +25,15 @@ export class MapSet<K, V> {
     this.count = 0;
   }
 
-  public get size(): number {
+  get size(): number {
     return this.count;
   }
 
-  public has(key: K): boolean {
+  has(key: K): boolean {
     return this.map.has(key);
   }
 
-  public set(key: K, value: V): MapSet<K, V> {
+  set(key: K, value: V): MapSet<K, V> {
     const valueSet = this.getSet(key);
     if (!valueSet.has(value)) {
       valueSet.add(value);
@@ -42,9 +42,9 @@ export class MapSet<K, V> {
     return this;
   }
 
-  public setMany(key: K, values: V[]): MapSet<K, V> {
+  setMany(key: K, values: V[]): MapSet<K, V> {
     const valueSet = this.getSet(key);
-    values.forEach((value) => {
+    values.forEach(value => {
       if (!valueSet.has(value)) {
         valueSet.add(value);
         this.count++;
@@ -53,9 +53,10 @@ export class MapSet<K, V> {
     return this;
   }
 
-  public merge(mapSet: MapSet<K, V>): MapSet<K, V> {
-    mapSet.keys().forEach(
-        (key) => this.setMany(key, Array.from(mapSet.getSet(key))));
+  merge(mapSet: MapSet<K, V>): MapSet<K, V> {
+    mapSet
+      .keys()
+      .forEach(key => this.setMany(key, Array.from(mapSet.getSet(key))));
     return this;
   }
 
@@ -63,7 +64,7 @@ export class MapSet<K, V> {
    * Removes a value associated with the given key.
    * Returns true if the map was modified.
    */
-  public delete(key: K, value: V): boolean {
+  delete(key: K, value: V): boolean {
     const valueSet = this.map.get(key) || null;
     if (valueSet === null) {
       return false;
@@ -79,30 +80,31 @@ export class MapSet<K, V> {
     return didRemove;
   }
 
-  public get(key: K): V[]|null {
+  get(key: K): V[] | null {
     const valueSet = this.map.get(key) || null;
     return valueSet === null ? null : Array.from(valueSet);
   }
 
-  public clear(): void {
+  clear(): void {
     this.map.clear();
     this.count = 0;
   }
 
-  public keys(): K[] {
+  keys(): K[] {
     return Array.from(this.map.keys());
   }
 
-  public values(): V[] {
+  values(): V[] {
     const results: V[] = [];
-    this.map.forEach(
-        (valueSet, key) => results.push.apply(results, Array.from(valueSet)));
+    this.map.forEach((valueSet, key) =>
+      results.push.apply(results, Array.from(valueSet))
+    );
     return results;
   }
 
   // Returns a set for a given key. If the key does not exist in the map,
   // a new Set will be created.
-  public getSet(key: K): Set<V> {
+  getSet(key: K): Set<V> {
     let valueSet = this.map.get(key) || null;
     if (valueSet === null) {
       valueSet = new Set<V>();

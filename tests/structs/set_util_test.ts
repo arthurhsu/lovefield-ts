@@ -15,14 +15,18 @@
  */
 
 import * as chai from 'chai';
-import {isSubset, setEquals} from '../../lib/structs/set_util';
+import { isSubset, setEquals } from '../../lib/structs/set_util';
 
 const assert = chai.assert;
 
 describe('SetUtil', () => {
   it('isSubSet', () => {
     function checker<T>(
-        set1: Set<T>, set2: Set<T>, set3: Set<T>, set4: Set<T>): void {
+      set1: Set<T>,
+      set2: Set<T>,
+      set3: Set<T>,
+      set4: Set<T>
+    ): void {
       assert.isTrue(isSubset(set1, set2));
       assert.isTrue(isSubset(set1, set1));
       assert.isFalse(isSubset(set2, set1));
@@ -47,8 +51,12 @@ describe('SetUtil', () => {
 
   it('setEquals', () => {
     function checker<T>(
-        set1: Set<T>, set2: Set<T>, set3: Set<T>, set4: Set<T>,
-        set5: Set<T>): void {
+      set1: Set<T>,
+      set2: Set<T>,
+      set3: Set<T>,
+      set4: Set<T>,
+      set5: Set<T>
+    ): void {
       assert.isTrue(setEquals(set1, set1));
       assert.isTrue(setEquals(set4, set4));
       assert.isFalse(setEquals(set1, set2));

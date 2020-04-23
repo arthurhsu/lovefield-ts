@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {TreeNode} from './tree_node';
+import { assert } from '../base/assert';
+import { TreeNode } from './tree_node';
 
 interface RemoveResult {
   parent: TreeNode;
@@ -30,8 +30,10 @@ export class TreeHelper {
   // This is equivalent to Array#map, but for a tree data structure.
   // Note: T1 and T2 are expected to be either lf.structs.TreeNode or subtypes
   // but there is no way to currently express that in JS compiler annotations.
-  public static map<T1 extends TreeNode, T2 extends TreeNode>(
-      origTree: T1, mapFn: (t: T1) => T2): T2 {
+  static map<T1 extends TreeNode, T2 extends TreeNode>(
+    origTree: T1,
+    mapFn: (t: T1) => T2
+  ): T2 {
     // A stack storing nodes that will be used as parents later in the
     // traversal.
     const copyParentStack: TreeNode[] = [];
@@ -53,10 +55,10 @@ export class TreeHelper {
     };
 
     // The node that should become the parent of the next traversed node.
-    let nextParent: TreeNode = null as any as TreeNode;
-    let copyRoot: T2 = null as any as T2;
+    let nextParent: TreeNode = (null as unknown) as TreeNode;
+    let copyRoot: T2 = (null as unknown) as T2;
 
-    origTree.traverse((node) => {
+    origTree.traverse(node => {
       const newNode = mapFn(node as T1);
 
       if (node.getParent() == null) {
@@ -69,23 +71,24 @@ export class TreeHelper {
       if (node.getChildCount() > 1) {
         copyParentStack.push(newNode);
       }
-      nextParent =
-          node.isLeaf() ? copyParentStack[copyParentStack.length - 1] : newNode;
+      nextParent = node.isLeaf()
+        ? copyParentStack[copyParentStack.length - 1]
+        : newNode;
     });
 
     return copyRoot;
   }
 
   // Finds all leafs node existing in the subtree that starts at the given node.
-  public static getLeafNodes(node: TreeNode): TreeNode[] {
-    return TreeHelper.find(node, (n) => n.isLeaf());
+  static getLeafNodes(node: TreeNode): TreeNode[] {
+    return TreeHelper.find(node, n => n.isLeaf());
   }
 
   // Removes a node from a tree. It takes care of re-parenting the children of
   // the removed node with its parent (if any).
   // Returns an object holding the parent of the node prior to removal (if any),
   // and the children of the node prior to removal.
-  public static removeNode(node: TreeNode): RemoveResult {
+  static removeNode(node: TreeNode): RemoveResult {
     const parentNode = node.getParent();
     let originalIndex = 0;
     if (parentNode !== null) {
@@ -102,14 +105,14 @@ export class TreeHelper {
     });
 
     return {
-      children: children,
+      children,
       parent: parentNode,
     };
   }
 
   // Inserts a new node under an existing node. The new node inherits all
   // children of the existing node, and the existing node ends up having only
-  // the new node as a child. Example: Calling iusertNodeAt(n2, n6) would result
+  // the new node as a child. Example: Calling insertNodeAt(n2, n6) would result
   // in the following transformation.
   //
   //        n1              n1
@@ -119,9 +122,9 @@ export class TreeHelper {
   //    n3  n4          n6
   //                   /  \
   //                  n3  n4
-  public static insertNodeAt(existingNode: TreeNode, newNode: TreeNode): void {
+  static insertNodeAt(existingNode: TreeNode, newNode: TreeNode): void {
     const children = existingNode.getChildren().slice();
-    children.forEach((child) => {
+    children.forEach(child => {
       existingNode.removeChild(child);
       newNode.addChild(child);
     });
@@ -144,7 +147,7 @@ export class TreeHelper {
   //
   // Returns the new root of the subtree that used to start where "node" was
   // before swapping.
-  public static swapNodeWithChild(node: TreeNode): TreeNode {
+  static swapNodeWithChild(node: TreeNode): TreeNode {
     assert(node.getChildCount() === 1);
     const child = node.getChildAt(0) as TreeNode;
     assert(child.getChildCount() === 1);
@@ -180,16 +183,19 @@ export class TreeHelper {
   //
   // Returns the new parent of the subtree that used to start at "node" or
   // "node" itself if it could not be pushed down at all.
-  public static pushNodeBelowChild(
-      node: TreeNode, shouldPushDownFn: (node: TreeNode) => boolean,
-      cloneFn: (node: TreeNode) => TreeNode): TreeNode {
+  static pushNodeBelowChild(
+    node: TreeNode,
+    shouldPushDownFn: (node: TreeNode) => boolean,
+    cloneFn: (node: TreeNode) => TreeNode
+  ): TreeNode {
     assert(node.getChildCount() === 1);
     const child = node.getChildAt(0) as TreeNode;
     assert(child.getChildCount() > 1);
 
     const grandChildren = child.getChildren().slice();
-    const canPushDown =
-        grandChildren.some((grandChild) => shouldPushDownFn(grandChild));
+    const canPushDown = grandChildren.some(grandChild =>
+      shouldPushDownFn(grandChild)
+    );
 
     if (!canPushDown) {
       return node;
@@ -220,11 +226,14 @@ export class TreeHelper {
   //   /  \            /  \
   //  n4  n5          n4  n5
   //
-  // Returns the new root of the subtree that used to start at "oldhead".
+  // Returns the new root of the subtree that used to start at "old head".
   // Effectively the new root is always equal to "newHead".
-  public static replaceChainWithChain(
-      oldHead: TreeNode, oldTail: TreeNode, newHead: TreeNode,
-      newTail: TreeNode): TreeNode {
+  static replaceChainWithChain(
+    oldHead: TreeNode,
+    oldTail: TreeNode,
+    newHead: TreeNode,
+    newTail: TreeNode
+  ): TreeNode {
     const parentNode = oldHead.getParent();
     if (parentNode !== null) {
       const oldHeadIndex = parentNode.getChildren().indexOf(oldHead);
@@ -232,10 +241,13 @@ export class TreeHelper {
       parentNode.addChildAt(newHead, oldHeadIndex);
     }
 
-    oldTail.getChildren().slice().forEach((child) => {
-      oldTail.removeChild(child);
-      newTail.addChild(child);
-    });
+    oldTail
+      .getChildren()
+      .slice()
+      .forEach(child => {
+        oldTail.removeChild(child);
+        newTail.addChild(child);
+      });
 
     return newHead;
   }
@@ -257,8 +269,11 @@ export class TreeHelper {
   //
   // Returns the new root of the subtree that used to start at "node".
   // Effectively the new root is always equal to "head".
-  public static replaceNodeWithChain(
-      node: TreeNode, head: TreeNode, tail: TreeNode): TreeNode {
+  static replaceNodeWithChain(
+    node: TreeNode,
+    head: TreeNode,
+    tail: TreeNode
+  ): TreeNode {
     return TreeHelper.replaceChainWithChain(node, node, head, tail);
   }
 
@@ -276,8 +291,11 @@ export class TreeHelper {
   //
   // Returns the new root of the subtree that used to start at "head".
   // Effectively the new root is always equal to "node".
-  public static replaceChainWithNode(
-      head: TreeNode, tail: TreeNode, node: TreeNode): TreeNode {
+  static replaceChainWithNode(
+    head: TreeNode,
+    tail: TreeNode,
+    node: TreeNode
+  ): TreeNode {
     return TreeHelper.replaceChainWithChain(head, tail, node, node);
   }
 
@@ -289,9 +307,11 @@ export class TreeHelper {
   // It will be called on every visited node on the tree. If false is returned
   // searching will stop for nodes below that node. If such a function were not
   // provided the entire tree is searched.
-  public static find(
-      root: TreeNode, filterFn: (node: TreeNode) => boolean,
-      stopFn?: (node: TreeNode) => boolean): TreeNode[] {
+  static find(
+    root: TreeNode,
+    filterFn: (node: TreeNode) => boolean,
+    stopFn?: (node: TreeNode) => boolean
+  ): TreeNode[] {
     const results: TreeNode[] = [];
 
     /** @param {!lf.structs.TreeNode} node */
@@ -311,14 +331,13 @@ export class TreeHelper {
   // Returns a string representation of a tree. Useful for testing/debugging.
   // |stringFunc| is the function to use for converting a single node to a
   // string. If not provided a default function will be used.
-  public static toString(rootNode: TreeNode, stringFunc?: NodeStringFn):
-      string {
+  static toString(rootNode: TreeNode, stringFunc?: NodeStringFn): string {
     const defaultStringFn: NodeStringFn = (node: TreeNode) => {
       return node.toString() + '\n';
     };
     const stringFn: NodeStringFn = stringFunc || defaultStringFn;
     let out = '';
-    rootNode.traverse((node) => {
+    rootNode.traverse(node => {
       for (let i = 0; i < node.getDepth(); i++) {
         out += '-';
       }

@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import {TreeHelper} from '../../lib/structs/tree_helper';
-import {TreeNode} from '../../lib/structs/tree_node';
+import { TreeHelper } from '../../lib/structs/tree_helper';
+import { TreeNode } from '../../lib/structs/tree_node';
 
 const assert = chai.assert;
 
@@ -113,8 +113,9 @@ describe('TreeHelper', () => {
     });
 
     assert.equal(
-        TreeHelper.toString(rootNode, stringFn),
-        TreeHelper.toString(copy, stringFn));
+      TreeHelper.toString(rootNode, stringFn),
+      TreeHelper.toString(copy, stringFn)
+    );
   }
 
   // Tests that TreeHelper.map() is constructing a new tree with the exact same
@@ -147,22 +148,25 @@ describe('TreeHelper', () => {
   it('RemoveNode_Intermediate', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[2]\n' +
-        '-[3]\n' +
-        '-[4]\n' +
-        '-[5]\n' +
-        '--[6]\n' +
-        '---[7]\n' +
-        '----[8]\n' +
-        '----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[2]\n' +
+      '-[3]\n' +
+      '-[4]\n' +
+      '-[5]\n' +
+      '--[6]\n' +
+      '---[7]\n' +
+      '----[8]\n' +
+      '----[9]\n' +
+      '-[10]\n';
 
     // Removing node n1.
     const removeResult = TreeHelper.removeNode(nodes[1]);
     assert.equal(nodes[0], removeResult.parent);
     assert.sameDeepOrderedMembers(
-        [nodes[2], nodes[3], nodes[4]], removeResult.children);
+      [nodes[2], nodes[3], nodes[4]],
+      removeResult.children
+    );
     assert.equal(treeAfter, TreeHelper.toString(nodes[0], stringFn));
   });
 
@@ -170,16 +174,17 @@ describe('TreeHelper', () => {
   it('RemoveNode_Leaf', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[5]\n' +
-        '--[6]\n' +
-        '---[7]\n' +
-        '----[8]\n' +
-        '----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[5]\n' +
+      '--[6]\n' +
+      '---[7]\n' +
+      '----[8]\n' +
+      '----[9]\n' +
+      '-[10]\n';
 
     // Removing node n2.
     const removeResult = TreeHelper.removeNode(nodes[2]);
@@ -192,16 +197,10 @@ describe('TreeHelper', () => {
   it('RemoveNode_Root', () => {
     const nodes = createTestTree1();
 
-    const subTree1After = '[1]\n' +
-        '-[2]\n' +
-        '-[3]\n' +
-        '-[4]\n';
+    const subTree1After = '[1]\n' + '-[2]\n' + '-[3]\n' + '-[4]\n';
 
-    const subTree2After = '[5]\n' +
-        '-[6]\n' +
-        '--[7]\n' +
-        '---[8]\n' +
-        '---[9]\n';
+    const subTree2After =
+      '[5]\n' + '-[6]\n' + '--[7]\n' + '---[8]\n' + '---[9]\n';
 
     const subTree3After = '[10]\n';
 
@@ -209,30 +208,39 @@ describe('TreeHelper', () => {
     const removeResult = TreeHelper.removeNode(nodes[0]);
     assert.isNull(removeResult.parent);
     assert.sameDeepOrderedMembers(
-        [nodes[1], nodes[5], nodes[10]], removeResult.children);
+      [nodes[1], nodes[5], nodes[10]],
+      removeResult.children
+    );
     assert.equal(
-        subTree1After, TreeHelper.toString(removeResult.children[0], stringFn));
+      subTree1After,
+      TreeHelper.toString(removeResult.children[0], stringFn)
+    );
     assert.equal(
-        subTree2After, TreeHelper.toString(removeResult.children[1], stringFn));
+      subTree2After,
+      TreeHelper.toString(removeResult.children[1], stringFn)
+    );
     assert.equal(
-        subTree3After, TreeHelper.toString(removeResult.children[2], stringFn));
+      subTree3After,
+      TreeHelper.toString(removeResult.children[2], stringFn)
+    );
   });
 
   it('InsertNodeAt', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[5]\n' +
-        '--[6]\n' +
-        '---[7]\n' +
-        '----[11]\n' +
-        '-----[8]\n' +
-        '-----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[5]\n' +
+      '--[6]\n' +
+      '---[7]\n' +
+      '----[11]\n' +
+      '-----[8]\n' +
+      '-----[9]\n' +
+      '-[10]\n';
 
     const newNode = new TreeNode2(11);
     TreeHelper.insertNodeAt(nodes[7], newNode);
@@ -242,17 +250,18 @@ describe('TreeHelper', () => {
   it('ReplaceChainWithChain', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[11]\n' +
-        '--[12]\n' +
-        '---[13]\n' +
-        '----[8]\n' +
-        '----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[11]\n' +
+      '--[12]\n' +
+      '---[13]\n' +
+      '----[8]\n' +
+      '----[9]\n' +
+      '-[10]\n';
 
     const newHead = new TreeNode2(11);
     const intermediate = new TreeNode2(12);
@@ -269,15 +278,16 @@ describe('TreeHelper', () => {
   it('ReplaceChainWithNode', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[11]\n' +
-        '--[8]\n' +
-        '--[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[11]\n' +
+      '--[8]\n' +
+      '--[9]\n' +
+      '-[10]\n';
 
     const newNode = new TreeNode2(11);
     const head = nodes[5];
@@ -289,19 +299,20 @@ describe('TreeHelper', () => {
   it('ReplaceNodeWithChain', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[5]\n' +
-        '--[6]\n' +
-        '---[7]\n' +
-        '----[11]\n' +
-        '-----[12]\n' +
-        '------[13]\n' +
-        '----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[5]\n' +
+      '--[6]\n' +
+      '---[7]\n' +
+      '----[11]\n' +
+      '-----[12]\n' +
+      '------[13]\n' +
+      '----[9]\n' +
+      '-[10]\n';
 
     const head = new TreeNode2(11);
     const other = new TreeNode2(12);
@@ -316,17 +327,18 @@ describe('TreeHelper', () => {
   it('PushNodeBelowChild', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[5]\n' +
-        '--[7]\n' +
-        '---[6]\n' +
-        '----[8]\n' +
-        '---[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[5]\n' +
+      '--[7]\n' +
+      '---[6]\n' +
+      '----[8]\n' +
+      '---[9]\n' +
+      '-[10]\n';
 
     const cloneFn = (node: TreeNode): TreeNode2 => {
       return new TreeNode2((node as TreeNode2).id);
@@ -344,17 +356,18 @@ describe('TreeHelper', () => {
   it('SwapNodeWithChild', () => {
     const nodes = createTestTree1();
 
-    const treeAfter = '[0]\n' +
-        '-[1]\n' +
-        '--[2]\n' +
-        '--[3]\n' +
-        '--[4]\n' +
-        '-[6]\n' +
-        '--[5]\n' +
-        '---[7]\n' +
-        '----[8]\n' +
-        '----[9]\n' +
-        '-[10]\n';
+    const treeAfter =
+      '[0]\n' +
+      '-[1]\n' +
+      '--[2]\n' +
+      '--[3]\n' +
+      '--[4]\n' +
+      '-[6]\n' +
+      '--[5]\n' +
+      '---[7]\n' +
+      '----[8]\n' +
+      '----[9]\n' +
+      '-[10]\n';
     const newSubtreeRoot = TreeHelper.swapNodeWithChild(nodes[5]);
     assert.equal(nodes[6], newSubtreeRoot);
     assert.equal(treeAfter, TreeHelper.toString(nodes[0], stringFn));
@@ -363,16 +376,18 @@ describe('TreeHelper', () => {
   it('GetLeafNodes', () => {
     const nodes = createTestTree1();
     const leafNodes = TreeHelper.getLeafNodes(nodes[0]);
-    const leafNodeKeys = leafNodes.map((node) => (node as TreeNode2).id);
+    const leafNodeKeys = leafNodes.map(node => (node as TreeNode2).id);
     assert.sameOrderedMembers([2, 3, 4, 8, 9, 10], leafNodeKeys);
   });
 
   it('Find', () => {
     const nodes = createTestTree1();
     const minId = 6;
-    const retrievedNodes =
-        TreeHelper.find(nodes[0], (node) => (node as TreeNode2).id >= minId);
-    retrievedNodes.forEach((node) => {
+    const retrievedNodes = TreeHelper.find(
+      nodes[0],
+      node => (node as TreeNode2).id >= minId
+    );
+    retrievedNodes.forEach(node => {
       assert.isTrue((node as TreeNode2).id >= minId);
     });
   });
@@ -381,9 +396,13 @@ describe('TreeHelper', () => {
     const nodes = createTestTree1();
     const minId = 4;
     const retrievedNodes = TreeHelper.find(
-        nodes[0], (node) => (node as TreeNode2).id >= minId,
-        (node) => (node as TreeNode2).id === 7);
+      nodes[0],
+      node => (node as TreeNode2).id >= minId,
+      node => (node as TreeNode2).id === 7
+    );
     assert.sameOrderedMembers(
-        [4, 5, 6, 7, 10], retrievedNodes.map((node) => (node as TreeNode2).id));
+      [4, 5, 6, 7, 10],
+      retrievedNodes.map(node => (node as TreeNode2).id)
+    );
   });
 });

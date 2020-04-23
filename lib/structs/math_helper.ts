@@ -16,10 +16,13 @@
 
 // Port of goog.math methods used by Lovefield.
 export class MathHelper {
-  public static longestCommonSubsequence<T>(
-      array1: T[], array2: T[], comparator?: (l: T, r: T) => boolean,
-      collector?: (idx1: number, idx2: number) => T): T[] {
-    const defaultComparator = (a: T, b: T) => (a === b);
+  static longestCommonSubsequence<T>(
+    array1: T[],
+    array2: T[],
+    comparator?: (l: T, r: T) => boolean,
+    collector?: (idx1: number, idx2: number) => T
+  ): T[] {
+    const defaultComparator = (a: T, b: T) => a === b;
     const defaultCollector = (i1: number, i2: number) => array1[i1];
     const compare = comparator || defaultComparator;
     const collect = collector || defaultCollector;
@@ -38,9 +41,9 @@ export class MathHelper {
     }
     for (i = 1; i < length1 + 1; ++i) {
       for (j = 1; j < length2 + 1; ++j) {
-        arr[i][j] = compare(array1[i - 1], array2[j - 1]) ?
-            arr[i - 1][j - 1] + 1 :
-            Math.max(arr[i - 1][j], arr[i][j - 1]);
+        arr[i][j] = compare(array1[i - 1], array2[j - 1])
+          ? arr[i - 1][j - 1] + 1
+          : Math.max(arr[i - 1][j], arr[i][j - 1]);
       }
     }
 
@@ -65,23 +68,26 @@ export class MathHelper {
     return result;
   }
 
-  public static sum(...args: number[]): number {
+  static sum(...args: number[]): number {
     return args.reduce((sum, value) => sum + value, 0);
   }
 
-  public static average(...args: number[]): number {
+  static average(...args: number[]): number {
     return MathHelper.sum.apply(null, args) / args.length;
   }
 
-  public static standardDeviation(...args: number[]): number {
+  static standardDeviation(...args: number[]): number {
     if (!args || args.length < 2) {
       return 0;
     }
 
     const mean = MathHelper.average.apply(null, args);
     const sampleVariance =
-        MathHelper.sum.apply(null, args.map((val) => Math.pow(val - mean, 2))) /
-        (args.length - 1);
+      MathHelper.sum.apply(
+        null,
+        args.map(val => Math.pow(val - mean, 2))
+      ) /
+      (args.length - 1);
     return Math.sqrt(sampleVariance);
   }
 }

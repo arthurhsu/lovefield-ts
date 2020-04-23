@@ -80,7 +80,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
           combinedPredicate.removeChild(childPredicate);
           return this.breakAndPredicate(childPredicate as PredicateNode);
         });
-    return ArrayHelper.flatten(predicates);
+    return ArrayHelper.flatten(predicates) as PredicateNode[];
   }
 
   private createSelectNodeChain(predicates: PredicateNode[]):

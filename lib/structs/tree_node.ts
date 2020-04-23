@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
+import { assert } from '../base/assert';
 
 export class TreeNode {
   private static EMPTY_ARRAY: TreeNode[] = [];
 
-  public parent: TreeNode|null;
-  private children: TreeNode[]|null;
+  parent: TreeNode | null;
+  private children: TreeNode[] | null;
 
   constructor() {
     this.parent = null;
     this.children = null;
   }
 
-  public getParent(): TreeNode {
+  getParent(): TreeNode {
     return this.parent as TreeNode;
   }
 
-  public setParent(parentNode: TreeNode): void {
+  setParent(parentNode: TreeNode): void {
     this.parent = parentNode;
   }
 
-  public getRoot(): TreeNode {
+  getRoot(): TreeNode {
     let root: TreeNode = this;
     while (root.parent !== null) {
       root = root.parent;
@@ -43,7 +43,7 @@ export class TreeNode {
     return root;
   }
 
-  public getDepth(): number {
+  getDepth(): number {
     let depth = 0;
     let node: TreeNode = this;
     while (node.parent !== null) {
@@ -53,25 +53,25 @@ export class TreeNode {
     return depth;
   }
 
-  public isLeaf(): boolean {
+  isLeaf(): boolean {
     return this.children === null;
   }
 
-  public getChildren(): TreeNode[] {
+  getChildren(): TreeNode[] {
     return this.children || TreeNode.EMPTY_ARRAY;
   }
 
-  public getChildAt(index: number): TreeNode|null {
-    return (this.children && index >= 0 && index < this.children.length) ?
-        this.getChildren()[index] :
-        null;
+  getChildAt(index: number): TreeNode | null {
+    return this.children && index >= 0 && index < this.children.length
+      ? this.getChildren()[index]
+      : null;
   }
 
-  public getChildCount(): number {
+  getChildCount(): number {
     return this.getChildren().length;
   }
 
-  public addChildAt(child: TreeNode, index: number): void {
+  addChildAt(child: TreeNode, index: number): void {
     assert(child.parent === null);
     child.parent = this;
     if (this.children === null) {
@@ -83,7 +83,7 @@ export class TreeNode {
     }
   }
 
-  public addChild(child: TreeNode): void {
+  addChild(child: TreeNode): void {
     assert(child.parent === null);
     child.parent = this;
     if (this.children === null) {
@@ -94,7 +94,7 @@ export class TreeNode {
   }
 
   // Returns removed node at index, if any.
-  public removeChildAt(index: number): TreeNode|null {
+  removeChildAt(index: number): TreeNode | null {
     if (this.children) {
       const child = this.children[index];
       if (child) {
@@ -110,13 +110,14 @@ export class TreeNode {
   }
 
   // Returns removed node, if any.
-  public removeChild(child: TreeNode): TreeNode|null {
-    return this.children ? this.removeChildAt(this.children.indexOf(child)) :
-                           null;
+  removeChild(child: TreeNode): TreeNode | null {
+    return this.children
+      ? this.removeChildAt(this.children.indexOf(child))
+      : null;
   }
 
   // Returns original node, if any.
-  public replaceChildAt(newChild: TreeNode, index: number): TreeNode|null {
+  replaceChildAt(newChild: TreeNode, index: number): TreeNode | null {
     assert(newChild.parent === null);
     if (this.children) {
       const oldChild = this.getChildAt(index);
@@ -132,9 +133,9 @@ export class TreeNode {
 
   // Traverses the subtree with the possibility to skip branches. Starts with
   // this node, and visits the descendant nodes depth-first, in preorder.
-  public traverse(f: (node: TreeNode) => boolean | void): void {
+  traverse(f: (node: TreeNode) => boolean | void): void {
     if (f(this) !== false) {
-      this.getChildren().forEach((child) => child.traverse(f));
+      this.getChildren().forEach(child => child.traverse(f));
     }
   }
 }

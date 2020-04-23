@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
+import { assert } from '../base/assert';
 
 export class ArrayHelper {
   // Returns true if the value were inserted, false otherwise.
-  public static binaryInsert<T = number>(
-      arr: T[], value: T, comparator?: (l: T, r: T) => number): boolean {
+  static binaryInsert<T = number>(
+    arr: T[],
+    value: T,
+    comparator?: (l: T, r: T) => number
+  ): boolean {
     const index = ArrayHelper.binarySearch(arr, value, comparator);
     if (index < 0) {
       arr.splice(-(index + 1), 0, value);
@@ -29,8 +32,11 @@ export class ArrayHelper {
   }
 
   // Returns true if the value were inserted, false otherwise.
-  public static binaryRemove<T = number>(
-      arr: T[], value: T, comparator?: (l: T, r: T) => number): boolean {
+  static binaryRemove<T = number>(
+    arr: T[],
+    value: T,
+    comparator?: (l: T, r: T) => number
+  ): boolean {
     const index = ArrayHelper.binarySearch(arr, value, comparator);
     if (index < 0) {
       return false;
@@ -41,7 +47,7 @@ export class ArrayHelper {
   }
 
   // Randomly shuffle an array's element.
-  public static shuffle<T>(arr: T[]): void {
+  static shuffle<T>(arr: T[]): void {
     for (let i = arr.length - 1; i > 0; i--) {
       // Choose a random array index in [0, i] (inclusive with i).
       const j = Math.floor(Math.random() * (i + 1));
@@ -52,27 +58,27 @@ export class ArrayHelper {
   }
 
   // Clone the array.
-  public static clone<T>(arr: T[]): T[] {
+  static clone<T>(arr: T[]): T[] {
     const length = arr.length;
     if (length > 0) {
       const rv = new Array(length);
-      arr.forEach((v, i) => rv[i] = v);
+      arr.forEach((v, i) => (rv[i] = v));
       return rv;
     }
     return [];
   }
 
   // Flatten the array.
-  public static flatten(...arr: any[]): any[] {
+  static flatten(...arr: unknown[]): unknown[] {
     const CHUNK_SIZE = 8192;
 
-    const result: any[] = [];
-    arr.forEach((element) => {
+    const result: unknown[] = [];
+    arr.forEach(element => {
       if (Array.isArray(element)) {
         for (let c = 0; c < element.length; c += CHUNK_SIZE) {
           const chunk = element.slice(c, c + CHUNK_SIZE);
           const recurseResult = ArrayHelper.flatten.apply(null, chunk);
-          recurseResult.forEach((r: any) => result.push(r));
+          recurseResult.forEach((r: unknown) => result.push(r));
         }
       } else {
         result.push(element);
@@ -84,18 +90,19 @@ export class ArrayHelper {
   // Cartesian product of zero or more sets.  Gives an iterator that gives every
   // combination of one element chosen from each set.  For example,
   // ([1, 2], [3, 4]) gives ([1, 3], [1, 4], [2, 3], [2, 4]).
-  public static product<T>(arrays: T[][]): T[][] {
-    const someArrayEmpty = arrays.some((arr) => !arr.length);
+  static product<T>(arrays: T[][]): T[][] {
+    const someArrayEmpty = arrays.some(arr => !arr.length);
     if (someArrayEmpty || arrays.length === 0) {
       return [];
     }
 
-    let indices: number[]|null = new Array<number>(arrays.length);
+    let indices: number[] | null = new Array<number>(arrays.length);
     indices.fill(0);
     const result = [];
     while (indices !== null) {
-      result.push(indices.map(
-          (valueIndex, arrayIndex) => arrays[arrayIndex][valueIndex]));
+      result.push(
+        indices.map((valueIndex, arrayIndex) => arrays[arrayIndex][valueIndex])
+      );
 
       // Generate the next-largest indices for the next call.
       // Increase the rightmost index. If it goes over, increase the next
@@ -123,10 +130,13 @@ export class ArrayHelper {
   }
 
   // Returns an object whose keys are all unique return values of sorter.
-  public static bucket<T>(arr: T[], sorter: (v: T) => any): object {
-    const bucket = {};
+  static bucket<T>(arr: T[], sorter: (v: T) => number): object {
+    interface BucketType {
+      [key: number]: T[];
+    }
+    const bucket: BucketType = {};
 
-    arr.forEach((v) => {
+    arr.forEach(v => {
       const key = sorter(v);
       if (bucket[key] === undefined) {
         bucket[key] = [];
@@ -141,11 +151,15 @@ export class ArrayHelper {
   // be inserted into arr to preserve the sorted property.  Return value >= 0
   // iff target is found.
   private static binarySearch<T = number>(
-      arr: T[], value: T, comparator?: (l: T, r: T) => number): number {
+    arr: T[],
+    value: T,
+    comparator?: (l: T, r: T) => number
+  ): number {
     let left = 0;
     let right = arr.length;
-    const comp: (l: T, r: T) => number = comparator ||
-        ArrayHelper.defaultComparator as any as (l: T, r: T) => number;
+    const comp: (l: T, r: T) => number =
+      comparator ||
+      ((ArrayHelper.defaultComparator as unknown) as (l: T, r: T) => number);
     while (left < right) {
       const middle = (left + right) >> 1;
       if (comp(arr[middle], value) < 0) {
