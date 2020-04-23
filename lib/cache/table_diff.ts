@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Row} from '../base/row';
-import {Modification} from './modification';
+import { assert } from '../base/assert';
+import { Row } from '../base/row';
+import { Modification } from './modification';
 
 export class TableDiff {
   private added: Map<number, Row>;
@@ -29,26 +29,28 @@ export class TableDiff {
     this.deleted = new Map();
   }
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public getAdded(): Map<number, Row> {
+  getAdded(): Map<number, Row> {
     return this.added;
   }
 
-  public getModified(): Map<number, Modification> {
+  getModified(): Map<number, Modification> {
     return this.modified;
   }
 
-  public getDeleted(): Map<number, Row> {
+  getDeleted(): Map<number, Row> {
     return this.deleted;
   }
 
-  public add(row: Row): void {
+  add(row: Row): void {
     if (this.deleted.has(row.id())) {
-      const modification: Modification =
-          [this.deleted.get(row.id()) as any as Row, row];
+      const modification: Modification = [
+        (this.deleted.get(row.id()) as unknown) as Row,
+        row,
+      ];
       this.modified.set(row.id(), modification);
       this.deleted.delete(row.id());
     } else {
@@ -56,19 +58,20 @@ export class TableDiff {
     }
   }
 
-  public modify(modification: Modification): void {
-    const oldValue = modification[0] as any as Row;
-    const newValue = modification[1] as any as Row;
+  modify(modification: Modification): void {
+    const oldValue = (modification[0] as unknown) as Row;
+    const newValue = (modification[1] as unknown) as Row;
     assert(
-        oldValue.id() === newValue.id(),
-        'Row ID mismatch between old/new values.');
+      oldValue.id() === newValue.id(),
+      'Row ID mismatch between old/new values.'
+    );
     const id = oldValue.id();
 
     if (this.added.has(id)) {
       this.added.set(id, newValue);
     } else if (this.modified.has(id)) {
       const overallModification: Modification = [
-        (this.modified.get(id) as any as Modification)[0],
+        ((this.modified.get(id) as unknown) as Modification)[0],
         newValue,
       ];
       this.modified.set(id, overallModification);
@@ -77,12 +80,13 @@ export class TableDiff {
     }
   }
 
-  public delete(row: Row): void {
+  delete(row: Row): void {
     if (this.added.has(row.id())) {
       this.added.delete(row.id());
     } else if (this.modified.has(row.id())) {
-      const originalRow =
-          (this.modified.get(row.id()) as any as Modification)[0] as any as Row;
+      const originalRow = (((this.modified.get(
+        row.id()
+      ) as unknown) as Modification)[0] as unknown) as Row;
       this.modified.delete(row.id());
       this.deleted.set(row.id(), originalRow);
     } else {
@@ -91,7 +95,7 @@ export class TableDiff {
   }
 
   // Merge another diff into this one.
-  public merge(other: TableDiff): void {
+  merge(other: TableDiff): void {
     other.added.forEach((row, rowId) => this.add(row));
     other.modified.forEach((modification, rowId) => this.modify(modification));
     other.deleted.forEach((row, rowId) => this.delete(row));
@@ -102,28 +106,33 @@ export class TableDiff {
   // Example addition:     [null, rowValue]
   // Example modification: [oldRowValue, newRowValue]
   // Example deletion      [oldRowValue, null]
-  public getAsModifications(): Modification[] {
+  getAsModifications(): Modification[] {
     const modifications: Modification[] = [];
 
-    this.added.forEach(
-        (row, id) => modifications.push([/* then */ null, /* now */ row]));
-    this.modified.forEach(
-        (modification, id) => modifications.push(modification));
-    this.deleted.forEach(
-        (row, id) => modifications.push([/* then */ row, /* now */ null]));
+    this.added.forEach((row, id) =>
+      modifications.push([/* then */ null, /* now */ row])
+    );
+    this.modified.forEach((modification, id) =>
+      modifications.push(modification)
+    );
+    this.deleted.forEach((row, id) =>
+      modifications.push([/* then */ row, /* now */ null])
+    );
 
     return modifications;
   }
 
-  public toString(): string {
-    return `[${Array.from(this.added.keys()).toString()}], ` +
-        `[${Array.from(this.modified.keys()).toString()}], ` +
-        `[${Array.from(this.deleted.keys()).toString()}]`;
+  toString(): string {
+    return (
+      `[${Array.from(this.added.keys()).toString()}], ` +
+      `[${Array.from(this.modified.keys()).toString()}], ` +
+      `[${Array.from(this.deleted.keys()).toString()}]`
+    );
   }
 
   // Reverses this set of changes. Useful for reverting changes after they have
   // been applied.
-  public getReverse(): TableDiff {
+  getReverse(): TableDiff {
     const reverseDiff = new TableDiff(this.name);
 
     this.added.forEach((row, id) => reverseDiff.delete(row));
@@ -135,8 +144,11 @@ export class TableDiff {
     return reverseDiff;
   }
 
-  public isEmpty(): boolean {
-    return this.added.size === 0 && this.deleted.size === 0 &&
-        this.modified.size === 0;
+  isEmpty(): boolean {
+    return (
+      this.added.size === 0 &&
+      this.deleted.size === 0 &&
+      this.modified.size === 0
+    );
   }
 }

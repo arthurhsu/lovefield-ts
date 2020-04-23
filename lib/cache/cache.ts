@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Row} from '../base/row';
+import { Row } from '../base/row';
 
 export interface Cache {
   // Inserts/Updates contents in cache. This version takes single row.
@@ -24,10 +24,10 @@ export interface Cache {
   setMany(tableName: string, rows: Row[]): void;
 
   // Returns contents from the cache.
-  get(id: number): Row|null;
+  get(id: number): Row | null;
 
   // Returns contents from the cache.
-  getMany(id: number[]): Array<Row|null>;
+  getMany(id: number[]): Array<Row | null>;
 
   // Returns contents from the cache. The range query will return only the rows
   // with row ids matching the range.

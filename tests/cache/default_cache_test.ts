@@ -15,10 +15,10 @@
  */
 
 import * as chai from 'chai';
-import {Type} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {DefaultCache} from '../../lib/cache/default_cache';
-import {Builder} from '../../lib/schema/builder';
+import { Type } from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { DefaultCache } from '../../lib/cache/default_cache';
+import { Builder } from '../../lib/schema/builder';
 
 const assert = chai.assert;
 
@@ -31,16 +31,16 @@ describe('DefaultCache', () => {
     const cache = new DefaultCache(builder.getSchema());
 
     assert.sameMembers([null, null], cache.getMany([1, 2]));
-    const payload = {id: 'something'};
+    const payload = { id: 'something' };
     const row = new Row(1, payload);
     const row2 = new Row(4, payload);
     const row3 = new Row(3, payload);
     cache.setMany('Foo', [row, row2]);
     const result = cache.getMany([0, 1]);
     assert.isNull(result[0]);
-    assert.deepEqual(payload, (result[1] as any as Row).payload());
+    assert.deepEqual(payload, (result[1] as Row).payload());
     assert.isNull(cache.get(0));
-    assert.deepEqual(payload, (cache.get(1) as any as Row).payload());
+    assert.deepEqual(payload, (cache.get(1) as Row).payload());
     cache.set('Bar', row3);
 
     assert.equal(3, cache.getCount());

@@ -17,17 +17,18 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {Row} from '../../lib/base/row';
-import {Prefetcher} from '../../lib/cache/prefetcher';
-import {BTree} from '../../lib/index/btree';
-import {Key} from '../../lib/index/key_range';
-import {MemoryIndexStore} from '../../lib/index/memory_index_store';
-import {NullableIndex} from '../../lib/index/nullable_index';
-import {RowId} from '../../lib/index/row_id';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {BaseTable} from '../../lib/schema/base_table';
-import {MockEnv} from '../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { Row } from '../../lib/base/row';
+import { Prefetcher } from '../../lib/cache/prefetcher';
+import { BTree } from '../../lib/index/btree';
+import { Key } from '../../lib/index/key_range';
+import { MemoryIndexStore } from '../../lib/index/memory_index_store';
+import { NullableIndex } from '../../lib/index/nullable_index';
+import { RowId } from '../../lib/index/row_id';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Table } from '../../lib/schema/table';
+import { MockEnv } from '../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -38,10 +39,12 @@ describe('Prefetcher', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     env = new MockEnv(getMockSchemaBuilder().getSchema());
-    sandbox.stub(env.schema.table('tableA'), 'persistentIndex')
-        .callsFake(() => true);
-    sandbox.stub(env.schema.table('tableF'), 'persistentIndex')
-        .callsFake(() => true);
+    sandbox
+      .stub(env.schema.table('tableA'), 'persistentIndex')
+      .callsFake(() => true);
+    sandbox
+      .stub(env.schema.table('tableF'), 'persistentIndex')
+      .callsFake(() => true);
     return env.init();
   });
 
@@ -89,15 +92,17 @@ describe('Prefetcher', () => {
     const prefetcher = new Prefetcher(env.global);
     await prefetcher.init(env.schema);
 
-    const rowIdIndex =
-        env.indexStore.get(tableSchema.getRowIdIndexName()) as RuntimeIndex;
+    const rowIdIndex = env.indexStore.get(
+      (tableSchema as BaseTable).getRowIdIndexName()
+    ) as RuntimeIndex;
     assert.isTrue(rowIdIndex instanceof RowId);
     assert.equal(rows.length, rowIdIndex.getRange().length);
 
     // Check that remaining indices have been properly reconstructed.
-    const indices =
-        env.indexStore.getTableIndices(tableSchema.getName()).slice(1);
-    indices.forEach((index) => {
+    const indices = env.indexStore
+      .getTableIndices(tableSchema.getName())
+      .slice(1);
+    indices.forEach(index => {
       assert.isTrue(index instanceof BTree);
       assert.equal(rows.length, index.getRange().length);
     });
@@ -115,24 +120,28 @@ describe('Prefetcher', () => {
     const prefetcher = new Prefetcher(env.global);
     await prefetcher.init(env.schema);
     // Check that RowId index has been properly reconstructed.
-    const rowIdIndex =
-        env.indexStore.get(tableSchema.getRowIdIndexName()) as RowId;
+    const rowIdIndex = env.indexStore.get(
+      (tableSchema as BaseTable).getRowIdIndexName()
+    ) as RowId;
     assert.isTrue(rowIdIndex instanceof RowId);
     assert.equal(rows.length, rowIdIndex.getRange().length);
 
     // Check that remaining indices have been properly reconstructed.
-    const indices =
-        env.indexStore.getTableIndices(tableSchema.getName()).slice(1);
-    indices.forEach((index) => {
+    const indices = env.indexStore
+      .getTableIndices(tableSchema.getName())
+      .slice(1);
+    indices.forEach(index => {
       assert.isTrue(index instanceof NullableIndex);
       assert.equal(rows.length, index.getRange().length);
-      assert.equal(nullKeyRows, index.get(null as any as Key).length);
+      assert.equal(nullKeyRows, index.get((null as unknown) as Key).length);
     });
   });
 
   function getSampleRows(
-      tableSchema: BaseTable, rowCount: number,
-      nullNameRowCount: number): Row[] {
+    tableSchema: Table,
+    rowCount: number,
+    nullNameRowCount: number
+  ): Row[] {
     const rows = [];
 
     const rowCountFirstHalf = Math.floor(rowCount / 2);
@@ -173,18 +182,20 @@ describe('Prefetcher', () => {
   // table with dummy data. Used for testing prefetcher#init.
   // Resolves when index contents have been persisted in the backing store.
   function simulatePersistedIndices(
-      tableSchema: BaseTable, tableRows: Row[]): Promise<void> {
+    tableSchema: Table,
+    tableRows: Row[]
+  ): Promise<void> {
     const tempIndexStore = new MemoryIndexStore();
     return tempIndexStore.init(env.schema).then(() => {
       const indices = tempIndexStore.getTableIndices(tableSchema.getName());
-      tableRows.forEach((row) => {
-        indices.forEach((index) => {
+      tableRows.forEach(row => {
+        indices.forEach(index => {
           const key = row.keyOfIndex(index.getName());
           index.add(key, row.id());
         });
       });
 
-      const serializedIndices = indices.map((index) => {
+      const serializedIndices = indices.map(index => {
         return index.serialize();
       });
       const whenIndexTablesPopulated = indices.map((index, i) => {

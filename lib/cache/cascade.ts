@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Row} from '../base/row';
-import {ForeignKeySpec} from '../schema/foreign_key_spec';
-import {MapSet} from '../structs/map_set';
+import { Row } from '../base/row';
+import { ForeignKeySpec } from '../schema/foreign_key_spec';
+import { MapSet } from '../structs/map_set';
 
 export interface CascadeDeletion {
   tableOrder: string[];

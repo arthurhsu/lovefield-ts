@@ -15,46 +15,48 @@
  */
 
 import * as chai from 'chai';
-import {Row} from '../../lib/base/row';
-import {Modification} from '../../lib/cache/modification';
-import {TableDiff} from '../../lib/cache/table_diff';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { Row } from '../../lib/base/row';
+import { Modification } from '../../lib/cache/modification';
+import { TableDiff } from '../../lib/cache/table_diff';
+import { Table } from '../../lib/schema/table';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
 describe('TableDiff', () => {
-  let table: BaseTable;
+  let table: Table;
 
   before(() => {
-    table = getMockSchemaBuilder().getSchema().table('tableA');
+    table = getMockSchemaBuilder()
+      .getSchema()
+      .table('tableA');
   });
 
-  // Tests the behavior of the TableDiff class under mulitple
+  // Tests the behavior of the TableDiff class under multiple
   // additions, modifications and deletions.
   it('multipleOperations', () => {
     const diff = new TableDiff(table.getName());
 
     // Assuming that 1 and 2 are the only row IDs that reside in the table prior
     // to this diff.
-    const row1Old = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row1Old = table.createRow({ id: 'pk1', name: 'DummyName' });
     row1Old.assignRowId(1);
-    const row1New = table.createRow({id: 'pk1', name: 'UpdatedDummyName'});
+    const row1New = table.createRow({ id: 'pk1', name: 'UpdatedDummyName' });
     row1New.assignRowId(1);
 
-    const row2Old = table.createRow({id: 'pk2', name: 'DummyName'});
+    const row2Old = table.createRow({ id: 'pk2', name: 'DummyName' });
     row2Old.assignRowId(2);
-    const row2New = table.createRow({id: 'pk2', name: 'UpdatedDummyName'});
+    const row2New = table.createRow({ id: 'pk2', name: 'UpdatedDummyName' });
     row2New.assignRowId(2);
 
-    const row3 = table.createRow({id: 'pk3', name: 'DummyName'});
+    const row3 = table.createRow({ id: 'pk3', name: 'DummyName' });
     row3.assignRowId(3);
-    const row4 = table.createRow({id: 'pk4', name: 'DummyName'});
+    const row4 = table.createRow({ id: 'pk4', name: 'DummyName' });
     row4.assignRowId(4);
 
-    const row5Old = table.createRow({id: 'pk5', name: 'DummyName'});
+    const row5Old = table.createRow({ id: 'pk5', name: 'DummyName' });
     row5Old.assignRowId(5);
-    const row5New = table.createRow({id: 'pk5', name: 'UpdatedDummyName'});
+    const row5New = table.createRow({ id: 'pk5', name: 'UpdatedDummyName' });
     row5New.assignRowId(5);
 
     // No changes have happened yet.
@@ -64,7 +66,7 @@ describe('TableDiff', () => {
     diff.add(row3);
     assert.equal('[3], [], []', diff.toString());
 
-    // Deleting the row that was added befdore. Testing that "delete" is taking
+    // Deleting the row that was added before. Testing that "delete" is taking
     // into account whether the row ID existed originally, and therefore
     // expecting an empty diff.
     diff.delete(row3);
@@ -87,11 +89,13 @@ describe('TableDiff', () => {
     const modification = diff.getModified().get(2) || null;
     assert.isNotNull(modification);
     assert.equal(
-        row2Old.payload()['name'],
-        ((modification as Modification)[0] as Row).payload()['name']);
+      row2Old.payload()['name'],
+      ((modification as Modification)[0] as Row).payload()['name']
+    );
     assert.equal(
-        row2New.payload()['name'],
-        ((modification as Modification)[1] as Row).payload()['name']);
+      row2New.payload()['name'],
+      ((modification as Modification)[1] as Row).payload()['name']
+    );
 
     // Test that "modify" is preserved as "add" if the row ID has been
     // previously added.
@@ -105,7 +109,9 @@ describe('TableDiff', () => {
     const deletedRow = diff.getDeleted().get(row2New.id()) || null;
     assert.isNotNull(deletedRow);
     assert.equal(
-        row2Old.payload()['name'], (deletedRow as Row).payload()['name']);
+      row2Old.payload()['name'],
+      (deletedRow as Row).payload()['name']
+    );
   });
 
   // Test reversing an empty diff.
@@ -119,9 +125,9 @@ describe('TableDiff', () => {
   // Test reversing a diff with only additions.
   it('getReversed_Add', () => {
     const original = new TableDiff(table.getName());
-    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
     row1.assignRowId(1);
-    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
+    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
     row2.assignRowId(2);
     original.add(row1);
     original.add(row2);
@@ -136,17 +142,17 @@ describe('TableDiff', () => {
     assert.equal(2, reverse.getDeleted().size);
 
     assert.sameMembers(
-        Array.from(original.getAdded().keys()),
-        Array.from(reverse.getDeleted().keys()),
+      Array.from(original.getAdded().keys()),
+      Array.from(reverse.getDeleted().keys())
     );
   });
 
   // Test reversing a diff with only deletions.
   it('getReversed_Delete', () => {
     const original = new TableDiff(table.getName());
-    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
     row1.assignRowId(1);
-    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
+    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
     row2.assignRowId(2);
     original.delete(row1);
     original.delete(row2);
@@ -161,17 +167,17 @@ describe('TableDiff', () => {
     assert.equal(0, reverse.getDeleted().size);
 
     assert.sameMembers(
-        Array.from(original.getDeleted().keys()),
-        Array.from(reverse.getAdded().keys()),
+      Array.from(original.getDeleted().keys()),
+      Array.from(reverse.getAdded().keys())
     );
   });
 
   // Test reversing a diff with only modifications.
   it('getReversed_Modify', () => {
     const original = new TableDiff(table.getName());
-    const rowOld = table.createRow({id: 'pk1', name: 'DummyName'});
+    const rowOld = table.createRow({ id: 'pk1', name: 'DummyName' });
     rowOld.assignRowId(1);
-    const rowNew = table.createRow({id: 'pk2', name: 'OtherDummyName'});
+    const rowNew = table.createRow({ id: 'pk2', name: 'OtherDummyName' });
     rowNew.assignRowId(1);
     original.modify([rowOld, rowNew]);
 
@@ -185,29 +191,30 @@ describe('TableDiff', () => {
     assert.equal(0, reverse.getDeleted().size);
 
     assert.sameMembers(
-        Array.from(original.getModified().keys()),
-        Array.from(reverse.getModified().keys()),
+      Array.from(original.getModified().keys()),
+      Array.from(reverse.getModified().keys())
     );
 
     reverse.getModified().forEach((modification, rowId) => {
       const originalModification = original.getModified().get(rowId) || null;
       assert.isNotNull(originalModification);
       assert.equal(
-          ((originalModification as Modification)[0] as Row).payload()['name'],
-          ((modification as Modification)[1] as Row).payload()['name']);
+        ((originalModification as Modification)[0] as Row).payload()['name'],
+        ((modification as Modification)[1] as Row).payload()['name']
+      );
     });
   });
 
   it('getAsModifications', () => {
     const diff = new TableDiff(table.getName());
 
-    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
     row1.assignRowId(1);
-    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
+    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
     row2.assignRowId(2);
-    const row3Before = table.createRow({id: 'pk3', name: 'DummyName'});
+    const row3Before = table.createRow({ id: 'pk3', name: 'DummyName' });
     row3Before.assignRowId(3);
-    const row3After = table.createRow({id: 'pk3', name: 'OtherDummyName'});
+    const row3After = table.createRow({ id: 'pk3', name: 'OtherDummyName' });
     row3After.assignRowId(3);
 
     diff.add(row1);

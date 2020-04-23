@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Row} from '../base/row';
-import {DatabaseSchema} from '../schema/database_schema';
-import {Cache} from './cache';
+import { assert } from '../base/assert';
+import { Row } from '../base/row';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Cache } from './cache';
 
 export class DefaultCache implements Cache {
   private map: Map<number, Row>;
@@ -27,33 +27,33 @@ export class DefaultCache implements Cache {
     this.map = new Map<number, Row>();
     this.tableRows = new Map<string, Set<number>>();
 
-    dbSchema.tables().forEach((table) => {
+    dbSchema.tables().forEach(table => {
       this.tableRows.set(table.getName(), new Set<number>());
     }, this);
   }
 
-  public set(tableName: string, row: Row): void {
+  set(tableName: string, row: Row): void {
     this.map.set(row.id(), row);
     this.getTableRowSet(tableName).add(row.id());
   }
 
-  public setMany(tableName: string, rows: Row[]): void {
+  setMany(tableName: string, rows: Row[]): void {
     const tableSet = this.getTableRowSet(tableName);
-    rows.forEach((row) => {
+    rows.forEach(row => {
       this.map.set(row.id(), row);
       tableSet.add(row.id());
     }, this);
   }
 
-  public get(id: number): Row|null {
+  get(id: number): Row | null {
     return this.map.get(id) || null;
   }
 
-  public getMany(ids: number[]): Array<Row|null> {
-    return ids.map((id) => this.get(id));
+  getMany(ids: number[]): Array<Row | null> {
+    return ids.map(id => this.get(id));
   }
 
-  public getRange(tableName: string, fromId: number, toId: number): Row[] {
+  getRange(tableName: string, fromId: number, toId: number): Row[] {
     const data: Row[] = [];
     const min = Math.min(fromId, toId);
     const max = Math.max(fromId, toId);
@@ -61,11 +61,11 @@ export class DefaultCache implements Cache {
 
     // Ensure the least number of keys are iterated.
     if (tableSet.size < max - min) {
-      tableSet.forEach((key) => {
+      tableSet.forEach(key => {
         if (key >= min && key <= max) {
           const value = this.map.get(key);
           assert(value !== null && value !== undefined, 'Inconsistent cache 1');
-          data.push(value as any as Row);
+          data.push((value as unknown) as Row);
         }
       }, this);
     } else {
@@ -75,36 +75,36 @@ export class DefaultCache implements Cache {
         }
         const value = this.map.get(i);
         assert(value !== null && value !== undefined, 'Inconsistent cache 2');
-        data.push(value as any as Row);
+        data.push((value as unknown) as Row);
       }
     }
     return data;
   }
 
-  public remove(tableName: string, id: number): void {
+  remove(tableName: string, id: number): void {
     this.map.delete(id);
     this.getTableRowSet(tableName).delete(id);
   }
 
-  public removeMany(tableName: string, ids: number[]): void {
+  removeMany(tableName: string, ids: number[]): void {
     const tableSet = this.getTableRowSet(tableName);
-    ids.forEach((id) => {
+    ids.forEach(id => {
       this.map.delete(id);
       tableSet.delete(id);
     }, this);
   }
 
-  public getCount(tableName?: string): number {
+  getCount(tableName?: string): number {
     return tableName ? this.getTableRowSet(tableName).size : this.map.size;
   }
 
-  public clear(): void {
+  clear(): void {
     this.map.clear();
     this.tableRows.clear();
   }
 
   private getTableRowSet(tableName: string): Set<number> {
     const ret = this.tableRows.get(tableName);
-    return ret as any as Set<number>;
+    return (ret as unknown) as Set<number>;
   }
 }
