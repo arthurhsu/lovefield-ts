@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../backstore/back_store';
-import {Cache} from '../cache/cache';
-import {IndexStore} from '../index/index_store';
-import {QueryEngine} from '../proc/query_engine';
-import {Runner} from '../proc/runner';
-import {DatabaseSchema} from '../schema/database_schema';
-import {ObserverRegistry} from './observer_registry';
-import {ServiceId} from './service_id';
+import { BackStore } from '../backstore/back_store';
+import { Cache } from '../cache/cache';
+import { IndexStore } from '../index/index_store';
+import { QueryEngine } from '../proc/query_engine';
+import { Runner } from '../proc/runner';
+import { DatabaseSchema } from '../schema/database_schema';
+import { ObserverRegistry } from './observer_registry';
+import { ServiceId } from './service_id';
 
 export class Service {
   // The backing data store used by this connection.
   // following statement fail compilation, need solution.
-  public static BACK_STORE = new ServiceId<BackStore>('backstore');
+  static BACK_STORE = new ServiceId<BackStore>('backstore');
 
   // The shared row cache used by this connection.
-  public static CACHE = new ServiceId<Cache>('cache');
+  static CACHE = new ServiceId<Cache>('cache');
 
   // The shared store of all indices defined.
-  public static INDEX_STORE = new ServiceId<IndexStore>('indexstore');
+  static INDEX_STORE = new ServiceId<IndexStore>('indexstore');
 
   // Query engine used for generating execution plan.
-  public static QUERY_ENGINE = new ServiceId<QueryEngine>('engine');
+  static QUERY_ENGINE = new ServiceId<QueryEngine>('engine');
 
   // Query runner which executes transactions.
-  public static RUNNER = new ServiceId<Runner>('runner');
+  static RUNNER = new ServiceId<Runner>('runner');
 
   // Observer registry storing all observing queries.
-  public static OBSERVER_REGISTRY =
-      new ServiceId<ObserverRegistry>('observerregistry');
+  static OBSERVER_REGISTRY = new ServiceId<ObserverRegistry>(
+    'observerregistry'
+  );
 
   // Finalized schema associated with this connection.
-  public static SCHEMA = new ServiceId<DatabaseSchema>('schema');
+  static SCHEMA = new ServiceId<DatabaseSchema>('schema');
 }

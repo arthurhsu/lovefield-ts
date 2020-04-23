@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import {Relation} from '../proc/relation';
-import {TaskItem} from '../proc/task_item';
-import {SelectBuilder} from '../query/select_builder';
-import {SelectContext} from '../query/select_context';
-import {SelectQuery} from '../query/select_query';
-import {BaseTable} from '../schema/base_table';
-import {assert} from './assert';
-import {ObserverCallback, ObserverRegistryEntry} from './observer_registry_entry';
+import { Relation } from '../proc/relation';
+import { TaskItem } from '../proc/task_item';
+import { SelectBuilder } from '../query/select_builder';
+import { SelectContext } from '../query/select_context';
+import { SelectQuery } from '../query/select_query';
+import { Table } from '../schema/table';
+import { assert } from './assert';
+import {
+  ObserverCallback,
+  ObserverRegistryEntry,
+} from './observer_registry_entry';
 
 // A class responsible for keeping track of all observers as well as all arrays
 // that are being observed.
@@ -34,7 +37,7 @@ export class ObserverRegistry {
   }
 
   // Registers an observer for the given query.
-  public addObserver(query: SelectQuery, callback: ObserverCallback): void {
+  addObserver(query: SelectQuery, callback: ObserverCallback): void {
     const builder = query as SelectBuilder;
     const queryId = this.getQueryId(builder.getObservableQuery());
     let entry = this.entries.get(queryId) || null;
@@ -46,15 +49,17 @@ export class ObserverRegistry {
   }
 
   // Unregister an observer for the given query.
-  public removeObserver(query: SelectQuery, callback: ObserverCallback): void {
+  removeObserver(query: SelectQuery, callback: ObserverCallback): void {
     const builder = query as SelectBuilder;
     const queryId = this.getQueryId(builder.getObservableQuery());
 
-    const entry: ObserverRegistryEntry =
-        this.entries.get(queryId) as ObserverRegistryEntry;
+    const entry: ObserverRegistryEntry = this.entries.get(
+      queryId
+    ) as ObserverRegistryEntry;
     assert(
-        entry !== undefined && entry !== null,
-        'Attempted to unobserve a query that was not observed.');
+      entry !== undefined && entry !== null,
+      'Attempted to unobserve a query that was not observed.'
+    );
     const didRemove = (entry as ObserverRegistryEntry).removeObserver(callback);
     assert(didRemove, 'removeObserver: Inconsistent state detected.');
 
@@ -65,16 +70,16 @@ export class ObserverRegistry {
 
   // Finds all the observed queries that reference at least one of the given
   // tables.
-  public getTaskItemsForTables(tables: BaseTable[]): TaskItem[] {
+  getTaskItemsForTables(tables: Table[]): TaskItem[] {
     const tableSet = new Set<string>();
-    tables.forEach((table) => tableSet.add(table.getName()));
+    tables.forEach(table => tableSet.add(table.getName()));
 
     const items: TaskItem[] = [];
     this.entries.forEach((entry, key) => {
       const item = entry.getTaskItem();
-      const refersToTables =
-          (item.context as SelectContext)
-              .from.some((table) => tableSet.has(table.getName()));
+      const refersToTables = (item.context as SelectContext).from.some(table =>
+        tableSet.has(table.getName())
+      );
       if (refersToTables) {
         items.push(item);
       }
@@ -84,12 +89,12 @@ export class ObserverRegistry {
 
   // Updates the results of a given query. It is ignored if the query is no
   // longer being observed.
-  public updateResultsForQuery(query: SelectContext, results: Relation):
-      boolean {
+  updateResultsForQuery(query: SelectContext, results: Relation): boolean {
     const queryId = this.getQueryId(
-        query.clonedFrom !== undefined && query.clonedFrom !== null ?
-            query.clonedFrom as SelectContext :
-            query);
+      query.clonedFrom !== undefined && query.clonedFrom !== null
+        ? (query.clonedFrom as SelectContext)
+        : query
+    );
     const entry = this.entries.get(queryId) || null;
 
     if (entry !== null) {

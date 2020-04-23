@@ -16,17 +16,17 @@
 
 export class UniqueId {
   private static nextId = 0;
-  public uniqueId!: string;
-  public uniqueNumber!: number;
+  uniqueId!: string;
+  uniqueNumber!: number;
 
-  public getUniqueId(): string {
+  getUniqueId(): string {
     if (this.uniqueId === undefined) {
       this.uniqueId = `lf_${this.getUniqueNumber()}`;
     }
     return this.uniqueId;
   }
 
-  public getUniqueNumber(): number {
+  getUniqueNumber(): number {
     if (this.uniqueNumber === undefined) {
       this.uniqueNumber = ++UniqueId.nextId;
     }

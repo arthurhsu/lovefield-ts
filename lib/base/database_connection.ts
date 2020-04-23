@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-import {DeleteQuery} from '../query/delete_query';
-import {InsertQuery} from '../query/insert_query';
-import {SelectQuery} from '../query/select_query';
-import {UpdateQuery} from '../query/update_query';
-import {BaseColumn} from '../schema/base_column';
-import {BaseTable} from '../schema/base_table';
-import {DatabaseSchema} from '../schema/database_schema';
+import { DeleteQuery } from '../query/delete_query';
+import { InsertQuery } from '../query/insert_query';
+import { SelectQuery } from '../query/select_query';
+import { UpdateQuery } from '../query/update_query';
+import { Column } from '../schema/column';
+import { DatabaseSchema } from '../schema/database_schema';
+import { Table } from '../schema/table';
 
-import {TransactionType} from './enum';
-import {ObserverCallback} from './observer_registry_entry';
-import {Transaction} from './transaction';
+import { TransactionType } from './enum';
+import { ObserverCallback } from './observer_registry_entry';
+import { Transaction } from './transaction';
 
 // Defines the interface of a runtime database instance. This models the return
 // value of connect().
 // @export
 export interface DatabaseConnection {
   getSchema(): DatabaseSchema;
-  select(...columns: BaseColumn[]): SelectQuery;
+  select(...columns: Column[]): SelectQuery;
   insert(): InsertQuery;
   insertOrReplace(): InsertQuery;
-  update(table: BaseTable): UpdateQuery;
+  update(table: Table): UpdateQuery;
   delete(): DeleteQuery;
 
   // Registers an observer for the given query.
@@ -53,8 +53,6 @@ export interface DatabaseConnection {
   // Exports database as a JSON object.
   export(): Promise<object>;
 
-  // clang-format off
   // Imports from a JSON object into an empty database.
-  import(data: object): Promise<any>;
-  // clang-format on
+  import(data: object): Promise<object[]>;
 }

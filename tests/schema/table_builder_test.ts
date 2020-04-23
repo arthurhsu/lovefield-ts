@@ -263,7 +263,7 @@ describe('TableBuilder', () => {
     const payload = row.payload();
     assert.isNull(payload['arraybuffer']);
     assert.isFalse(payload['boolean']);
-    assert.equal(0, payload['datetime'].getTime());
+    assert.equal(0, (payload['datetime'] as Date).getTime());
     assert.equal(0, payload['integer']);
     assert.equal(0, payload['number']);
     assert.isNull(payload['object']);

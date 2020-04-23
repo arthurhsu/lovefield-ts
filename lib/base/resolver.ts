@@ -15,9 +15,9 @@
  */
 
 export class Resolver<T> {
-  public readonly promise: Promise<T>;
-  private resolveFn!: (value?: T|PromiseLike<T>|undefined) => void;
-  private rejectFn!: (reason?: any) => void;
+  readonly promise: Promise<T>;
+  private resolveFn!: (value?: T | PromiseLike<T> | undefined) => void;
+  private rejectFn!: (reason?: object) => void;
 
   constructor() {
     this.promise = new Promise<T>((resolve, reject) => {
@@ -26,11 +26,11 @@ export class Resolver<T> {
     });
   }
 
-  public resolve(value?: T|PromiseLike<T>): void {
+  resolve(value?: T | PromiseLike<T>): void {
     this.resolveFn(value);
   }
 
-  public reject(reason?: any): void {
+  reject(reason?: object): void {
     this.rejectFn(reason);
   }
 }

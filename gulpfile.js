@@ -151,14 +151,22 @@ gulp.task('deps', (cb) => {
     let topoGraph = [];
     fileSet.forEach(f => {
       const absDir = path.dirname(path.resolve(f));
+      let parsing = false;
       const imports = fs.readFileSync(f, 'utf-8').split('\n')
-          .filter(l => l.startsWith('import '))
           .map(l => {
-            const tokens = l.split(' ');
-            let child = tokens[tokens.length - 1].substring(1);
-            child = child.substring(0, child.length - 2) + '.ts';
-            child = relativePath(path.resolve(absDir, child));
-            topoGraph.push([f, child]);
+            if (l.startsWith('import')) {
+              parsing = true;
+            }
+            if (parsing) {
+              const index = l.indexOf('} from \'');
+              if (index != -1) {
+                let child = l.substring(index + 8);
+                child = child.substring(0, child.length - 2) + '.ts';
+                child = relativePath(path.resolve(absDir, child));
+                topoGraph.push([f, child]);
+                parsing = false;
+              }
+            }
          });
     });
 
@@ -216,9 +224,18 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
     }
 
     let exp = false;
+    let multiLineImports = false;
     contents.forEach(line => {
-      if (line.startsWith('import ') || line.startsWith('// tslint:')) {
+      if (line.startsWith('// tslint:')) {
         // no-op
+      } else if (line.startsWith('import ')) {
+        if (line.indexOf(';') == -1) {
+          multiLineImports = true
+        }
+      } else if (multiLineImports) {
+        if (line.indexOf(';') != -1) {
+          multiLineImports = false;
+        }
       } else if (line == '// @export') {
         exp = true;
       } else if (line.startsWith('export ')) {

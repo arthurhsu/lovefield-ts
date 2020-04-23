@@ -25,7 +25,7 @@ export function bind(index: number): Binder {
 export class Binder {
   constructor(readonly index: number) {}
 
-  public getIndex(): number {
+  getIndex(): number {
     return this.index;
   }
 }

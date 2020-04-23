@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import {ErrorCode, Type} from '../../lib/base/enum';
-import {EvalRegistry, EvalType} from '../../lib/base/eval';
-import {TestUtil} from '../../testing/test_util';
+import { ErrorCode, Type } from '../../lib/base/enum';
+import { EvalRegistry, EvalType } from '../../lib/base/eval';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -37,8 +37,9 @@ describe('EvalObject', () => {
     assert.isFalse(evaluationFn(obj2, null));
 
     // 550: where() clause includes an invalid predicate.
-    TestUtil.assertThrowsError(
-        ErrorCode.INVALID_PREDICATE, () => evaluationFn({}, {}));
+    TestUtil.assertThrowsError(ErrorCode.INVALID_PREDICATE, () =>
+      evaluationFn({}, {})
+    );
   });
 
   it('neq', () => {
@@ -50,7 +51,8 @@ describe('EvalObject', () => {
     assert.isTrue(evaluationFn(obj2, null));
 
     // 550: where() clause includes an invalid predicate.
-    TestUtil.assertThrowsError(
-        ErrorCode.INVALID_PREDICATE, () => evaluationFn({}, {}));
+    TestUtil.assertThrowsError(ErrorCode.INVALID_PREDICATE, () =>
+      evaluationFn({}, {})
+    );
   });
 });

@@ -17,7 +17,7 @@
 import {ErrorCode, Order, Type} from '../base/enum';
 import {EvalRegistry} from '../base/eval';
 import {Exception} from '../base/exception';
-import {RawRow, Row} from '../base/row';
+import {PayloadType, RawRow, Row} from '../base/row';
 import {Key, SingleKey} from '../index/key_range';
 
 import {BaseColumn} from './base_column';
@@ -111,7 +111,7 @@ export class TableImpl implements BaseTable {
   public createRow(value?: object): Row {
     return new RowImpl(
         this._functionMap, this._columns, this._indices, Row.getNextId(),
-        value);
+        value as unknown as PayloadType);
   }
 
   public deserializeRow(dbRecord: RawRow): Row {

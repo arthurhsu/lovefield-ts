@@ -15,23 +15,24 @@
  */
 
 import * as chai from 'chai';
-import {Order} from '../../lib/base/enum';
-import {BTree} from '../../lib/index/btree';
-import {Key, SingleKeyRange} from '../../lib/index/key_range';
-import {NullableIndex} from '../../lib/index/nullable_index';
-import {SimpleComparator} from '../../lib/index/simple_comparator';
-import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
-import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
+import { Order } from '../../lib/base/enum';
+import { BTree } from '../../lib/index/btree';
+import { Key, SingleKeyRange } from '../../lib/index/key_range';
+import { NullableIndex } from '../../lib/index/nullable_index';
+import { SimpleComparator } from '../../lib/index/simple_comparator';
+import { TestSingleRowNumericalKey } from '../../testing/index/test_single_row_numerical_key';
+import { TestSingleRowStringKey } from '../../testing/index/test_single_row_string_key';
 
 const assert = chai.assert;
 
 describe('NullableIndex', () => {
   let index: NullableIndex;
-  const NULL = null as any as Key;
+  const NULL = (null as unknown) as Key;
 
   beforeEach(() => {
     index = new NullableIndex(
-        new BTree('test', new SimpleComparator(Order.ASC), false));
+      new BTree('test', new SimpleComparator(Order.ASC), false)
+    );
   });
 
   it('nullableIndex', () => {
@@ -53,7 +54,9 @@ describe('NullableIndex', () => {
     assert.equal(4, index.cost());
 
     assert.sameOrderedMembers(
-        [4, 5], index.getRange([new SingleKeyRange(2, 3, false, false)]));
+      [4, 5],
+      index.getRange([new SingleKeyRange(2, 3, false, false)])
+    );
     assert.sameOrderedMembers([2, 3, 4, 5, 7, 8], index.getRange());
 
     index.remove(2);
@@ -85,7 +88,8 @@ describe('NullableIndex', () => {
   it('SingleRowNumericalKey', () => {
     const test = new TestSingleRowNumericalKey(() => {
       return new NullableIndex(
-          new BTree('test', new SimpleComparator(Order.ASC), false));
+        new BTree('test', new SimpleComparator(Order.ASC), false)
+      );
     });
     test.run();
   });
@@ -93,14 +97,19 @@ describe('NullableIndex', () => {
   it('SingleRowStringKey', () => {
     const test = new TestSingleRowStringKey(() => {
       return new NullableIndex(
-          new BTree('test', new SimpleComparator(Order.ASC), false));
+        new BTree('test', new SimpleComparator(Order.ASC), false)
+      );
     });
     test.run();
   });
 
   it('serialize', () => {
     const deserializeFn = BTree.deserialize.bind(
-        undefined, new SimpleComparator(Order.ASC), 'test', false);
+      undefined,
+      new SimpleComparator(Order.ASC),
+      'test',
+      false
+    );
 
     index.add(NULL, 1);
     index.add(NULL, 2);
@@ -120,7 +129,8 @@ describe('NullableIndex', () => {
   // matches the behavior of other SQL engines).
   it('unique', () => {
     index = new NullableIndex(
-        new BTree('test', new SimpleComparator(Order.ASC), true));
+      new BTree('test', new SimpleComparator(Order.ASC), true)
+    );
     index.add(NULL, 1);
     index.add(1, 2);
     index.add(NULL, 3);

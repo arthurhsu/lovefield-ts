@@ -18,7 +18,7 @@ import {TransactionType} from '../base/enum';
 import {Global} from '../base/global';
 import {TaskPriority} from '../base/private_enum';
 import {Resolver} from '../base/resolver';
-import {Row} from '../base/row';
+import {PayloadType, Row} from '../base/row';
 import {Service} from '../base/service';
 import {UniqueId} from '../base/unique_id';
 import {RuntimeIndex} from '../index/runtime_index';
@@ -64,7 +64,8 @@ export class ExportTask extends UniqueId implements Task {
 
   public exec(): Promise<Relation[]> {
     const results = this.execSync();
-    const entry = new RelationEntry(new Row(Row.DUMMY_ID, results), true);
+    const entry = new RelationEntry(
+        new Row(Row.DUMMY_ID, results as unknown as PayloadType), true);
 
     return Promise.resolve([new Relation([entry], [])]);
   }

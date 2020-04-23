@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-import {DEFAULT_VALUES, Type} from '../base/enum';
-import {Row} from '../base/row';
-import {Key} from '../index/key_range';
+import { DEFAULT_VALUES, Type } from '../base/enum';
+import { PayloadType, Row } from '../base/row';
+import { Key } from '../index/key_range';
 
-import {BaseColumn} from './base_column';
-import {Index} from './index';
+import { BaseColumn } from './base_column';
+import { Index } from './index';
 
 export class RowImpl extends Row {
   constructor(
-      private functionMap: Map<string, (column: any) => Key>,
-      private columns: BaseColumn[], indices: Index[], id: number,
-      payload?: object) {
+    private functionMap: Map<string, (payload: PayloadType) => Key>,
+    private columns: BaseColumn[],
+    indices: Index[],
+    id: number,
+    payload?: PayloadType
+  ) {
     super(id, payload);
 
     // TypeScript forbids super to be called after this. Therefore we need
@@ -34,30 +37,31 @@ export class RowImpl extends Row {
     this.payload_ = payload || this.defaultPayload();
   }
 
-  public defaultPayload(): object {
+  defaultPayload(): PayloadType {
     if (this.columns === undefined) {
       // Called from base ctor, ignore for now.
-      return null as any as object;
+      return (null as unknown) as PayloadType;
     }
 
-    const obj = {};
-    this.columns.forEach((col) => {
-      obj[col.getName()] =
-          col.isNullable() ? null : DEFAULT_VALUES.get(col.getType());
+    const obj: PayloadType = {};
+    this.columns.forEach(col => {
+      obj[col.getName()] = col.isNullable()
+        ? null
+        : DEFAULT_VALUES.get(col.getType());
     });
     return obj;
   }
 
-  public toDbPayload(): object {
-    const obj = {};
-    this.columns.forEach((col) => {
+  toDbPayload(): PayloadType {
+    const obj: PayloadType = {};
+    this.columns.forEach(col => {
       const key = col.getName();
       const type = col.getType();
-      let value = (this.payload() as any)[key];
+      let value = (this.payload() as PayloadType)[key];
       if (type === Type.ARRAY_BUFFER) {
-        value = value ? Row.binToHex(value) : null;
+        value = value ? Row.binToHex(value as ArrayBuffer) : null;
       } else if (type === Type.DATE_TIME) {
-        value = value ? value.getTime() : null;
+        value = value ? (value as Date).getTime() : null;
       } else if (type === Type.OBJECT) {
         value = value || null;
       } else {
@@ -68,7 +72,7 @@ export class RowImpl extends Row {
     return obj;
   }
 
-  public keyOfIndex(indexName: string): Key {
+  keyOfIndex(indexName: string): Key {
     const key = super.keyOfIndex(indexName);
     if (key === null) {
       const fn = this.functionMap.get(indexName);

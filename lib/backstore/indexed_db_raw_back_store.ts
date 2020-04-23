@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-import {RawRow, Row} from '../base/row';
+import { PayloadType, RawRow, Row } from '../base/row';
 
-import {Page} from './page';
-import {RawBackStore} from './raw_back_store';
+import { Page } from './page';
+import { RawBackStore } from './raw_back_store';
 
 export class IndexedDBRawBackStore implements RawBackStore {
-  public static convert(value: string|number|boolean|Date|ArrayBuffer|
-                        null): string|number|boolean|null {
-    let ret: string|number|boolean|null = null;
+  static convert(value: unknown): string | number | boolean | null {
+    let ret: string | number | boolean | null = null;
     if (value instanceof ArrayBuffer) {
       ret = Row.binToHex(value);
     } else if (value instanceof Date) {
       ret = value.getTime();
     } else {
-      ret = value;
+      ret = value as string | number | boolean;
     }
     return ret;
   }
 
   constructor(
-      private version: number, private db: IDBDatabase,
-      private tx: IDBTransaction, private bundleMode: boolean) {}
+    private version: number,
+    private db: IDBDatabase,
+    private tx: IDBTransaction,
+    private bundleMode: boolean
+  ) {}
 
-  public getRawDBInstance(): IDBDatabase {
+  getRawDBInstance(): IDBDatabase {
     return this.db;
   }
 
-  public getRawTransaction(): IDBTransaction {
+  getRawTransaction(): IDBTransaction {
     return this.tx;
   }
 
-  public dropTable(tableName: string): Promise<void> {
+  dropTable(tableName: string): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this.db.deleteObjectStore(tableName);
@@ -57,44 +59,47 @@ export class IndexedDBRawBackStore implements RawBackStore {
     });
   }
 
-  public addTableColumn(
-      tableName: string, columnName: string,
-      defaultValue: string|number|boolean|Date|ArrayBuffer|
-      null): Promise<void> {
+  addTableColumn(
+    tableName: string,
+    columnName: string,
+    defaultValue: string | number | boolean | Date | ArrayBuffer | null
+  ): Promise<void> {
     const value = IndexedDBRawBackStore.convert(defaultValue);
     return this.transformRows(tableName, (row: Row) => {
       row.payload()[columnName] = value;
     });
   }
 
-  public dropTableColumn(tableName: string, columnName: string): Promise<void> {
+  dropTableColumn(tableName: string, columnName: string): Promise<void> {
     return this.transformRows(tableName, (row: Row) => {
       delete row.payload()[columnName];
     });
   }
 
-  public renameTableColumn(
-      tableName: string, oldColumnName: string,
-      newColumnName: string): Promise<void> {
+  renameTableColumn(
+    tableName: string,
+    oldColumnName: string,
+    newColumnName: string
+  ): Promise<void> {
     return this.transformRows(tableName, (row: Row) => {
       row.payload()[newColumnName] = row.payload()[oldColumnName];
       delete row.payload()[oldColumnName];
     });
   }
 
-  public createRow(payload: object): Row {
-    const data: object = {};
-    Object.keys(payload).forEach((key) => {
-      data[key] = IndexedDBRawBackStore.convert(payload[key]);
+  createRow(payload: PayloadType): Row {
+    const data: PayloadType = {};
+    Object.keys(payload).forEach(key => {
+      data[key] = IndexedDBRawBackStore.convert(payload[key] as unknown);
     });
     return Row.create(data);
   }
 
-  public getVersion(): number {
+  getVersion(): number {
     return this.version;
   }
 
-  public dump(): Promise<object> {
+  dump(): Promise<object> {
     const tables = this.db.objectStoreNames;
     const promises: Array<Promise<object>> = [];
     for (let i = 0; i < tables.length; ++i) {
@@ -102,8 +107,8 @@ export class IndexedDBRawBackStore implements RawBackStore {
       promises.push(this.dumpTable(tableName));
     }
 
-    return Promise.all(promises).then((tableDumps) => {
-      const results = {};
+    return Promise.all(promises).then(tableDumps => {
+      const results: PayloadType = {};
       tableDumps.forEach((tableDump, index) => {
         results[tables.item(index) as string] = tableDump;
       });
@@ -112,8 +117,10 @@ export class IndexedDBRawBackStore implements RawBackStore {
   }
 
   private openCursorForWrite(
-      tableName: string, loopFunc: (cursor: IDBCursorWithValue) => void,
-      endFunc: (cursor: IDBObjectStore) => void): Promise<void> {
+    tableName: string,
+    loopFunc: (cursor: IDBCursorWithValue) => void,
+    endFunc: (cursor: IDBObjectStore) => void
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       let req: IDBRequest;
       let store: IDBObjectStore;
@@ -124,7 +131,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
         reject(e);
         return;
       }
-      req.onsuccess = (ev) => {
+      req.onsuccess = ev => {
         const cursor = req.result as IDBCursorWithValue;
         if (cursor) {
           loopFunc(cursor);
@@ -138,8 +145,10 @@ export class IndexedDBRawBackStore implements RawBackStore {
     });
   }
 
-  private transformRows(tableName: string, rowFn: (row: Row) => void):
-      Promise<void> {
+  private transformRows(
+    tableName: string,
+    rowFn: (row: Row) => void
+  ): Promise<void> {
     const loopFunc = (cursor: IDBCursorWithValue) => {
       const row = Row.deserialize(cursor.value);
       rowFn(row);
@@ -149,8 +158,8 @@ export class IndexedDBRawBackStore implements RawBackStore {
     const loopFuncBundle = (cursor: IDBCursorWithValue) => {
       const page = Page.deserialize(cursor.value);
       const data = page.getPayload();
-      Object.keys(data).forEach((rowId) => {
-        const row = Row.deserialize(data[rowId]);
+      Object.keys(data).forEach(rowId => {
+        const row = Row.deserialize(data[rowId] as RawRow);
         rowFn(row);
         data[rowId] = row.serialize();
       });
@@ -161,7 +170,10 @@ export class IndexedDBRawBackStore implements RawBackStore {
       return;
     };
     return this.openCursorForWrite(
-        tableName, this.bundleMode ? loopFuncBundle : loopFunc, endFunc);
+      tableName,
+      this.bundleMode ? loopFuncBundle : loopFunc,
+      endFunc
+    );
   }
 
   private getTableRows(tableName: string): Promise<RawRow[]> {
@@ -180,8 +192,8 @@ export class IndexedDBRawBackStore implements RawBackStore {
           if (this.bundleMode) {
             const page = Page.deserialize(cursor.value);
             const data = page.getPayload();
-            Object.keys(data).forEach((rowId) => {
-              results.push(data[rowId]);
+            Object.keys(data).forEach(rowId => {
+              results.push(data[rowId] as RawRow);
             });
           } else {
             results.push(cursor.value);
@@ -196,7 +208,8 @@ export class IndexedDBRawBackStore implements RawBackStore {
   }
 
   private dumpTable(tableName: string): Promise<object[]> {
-    return this.getTableRows(tableName).then(
-        (rawRows) => rawRows.map((rawRow) => rawRow.value as object));
+    return this.getTableRows(tableName).then(rawRows =>
+      rawRows.map(rawRow => rawRow.value as object)
+    );
   }
 }

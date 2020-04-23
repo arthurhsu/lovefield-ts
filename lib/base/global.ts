@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from './enum';
-import {Exception} from './exception';
-import {ServiceId} from './service_id';
+import { ErrorCode } from './enum';
+import { Exception } from './exception';
+import { ServiceId } from './service_id';
 
 export class Global {
-  public static get(): Global {
+  static get(): Global {
     if (!Global.instance) {
       Global.instance = new Global();
     }
@@ -33,29 +33,29 @@ export class Global {
     this.services = new Map<string, object>();
   }
 
-  public clear(): void {
+  clear(): void {
     this.services.clear();
   }
 
-  public registerService<T>(serviceId: ServiceId<T>, service: T): T {
-    this.services.set(serviceId.toString(), service as any as object);
+  registerService<T>(serviceId: ServiceId<T>, service: T): T {
+    this.services.set(serviceId.toString(), (service as unknown) as object);
     return service;
   }
 
-  public getService<T>(serviceId: ServiceId<T>): T {
+  getService<T>(serviceId: ServiceId<T>): T {
     const service = this.services.get(serviceId.toString());
     if (!service) {
       // 7: Service {0} not registered.
       throw new Exception(ErrorCode.SERVICE_NOT_FOUND, serviceId.toString());
     }
-    return service as any as T;
+    return (service as unknown) as T;
   }
 
-  public isRegistered<T>(serviceId: ServiceId<T>): boolean {
+  isRegistered<T>(serviceId: ServiceId<T>): boolean {
     return this.services.has(serviceId.toString());
   }
 
-  public listServices(): string[] {
+  listServices(): string[] {
     return Array.from(this.services.keys());
   }
 }

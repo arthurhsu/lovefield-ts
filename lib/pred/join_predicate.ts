@@ -18,7 +18,7 @@ import {assert} from '../base/assert';
 import {ErrorCode} from '../base/enum';
 import {ComparisonFunction, EvalRegistry, EvalType, KeyOfIndexFunction} from '../base/eval';
 import {Exception} from '../base/exception';
-import {Row} from '../base/row';
+import {PayloadType, Row} from '../base/row';
 import {Cache} from '../cache/cache';
 import {Key} from '../index/key_range';
 import {RuntimeIndex} from '../index/runtime_index';
@@ -413,7 +413,8 @@ export class JoinPredicate extends PredicateNode {
     // The right relation is guaranteed to never be the result
     // of a previous join.
     const nullEntry =
-        new RelationEntry(new Row(Row.DUMMY_ID, this.nullPayload), false);
+        new RelationEntry(new Row(
+            Row.DUMMY_ID, this.nullPayload as unknown as PayloadType), false);
     const combinedEntry = RelationEntry.combineEntries(
         entry, leftRelationTables, nullEntry,
         [(this.rightColumn.getTable() as BaseTable).getEffectiveName()]);

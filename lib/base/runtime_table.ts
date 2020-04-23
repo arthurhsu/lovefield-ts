@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Row} from './row';
+import { Row } from './row';
 
 // Interface that models a table in runtime. This is different from schema
 // table. A runtime table is the collection of rows.
@@ -29,7 +29,7 @@ export interface RuntimeTable {
   // this if we are also inserting rows into the same table. It is unsafe
   // because the put call can race with the remove call which is internally
   // doing a count before the remove. It would be much simpler to block on
-  // the remove before calling put, but because of transaction lifecycles
+  // the remove before calling put, but because of transaction life cycles
   // of IndexedDb on firefox, we can't do that. Callers must know to set this
   // parameter to true if they want to do a put on the same table in the same
   // transaction as this remove call.

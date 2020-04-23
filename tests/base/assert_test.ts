@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {assert} from '../../lib/base/assert';
-import {ErrorCode} from '../../lib/base/enum';
-import {Flags} from '../../lib/gen/flags';
-import {TestUtil} from '../../testing/test_util';
+import { assert } from '../../lib/base/assert';
+import { ErrorCode } from '../../lib/base/enum';
+import { Flags } from '../../lib/gen/flags';
+import { TestUtil } from '../../testing/test_util';
 
 describe('assert', () => {
   it('assert', () => {

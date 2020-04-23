@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-import {Key} from '../index/key_range';
+import { Key } from '../index/key_range';
+
+export interface PayloadType {
+  [key: string]: unknown;
+}
+
+/*
+export interface NestedPayloadType {
+  [key: string]: PayloadType;
+}
+*/
 
 export interface RawRow {
   id: number;
-  value: string|object;
+  value: PayloadType;
 }
 
 // The base row class for all rows.
@@ -26,10 +36,10 @@ export interface RawRow {
 export class Row {
   // An ID to be used when a row that does not correspond to a DB entry is
   // created (for example the result of joining two rows).
-  public static DUMMY_ID = -1;
+  static DUMMY_ID = -1;
 
   // Get the next unique row ID to use for creating a new instance.
-  public static getNextId(): number {
+  static getNextId(): number {
     return Row.nextId++;
   }
 
@@ -37,11 +47,11 @@ export class Row {
   // instances during initialization only.
   // NOTE: nextId is currently shared among different databases. It is
   // NOT safe to ever decrease this value, because it will result in re-using
-  // row IDs. Currently used only for testing, and for backstores that are based
-  // on remote truth.
+  // row IDs. Currently used only for testing, and for back stores that are
+  // based on remote truth.
   // @param nextId The next id should be used. This is typically the max
   //     rowId in database plus 1.
-  public static setNextId(nextId: number): void {
+  static setNextId(nextId: number): void {
     Row.nextId = nextId;
   }
 
@@ -50,29 +60,29 @@ export class Row {
   // initialization only.
   // @param nextId The next id should be used. This is typically the max
   //     rowId in database plus 1.
-  public static setNextIdIfGreater(nextId: number): void {
+  static setNextIdIfGreater(nextId: number): void {
     Row.nextId = Math.max(Row.nextId, nextId);
   }
 
   // Creates a new Row instance from DB data.
-  public static deserialize(data: RawRow): Row {
-    return new Row(data.id, data.value as object);
+  static deserialize(data: RawRow): Row {
+    return new Row(data.id, data.value);
   }
 
   // Creates a new Row instance with an automatically assigned ID.
-  public static create(payload?: object): Row {
+  static create(payload?: PayloadType): Row {
     return new Row(Row.getNextId(), payload || {});
   }
 
   // ArrayBuffer to hex string.
-  public static binToHex(buffer: ArrayBuffer|null): string|null {
+  static binToHex(buffer: ArrayBuffer | null): string | null {
     if (buffer === null) {
       return null;
     }
 
     const uint8Array = new Uint8Array(buffer);
     let s = '';
-    uint8Array.forEach((c) => {
+    uint8Array.forEach(c => {
       const chr = c.toString(16);
       s += chr.length < 2 ? '0' + chr : chr;
     });
@@ -80,7 +90,7 @@ export class Row {
   }
 
   // Hex string to ArrayBuffer.
-  public static hexToBin(hex: string|null): ArrayBuffer|null {
+  static hexToBin(hex: string | null): ArrayBuffer | null {
     if (hex === null || hex === '') {
       return null;
     }
@@ -91,7 +101,7 @@ export class Row {
     const buffer = new ArrayBuffer(hex.length / 2);
     const uint8Array = new Uint8Array(buffer);
     for (let i = 0, j = 0; i < hex.length; i += 2) {
-      uint8Array[j++] = parseInt(hex.substr(i, 2), 16);
+      uint8Array[j++] = Number(`0x${hex.substr(i, 2)}`) & 0xff;
     }
     return buffer;
   }
@@ -101,44 +111,44 @@ export class Row {
   // that is being used.
   private static nextId: number = Row.DUMMY_ID + 1;
 
-  protected payload_: object;
+  protected payload_: PayloadType;
 
-  constructor(private id_: number, payload?: object) {
+  constructor(private id_: number, payload?: PayloadType) {
     this.payload_ = payload || this.defaultPayload();
   }
 
-  public id(): number {
+  id(): number {
     return this.id_;
   }
 
   // Set the ID of this row instance.
-  public assignRowId(id: number): void {
+  assignRowId(id: number): void {
     this.id_ = id;
   }
 
-  public payload(): object {
+  payload(): PayloadType {
     return this.payload_;
   }
 
-  public defaultPayload(): object {
+  defaultPayload(): PayloadType {
     return {};
   }
 
-  public toDbPayload(): object {
+  toDbPayload(): PayloadType {
     return this.payload_;
   }
 
-  public serialize(): RawRow {
-    return {id: this.id_, value: this.toDbPayload()};
+  serialize(): RawRow {
+    return { id: this.id_, value: this.toDbPayload() };
   }
 
-  public keyOfIndex(indexName: string): Key {
+  keyOfIndex(indexName: string): Key {
     if (indexName.substr(-1) === '#') {
       return this.id_ as Key;
     }
 
     // Remaining indices keys are implemented by overriding keyOfIndex in
     // subclasses.
-    return null as any as Key;
+    return (null as unknown) as Key;
   }
 }

@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import {SingleKeyRange} from '../../lib/index/key_range';
-import {RowId} from '../../lib/index/row_id';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
+import { SingleKeyRange } from '../../lib/index/key_range';
+import { RowId } from '../../lib/index/row_id';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
 
 const assert = chai.assert;
 
@@ -77,9 +77,11 @@ describe('RowId', () => {
     assert.isNull(index1.max());
     const rowCount = 7;
     const index2 = getSampleIndex(rowCount);
-    assert.sameDeepOrderedMembers([0, [0]], index2.min() as any[]);
+    assert.sameDeepOrderedMembers([0, [0]], index2.min() as unknown[]);
     assert.sameDeepOrderedMembers(
-        [rowCount - 1, [rowCount - 1]], index2.max() as any[]);
+      [rowCount - 1, [rowCount - 1]],
+      index2.max() as unknown[]
+    );
   });
 
   it('stats', () => {

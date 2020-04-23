@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import * as chai from 'chai';
-import {ErrorCode} from '../../lib/base/enum';
-import {Exception} from '../../lib/base/exception';
-import {Flags} from '../../lib/gen/flags';
+import { ErrorCode } from '../../lib/base/enum';
+import { Exception } from '../../lib/base/exception';
+import { Flags } from '../../lib/gen/flags';
 
 const assert = chai.assert;
 
 describe('Exception', () => {
   const BASE_URL =
-      'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=';
+    'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=';
 
   it('ctorSingleArg', () => {
     const e = new Exception(ErrorCode.SYSTEM_ERROR);
@@ -35,13 +35,21 @@ describe('Exception', () => {
   });
 
   it('ctorTwoArgs', () => {
-    const e = new Exception(ErrorCode.INVALID_TX_STATE, 2, 8);
+    const e = new Exception(ErrorCode.INVALID_TX_STATE, '2', '8');
     assert.equal(BASE_URL + '107&p0=2&p1=8', e.message);
   });
 
   it('ctorAtMostFourArgs', () => {
     const e = new Exception(
-        ErrorCode.SIMULATED_ERROR, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+      ErrorCode.SIMULATED_ERROR,
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g'
+    );
     assert.equal(BASE_URL + '999&p0=a&p1=b&p2=c&p3=d', e.message);
   });
 
@@ -61,7 +69,11 @@ describe('Exception', () => {
   });
 
   it('ctorUndefinedArg', () => {
-    const e = new Exception(ErrorCode.SIMULATED_ERROR, 3, undefined);
+    const e = new Exception(
+      ErrorCode.SIMULATED_ERROR,
+      '3',
+      (undefined as unknown) as string
+    );
     assert.equal(BASE_URL + '999&p0=3&p1=undefined', e.message);
   });
 
@@ -69,7 +81,15 @@ describe('Exception', () => {
     const origUrl = Flags.EXCEPTION_URL;
     Flags.EXCEPTION_URL = '';
     const e = new Exception(
-        ErrorCode.SIMULATED_ERROR, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+      ErrorCode.SIMULATED_ERROR,
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g'
+    );
     assert.equal('999|a|b|c|d', e.message);
     Flags.EXCEPTION_URL = origUrl;
   });

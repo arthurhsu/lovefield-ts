@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import {Type} from '../../lib/base/enum';
-import {EvalRegistry, EvalType} from '../../lib/base/eval';
+import { Type } from '../../lib/base/enum';
+import { EvalRegistry, EvalType } from '../../lib/base/eval';
 
 const assert = chai.assert;
 
@@ -33,7 +33,7 @@ describe('Eval_number', () => {
     const number1 = 1;
     const number2 = 50;
     const number3 = 100;
-    const number4: number = null as any as number;
+    const number4 = null;
 
     assert.isTrue(evaluationFn(number1, [number1, number3]));
     assert.isTrue(evaluationFn(number2, [number1, number3]));
@@ -66,7 +66,7 @@ describe('Eval_number', () => {
 
     const number1 = 100;
     const number2 = 200;
-    const number3: number = null as any as number;
+    const number3 = null;
 
     assert.isTrue(evaluationFn(number2, number1));
     assert.isTrue(evaluationFn(number2, number2));
@@ -85,7 +85,7 @@ describe('Eval_number', () => {
 
     const number1 = 100;
     const number2 = 200;
-    const number3: number = null as any as number;
+    const number3 = null;
 
     assert.isTrue(evaluationFn(number2, number1));
     assert.isFalse(evaluationFn(number2, number2));
@@ -119,7 +119,7 @@ describe('Eval_number', () => {
 
     const number1 = 100;
     const number2 = 200;
-    const number3: number = null as any as number;
+    const number3 = null;
 
     assert.isTrue(evaluationFn(number1, number2));
     assert.isTrue(evaluationFn(number1, number1));
@@ -138,7 +138,7 @@ describe('Eval_number', () => {
 
     const number1 = 100;
     const number2 = 200;
-    const number3: number = null as any as number;
+    const number3 = null;
 
     assert.isTrue(evaluationFn(number1, number2));
     assert.isFalse(evaluationFn(number1, number1));

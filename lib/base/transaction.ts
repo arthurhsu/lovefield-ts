@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {TransactionStats} from '../backstore/transaction_stats';
-import {QueryBuilder} from '../query/query_builder';
-import {BaseTable} from '../schema/base_table';
+import { TransactionStats } from '../backstore/transaction_stats';
+import { QueryBuilder } from '../query/query_builder';
+import { Table } from '../schema/table';
 
 // @export
 export interface Transaction {
   // Executes a list of queries and commits the transaction.
-  exec(queries: QueryBuilder[]): Promise<any>;
+  exec(queries: QueryBuilder[]): Promise<unknown>;
 
   // Begins an explicit transaction. Returns a promise fulfilled when all
   // required locks have been acquired.
@@ -29,22 +29,21 @@ export interface Transaction {
   // |scope| are the tables that this transaction will be allowed to access.
   // An exclusive lock will be obtained on all tables before any queries
   // belonging to this transaction can be served.
-  // @return {!IThenable}
-  begin(scope: BaseTable[]): Promise<void>;
+  begin(scope: Table[]): Promise<void>;
 
   // Attaches |query| to an existing transaction and runs it.
-  attach(query: QueryBuilder): Promise<any>;
+  attach(query: QueryBuilder): Promise<unknown>;
 
   // Commits this transaction. Any queries that were performed will be flushed
   // to store.
-  commit(): Promise<any>;
+  commit(): Promise<unknown>;
 
   // Rolls back all changes that were made within this transaction. Rollback is
   // only allowed if the transaction has not been yet committed.
-  rollback(): Promise<any>;
+  rollback(): Promise<unknown>;
 
   // Returns transaction statistics. This call will return meaningful value only
   // after a transaction is committed or rolled back. Read-only transactions
   // will have stats with success equals to true and all other counts as 0.
-  stats(): TransactionStats|null;
+  stats(): TransactionStats | null;
 }

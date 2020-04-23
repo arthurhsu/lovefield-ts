@@ -63,7 +63,8 @@ export class SqlHelper {
     throw new Exception(ErrorCode.NOT_IMPL_IN_TOSQL, typeof (query));
   }
 
-  private static escapeSqlValue(type: Type, value: V): string|number {
+  private static escapeSqlValue(type: Type, val: unknown): string|number {
+    const value = val as V;
     if (value === undefined || value === null) {
       return 'NULL';
     }

@@ -53,14 +53,14 @@ export enum Type {
   OBJECT = 6,
 }
 
-export const DEFAULT_VALUES: Map<Type, any> = new Map([
-  [Type.ARRAY_BUFFER, null as any],              // nullable
-  [Type.BOOLEAN, false],                         // not nullable
-  [Type.DATE_TIME, Object.freeze(new Date(0))],  // not nullable
-  [Type.INTEGER, 0],                             // not nullable
-  [Type.NUMBER, 0],                              // not nullable
-  [Type.STRING, ''],                             // not nullable
-  [Type.OBJECT, null],                           // nullable
+export const DEFAULT_VALUES: Map<Type, unknown> = new Map([
+  [Type.ARRAY_BUFFER, null as unknown], // nullable
+  [Type.BOOLEAN, false], // not nullable
+  [Type.DATE_TIME, Object.freeze(new Date(0))], // not nullable
+  [Type.INTEGER, 0], // not nullable
+  [Type.NUMBER, 0], // not nullable
+  [Type.STRING, ''], // not nullable
+  [Type.OBJECT, null], // nullable
 ]);
 
 // @export
@@ -173,4 +173,4 @@ export enum ErrorCode {
   TEST_ERROR = 900,
   ASSERTION = 998,
   SIMULATED_ERROR = 999,
-}  // enum ErrorCode
+} // enum ErrorCode

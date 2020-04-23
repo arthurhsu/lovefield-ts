@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-import {assert} from '../base/assert';
-import {Global} from '../base/global';
-import {TableType} from '../base/private_enum';
-import {Resolver} from '../base/resolver';
-import {RawRow, Row} from '../base/row';
-import {RuntimeTable} from '../base/runtime_table';
-import {Service} from '../base/service';
+import { assert } from '../base/assert';
+import { Global } from '../base/global';
+import { TableType } from '../base/private_enum';
+import { Resolver } from '../base/resolver';
+import { RawRow, Row } from '../base/row';
+import { RuntimeTable } from '../base/runtime_table';
+import { Service } from '../base/service';
 
-import {Page} from './page';
+import { Page } from './page';
 
 // Table stream based on a given IndexedDB Object Store.
 export class BundledObjectStore implements RuntimeTable {
-  public static forTableType(
-      global: Global, store: IDBObjectStore,
-      deserializeFn: (raw: RawRow) => Row, tableType: TableType): RuntimeTable {
-    const retrievePageFn = tableType === TableType.DATA ?
-        BundledObjectStore.getDataTablePage.bind(null, global) :
-        BundledObjectStore.getIndexTablePage;
+  static forTableType(
+    global: Global,
+    store: IDBObjectStore,
+    deserializeFn: (raw: RawRow) => Row,
+    tableType: TableType
+  ): RuntimeTable {
+    const retrievePageFn =
+      tableType === TableType.DATA
+        ? BundledObjectStore.getDataTablePage.bind(null, global)
+        : BundledObjectStore.getIndexTablePage;
 
     return new BundledObjectStore(store, deserializeFn, retrievePageFn);
   }
@@ -39,7 +43,10 @@ export class BundledObjectStore implements RuntimeTable {
   // Retrieves a page for the case of a DATA table. It uses the Cache to
   // retrieve the rows that belong to the requested page.
   private static getDataTablePage(
-      global: Global, tableName: string, pageId: number): Page {
+    global: Global,
+    tableName: string,
+    pageId: number
+  ): Page {
     const cache = global.getService(Service.CACHE);
     const range = Page.getPageRange(pageId);
     const rows = cache.getRange(tableName, range[0], range[1]);
@@ -55,30 +62,31 @@ export class BundledObjectStore implements RuntimeTable {
   }
 
   constructor(
-      private store: IDBObjectStore,
-      private deserializeFn: (raw: RawRow) => Row,
-      private retrievePageFn: (name: string, page: number) => Page) {}
+    private store: IDBObjectStore,
+    private deserializeFn: (raw: RawRow) => Row,
+    private retrievePageFn: (name: string, page: number) => Page
+  ) {}
 
-  public get(ids: number[]): Promise<Row[]> {
+  get(ids: number[]): Promise<Row[]> {
     if (ids.length === 0) {
       return this.getAll();
     }
-    return this.getPagesByRowIds(ids).then((pages) => {
-      return ids.map((id) => {
+    return this.getPagesByRowIds(ids).then(pages => {
+      return ids.map(id => {
         const page = pages.get(Page.toPageId(id)) as Page;
         assert(page !== undefined, 'Containing page is empty');
-        return this.deserializeFn(page.getPayload()[id]);
+        return this.deserializeFn(page.getPayload()[id] as RawRow);
       });
     });
   }
 
-  public put(rows: Row[]): Promise<void> {
+  put(rows: Row[]): Promise<void> {
     if (rows.length === 0) {
       return Promise.resolve();
     }
 
     const pages = new Map<number, Page>();
-    rows.forEach((row) => {
+    rows.forEach(row => {
       const pageId = Page.toPageId(row.id());
       let page = pages.get(pageId) || null;
       if (page === null) {
@@ -88,7 +96,7 @@ export class BundledObjectStore implements RuntimeTable {
       pages.set(pageId, page);
     }, this);
 
-    const promises = Array.from(pages.values()).map((page) => {
+    const promises = Array.from(pages.values()).map(page => {
       return this.performWriteOp(() => {
         return this.store.put(page.serialize());
       });
@@ -99,15 +107,17 @@ export class BundledObjectStore implements RuntimeTable {
     });
   }
 
-  public remove(ids: number[], disableClearTableOptimization?: boolean):
-      Promise<void> {
+  remove(
+    ids: number[],
+    disableClearTableOptimization?: boolean
+  ): Promise<void> {
     if (ids.length === 0) {
       // Remove all
       return this.performWriteOp(() => this.store.clear());
     }
 
     const pages = new Map<number, Page>();
-    ids.forEach((id) => {
+    ids.forEach(id => {
       const pageId = Page.toPageId(id);
       let page = pages.get(pageId) || null;
       if (page === null) {
@@ -117,11 +127,11 @@ export class BundledObjectStore implements RuntimeTable {
       pages.set(pageId, page);
     }, this);
 
-    const promises = Array.from(pages.values()).map((page) => {
+    const promises = Array.from(pages.values()).map(page => {
       return this.performWriteOp(() => {
-        return Object.keys(page.getPayload()).length === 0 ?
-            this.store.delete(page.getId()) :
-            this.store.put(page.serialize());
+        return Object.keys(page.getPayload()).length === 0
+          ? this.store.delete(page.getId())
+          : this.store.put(page.serialize());
       });
     }, this);
 
@@ -148,8 +158,8 @@ export class BundledObjectStore implements RuntimeTable {
           return;
         }
         request.onerror = reject;
-        request.onsuccess = (ev) => {
-          const page = Page.deserialize((ev.target as any).result);
+        request.onsuccess = ev => {
+          const page = Page.deserialize((ev.target as IDBRequest).result);
           results.set(page.getId(), page);
           resolve();
         };
@@ -178,8 +188,9 @@ export class BundledObjectStore implements RuntimeTable {
         if (cursor) {
           const page = Page.deserialize(cursor.value);
           const data = page.getPayload();
-          Object.keys(data).forEach(
-              (key) => rows.push(this.deserializeFn(data[key])));
+          Object.keys(data).forEach(key =>
+            rows.push(this.deserializeFn(data[key] as RawRow))
+          );
           cursor.continue();
         } else {
           resolve(rows);
@@ -197,7 +208,7 @@ export class BundledObjectStore implements RuntimeTable {
         reject(e);
         return;
       }
-      request.onsuccess = (ev) => resolve();
+      request.onsuccess = ev => resolve();
       request.onerror = reject;
     });
   }

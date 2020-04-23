@@ -16,20 +16,20 @@
 
 import * as chai from 'chai';
 
-import {TransactionStats} from '../../lib/backstore/transaction_stats';
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {ObserverCallback} from '../../lib/base/observer_registry_entry';
-import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
-import {Transaction} from '../../lib/base/transaction';
-import {fn} from '../../lib/fn/fn';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
-import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
-import {TestUtil} from '../../testing/test_util';
+import { TransactionStats } from '../../lib/backstore/transaction_stats';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { ObserverCallback } from '../../lib/base/observer_registry_entry';
+import { Resolver } from '../../lib/base/resolver';
+import { PayloadType, Row } from '../../lib/base/row';
+import { Transaction } from '../../lib/base/transaction';
+import { fn } from '../../lib/fn/fn';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { BaseTable } from '../../lib/schema/base_table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { JobDataGenerator } from '../../testing/hr_schema/job_data_generator';
+import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -46,8 +46,9 @@ describe('EndToEndTransaction', () => {
   let tx: Transaction;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     j = db.getSchema().table('Job');
     e = db.getSchema().table('Employee');
     d = db.getSchema().table('Department');
@@ -60,11 +61,12 @@ describe('EndToEndTransaction', () => {
   afterEach(() => db.close());
 
   // Populates the database with sample data.
-  function addSampleData(): Promise<any> {
+  function addSampleData(): Promise<unknown> {
     dataGenerator.generate(
-        /* jobCount */ 50,
-        /* employeeCount */ 300,
-        /* departmentCount */ 10);
+      /* jobCount */ 50,
+      /* employeeCount */ 300,
+      /* departmentCount */ 10
+    );
     sampleJobs = dataGenerator.sampleJobs;
     sampleEmployees = dataGenerator.sampleEmployees;
     sampleDepartments = dataGenerator.sampleDepartments;
@@ -74,31 +76,49 @@ describe('EndToEndTransaction', () => {
     const r = db.getSchema().table('Region');
 
     return db.createTransaction().exec([
-      db.insert().into(r).values(dataGenerator.sampleRegions),
-      db.insert().into(c).values(dataGenerator.sampleCountries),
-      db.insert().into(l).values(dataGenerator.sampleLocations),
-      db.insert().into(d).values(sampleDepartments),
-      db.insert().into(j).values(sampleJobs),
-      db.insert().into(e).values(sampleEmployees),
+      db
+        .insert()
+        .into(r)
+        .values(dataGenerator.sampleRegions),
+      db
+        .insert()
+        .into(c)
+        .values(dataGenerator.sampleCountries),
+      db
+        .insert()
+        .into(l)
+        .values(dataGenerator.sampleLocations),
+      db
+        .insert()
+        .into(d)
+        .values(sampleDepartments),
+      db
+        .insert()
+        .into(j)
+        .values(sampleJobs),
+      db
+        .insert()
+        .into(e)
+        .values(sampleEmployees),
     ]);
   }
 
-  function commitFn(): Promise<any> {
+  function commitFn(): Promise<unknown> {
     return tx.commit();
   }
-  function rollbackFn(): Promise<void> {
+  function rollbackFn(): Promise<unknown> {
     return tx.rollback();
   }
-  function attachFn(): Promise<any> {
+  function attachFn(): Promise<unknown> {
     return tx.attach(db.select().from(j));
   }
   function beginFn(): Promise<void> {
     return tx.begin([j, e]);
   }
-  function execFn(): Promise<any> {
+  function execFn(): Promise<unknown> {
     return tx.exec([db.select().from(e)]);
   }
-  function statsFn(): TransactionStats|null {
+  function statsFn(): TransactionStats | null {
     return tx.stats();
   }
 
@@ -179,7 +199,7 @@ describe('EndToEndTransaction', () => {
     const q2 = db.select(fn.count(d['id']).as('did')).from(d);
     const q3 = db.delete().from(e);
     const q4 = db.delete().from(j);
-    const results = await tx.exec([q1, q2, q3, q4, q1]);
+    const results = (await tx.exec([q1, q2, q3, q4, q1])) as PayloadType[][];
     assert.equal(5, results.length);
     assert.equal(sampleJobs.length, results[0][0]['jid']);
     assert.equal(sampleDepartments.length, results[1][0]['did']);
@@ -197,17 +217,20 @@ describe('EndToEndTransaction', () => {
     const scope = [j, e];
     await tx.begin(scope);
     const q1 = db.select().from(j);
-    let results: object[] = await tx.attach(q1);
+    let results = (await tx.attach(q1)) as unknown[];
     assert.equal(sampleJobs.length, results.length);
     const q2 = db.select().from(e);
-    results = await tx.attach(q2);
+    results = (await tx.attach(q2)) as unknown[];
     assert.equal(sampleEmployees.length, results.length);
 
     const hireDate = dataGenerator.employeeGroundTruth.maxHireDate;
-    const q3 = db.delete().from(e).where(e['hireDate'].eq(hireDate));
+    const q3 = db
+      .delete()
+      .from(e)
+      .where(e['hireDate'].eq(hireDate));
     await tx.attach(q3);
     const q4 = db.select().from(e);
-    results = await tx.attach(q4);
+    results = (await tx.attach(q4)) as unknown[];
     assert.isTrue(results.length < sampleEmployees.length);
 
     const q5 = db.delete().from(e);
@@ -216,13 +239,13 @@ describe('EndToEndTransaction', () => {
     const q6 = db.delete().from(j);
     await tx.attach(q6);
     const q7 = db.select().from(j);
-    results = await tx.attach(q7);
+    const res2 = await tx.attach(q7) as unknown[];
     // Expecting all rows to have been deleted within tx context.
-    assert.equal(0, results.length);
+    assert.equal(0, res2.length);
 
     // Expecting all job rows to *not* have been deleted from disk yet, since
     // the transaction has not been committed.
-    results = await TestUtil.selectAll(global, j);
+    results = await TestUtil.selectAll(global, j) as unknown[];
     assert.equal(sampleJobs.length, results.length);
 
     await tx.commit();
@@ -230,18 +253,21 @@ describe('EndToEndTransaction', () => {
     const stats = tx.stats() as TransactionStats;
     assert.isTrue(stats.success());
     assert.equal(2, stats.changedTableCount());
-    assert.equal(350, stats.deletedRowCount());  // 50 jobs + 300 employees.
+    assert.equal(350, stats.deletedRowCount()); // 50 jobs + 300 employees.
     assert.equal(0, stats.insertedRowCount());
     assert.equal(0, stats.updatedRowCount());
 
     // Expecting all job rows to have been deleted from disk, now that the
     // transaction was committed.
-    results = await TestUtil.selectAll(global, j);
+    results = await TestUtil.selectAll(global, j) as unknown[];
     assert.equal(0, results.length);
 
     // Expecting all locks to have been released by previous transaction, which
     // should allow the following query to complete.
-    results = await db.select().from(e).exec();
+    results = await db
+      .select()
+      .from(e)
+      .exec() as unknown[];
     assert.isTrue(results.length < sampleEmployees.length);
   });
 
@@ -253,24 +279,33 @@ describe('EndToEndTransaction', () => {
 
     await tx.begin(scope);
     const q0 = db.select().from(j);
-    let results: object[] = await tx.attach(q0);
+    let results = await tx.attach(q0) as unknown[];
     assert.equal(sampleJobs.length, results.length);
 
     // Adding a new job row.
     const newJob = j.createRow();
     newJob.payload()['id'] = newJobId;
-    const q1 = db.insert().into(j).values([newJob]);
+    const q1 = db
+      .insert()
+      .into(j)
+      .values([newJob]);
     await tx.attach(q1);
-    const q2 = db.select().from(j).where(j['id'].eq(newJobId));
-    results = await tx.attach(q2);
+    const q2 = db
+      .select()
+      .from(j)
+      .where(j['id'].eq(newJobId));
+    results = await tx.attach(q2) as unknown[];
     assert.equal(1, results.length);
 
     const q3 = db.select().from(j);
-    results = await tx.attach(q3);
+    results = await tx.attach(q3) as unknown[];
     assert.equal(sampleJobs.length + 1, results.length);
 
     // Attempting to add an employee row that already exists.
-    const q4 = db.insert().into(e).values([sampleEmployees[0]]);
+    const q4 = db
+      .insert()
+      .into(e)
+      .values([sampleEmployees[0]]);
     let isThrown = false;
     try {
       await tx.attach(q4);
@@ -290,14 +325,17 @@ describe('EndToEndTransaction', () => {
 
     // Ensure previous catch block is effective.
     assert.isTrue(isThrown);
-    results = await TestUtil.selectAll(global, j);
+    results = await TestUtil.selectAll(global, j) as unknown[];
     // Checking that the entire transaction was rolled back, and therefore that
     // Job row that had been added does not appear on disk.
     assert.equal(sampleJobs.length, results.length);
 
     // Checking that all locks have been released, which will allow other
     // transactions referring to the same scope to execute successfully.
-    results = await db.select().from(j).exec();
+    results = await db
+      .select()
+      .from(j)
+      .exec() as unknown[];
     assert.equal(sampleJobs.length, results.length);
   });
 
@@ -311,14 +349,20 @@ describe('EndToEndTransaction', () => {
     // Adding a new job row.
     const newJob = j.createRow();
     newJob.payload()['id'] = newJobId;
-    const q1 = db.insert().into(j).values([newJob]);
+    const q1 = db
+      .insert()
+      .into(j)
+      .values([newJob]);
     await tx.attach(q1);
-    const q2 = db.select().from(j).where(j['id'].eq(newJobId));
-    let results: object[] = await tx.attach(q2);
+    const q2 = db
+      .select()
+      .from(j)
+      .where(j['id'].eq(newJobId));
+    let results = await tx.attach(q2) as unknown[];
     assert.equal(1, results.length);
 
     const q3 = db.select().from(j);
-    results = await tx.attach(q3);
+    results = await tx.attach(q3) as unknown[];
     assert.equal(sampleJobs.length + 1, results.length);
 
     await tx.rollback();
@@ -337,7 +381,10 @@ describe('EndToEndTransaction', () => {
 
     // Expecting all locks to have been released by previous transaction, which
     // should allow the following query to complete.
-    await db.select().from(j).exec();
+    await db
+      .select()
+      .from(j)
+      .exec();
     const stats = tx.stats() as TransactionStats;
     assert.isFalse(stats.success());
     assert.equal(0, stats.insertedRowCount());
@@ -361,11 +408,12 @@ describe('EndToEndTransaction', () => {
       job.payload()['id'] = `SomeUniqueId${index}`;
     });
 
-    const observeCallback: ObserverCallback = (changeEvents) => {
+    const observeCallback: ObserverCallback = changeEvents => {
       assert.equal(initialJobCount + additionalJobCount, changeEvents.length);
       assert.equal(
-          initialJobCount + additionalJobCount,
-          changeEvents[0]['object'].length);
+        initialJobCount + additionalJobCount,
+        changeEvents[0]['object'].length
+      );
       promiseResolver.resolve();
     };
 
@@ -375,9 +423,15 @@ describe('EndToEndTransaction', () => {
     try {
       await tx.begin(scope);
       // Adding a new job row.
-      const q1 = db.insert().into(j).values([newJobs[0]]);
+      const q1 = db
+        .insert()
+        .into(j)
+        .values([newJobs[0]]);
       await tx.attach(q1);
-      const q2 = db.insert().into(j).values([newJobs[1]]);
+      const q2 = db
+        .insert()
+        .into(j)
+        .values([newJobs[1]]);
       await tx.attach(q2);
       await tx.commit();
     } catch (ex) {
@@ -388,7 +442,7 @@ describe('EndToEndTransaction', () => {
 
   // Tests executing an invalid query will fail the transaction.
   it('exec_FailsOnInvalidQuery', () => {
-    const q = db.insert().into(j);  // an invalid query
+    const q = db.insert().into(j); // an invalid query
 
     // 518: Invalid usage of insert().
     return TestUtil.assertPromiseReject(ErrorCode.INVALID_INSERT, tx.exec([q]));
@@ -396,7 +450,7 @@ describe('EndToEndTransaction', () => {
 
   // Tests attaching an invalid query will fail the transaction.
   it('attach_FailsOnInvalidQuery', () => {
-    const q = db.insert().into(j);  // an invalid query
+    const q = db.insert().into(j); // an invalid query
     const scope = [j];
     const promise = tx.begin(scope).then(() => tx.attach(q));
 

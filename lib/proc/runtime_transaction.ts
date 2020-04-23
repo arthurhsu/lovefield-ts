@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import {TransactionStats} from '../backstore/transaction_stats';
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {Transaction} from '../base/transaction';
-import {QueryBuilder} from '../query/query_builder';
-import {BaseTable} from '../schema/base_table';
+import { TransactionStats } from '../backstore/transaction_stats';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { Transaction } from '../base/transaction';
+import { QueryBuilder } from '../query/query_builder';
+import { BaseTable } from '../schema/base_table';
 
-import {Runner} from './runner';
-import {TaskItem} from './task_item';
-import {StateTransition, TransactionState} from './transaction_state';
-import {TransactionTask} from './transaction_task';
-import {UserQueryTask} from './user_query_task';
+import { Runner } from './runner';
+import { TaskItem } from './task_item';
+import { StateTransition, TransactionState } from './transaction_state';
+import { TransactionTask } from './transaction_task';
+import { UserQueryTask } from './user_query_task';
 
 export class RuntimeTransaction implements Transaction {
   private runner: Runner;
-  private task: TransactionTask|UserQueryTask|null;
+  private task: TransactionTask | UserQueryTask | null;
   private state: TransactionState;
   private stateTransition: StateTransition;
 
@@ -42,12 +42,12 @@ export class RuntimeTransaction implements Transaction {
     this.stateTransition = StateTransition.get();
   }
 
-  public exec(queryBuilders: QueryBuilder[]): Promise<any> {
+  exec(queryBuilders: QueryBuilder[]): Promise<unknown> {
     this.updateState(TransactionState.EXECUTING_AND_COMMITTING);
 
     const taskItems: TaskItem[] = [];
     try {
-      queryBuilders.forEach((queryBuilder) => {
+      queryBuilders.forEach(queryBuilder => {
         queryBuilder.assertExecPreconditions();
         taskItems.push(queryBuilder.getTaskItem());
       });
@@ -58,25 +58,27 @@ export class RuntimeTransaction implements Transaction {
 
     this.task = new UserQueryTask(this.global, taskItems);
     return this.runner.scheduleTask(this.task).then(
-        (results) => {
-          this.updateState(TransactionState.FINALIZED);
-          return results.map((relation) => relation.getPayloads());
-        },
-        (e) => {
-          this.updateState(TransactionState.FINALIZED);
-          throw e;
-        });
+      results => {
+        this.updateState(TransactionState.FINALIZED);
+        return results.map(relation => relation.getPayloads());
+      },
+      e => {
+        this.updateState(TransactionState.FINALIZED);
+        throw e;
+      }
+    );
   }
 
-  public begin(scope: BaseTable[]): Promise<void> {
+  begin(scope: BaseTable[]): Promise<void> {
     this.updateState(TransactionState.ACQUIRING_SCOPE);
 
     this.task = new TransactionTask(this.global, scope);
-    return this.task.acquireScope().then(
-        () => this.updateState(TransactionState.ACQUIRED_SCOPE));
+    return this.task
+      .acquireScope()
+      .then(() => this.updateState(TransactionState.ACQUIRED_SCOPE));
   }
 
-  public attach(query: QueryBuilder): Promise<any> {
+  attach(query: QueryBuilder): Promise<unknown> {
     this.updateState(TransactionState.EXECUTING_QUERY);
 
     try {
@@ -86,34 +88,35 @@ export class RuntimeTransaction implements Transaction {
       return Promise.reject(e);
     }
 
-    return (this.task as TransactionTask)
-        .attachQuery(query)
-        .then(
-            (result) => {
-              this.updateState(TransactionState.ACQUIRED_SCOPE);
-              return result;
-            },
-            (e) => {
-              this.updateState(TransactionState.FINALIZED);
-              throw e;
-            });
+    return (this.task as TransactionTask).attachQuery(query).then(
+      result => {
+        this.updateState(TransactionState.ACQUIRED_SCOPE);
+        return result;
+      },
+      e => {
+        this.updateState(TransactionState.FINALIZED);
+        throw e;
+      }
+    );
   }
 
-  public commit(): Promise<any> {
+  commit(): Promise<unknown> {
     this.updateState(TransactionState.COMMITTING);
-    return (this.task as TransactionTask)
-        .commit()
-        .then(() => this.updateState(TransactionState.FINALIZED));
+    return (this.task as TransactionTask).commit().then(res => {
+      this.updateState(TransactionState.FINALIZED);
+      return res;
+    });
   }
 
-  public rollback(): Promise<any> {
+  rollback(): Promise<unknown> {
     this.updateState(TransactionState.ROLLING_BACK);
-    return (this.task as TransactionTask)
-        .rollback()
-        .then(() => this.updateState(TransactionState.FINALIZED));
+    return (this.task as TransactionTask).rollback().then(res => {
+      this.updateState(TransactionState.FINALIZED);
+      return res;
+    });
   }
 
-  public stats(): TransactionStats|null {
+  stats(): TransactionStats | null {
     if (this.state !== TransactionState.FINALIZED) {
       // 105: Attempt to access in-flight transaction states.
       throw new Exception(ErrorCode.INVALID_TX_ACCESS);
@@ -126,7 +129,11 @@ export class RuntimeTransaction implements Transaction {
     const nextStates = this.stateTransition.get(this.state);
     if (!nextStates.has(newState)) {
       // 107: Invalid transaction state transition: {0} -> {1}.
-      throw new Exception(ErrorCode.INVALID_TX_STATE, this.state, newState);
+      throw new Exception(
+        ErrorCode.INVALID_TX_STATE,
+        this.state.toString(),
+        newState.toString()
+      );
     } else {
       this.state = newState;
     }

@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Order} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Favor} from '../base/private_enum';
-import {Row} from '../base/row';
-import {IndexHelper} from './index_helper';
-import {IndexStats} from './index_stats';
-import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
-import {RuntimeIndex} from './runtime_index';
-import {SimpleComparator} from './simple_comparator';
+import { ErrorCode, Order } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Favor } from '../base/private_enum';
+import { Row } from '../base/row';
+
+import { Comparator } from './comparator';
+import { IndexHelper } from './index_helper';
+import { IndexStats } from './index_stats';
+import { Key, KeyRange, SingleKey, SingleKeyRange } from './key_range';
+import { RuntimeIndex } from './runtime_index';
+import { SimpleComparator } from './simple_comparator';
 
 // This is actually the row id set for a given table, but in the form of
 // RuntimeIndex.
 export class RowId implements RuntimeIndex {
   // The Row ID to use when serializing this index to disk. Currently the entire
   // index is serialized to a single lf.Row instance with rowId set to ROW_ID.
-  public static ROW_ID = 0;
+  static ROW_ID = 0;
 
-  public static deserialize(name: string, rows: Row[]): RowId {
+  static deserialize(name: string, rows: Row[]): RowId {
     const index = new RowId(name);
-    const rowIds: number[] = rows[0].payload() as number[];
-    rowIds.forEach((rowId) => index.add(rowId, rowId));
+    const rowIds: number[] = rows[0].payload()['v'] as number[];
+    rowIds.forEach(rowId => index.add(rowId, rowId));
     return index;
   }
 
@@ -48,89 +50,95 @@ export class RowId implements RuntimeIndex {
     this.comparatorObj = new SimpleComparator(Order.ASC);
   }
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public add(key: Key, value: number): void {
-    if (typeof (key) !== 'number') {
+  add(key: Key, value: number): void {
+    if (typeof key !== 'number') {
       // 103: Row id must be numbers.
       throw new Exception(ErrorCode.INVALID_ROW_ID);
     }
     this.rows.add(key);
   }
 
-  public set(key: Key, value: number): void {
+  set(key: Key, value: number): void {
     this.add(key, value);
   }
 
-  public remove(key: Key, rowId?: number): void {
+  remove(key: Key, rowId?: number): void {
     this.rows.delete(key as SingleKey);
   }
 
-  public get(key: Key): number[] {
+  get(key: Key): number[] {
     return this.containsKey(key) ? [key as number] : RowId.EMPTY_ARRAY;
   }
 
-  public min(): any[]|null {
+  min(): unknown[] | null {
     return this.minMax(this.comparatorObj.min.bind(this.comparatorObj));
   }
 
-  public max(): any[]|null {
+  max(): unknown[] | null {
     return this.minMax(this.comparatorObj.max.bind(this.comparatorObj));
   }
 
-  public cost(keyRange?: SingleKeyRange|KeyRange): number {
+  cost(keyRange?: SingleKeyRange | KeyRange): number {
     // Give the worst case so that this index is not used unless necessary.
     return this.rows.size;
   }
 
-  public getRange(
-      range?: SingleKeyRange[]|KeyRange[], reverseOrder?: boolean,
-      limit?: number, skip?: number): number[] {
-    const keyRanges: SingleKeyRange[] =
-        range as SingleKeyRange[] || [SingleKeyRange.all()];
-    const values: number[] = Array.from(this.rows.values()).filter((value) => {
-      return keyRanges.some((r) => this.comparatorObj.isInRange(value, r));
+  getRange(
+    range?: SingleKeyRange[] | KeyRange[],
+    reverseOrder?: boolean,
+    limit?: number,
+    skip?: number
+  ): number[] {
+    const keyRanges: SingleKeyRange[] = (range as SingleKeyRange[]) || [
+      SingleKeyRange.all(),
+    ];
+    const values: number[] = Array.from(this.rows.values()).filter(value => {
+      return keyRanges.some(r => this.comparatorObj.isInRange(value, r));
     }, this) as number[];
     return IndexHelper.slice(values, reverseOrder, limit, skip);
   }
 
-  public clear(): void {
+  clear(): void {
     this.rows.clear();
   }
 
-  public containsKey(key: Key): boolean {
+  containsKey(key: Key): boolean {
     return this.rows.has(key as SingleKey);
   }
 
-  public serialize(): Row[] {
-    return [new Row(RowId.ROW_ID, Array.from(this.rows.values()))];
+  serialize(): Row[] {
+    return [new Row(RowId.ROW_ID, { v: Array.from(this.rows.values()) })];
   }
 
-  public comparator(): any {
+  comparator(): Comparator {
     return this.comparatorObj;
   }
 
-  public isUniqueKey(): boolean {
+  isUniqueKey(): boolean {
     return true;
   }
 
-  public stats(): IndexStats {
+  stats(): IndexStats {
     const stats = new IndexStats();
     stats.totalRows = this.rows.size;
     return stats;
   }
 
-  private minMax(compareFn: (l: SingleKey, r: SingleKey) => Favor): any[]|null {
+  private minMax(
+    compareFn: (l: SingleKey, r: SingleKey) => Favor
+  ): unknown[] | null {
     if (this.rows.size === 0) {
       return null;
     }
 
     const keys = Array.from(this.rows.values()).reduce((keySoFar, key) => {
-      return (keySoFar === null || compareFn(key, keySoFar) === Favor.LHS) ?
-          key :
-          keySoFar;
+      return keySoFar === null || compareFn(key, keySoFar) === Favor.LHS
+        ? key
+        : keySoFar;
     });
 
     return [keys, [keys]];

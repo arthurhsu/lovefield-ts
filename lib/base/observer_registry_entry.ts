@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {Relation} from '../proc/relation';
-import {TaskItem} from '../proc/task_item';
-import {SelectBuilder} from '../query/select_builder';
-import {SelectContext} from '../query/select_context';
-import {assert} from './assert';
-import {ChangeRecord} from './change_record';
-import {DiffCalculator} from './diff_calculator';
+import { Relation } from '../proc/relation';
+import { TaskItem } from '../proc/task_item';
+import { SelectBuilder } from '../query/select_builder';
+import { SelectContext } from '../query/select_context';
+import { assert } from './assert';
+import { ChangeRecord } from './change_record';
+import { DiffCalculator } from './diff_calculator';
 
 export type ObserverCallback = (changes: ChangeRecord[]) => void;
 export class ObserverRegistryEntry {
   private observers: Set<ObserverCallback>;
-  private observable: any[];
-  private lastResults: Relation|null;
+  private observable: object[];
+  private lastResults: Relation | null;
   private diffCalculator: DiffCalculator;
 
   constructor(private builder: SelectBuilder) {
@@ -38,7 +38,7 @@ export class ObserverRegistryEntry {
     this.diffCalculator = new DiffCalculator(context, this.observable);
   }
 
-  public addObserver(callback: ObserverCallback): void {
+  addObserver(callback: ObserverCallback): void {
     if (this.observers.has(callback)) {
       assert(false, 'Attempted to register observer twice.');
       return;
@@ -47,26 +47,28 @@ export class ObserverRegistryEntry {
   }
 
   // Returns whether the callback was found and removed.
-  public removeObserver(callback: ObserverCallback): boolean {
+  removeObserver(callback: ObserverCallback): boolean {
     return this.observers.delete(callback);
   }
 
-  public getTaskItem(): TaskItem {
+  getTaskItem(): TaskItem {
     return this.builder.getObservableTaskItem();
   }
 
-  public hasObservers(): boolean {
+  hasObservers(): boolean {
     return this.observers.size > 0;
   }
 
   // Updates the results for this query, which causes observes to be notified.
-  public updateResults(newResults: Relation): void {
-    const changeRecords =
-        this.diffCalculator.applyDiff(this.lastResults as Relation, newResults);
+  updateResults(newResults: Relation): void {
+    const changeRecords = this.diffCalculator.applyDiff(
+      this.lastResults as Relation,
+      newResults
+    );
     this.lastResults = newResults;
 
     if (changeRecords.length > 0) {
-      this.observers.forEach((observerFn) => observerFn(changeRecords));
+      this.observers.forEach(observerFn => observerFn(changeRecords));
     }
   }
 }

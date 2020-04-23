@@ -17,22 +17,22 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {IndexedDB} from '../../lib/backstore/indexed_db';
-import {IndexedDBRawBackStore} from '../../lib/backstore/indexed_db_raw_back_store';
-import {Page} from '../../lib/backstore/page';
-import {RawBackStore} from '../../lib/backstore/raw_back_store';
-import {Capability} from '../../lib/base/capability';
-import {Type} from '../../lib/base/enum';
-import {RawRow, Row} from '../../lib/base/row';
-import {Builder} from '../../lib/schema/builder';
+import { IndexedDB } from '../../lib/backstore/indexed_db';
+import { IndexedDBRawBackStore } from '../../lib/backstore/indexed_db_raw_back_store';
+import { Page } from '../../lib/backstore/page';
+import { RawBackStore } from '../../lib/backstore/raw_back_store';
+import { Capability } from '../../lib/base/capability';
+import { Type } from '../../lib/base/enum';
+import { RawRow, Row, PayloadType } from '../../lib/base/row';
+import { Builder } from '../../lib/schema/builder';
 
 const assert = chai.assert;
-const skip = !(Capability.get().indexedDb);
+const skip = !Capability.get().indexedDb;
 const test = skip ? describe.skip : describe;
 
 test('IndexedDBRawBackStore', () => {
-  const CONTENTS = {id: 'hello', name: 'world'};
-  const CONTENTS2 = {id: 'hello2', name: 'world2'};
+  const CONTENTS = { id: 'hello', name: 'world' };
+  const CONTENTS2 = { id: 'hello2', name: 'world2' };
   const MAGIC = Math.pow(2, Page.BUNDLE_EXPONENT);
   let builder1: Builder;
   let builder2: Builder;
@@ -40,16 +40,19 @@ test('IndexedDBRawBackStore', () => {
   beforeEach(() => {
     const dbName = `schema${Date.now()}`;
     builder1 = new Builder(dbName, 1);
-    builder1.createTable('tableA_')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING);
-    builder1.createTable('tableB_')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING);
+    builder1
+      .createTable('tableA_')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING);
+    builder1
+      .createTable('tableB_')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING);
     builder2 = new Builder(dbName, 2);
-    builder2.createTable('tableA_')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING);
+    builder2
+      .createTable('tableA_')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING);
   });
 
   it('convert', () => {
@@ -85,13 +88,15 @@ test('IndexedDBRawBackStore', () => {
   });
 
   function dumpDB<T>(
-      db: IDBDatabase, tableName: string,
-      fn: (raw: RawRow) => T): Promise<T[]> {
+    db: IDBDatabase,
+    tableName: string,
+    fn: (raw: RawRow) => T
+  ): Promise<T[]> {
     return new Promise<T[]>((resolve, reject) => {
       const results: T[] = [];
       const tx = db.transaction([tableName], 'readonly');
       const req = tx.objectStore(tableName).openCursor();
-      req.onsuccess = (ev) => {
+      req.onsuccess = ev => {
         const cursor = req.result as IDBCursorWithValue;
         if (cursor) {
           results.push(fn(cursor.value));
@@ -109,12 +114,16 @@ test('IndexedDBRawBackStore', () => {
   }
 
   function dumpTableBundled(
-      db: IDBDatabase, tableName: string): Promise<Page[]> {
+    db: IDBDatabase,
+    tableName: string
+  ): Promise<Page[]> {
     return dumpDB(db, tableName, Page.deserialize);
   }
 
   function upgradeAddTableColumn(
-      date: Date, dbInterface: RawBackStore): Promise<void> {
+    date: Date,
+    dbInterface: RawBackStore
+  ): Promise<void> {
     const db = dbInterface as IndexedDBRawBackStore;
     assert.equal(1, db.getVersion());
     return db.addTableColumn('tableA_', 'dob', date);
@@ -128,7 +137,7 @@ test('IndexedDBRawBackStore', () => {
       const store = tx.objectStore('tableA_');
       store.put(row.serialize());
       store.put(row2.serialize());
-      tx.oncomplete = (ev) => {
+      tx.oncomplete = ev => {
         resolve();
       };
       tx.onabort = reject;
@@ -148,7 +157,7 @@ test('IndexedDBRawBackStore', () => {
       const store = tx.objectStore('tableA_');
       store.put(page.serialize());
       store.put(page2.serialize());
-      tx.oncomplete = (ev) => {
+      tx.oncomplete = ev => {
         resolve();
       };
       tx.onabort = reject;
@@ -156,59 +165,65 @@ test('IndexedDBRawBackStore', () => {
   }
 
   it('addTableColumn', () => {
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
     const date = new Date();
 
-    return db.init()
-        .then((rawDb) => {
-          return prepareTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(
-              (raw: RawBackStore) => upgradeAddTableColumn(date, raw));
-        })
-        .then((newDb) => {
-          return dumpTable(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          assert.equal(date.getTime(), results[0].payload()['dob']);
-          assert.equal(date.getTime(), results[1].payload()['dob']);
-        });
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
+      })
+      .then(newDb => {
+        return dumpTable(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        assert.equal(date.getTime(), results[0].payload()['dob']);
+        assert.equal(date.getTime(), results[1].payload()['dob']);
+      });
   });
 
   it('addTableColumn_Bundled', () => {
-    builder1.setPragma({enableBundledMode: true});
-    builder2.setPragma({enableBundledMode: true});
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
+    builder1.setPragma({ enableBundledMode: true });
+    builder2.setPragma({ enableBundledMode: true });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
     const date = new Date();
 
-    return db.init()
-        .then((rawDb) => {
-          return prepareBundledTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(
-              (raw: RawBackStore) => upgradeAddTableColumn(date, raw));
-        })
-        .then((newDb) => {
-          return dumpTableBundled(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          const newRow = Row.deserialize(results[0].getPayload()[0]);
-          const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC]);
-          assert.equal(date.getTime(), newRow.payload()['dob']);
-          assert.equal(date.getTime(), newRow2.payload()['dob']);
-        });
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareBundledTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
+      })
+      .then(newDb => {
+        return dumpTableBundled(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+        const newRow2 = Row.deserialize(
+          results[1].getPayload()[MAGIC] as RawRow
+        );
+        assert.equal(date.getTime(), newRow.payload()['dob']);
+        assert.equal(date.getTime(), newRow2.payload()['dob']);
+      });
   });
 
   function upgradeDropTableColumn(dbInterface: RawBackStore): Promise<void> {
@@ -218,53 +233,61 @@ test('IndexedDBRawBackStore', () => {
   }
 
   it('dropTableColumn', () => {
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeDropTableColumn);
-        })
-        .then((newDb) => {
-          return dumpTable(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          assert.isFalse(results[0].payload().hasOwnProperty('name'));
-          assert.isFalse(results[1].payload().hasOwnProperty('name'));
-        });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeDropTableColumn);
+      })
+      .then(newDb => {
+        return dumpTable(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        assert.isFalse(results[0].payload().hasOwnProperty('name'));
+        assert.isFalse(results[1].payload().hasOwnProperty('name'));
+      });
   });
 
   it('dropTableColumn_Bundled', () => {
-    builder1.setPragma({enableBundledMode: true});
-    builder2.setPragma({enableBundledMode: true});
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareBundledTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeDropTableColumn);
-        })
-        .then((newDb) => {
-          return dumpTableBundled(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          const newRow = Row.deserialize(results[0].getPayload()[0]);
-          const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC]);
-          assert.isFalse(newRow.hasOwnProperty('name'));
-          assert.isFalse(newRow2.hasOwnProperty('name'));
-        });
+    builder1.setPragma({ enableBundledMode: true });
+    builder2.setPragma({ enableBundledMode: true });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareBundledTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeDropTableColumn);
+      })
+      .then(newDb => {
+        return dumpTableBundled(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+        const newRow2 = Row.deserialize(
+          results[1].getPayload()[MAGIC] as RawRow
+        );
+        assert.isFalse(newRow.hasOwnProperty('name'));
+        assert.isFalse(newRow2.hasOwnProperty('name'));
+      });
   });
 
   function upgradeRenameTableColumn(dbInterface: RawBackStore): Promise<void> {
@@ -274,57 +297,65 @@ test('IndexedDBRawBackStore', () => {
   }
 
   it('renameTableColumn', () => {
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeRenameTableColumn);
-        })
-        .then((newDb) => {
-          return dumpTable(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          assert.isFalse(results[0].payload().hasOwnProperty('name'));
-          assert.isFalse(results[1].payload().hasOwnProperty('name'));
-          assert.equal('world', results[0].payload()['username']);
-          assert.equal('world2', results[1].payload()['username']);
-        });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeRenameTableColumn);
+      })
+      .then(newDb => {
+        return dumpTable(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        assert.isFalse(results[0].payload().hasOwnProperty('name'));
+        assert.isFalse(results[1].payload().hasOwnProperty('name'));
+        assert.equal('world', results[0].payload()['username']);
+        assert.equal('world2', results[1].payload()['username']);
+      });
   });
 
   it('renameTableColumn_Bundled', () => {
-    builder1.setPragma({enableBundledMode: true});
-    builder2.setPragma({enableBundledMode: true});
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareBundledTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeRenameTableColumn);
-        })
-        .then((newDb) => {
-          return dumpTableBundled(newDb, 'tableA_');
-        })
-        .then((results) => {
-          assert.equal(2, results.length);
-          const newRow = Row.deserialize(results[0].getPayload()[0]);
-          const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC]);
-          assert.isFalse(newRow.hasOwnProperty('name'));
-          assert.isFalse(newRow2.hasOwnProperty('name'));
-          assert.equal('world', newRow.payload()['username']);
-          assert.equal('world2', newRow2.payload()['username']);
-        });
+    builder1.setPragma({ enableBundledMode: true });
+    builder2.setPragma({ enableBundledMode: true });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareBundledTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeRenameTableColumn);
+      })
+      .then(newDb => {
+        return dumpTableBundled(newDb, 'tableA_');
+      })
+      .then(results => {
+        assert.equal(2, results.length);
+        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+        const newRow2 = Row.deserialize(
+          results[1].getPayload()[MAGIC] as RawRow
+        );
+        assert.isFalse(newRow.hasOwnProperty('name'));
+        assert.isFalse(newRow2.hasOwnProperty('name'));
+        assert.equal('world', newRow.payload()['username']);
+        assert.equal('world2', newRow2.payload()['username']);
+      });
   });
 
   function upgradeDropTable(dbInterface: RawBackStore): Promise<void> {
@@ -334,59 +365,72 @@ test('IndexedDBRawBackStore', () => {
   }
 
   it('dropTable', () => {
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          assert.equal(2, rawDb.objectStoreNames.length);
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeDropTable);
-        })
-        .then((rawDb) => {
-          assert.equal(1, rawDb.objectStoreNames.length);
-        });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        assert.equal(2, rawDb.objectStoreNames.length);
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeDropTable);
+      })
+      .then(rawDb => {
+        assert.equal(1, rawDb.objectStoreNames.length);
+      });
   });
 
   function upgradeDumping(dbInterface: RawBackStore): Promise<void> {
     const db = dbInterface as IndexedDBRawBackStore;
     assert.equal(1, db.getVersion());
-    return db.dump().then((results) => {
-      assert.sameDeepMembers([CONTENTS, CONTENTS2], results['tableA_']);
-      assert.sameDeepMembers([], results['tableB_']);
+    return db.dump().then(res => {
+      const results = res as PayloadType;
+      assert.sameDeepMembers(
+        [CONTENTS, CONTENTS2],
+        results['tableA_'] as unknown[]
+      );
+      assert.sameDeepMembers([], results['tableB_'] as unknown[]);
     });
   }
 
   it('dump', () => {
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeDumping);
-        });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeDumping);
+      });
   });
 
   it('dump_Bundled', () => {
-    builder1.setPragma({enableBundledMode: true});
-    builder2.setPragma({enableBundledMode: true});
-    let db: IndexedDB|null =
-        new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init()
-        .then((rawDb) => {
-          return prepareBundledTxForTableA(rawDb);
-        })
-        .then(() => {
-          (db as IndexedDB).close();
-          db = null;
-          db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-          return db.init(upgradeDumping);
-        });
+    builder1.setPragma({ enableBundledMode: true });
+    builder2.setPragma({ enableBundledMode: true });
+    let db: IndexedDB | null = new IndexedDB(
+      builder1.getGlobal(),
+      builder1.getSchema()
+    );
+    return db
+      .init()
+      .then(rawDb => {
+        return prepareBundledTxForTableA(rawDb);
+      })
+      .then(() => {
+        (db as IndexedDB).close();
+        db = null;
+        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+        return db.init(upgradeDumping);
+      });
   });
 });

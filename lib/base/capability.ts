@@ -16,7 +16,7 @@
 
 // @export
 export class Capability {
-  public static get(): Capability {
+  static get(): Capability {
     if (Capability.instance === undefined) {
       Capability.instance = new Capability();
     }
@@ -25,10 +25,10 @@ export class Capability {
 
   private static instance: Capability;
 
-  public supported: boolean;
-  public indexedDb: boolean;
-  public webSql: boolean;
-  public localStorage: boolean;
+  supported: boolean;
+  indexedDb: boolean;
+  webSql: boolean;
+  localStorage: boolean;
 
   private agent: string;
   private browser: string;
@@ -48,7 +48,7 @@ export class Capability {
     this.detect();
   }
 
-  public getDetection(): string {
+  getDetection(): string {
     return `${this.browser} ${this.version.join('.')}`;
   }
 
@@ -61,15 +61,15 @@ export class Capability {
     }
   }
 
-  private convertVersion(version: string|undefined): void {
+  private convertVersion(version: string | undefined): void {
     if (version === undefined) {
       return;
     }
 
-    this.version = version.split('.').map((v) => {
+    this.version = version.split('.').map(v => {
       let n = 0;
       try {
-        n = parseInt(v, 10);
+        n = Number(v);
       } catch (e) {
         // Swallow error.
       }
@@ -99,33 +99,37 @@ export class Capability {
     this.localStorage = true;
     this.detectVersion();
     const checkSequence = [
-      this.isEdge.bind(this),  // this must be placed before Chrome
-      this.isFirefox.bind(this), this.isChrome.bind(this),
-      this.isSafari.bind(this),  // this must be placed after Chrome/Firefox
-      this.isIOS.bind(this),     // this must be placed after Safari
+      this.isEdge.bind(this), // this must be placed before Chrome
+      this.isFirefox.bind(this),
+      this.isChrome.bind(this),
+      this.isSafari.bind(this), // this must be placed after Chrome/Firefox
+      this.isIOS.bind(this), // this must be placed after Safari
     ];
 
-    checkSequence.some((fn) => fn());
+    checkSequence.some(fn => fn());
   }
 
   private detectVersion(): void {
     const regex = new RegExp(
-        // Key. Note that a key may have a space.
-        // (i.e. 'Mobile Safari' in 'Mobile Safari/5.0')
-        '(\\w[\\w ]+)' +
-            '/' +                // slash
-            '([^\\s]+)' +        // version (i.e. '5.0b')
-            '\\s*' +             // whitespace
-            '(?:\\((.*?)\\))?',  // parenthetical info. parentheses not matched.
-        'g');
+      // Key. Note that a key may have a space.
+      // (i.e. 'Mobile Safari' in 'Mobile Safari/5.0')
+      '(\\w[\\w ]+)' +
+      '/' + // slash
+      '([^\\s]+)' + // version (i.e. '5.0b')
+      '\\s*' + // whitespace
+        '(?:\\((.*?)\\))?', // parenthetical info. parentheses not matched.
+      'g'
+    );
 
-    let match: RegExpExecArray|null = null;
+    let match: RegExpExecArray | null = null;
     do {
       match = regex.exec(this.agent);
       if (match) {
         const version = match[0] as string;
         this.versionMap.set(
-            match[1] as string, version.slice(version.indexOf('/') + 1));
+          match[1] as string,
+          version.slice(version.indexOf('/') + 1)
+        );
       }
     } while (match);
   }
@@ -177,8 +181,10 @@ export class Capability {
   }
 
   private isIE(): boolean {
-    if (this.agent.indexOf('Trident') !== -1 ||
-        this.agent.indexOf('MSIE') !== -1) {
+    if (
+      this.agent.indexOf('Trident') !== -1 ||
+      this.agent.indexOf('MSIE') !== -1
+    ) {
       this.browser = 'ie';
       return true;
     }
@@ -186,8 +192,11 @@ export class Capability {
   }
 
   private isAndroid(): boolean {
-    if (this.agent.indexOf('Android') !== -1 && !this.isChrome() &&
-        !this.isFirefox()) {
+    if (
+      this.agent.indexOf('Android') !== -1 &&
+      !this.isChrome() &&
+      !this.isFirefox()
+    ) {
       this.browser = 'legacy_android';
       return true;
     }
@@ -207,9 +216,10 @@ export class Capability {
   }
 
   private isIOS(): boolean {
-    if (this.agent.indexOf('AppleWebKit') !== -1 &&
-        (this.agent.indexOf('iPad') !== -1 ||
-         this.agent.indexOf('iPhone') !== -1)) {
+    if (
+      this.agent.indexOf('AppleWebKit') !== -1 &&
+      (this.agent.indexOf('iPad') !== -1 || this.agent.indexOf('iPhone') !== -1)
+    ) {
       this.browser = 'ios_webview';
       this.convertVersion(this.versionMap.get('Version'));
       this.supported = this.version[0] >= 10;

@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import {DEFAULT_VALUES} from '../../lib/base/enum';
+import { DEFAULT_VALUES } from '../../lib/base/enum';
 
 const assert = chai.assert;
 
@@ -23,8 +23,8 @@ describe('Type', () => {
   // This test is used to test that default values set in the code will
   // not cause browser crash due to standards non-compliance.
   it('hasValidDefaultValues', () => {
-    const clone: any[] = [];
-    DEFAULT_VALUES.forEach((value: any) => clone.push(value));
+    const clone: unknown[] = [];
+    DEFAULT_VALUES.forEach((value: unknown) => clone.push(value));
     assert.equal(DEFAULT_VALUES.size, clone.length);
   });
 });

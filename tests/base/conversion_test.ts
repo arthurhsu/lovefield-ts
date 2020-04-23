@@ -16,12 +16,13 @@
 
 import * as chai from 'chai';
 
-import {DataStoreType, TransactionType} from '../../lib/base/enum';
-import {TableType} from '../../lib/base/private_enum';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { DataStoreType, TransactionType } from '../../lib/base/enum';
+import { TableType } from '../../lib/base/private_enum';
+import { Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { BaseTable } from '../../lib/schema/base_table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -29,8 +30,9 @@ describe('Conversion', () => {
   let db: RuntimeDatabase;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
   });
 
   it('conversions', async () => {
@@ -41,11 +43,15 @@ describe('Conversion', () => {
       datetime: new Date(),
       integer: 3,
       number: Math.PI,
-      string: 'dummystring',
-      string2: 'dummystring2',
+      string: 'dummy-string',
+      string2: 'dummy-string2',
     });
 
-    await db.insert().into(tableSchema).values([row]).exec();
+    await db
+      .insert()
+      .into(tableSchema)
+      .values([row])
+      .exec();
 
     // Selects the sample record from the database, skipping the cache, to
     // ensure that deserialization is working when reading a record from the
@@ -53,7 +59,10 @@ describe('Conversion', () => {
     const backStore = db.getGlobal().getService(Service.BACK_STORE);
     const tx = backStore.createTx(TransactionType.READ_ONLY, [tableSchema]);
     const store = tx.getTable(
-        tableSchema.getName(), tableSchema.deserializeRow, TableType.DATA);
+      tableSchema.getName(),
+      (tableSchema as BaseTable).deserializeRow,
+      TableType.DATA
+    );
     const result = await store.get([]);
     assert.equal(1, result.length);
     assert.isTrue(result[0] instanceof Row);
@@ -65,9 +74,12 @@ describe('Conversion', () => {
     assert.equal(insertedRow['number'], retrievedRow['number']);
     assert.equal(insertedRow['integer'], retrievedRow['integer']);
     assert.equal(
-        insertedRow['datetime'].getTime(), retrievedRow['datetime'].getTime());
+      (insertedRow['datetime'] as Date).getTime(),
+      (retrievedRow['datetime'] as Date).getTime()
+    );
     assert.equal(
-        Row.binToHex(insertedRow['arraybuffer']),
-        Row.binToHex(retrievedRow['arraybuffer']));
+      Row.binToHex(insertedRow['arraybuffer'] as ArrayBuffer),
+      Row.binToHex(retrievedRow['arraybuffer'] as ArrayBuffer)
+    );
   });
 });

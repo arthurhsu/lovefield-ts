@@ -450,7 +450,8 @@ describe('EndToEndSelectTest', () => {
     const truth = dataGenerator.employeeGroundTruth.employeesPerJob as
         Map<string, string[]>;
     const expectedEmployeeCount = expectedJobs.reduce((soFar, job) => {
-      return soFar + (truth.get(job.payload()['id']) as string[]).length;
+      return soFar + (
+          truth.get(job.payload()['id'] as string) as string[]).length;
     }, 0);
 
     assert.equal(expectedEmployeeCount, results.length);

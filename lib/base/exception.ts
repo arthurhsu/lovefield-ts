@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {Flags} from '../gen/flags';
-import {ErrorCode} from './enum';
-import {getErrorMessage} from './error_message';
+import { Flags } from '../gen/flags';
+import { ErrorCode } from './enum';
+import { getErrorMessage } from './error_message';
 
 export class Exception {
-  public readonly message: string;
-  public readonly args: any[];
+  readonly message: string;
+  readonly args: string[];
 
-  constructor(readonly code: ErrorCode, ...args: any[]) {
+  constructor(readonly code: ErrorCode, ...args: string[]) {
     this.args = args;
     this.message = Flags.EXCEPTION_URL + code.toString();
 
@@ -39,9 +39,11 @@ export class Exception {
     }
   }
 
-  public toString(): string {
+  toString(): string {
     const template: string = getErrorMessage(this.code) || this.code.toString();
     return template.replace(
-        /{([^}]+)}/g, (match, pattern) => this.args[parseInt(pattern, 10)]);
+      /{([^}]+)}/g,
+      (match, pattern) => this.args[Number(pattern)]
+    );
   }
-}  // class Exception
+} // class Exception

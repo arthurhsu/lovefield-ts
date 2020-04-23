@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Row} from '../base/row';
-import {IndexStats} from './index_stats';
-import {Key, KeyRange, SingleKeyRange} from './key_range';
-import {RuntimeIndex} from './runtime_index';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Row } from '../base/row';
+
+import { Comparator } from './comparator';
+import { IndexStats } from './index_stats';
+import { Key, KeyRange, SingleKeyRange } from './key_range';
+import { RuntimeIndex } from './runtime_index';
 
 // Wraps another index which does not support NULL to accept NULL values.
 export class NullableIndex implements RuntimeIndex {
-  public static deserialize(
-      deserializeFn: (rows: Row[]) => RuntimeIndex,
-      rows: Row[]): NullableIndex {
+  static deserialize(
+    deserializeFn: (rows: Row[]) => RuntimeIndex,
+    rows: Row[]
+  ): NullableIndex {
     // Ideally, the special row should be the first one, and we can short cut.
     let index = -1;
     for (let i = 0; i < rows.length; ++i) {
@@ -39,12 +42,12 @@ export class NullableIndex implements RuntimeIndex {
       throw new Exception(ErrorCode.DATA_CORRUPTION);
     }
 
-    const nulls = rows[index].payload() as number[];
+    const nulls = rows[index].payload()['v'] as number[];
     const newRows = rows.slice(0);
     newRows.splice(index, 1);
     const tree = deserializeFn(newRows);
     const nullableIndex = new NullableIndex(tree);
-    nulls.forEach((rowId) => nullableIndex.nulls.add(rowId));
+    nulls.forEach(rowId => nullableIndex.nulls.add(rowId));
     return nullableIndex;
   }
 
@@ -60,11 +63,11 @@ export class NullableIndex implements RuntimeIndex {
     this.statsObj = new IndexStats();
   }
 
-  public getName(): string {
+  getName(): string {
     return this.index.getName();
   }
 
-  public add(key: Key, value: number): void {
+  add(key: Key, value: number): void {
     if (key === null) {
       // Note: Nullable index allows multiple nullable keys even if it is marked
       // as unique. This is matching the behavior of other SQL engines.
@@ -75,7 +78,7 @@ export class NullableIndex implements RuntimeIndex {
     }
   }
 
-  public set(key: Key, value: number): void {
+  set(key: Key, value: number): void {
     if (key === null) {
       this.nulls.clear();
       this.statsNull.clear();
@@ -85,7 +88,7 @@ export class NullableIndex implements RuntimeIndex {
     }
   }
 
-  public remove(key: Key, rowId?: number): void {
+  remove(key: Key, rowId?: number): void {
     if (key === null) {
       if (rowId) {
         this.nulls.delete(rowId);
@@ -99,7 +102,7 @@ export class NullableIndex implements RuntimeIndex {
     }
   }
 
-  public get(key: Key): number[] {
+  get(key: Key): number[] {
     if (key === null) {
       return Array.from(this.nulls.values());
     } else {
@@ -107,21 +110,24 @@ export class NullableIndex implements RuntimeIndex {
     }
   }
 
-  public min(): any[]|null {
+  min(): unknown[] | null {
     return this.index.min();
   }
 
-  public max(): any[]|null {
+  max(): unknown[] | null {
     return this.index.max();
   }
 
-  public cost(keyRange?: SingleKeyRange|KeyRange): number {
+  cost(keyRange?: SingleKeyRange | KeyRange): number {
     return this.index.cost(keyRange);
   }
 
-  public getRange(
-      range?: SingleKeyRange[]|KeyRange[], reverseOrder?: boolean,
-      limit?: number, skip?: number): number[] {
+  getRange(
+    range?: SingleKeyRange[] | KeyRange[],
+    reverseOrder?: boolean,
+    limit?: number,
+    skip?: number
+  ): number[] {
     const results = this.index.getRange(range, reverseOrder, limit, skip);
     if (range !== undefined && range !== null) {
       return results;
@@ -130,30 +136,33 @@ export class NullableIndex implements RuntimeIndex {
     return results.concat(Array.from(this.nulls.values()));
   }
 
-  public clear(): void {
+  clear(): void {
     this.nulls.clear();
     this.index.clear();
   }
 
-  public containsKey(key: Key): boolean {
+  containsKey(key: Key): boolean {
     return key === null ? this.nulls.size !== 0 : this.index.containsKey(key);
   }
 
-  public serialize(): Row[] {
-    const rows =
-        [new Row(NullableIndex.NULL_ROW_ID, Array.from(this.nulls.values()))];
+  serialize(): Row[] {
+    const rows = [
+      new Row(NullableIndex.NULL_ROW_ID, {
+        v: Array.from(this.nulls.values()),
+      }),
+    ];
     return rows.concat(this.index.serialize());
   }
 
-  public comparator(): any {
+  comparator(): Comparator {
     return this.index.comparator();
   }
 
-  public isUniqueKey(): boolean {
+  isUniqueKey(): boolean {
     return this.index.isUniqueKey();
   }
 
-  public stats(): IndexStats {
+  stats(): IndexStats {
     this.statsObj.updateFromList([this.index.stats(), this.statsNull]);
     return this.statsObj;
   }

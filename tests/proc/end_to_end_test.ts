@@ -22,7 +22,7 @@ import {ChangeRecord} from '../../lib/base/change_record';
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
 import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
+import {PayloadType, Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {InsertQuery} from '../../lib/query/insert_query';
 import {BaseTable} from '../../lib/schema/base_table';
@@ -141,7 +141,10 @@ describe('EndToEndTest', () => {
     results = await TestUtil.selectAll(global, c);
     // Sorting by primary key.
     results.sort((leftRow, rightRow) => {
-      return leftRow.payload()['id'] - rightRow.payload()['id'];
+      return (
+        (leftRow.payload()['id'] as number) -
+        (rightRow.payload()['id'] as number)
+      );
     });
 
     // Checking that all primary keys starting from 1 were automatically
@@ -311,9 +314,14 @@ describe('EndToEndTest', () => {
       });
 
       const rows = [row1, row2, row3, row4];
-      let results: Row[] = await db.insert().into(table).values(rows).exec();
+      let results = await db
+          .insert().into(table).values(rows).exec() as PayloadType[];
       assert.equal(4, results.length);
-      results = await db.select().from(table).orderBy(table['integer1']).exec();
+      results = await db
+          .select()
+          .from(table)
+          .orderBy(table['integer1'])
+          .exec() as PayloadType[];
       const expected = rows.map((row) => row.payload());
       assert.sameDeepOrderedMembers(expected, results);
     });

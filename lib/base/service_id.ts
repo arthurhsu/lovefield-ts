@@ -17,12 +17,12 @@
 export class ServiceId<T> {
   constructor(private serviceId: string) {}
 
-  public toString(): string {
+  toString(): string {
     return this.serviceId;
   }
 
   // Dummy method to please the compiler (need to use <T> somewhere).
-  public getAsType(): T {
-    return {} as any as T;
+  getAsType(): T {
+    return ({} as unknown) as T;
   }
 }

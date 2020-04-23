@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../../lib/base/enum';
-import {Exception} from '../../lib/base/exception';
-import {Row} from '../../lib/base/row';
-import {RuntimeTable} from '../../lib/base/runtime_table';
-import {TableDiff} from '../../lib/cache/table_diff';
+import { ErrorCode } from '../../lib/base/enum';
+import { Exception } from '../../lib/base/exception';
+import { Row } from '../../lib/base/row';
+import { RuntimeTable } from '../../lib/base/runtime_table';
+import { TableDiff } from '../../lib/cache/table_diff';
 
 export class TrackedTable implements RuntimeTable {
   // The changes that have been applied on this table since the start of the
@@ -26,7 +26,7 @@ export class TrackedTable implements RuntimeTable {
   private tableDiff: TableDiff;
 
   // A list of all async operations that have been spawned for this table.
-  private requests: Array<Promise<any>>;
+  private requests: Array<Promise<unknown>>;
   private acceptingRequests: boolean;
 
   constructor(private table: RuntimeTable, tableName: string) {
@@ -35,16 +35,16 @@ export class TrackedTable implements RuntimeTable {
     this.acceptingRequests = true;
   }
 
-  public whenRequestsDone(): Promise<any> {
+  whenRequestsDone(): Promise<unknown> {
     this.acceptingRequests = false;
     return Promise.all(this.requests);
   }
 
-  public getDiff(): TableDiff {
+  getDiff(): TableDiff {
     return this.tableDiff;
   }
 
-  public get(ids: number[]): Promise<Row[]> {
+  get(ids: number[]): Promise<Row[]> {
     try {
       this.checkAcceptingRequests();
     } catch (e) {
@@ -56,7 +56,7 @@ export class TrackedTable implements RuntimeTable {
     return promise;
   }
 
-  public put(rows: Row[]): Promise<void> {
+  put(rows: Row[]): Promise<void> {
     try {
       this.checkAcceptingRequests();
     } catch (e) {
@@ -64,13 +64,15 @@ export class TrackedTable implements RuntimeTable {
     }
 
     const rowMap = new Map<number, Row>();
-    rows.forEach((row) => rowMap.set(row.id(), row));
+    rows.forEach(row => rowMap.set(row.id(), row));
 
-    const promise = this.get(Array.from(rowMap.keys())).then((existingRows) => {
+    const promise = this.get(Array.from(rowMap.keys())).then(existingRows => {
       // First update the diff with the existing rows that are modified.
-      existingRows.forEach((existingRow) => {
-        this.tableDiff.modify(
-            [existingRow, rowMap.get(existingRow.id()) as Row]);
+      existingRows.forEach(existingRow => {
+        this.tableDiff.modify([
+          existingRow,
+          rowMap.get(existingRow.id()) as Row,
+        ]);
         rowMap.delete(existingRow.id());
       }, this);
 
@@ -84,16 +86,18 @@ export class TrackedTable implements RuntimeTable {
     return promise;
   }
 
-  public remove(ids: number[], disableClearTableOptimization?: boolean):
-      Promise<void> {
+  remove(
+    ids: number[],
+    disableClearTableOptimization?: boolean
+  ): Promise<void> {
     try {
       this.checkAcceptingRequests();
     } catch (e) {
       return Promise.reject(e);
     }
 
-    const promise = this.table.get(ids).then((rows) => {
-      rows.forEach((row) => this.tableDiff.delete(row));
+    const promise = this.table.get(ids).then(rows => {
+      rows.forEach(row => this.tableDiff.delete(row));
       return this.table.remove(ids);
     });
 
@@ -104,7 +108,7 @@ export class TrackedTable implements RuntimeTable {
   private checkAcceptingRequests(): void {
     if (!this.acceptingRequests) {
       // 107: Invalid transaction state transition: {0} -> {1}.
-      throw new Exception(ErrorCode.INVALID_TX_STATE, 7, 0);
+      throw new Exception(ErrorCode.INVALID_TX_STATE, '7', '0');
     }
   }
 }

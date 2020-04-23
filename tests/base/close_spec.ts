@@ -15,11 +15,11 @@
  */
 
 import * as chai from 'chai';
-import {Capability} from '../../lib/base/capability';
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {TestUtil} from '../../testing/test_util';
+import { Capability } from '../../lib/base/capability';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -39,13 +39,16 @@ describe('Close', () => {
 
   it('connectTwiceThrows_SchemaBuilder', () => {
     TestUtil.assertThrowsError(
-        //  Connection operation was already in progress.
-        ErrorCode.ALREADY_CONNECTED, () => {
-          const schemaBuilder = getHrDbSchemaBuilder();
-          schemaBuilder.connect({storeType: DataStoreType.MEMORY})
-              .then((conn) => db = conn);
-          schemaBuilder.connect({storeType: DataStoreType.MEMORY});
-        });
+      //  Connection operation was already in progress.
+      ErrorCode.ALREADY_CONNECTED,
+      () => {
+        const schemaBuilder = getHrDbSchemaBuilder();
+        schemaBuilder
+          .connect({ storeType: DataStoreType.MEMORY })
+          .then(conn => (db = conn));
+        schemaBuilder.connect({ storeType: DataStoreType.MEMORY });
+      }
+    );
   });
 
   it('close', async () => {
@@ -59,7 +62,7 @@ describe('Close', () => {
     // Test that all queries after closing are throwing.
     database.close();
     const thrower = () =>
-        database.select().from(database.getSchema().table('Employee'));
+      database.select().from(database.getSchema().table('Employee'));
     assert.throw(thrower);
 
     // Test that db can be opened again.

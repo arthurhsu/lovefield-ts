@@ -17,24 +17,25 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {Exception} from '../../lib/base/exception';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {TestUtil} from '../../testing/test_util';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { Exception } from '../../lib/base/exception';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { Table } from '../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('SimulateError', () => {
   let sandbox: sinon.SinonSandbox;
   let db: RuntimeDatabase;
-  let employee: BaseTable;
+  let employee: Table;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     employee = db.getSchema().table('Employee');
   });
 
@@ -42,7 +43,7 @@ describe('SimulateError', () => {
     db.close();
   });
 
-  function rejecter(): Promise<any> {
+  function rejecter(): Promise<object[]> {
     return Promise.reject(new Exception(ErrorCode.SIMULATED_ERROR));
   }
 
@@ -68,7 +69,7 @@ describe('SimulateError', () => {
 
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn();
+    const results = await selectFn() as string[];
     assert.equal(1, results.length);
     assert.equal(0, results[0].length);
   });
@@ -83,7 +84,7 @@ describe('SimulateError', () => {
     await tx.begin([employee]);
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn();
+    const results = await selectFn() as string[];
     assert.equal(0, results.length);
   });
 });

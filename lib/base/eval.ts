@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ErrorCode, Type} from './enum';
-import {Exception} from './exception';
+import { ErrorCode, Type } from './enum';
+import { Exception } from './exception';
 
 export enum EvalType {
   BETWEEN = 'between',
@@ -29,10 +29,14 @@ export enum EvalType {
   NEQ = 'neq',
 }
 
-type ValueType = boolean|number|string;
+type ValueType = boolean | number | string;
 
+// ComparisonFunction is a special type that needs to allow any.
+/* tslint:disable:no-any */
 export type ComparisonFunction = (l: any, r: any) => boolean;
-export type KeyOfIndexFunction = (key: ValueType|Date) => ValueType;
+/* tslint:enable:no-any */
+export type IndexableType = ValueType | Date;
+export type KeyOfIndexFunction = (key: IndexableType) => ValueType;
 
 function identity<T>(value: T): T {
   return value;
@@ -44,18 +48,18 @@ function identity<T>(value: T): T {
  * NOTE: lf.eval.Type.BETWEEN, MATCH, GTE, GT, LTE, LT, are not available for
  * boolean objects.
  */
-function buildkeyOfIndexConversionMap(): Map<Type, KeyOfIndexFunction> {
+function buildKeyOfIndexConversionMap(): Map<Type, KeyOfIndexFunction> {
   const map = new Map<Type, KeyOfIndexFunction>();
   map.set(Type.BOOLEAN, ((value: boolean) => {
-                          return value === null ? null : (value ? 1 : 0);
-                        }) as any as KeyOfIndexFunction);
+    return value === null ? null : value ? 1 : 0;
+  }) as KeyOfIndexFunction);
   map.set(Type.DATE_TIME, ((value: Date) => {
-                            return value === null ? null : value.getTime();
-                          }) as any as KeyOfIndexFunction);
+    return value === null ? null : value.getTime();
+  }) as KeyOfIndexFunction);
 
-  map.set(Type.INTEGER, identity as any as KeyOfIndexFunction);
-  map.set(Type.NUMBER, identity as any as KeyOfIndexFunction);
-  map.set(Type.STRING, identity as any as KeyOfIndexFunction);
+  map.set(Type.INTEGER, identity as KeyOfIndexFunction);
+  map.set(Type.NUMBER, identity as KeyOfIndexFunction);
+  map.set(Type.STRING, identity as KeyOfIndexFunction);
   return map;
 }
 
@@ -78,24 +82,24 @@ function buildBooleanEvaluatorMap(): Map<EvalType, ComparisonFunction> {
 function buildCommonEvaluatorMap(): Map<EvalType, ComparisonFunction> {
   const map = buildBooleanEvaluatorMap();
   map.set(EvalType.BETWEEN, (a: ValueType, range: RangeType) => {
-    return (a === null || range[0] === null || range[1] === null) ?
-        false :
-        (a >= range[0] && a <= range[1]);
+    return a === null || range[0] === null || range[1] === null
+      ? false
+      : a >= range[0] && a <= range[1];
   });
   map.set(EvalType.GTE, (a: ValueType, b: ValueType) => {
-    return (a === null || b === null) ? false : a >= b;
+    return a === null || b === null ? false : a >= b;
   });
   map.set(EvalType.GT, (a: ValueType, b: ValueType) => {
-    return (a === null || b === null) ? false : a > b;
+    return a === null || b === null ? false : a > b;
   });
   map.set(EvalType.IN, (rowValue: ValueType, values: ListType) => {
     return values.indexOf(rowValue) !== -1;
   });
   map.set(EvalType.LTE, (a: ValueType, b: ValueType) => {
-    return (a === null || b === null) ? false : a <= b;
+    return a === null || b === null ? false : a <= b;
   });
   map.set(EvalType.LT, (a: ValueType, b: ValueType) => {
-    return (a === null || b === null) ? false : a < b;
+    return a === null || b === null ? false : a < b;
   });
   return map;
 }
@@ -157,41 +161,40 @@ function buildObjectEvaluatorMap(): Map<EvalType, ComparisonFunction> {
 function buildDateEvaluatorMap(): Map<EvalType, ComparisonFunction> {
   const map = new Map<EvalType, ComparisonFunction>();
   map.set(EvalType.BETWEEN, (a: Date, range: Date[]) => {
-    return (a == null || range[0] == null || range[1] == null) ?
-        false :
-        (a.getTime() >= range[0].getTime() &&
-         a.getTime() <= range[1].getTime());
+    return a == null || range[0] == null || range[1] == null
+      ? false
+      : a.getTime() >= range[0].getTime() && a.getTime() <= range[1].getTime();
   });
   map.set(EvalType.EQ, (a: Date, b: Date) => {
-    const aTime = (a == null) ? -1 : a.getTime();
-    const bTime = (b == null) ? -1 : b.getTime();
+    const aTime = a == null ? -1 : a.getTime();
+    const bTime = b == null ? -1 : b.getTime();
     return aTime === bTime;
   });
   map.set(EvalType.GTE, (a: Date, b: Date) => {
-    return (a == null || b == null) ? false : a.getTime() >= b.getTime();
+    return a == null || b == null ? false : a.getTime() >= b.getTime();
   });
   map.set(EvalType.GT, (a: Date, b: Date) => {
-    return (a == null || b == null) ? false : a.getTime() > b.getTime();
+    return a == null || b == null ? false : a.getTime() > b.getTime();
   });
   map.set(EvalType.IN, (targetValue: Date, values: Date[]) => {
-    return values.some((value) => value.getTime() === targetValue.getTime());
+    return values.some(value => value.getTime() === targetValue.getTime());
   });
   map.set(EvalType.LTE, (a: Date, b: Date) => {
-    return (a == null || b == null) ? false : a.getTime() <= b.getTime();
+    return a == null || b == null ? false : a.getTime() <= b.getTime();
   });
   map.set(EvalType.LT, (a: Date, b: Date) => {
-    return (a == null || b == null) ? false : a.getTime() < b.getTime();
+    return a == null || b == null ? false : a.getTime() < b.getTime();
   });
   map.set(EvalType.NEQ, (a: Date, b: Date) => {
-    const aTime = (a == null) ? -1 : a.getTime();
-    const bTime = (b == null) ? -1 : b.getTime();
+    const aTime = a == null ? -1 : a.getTime();
+    const bTime = b == null ? -1 : b.getTime();
     return aTime !== bTime;
   });
   return map;
 }
 
 export class EvalRegistry {
-  public static get(): EvalRegistry {
+  static get(): EvalRegistry {
     EvalRegistry.instance = EvalRegistry.instance || new EvalRegistry();
     return EvalRegistry.instance;
   }
@@ -211,7 +214,7 @@ export class EvalRegistry {
   private evalMaps: Map<Type, Map<EvalType, ComparisonFunction>>;
 
   constructor() {
-    this.keyOfIndexConversionMap = buildkeyOfIndexConversionMap();
+    this.keyOfIndexConversionMap = buildKeyOfIndexConversionMap();
     this.evalMaps = new Map<Type, Map<EvalType, ComparisonFunction>>();
     const numberOrIntegerEvalMap = buildNumberEvaluatorMap();
 
@@ -223,8 +226,7 @@ export class EvalRegistry {
     this.evalMaps.set(Type.OBJECT, buildObjectEvaluatorMap());
   }
 
-  public getEvaluator(columnType: Type, evaluatorType: EvalType):
-      ComparisonFunction {
+  getEvaluator(columnType: Type, evaluatorType: EvalType): ComparisonFunction {
     const evaluationMap = this.evalMaps.get(columnType) || null;
     if (evaluationMap === null) {
       // 550: where() clause includes an invalid predicate. Could not find
@@ -241,7 +243,7 @@ export class EvalRegistry {
     return evaluatorFn;
   }
 
-  public getKeyOfIndexEvaluator(columnType: Type): KeyOfIndexFunction {
+  getKeyOfIndexEvaluator(columnType: Type): KeyOfIndexFunction {
     const fn = this.keyOfIndexConversionMap.get(columnType) || null;
     if (fn === null) {
       // 300: Not supported

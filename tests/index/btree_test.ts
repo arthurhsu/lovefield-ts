@@ -15,19 +15,19 @@
  */
 
 import * as chai from 'chai';
-import {ErrorCode, Order} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {BTree, BTreeNode} from '../../lib/index/btree';
-import {Comparator} from '../../lib/index/comparator';
-import {Key, SingleKeyRange} from '../../lib/index/key_range';
-import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
-import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
-import {SimpleComparator} from '../../lib/index/simple_comparator';
-import {TestMultiKeyIndex} from '../../testing/index/test_multi_key_index';
-import {TestMultiRowNumericalKey} from '../../testing/index/test_multi_row_numerical_key';
-import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
-import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
-import {TestUtil} from '../../testing/test_util';
+import { ErrorCode, Order } from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { BTree, BTreeNode } from '../../lib/index/btree';
+import { Comparator } from '../../lib/index/comparator';
+import { Key, SingleKeyRange } from '../../lib/index/key_range';
+import { MultiKeyComparator } from '../../lib/index/multi_key_comparator';
+import { MultiKeyComparatorWithNull } from '../../lib/index/multi_key_comparator_with_null';
+import { SimpleComparator } from '../../lib/index/simple_comparator';
+import { TestMultiKeyIndex } from '../../testing/index/test_multi_key_index';
+import { TestMultiRowNumericalKey } from '../../testing/index/test_multi_row_numerical_key';
+import { TestSingleRowNumericalKey } from '../../testing/index/test_single_row_numerical_key';
+import { TestSingleRowStringKey } from '../../testing/index/test_single_row_string_key';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -35,6 +35,8 @@ describe('BTree', () => {
   let c: SimpleComparator;
   let c2: SimpleComparator;
 
+  // Special hack to replace internal private variables.
+  // tslint:disable:no-any
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -51,6 +53,7 @@ describe('BTree', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
+  // tslint:enable:no-any
 
   beforeEach(() => {
     c = new SimpleComparator(Order.ASC);
@@ -64,23 +67,55 @@ describe('BTree', () => {
 
   // clang-format off
   const SEQUENCE = [
-    13, 9, 21, 17,
+    13,
+    9,
+    21,
+    17,
     5,
-    11, 3, 25, 27,
-    14, 15, 31, 29, 22, 23, 38, 45, 47,
+    11,
+    3,
+    25,
+    27,
+    14,
+    15,
+    31,
+    29,
+    22,
+    23,
+    38,
+    45,
+    47,
     49,
     1,
-    10, 12, 16];
+    10,
+    12,
+    16,
+  ];
 
   const SEQUENCE2: Array<[number, string]> = [
-    [13, '13'], [9, '09'], [21, '21'], [17, '17'],
+    [13, '13'],
+    [9, '09'],
+    [21, '21'],
+    [17, '17'],
     [5, '05'],
-    [11, '11'], [3, '03'], [25, '25'], [27, '27'],
-    [14, '14'], [15, '15'], [31, '31'], [29, '29'], [22, '22'],
-    [23, '23'], [38, '38'], [45, '45'], [47, '47'],
+    [11, '11'],
+    [3, '03'],
+    [25, '25'],
+    [27, '27'],
+    [14, '14'],
+    [15, '15'],
+    [31, '31'],
+    [29, '29'],
+    [22, '22'],
+    [23, '23'],
+    [38, '38'],
+    [45, '45'],
+    [47, '47'],
     [49, '49'],
     [1, '1'],
-    [10, '10'], [12, '12'], [16, '16'],
+    [10, '10'],
+    [12, '12'],
+    [16, '16'],
   ];
   // clang-format on
 
@@ -99,14 +134,17 @@ describe('BTree', () => {
   }
 
   function insertToTree2(
-      index: number, comparator: Comparator, duplicate?: boolean): BTree {
+    index: number,
+    comparator: Comparator,
+    duplicate?: boolean
+  ): BTree {
     const unique = !duplicate;
     const tree = new BTree('test', comparator, unique);
     let i = 0;
     while (i < index) {
       tree.add(SEQUENCE2[i], SEQUENCE2[i][0]);
       if (duplicate) {
-        tree.add(SEQUENCE[i], SEQUENCE[i][0] * 1000);
+        tree.add(SEQUENCE[i], SEQUENCE[i] * 1000);
       }
       i++;
     }
@@ -132,11 +170,7 @@ describe('BTree', () => {
 
   it('LeafNodeAsRoot', () => {
     const tree = insertToTree(4);
-    const expected = [
-      '0[9|13|17|21]',
-      '_{9/13/17/21}_',
-      '',
-    ].join('\n');
+    const expected = ['0[9|13|17|21]', '_{9/13/17/21}_', ''].join('\n');
     assert.equal(expected, tree.toString());
 
     // Serialize and deserialize should have no problem.
@@ -342,13 +376,29 @@ describe('BTree', () => {
     const tree = new BTree('test', c, true);
     // clang-format off
     const keys = [
-      -995, 371, 370, 369,
-      368,  // New level created here
-      367, 366, 365, 364, 363, 97, 98, 99, 100, 101,
-      102,  // New level created here
-      103, 104,  // Split leaf node with right link
-      105, 106, 486,
-      107, 108,  // Split internal node with right link
+      -995,
+      371,
+      370,
+      369,
+      368, // New level created here
+      367,
+      366,
+      365,
+      364,
+      363,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102, // New level created here
+      103,
+      104, // Split leaf node with right link
+      105,
+      106,
+      486,
+      107,
+      108, // Split internal node with right link
     ];
     // clang-format on
     for (let i = 0; i < keys.length; ++i) {
@@ -395,7 +445,7 @@ describe('BTree', () => {
 
   it('ConstructFromData', () => {
     const key = SEQUENCE.slice(0, 23).sort((a, b) => a - b);
-    const data = key.map((i) => ({key: i, value: i}));
+    const data = key.map(i => ({ key: i, value: i }));
     const tree = new BTree('test', c, true, data);
     const expected = [
       '6[21]\n',
@@ -570,11 +620,7 @@ describe('BTree', () => {
     const tree = insertToTree(5);
     tree.remove(5);
     tree.remove(13);
-    const expected = [
-      '1[9|17|21]',
-      '_{9/17/21}_',
-      '',
-    ].join('\n');
+    const expected = ['1[9|17|21]', '_{9/17/21}_', ''].join('\n');
     assert.equal(expected, tree.toString());
   });
 
@@ -597,11 +643,7 @@ describe('BTree', () => {
     const tree = insertToTree(5);
     tree.remove(17);
     tree.remove(21);
-    const expected = [
-      '0[5|9|13]',
-      '_{5/9/13}_',
-      '',
-    ].join('\n');
+    const expected = ['0[5|9|13]', '_{5/9/13}_', ''].join('\n');
     assert.equal(expected, tree.toString());
   });
 
@@ -881,14 +923,17 @@ describe('BTree', () => {
   });
 
   it('SingleRow_NumericalKey_Asc', () => {
-    const test =
-        new TestSingleRowNumericalKey(() => new BTree('test', c, true));
+    const test = new TestSingleRowNumericalKey(
+      () => new BTree('test', c, true)
+    );
     test.run();
   });
 
   it('SingleRow_NumericalKey_Desc', () => {
-    const test =
-        new TestSingleRowNumericalKey(() => new BTree('test', c2, true), true);
+    const test = new TestSingleRowNumericalKey(
+      () => new BTree('test', c2, true),
+      true
+    );
     test.run();
   });
 
@@ -898,22 +943,28 @@ describe('BTree', () => {
   });
 
   it('SingleRow_StringKey_Desc', () => {
-    const test =
-        new TestSingleRowStringKey(() => new BTree('test', c2, true), true);
+    const test = new TestSingleRowStringKey(
+      () => new BTree('test', c2, true),
+      true
+    );
     test.run();
   });
 
   it('MultiKeyIndex', () => {
     const test = new TestMultiKeyIndex(() => {
       return new BTree(
-          'test', new MultiKeyComparator([Order.ASC, Order.DESC]), true);
+        'test',
+        new MultiKeyComparator([Order.ASC, Order.DESC]),
+        true
+      );
     });
     test.run();
   });
 
   it('MultiRow_NumericalKey', () => {
-    const test =
-        new TestMultiRowNumericalKey(() => new BTree('test', c, false));
+    const test = new TestMultiRowNumericalKey(
+      () => new BTree('test', c, false)
+    );
     test.run();
   });
 
@@ -1015,14 +1066,18 @@ describe('BTree', () => {
 
   it('GetRange_EmptyTree', () => {
     const tree = new BTree(
-        'test', new MultiKeyComparator([Order.ASC, Order.DESC]), true);
+      'test',
+      new MultiKeyComparator([Order.ASC, Order.DESC]),
+      true
+    );
     assert.sameOrderedMembers([], tree.getRange());
   });
 
   it('UniqueConstraint', () => {
     const tree = insertToTree(9);
-    TestUtil.assertThrowsError(
-        ErrorCode.DUPLICATE_KEYS, () => tree.add(13, 13));
+    TestUtil.assertThrowsError(ErrorCode.DUPLICATE_KEYS, () =>
+      tree.add(13, 13)
+    );
   });
 
   it('RandomNumbers', () => {
@@ -1122,7 +1177,9 @@ describe('BTree', () => {
     assert.equal(expected, tree.toString());
     assert.sameOrderedMembers([13000], tree.get(13));
     assert.sameOrderedMembers(
-        [13000], tree.getRange([SingleKeyRange.only(13)]));
+      [13000],
+      tree.getRange([SingleKeyRange.only(13)])
+    );
   });
 
   it('DuplicateKeys_DeleteAll', () => {
@@ -1145,20 +1202,24 @@ describe('BTree', () => {
 
   it('DuplicateKeys_SmokeTest', () => {
     const tree = insertToTree(23, true);
-    SEQUENCE.forEach((s) => {
+    SEQUENCE.forEach(s => {
       assert.equal(2, tree.cost(SingleKeyRange.only(s)));
       assert.sameOrderedMembers([s, s * 1000], tree.get(s));
       assert.sameOrderedMembers(
-          [s, s * 1000], tree.getRange([SingleKeyRange.only(s)]));
+        [s, s * 1000],
+        tree.getRange([SingleKeyRange.only(s)])
+      );
     });
     assert.equal(2 * SEQUENCE.length, tree.cost(SingleKeyRange.all()));
 
-    SEQUENCE.forEach((s) => {
+    SEQUENCE.forEach(s => {
       tree.remove(s, s);
       assert.equal(1, tree.cost(SingleKeyRange.only(s)));
       assert.sameOrderedMembers([s * 1000], tree.get(s));
       assert.sameOrderedMembers(
-          [s * 1000], tree.getRange([SingleKeyRange.only(s)]));
+        [s * 1000],
+        tree.getRange([SingleKeyRange.only(s)])
+      );
     });
     assert.equal(SEQUENCE.length, tree.cost(SingleKeyRange.all()));
 
@@ -1167,8 +1228,9 @@ describe('BTree', () => {
   });
 
   it('MultiKeyGet', () => {
-    const comparator =
-        new MultiKeyComparator(MultiKeyComparator.createOrders(2, Order.ASC));
+    const comparator = new MultiKeyComparator(
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = insertToTree2(23, comparator);
     for (let i = 0; i < 23; i++) {
       const key = SEQUENCE2[i];
@@ -1187,8 +1249,8 @@ describe('BTree', () => {
       set.add(Math.floor(Math.random() * ROW_COUNT * 100));
     }
 
-    const numbers = Array.from(set.values()).sort((a, b) => (a - b));
-    const keys = numbers.map((n) => [n, -n]);
+    const numbers = Array.from(set.values()).sort((a, b) => a - b);
+    const keys = numbers.map(n => [n, -n]);
 
     const comparator = new MultiKeyComparator([Order.ASC, Order.DESC]);
     const tree = new BTree('test', comparator, true);
@@ -1205,49 +1267,54 @@ describe('BTree', () => {
   });
 
   it('MultiKeyGetRangeRegression', () => {
-    const comparator =
-        new MultiKeyComparator(MultiKeyComparator.createOrders(2, Order.ASC));
+    const comparator = new MultiKeyComparator(
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = new BTree('test', comparator, true);
     // clang-format off
     const data = [
-      ['F', 'A'], ['F', 'B'], ['F', 'C'], ['F', 'D'],
-      ['G', 'B'], ['G', 'G'], ['G', 'X'],
-      ['P', 'K'], ['P', 'M'], ['P', 'P'],
-      ['S', 'A'], ['S', 'B'], ['S', 'C'], ['S', 'D'],
+      ['F', 'A'],
+      ['F', 'B'],
+      ['F', 'C'],
+      ['F', 'D'],
+      ['G', 'B'],
+      ['G', 'G'],
+      ['G', 'X'],
+      ['P', 'K'],
+      ['P', 'M'],
+      ['P', 'P'],
+      ['S', 'A'],
+      ['S', 'B'],
+      ['S', 'C'],
+      ['S', 'D'],
     ];
     // clang-format on
     for (let i = 0; i < data.length; ++i) {
       tree.add(data[i], i);
     }
-    const keyRange = [[
-      SingleKeyRange.only('G'),
-      SingleKeyRange.only('X'),
-    ]];
+    const keyRange = [[SingleKeyRange.only('G'), SingleKeyRange.only('X')]];
     assert.sameOrderedMembers([6], tree.getRange(keyRange));
 
-    const keyRange2 = [[
-      SingleKeyRange.only('P'),
-      SingleKeyRange.only('P'),
-    ]];
+    const keyRange2 = [[SingleKeyRange.only('P'), SingleKeyRange.only('P')]];
     assert.sameOrderedMembers([9], tree.getRange(keyRange2));
 
-    const keyRange3 = [[
-      SingleKeyRange.lowerBound('P'),
-      SingleKeyRange.upperBound('D'),
-    ]];
+    const keyRange3 = [
+      [SingleKeyRange.lowerBound('P'), SingleKeyRange.upperBound('D')],
+    ];
     assert.sameOrderedMembers([10, 11, 12, 13], tree.getRange(keyRange3));
     assert.sameOrderedMembers([11, 12], tree.getRange(keyRange3, false, 2, 1));
     assert.sameOrderedMembers(
-        [12, 11, 10], tree.getRange(keyRange3, true, 3, 1));
+      [12, 11, 10],
+      tree.getRange(keyRange3, true, 3, 1)
+    );
 
-    const keyRange4 = [[
-      SingleKeyRange.lowerBound('S'),
-      SingleKeyRange.all(),
-    ]];
+    const keyRange4 = [[SingleKeyRange.lowerBound('S'), SingleKeyRange.all()]];
     assert.sameOrderedMembers([10, 11, 12, 13], tree.getRange(keyRange4));
 
     assert.sameOrderedMembers(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], tree.getRange());
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+      tree.getRange()
+    );
 
     const comparator2 = new MultiKeyComparator([Order.ASC, Order.DESC]);
     const tree2 = new BTree('test2', comparator2, true);
@@ -1257,11 +1324,17 @@ describe('BTree', () => {
     assert.sameOrderedMembers([6], tree2.getRange(keyRange));
     assert.sameOrderedMembers([9], tree2.getRange(keyRange2));
     assert.sameOrderedMembers(
-        [3, 2, 1, 0, 6, 5, 4, 9, 8, 7, 13, 12, 11, 10], tree2.getRange());
+      [3, 2, 1, 0, 6, 5, 4, 9, 8, 7, 13, 12, 11, 10],
+      tree2.getRange()
+    );
     assert.sameOrderedMembers(
-        [1, 0, 6], tree2.getRange(undefined, false, 3, 2));
+      [1, 0, 6],
+      tree2.getRange(undefined, false, 3, 2)
+    );
     assert.sameOrderedMembers(
-        [13, 7, 8, 9], tree2.getRange(undefined, true, 4, 3));
+      [13, 7, 8, 9],
+      tree2.getRange(undefined, true, 4, 3)
+    );
   });
 
   /**
@@ -1329,7 +1402,7 @@ describe('BTree', () => {
     // Remove only one row for the given key.
     tree.remove(17, 17);
     assert.equal(43, stats.totalRows);
-    tree.remove(17, 9999);  // remove non-existing row
+    tree.remove(17, 9999); // remove non-existing row
     assert.equal(43, stats.totalRows);
     tree.set(17, 7777);
     tree.add(17, 8888);
@@ -1345,20 +1418,25 @@ describe('BTree', () => {
     const deserializedTree = BTree.deserialize(c, 'dummyTree', false, rows);
     assert.equal(43, deserializedTree.stats().totalRows);
     assert.equal(
-        expectedMaxKeyEncountered, deserializedTree.stats().maxKeyEncountered);
+      expectedMaxKeyEncountered,
+      deserializedTree.stats().maxKeyEncountered
+    );
   });
 
   it('GetAll', () => {
     const tree = insertToTree(23, false);
     const expected = SEQUENCE.slice(0).sort((a, b) => {
-      return (a < b) ? -1 : ((a > b) ? 1 : 0);
+      return a < b ? -1 : a > b ? 1 : 0;
     });
     assert.sameOrderedMembers(expected, tree.getRange());
     assert.sameOrderedMembers(
-        expected.slice(2, 5), tree.getRange(undefined, false, 3, 2));
+      expected.slice(2, 5),
+      tree.getRange(undefined, false, 3, 2)
+    );
     assert.sameOrderedMembers(
-        expected.slice(0, expected.length - 1).reverse(),
-        tree.getRange(undefined, true, undefined, 1));
+      expected.slice(0, expected.length - 1).reverse(),
+      tree.getRange(undefined, true, undefined, 1)
+    );
 
     const tree2 = new BTree('t2', c, false);
     for (let i = 1; i < 10; ++i) {
@@ -1368,29 +1446,48 @@ describe('BTree', () => {
     }
 
     assert.sameOrderedMembers(
-        [11, 12, 13], tree2.getRange(undefined, false, 3, 1));
+      [11, 12, 13],
+      tree2.getRange(undefined, false, 3, 1)
+    );
     assert.sameOrderedMembers(
-        [14, 20, 21], tree2.getRange(undefined, false, 3, 4));
+      [14, 20, 21],
+      tree2.getRange(undefined, false, 3, 4)
+    );
     assert.sameOrderedMembers([94], tree2.getRange(undefined, false, 10, 44));
     assert.sameOrderedMembers(
-        [], tree2.getRange(undefined, false, undefined, 99));
+      [],
+      tree2.getRange(undefined, false, undefined, 99)
+    );
   });
 
   it('Smoke_MultiNullableKey', () => {
     const comparator = new MultiKeyComparatorWithNull(
-        MultiKeyComparator.createOrders(2, Order.ASC));
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = insertToTree2(23, comparator);
-    assert.sameOrderedMembers([1, '1'], (tree.min() as any[])[0]);
-    assert.sameOrderedMembers([49, '49'], (tree.max() as any[])[0]);
+    assert.sameOrderedMembers(
+      [1, '1'],
+      (tree.min() as unknown[])[0] as unknown[]
+    );
+    assert.sameOrderedMembers(
+      [49, '49'],
+      (tree.max() as unknown[])[0] as unknown[]
+    );
 
-    tree.set([-1, null] as any as Key, 9996);
-    tree.set([null, '33'] as any as Key, 9997);
-    tree.set([777, null] as any as Key, 9998);
-    tree.set([null, null] as any as Key, 9999);
+    tree.set(([-1, null] as unknown) as Key, 9996);
+    tree.set(([null, '33'] as unknown) as Key, 9997);
+    tree.set(([777, null] as unknown) as Key, 9998);
+    tree.set(([null, null] as unknown) as Key, 9999);
     assert.equal(SEQUENCE2.length + 4, tree.getRange().length);
 
-    assert.sameOrderedMembers([-1, null], (tree.min() as any[])[0]);
-    assert.sameOrderedMembers([777, null], (tree.max() as any[])[0]);
+    assert.sameOrderedMembers(
+      [-1, null],
+      (tree.min() as unknown[])[0] as unknown[]
+    );
+    assert.sameOrderedMembers(
+      [777, null],
+      (tree.max() as unknown[])[0] as unknown[]
+    );
 
     // Serialize and deserialize should have no problem.
     const rows = tree.serialize();
@@ -1400,55 +1497,62 @@ describe('BTree', () => {
 
   it('GetRange_MultiNullableKey', () => {
     const comparator = new MultiKeyComparatorWithNull(
-        MultiKeyComparator.createOrders(2, Order.ASC));
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = new BTree('test', comparator, true);
     // clang-format off
     const data = [
-      ['F', 'A'], ['F', 'B'], ['F', 'C'], ['F', 'D'],
-      ['G', 'B'], ['G', 'G'], ['G', 'X'],
-      ['P', 'K'], ['P', 'M'], ['P', 'P'],
-      ['S', 'A'], ['S', 'B'], ['S', 'C'], ['S', 'D'],
-      [null, 'Z'], ['Z', null], [null, null],
+      ['F', 'A'],
+      ['F', 'B'],
+      ['F', 'C'],
+      ['F', 'D'],
+      ['G', 'B'],
+      ['G', 'G'],
+      ['G', 'X'],
+      ['P', 'K'],
+      ['P', 'M'],
+      ['P', 'P'],
+      ['S', 'A'],
+      ['S', 'B'],
+      ['S', 'C'],
+      ['S', 'D'],
+      [null, 'Z'],
+      ['Z', null],
+      [null, null],
     ];
     // clang-format on
     for (let i = 0; i < data.length; ++i) {
-      tree.add(data[i] as any as Key, i);
+      tree.add((data[i] as unknown) as Key, i);
     }
-    const keyRange = [[
-      SingleKeyRange.only('G'),
-      SingleKeyRange.only('X'),
-    ]];
+    const keyRange = [[SingleKeyRange.only('G'), SingleKeyRange.only('X')]];
     assert.sameOrderedMembers([6], tree.getRange(keyRange));
 
-    const keyRange2 = [[
-      SingleKeyRange.only('P'),
-      SingleKeyRange.only('P'),
-    ]];
+    const keyRange2 = [[SingleKeyRange.only('P'), SingleKeyRange.only('P')]];
     assert.sameOrderedMembers([9], tree.getRange(keyRange2));
 
-    const keyRange3 = [[
-      SingleKeyRange.lowerBound('P'),
-      SingleKeyRange.upperBound('D'),
-    ]];
+    const keyRange3 = [
+      [SingleKeyRange.lowerBound('P'), SingleKeyRange.upperBound('D')],
+    ];
     assert.sameOrderedMembers([10, 11, 12, 13], tree.getRange(keyRange3));
     assert.sameOrderedMembers([11, 12], tree.getRange(keyRange3, false, 2, 1));
     assert.sameOrderedMembers(
-        [12, 11, 10], tree.getRange(keyRange3, true, 3, 1));
+      [12, 11, 10],
+      tree.getRange(keyRange3, true, 3, 1)
+    );
 
-    const keyRange4 = [[
-      SingleKeyRange.lowerBound('S'),
-      SingleKeyRange.all(),
-    ]];
+    const keyRange4 = [[SingleKeyRange.lowerBound('S'), SingleKeyRange.all()]];
     assert.sameOrderedMembers([10, 11, 12, 13, 15], tree.getRange(keyRange4));
 
     assert.sameOrderedMembers(
-        [16, 14, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15],
-        tree.getRange());
+      [16, 14, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15],
+      tree.getRange()
+    );
   });
 
   it('GetRange_MultiKey', () => {
-    const comparator =
-        new MultiKeyComparator(MultiKeyComparator.createOrders(2, Order.ASC));
+    const comparator = new MultiKeyComparator(
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = new BTree('test', comparator, true);
     const tree2 = new BTree('test2', comparator, false);
     for (let i = 1; i <= 10; ++i) {
@@ -1460,24 +1564,21 @@ describe('BTree', () => {
     tree2.add([11, 30], 11);
     tree2.add([11, 30], 1100);
 
-    const keyRange = [[
-      SingleKeyRange.lowerBound(2, true),
-      SingleKeyRange.only(30),
-    ]];
+    const keyRange = [
+      [SingleKeyRange.lowerBound(2, true), SingleKeyRange.only(30)],
+    ];
     assert.sameOrderedMembers([3, 11], tree.getRange(keyRange));
     assert.sameOrderedMembers([3, 300, 11, 1100], tree2.getRange(keyRange));
 
-    const keyRange2 = [[
-      SingleKeyRange.only(11),
-      SingleKeyRange.all(),
-    ]];
+    const keyRange2 = [[SingleKeyRange.only(11), SingleKeyRange.all()]];
     assert.sameOrderedMembers([11], tree.getRange(keyRange2));
     assert.sameOrderedMembers([11, 1100], tree2.getRange(keyRange2));
   });
 
   it('GetRange_MultiUniqueKey', () => {
-    const comparator =
-        new MultiKeyComparator(MultiKeyComparator.createOrders(2, Order.ASC));
+    const comparator = new MultiKeyComparator(
+      MultiKeyComparator.createOrders(2, Order.ASC)
+    );
     const tree = new BTree('test', comparator, true);
 
     for (let i = 1; i <= 3; ++i) {
@@ -1494,16 +1595,22 @@ describe('BTree', () => {
     const upperBoundEx = SingleKeyRange.upperBound(2, true);
 
     assert.sameOrderedMembers(
-        [201, 202, 203, 204, 205], tree.getRange([[only, all]]));
+      [201, 202, 203, 204, 205],
+      tree.getRange([[only, all]])
+    );
 
     // This is a corner case: [2, 2] is the root node, and we want to test if
     // it works correctly.
     assert.sameOrderedMembers([202], tree.getRange([[only, only]]));
 
     assert.sameOrderedMembers(
-        [202, 203, 204, 205], tree.getRange([[only, lowerBound]]));
+      [202, 203, 204, 205],
+      tree.getRange([[only, lowerBound]])
+    );
     assert.sameOrderedMembers(
-        [203, 204, 205], tree.getRange([[only, lowerBoundEx]]));
+      [203, 204, 205],
+      tree.getRange([[only, lowerBoundEx]])
+    );
     assert.sameOrderedMembers([201, 202], tree.getRange([[only, upperBound]]));
     assert.sameOrderedMembers([201], tree.getRange([[only, upperBoundEx]]));
   });

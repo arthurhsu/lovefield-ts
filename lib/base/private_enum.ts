@@ -17,9 +17,9 @@
 // The comparison result constant. This must be consistent with the constant
 // required by the sort function of Array.prototype.sort.
 export enum Favor {
-  RHS = -1,  // favors right hand side, i.e. lhs < rhs
-  TIE = 0,   // no favorite, i.e. lhs == rhs
-  LHS = 1,   // favors left hand side, i.e. lhs > rhs
+  RHS = -1, // favors right hand side, i.e. lhs < rhs
+  TIE = 0, // no favorite, i.e. lhs == rhs
+  LHS = 1, // favors left hand side, i.e. lhs > rhs
 }
 
 export enum TableType {
@@ -28,9 +28,9 @@ export enum TableType {
 }
 
 export enum ExecType {
-  NO_CHILD = -1,    // Will not call any of its children's exec().
-  ALL = 0,          // Will invoke all children nodes' exec().
-  FIRST_CHILD = 1,  // Will invoke only the first child's exec().
+  NO_CHILD = -1, // Will not call any of its children's exec().
+  ALL = 0, // Will invoke all children nodes' exec().
+  FIRST_CHILD = 1, // Will invoke only the first child's exec().
 }
 
 export enum LockType {
