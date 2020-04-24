@@ -28,9 +28,7 @@ export interface Table {
   // Individual accessor will return BaseColumn.
   // This conflicts to private members in TableImpl, therefore use a more
   // generic unknown type. Caller to dynamic cast public accessor to Column.
-  /*
   [key: string]: unknown;
-  */
 
   // Given the indexed type is a big bummer in Typescript, add an additional
   // method to make life easier.

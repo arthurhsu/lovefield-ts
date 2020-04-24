@@ -16,18 +16,19 @@
 
 import * as chai from 'chai';
 
-import {DiffCalculator} from '../../lib/base/diff_calculator';
-import {Type} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
-import {Relation} from '../../lib/proc/relation';
-import {SelectBuilder} from '../../lib/query/select_builder';
-import {SelectContext} from '../../lib/query/select_context';
-import {Builder} from '../../lib/schema/builder';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {MockEnv} from '../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import { DiffCalculator } from '../../lib/base/diff_calculator';
+import { Type } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { Resolver } from '../../lib/base/resolver';
+import { Row } from '../../lib/base/row';
+import { Relation } from '../../lib/proc/relation';
+import { SelectBuilder } from '../../lib/query/select_builder';
+import { SelectContext } from '../../lib/query/select_context';
+import { Builder } from '../../lib/schema/builder';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { MockEnv } from '../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import { ChangeRecord } from '../../lib/base/change_record';
 
 const assert = chai.assert;
 
@@ -58,8 +59,10 @@ describe('DiffCalculator', () => {
   // projected.
   it('diffCalculation_ExplicitColumns', () => {
     const table = schema.table('tableA');
-    const builder =
-        new SelectBuilder(Global.get(), [table['id'], table['name']]);
+    const builder = new SelectBuilder(Global.get(), [
+      table.col('id'),
+      table.col('name'),
+    ]);
     builder.from(table);
     const query = builder.getQuery();
     checkDiffCalculation(query, 'ExplicitColumns');
@@ -75,12 +78,14 @@ describe('DiffCalculator', () => {
   });
 
   // Checks that change notifications are sent as expected when observed results
-  // are mutated in constious ways.
+  // are mutated in continuous ways.
   function checkDiffCalculation(
-      query: SelectContext, description: string): void {
+    query: SelectContext,
+    description: string
+  ): void {
     const promiseResolver = new Resolver<void>();
 
-    const callback = (currentVersion: number, changes: any[]) => {
+    const callback = (currentVersion: number, changes: ChangeRecord[]) => {
       switch (currentVersion) {
         case 0:
           assert.equal(1, changes.length);
@@ -100,12 +105,12 @@ describe('DiffCalculator', () => {
           assert.equal(4, changes.length);
           assert.equal(7, changes[0].object.length);
 
-          changes.forEach((change) => assert.equal(1, change['addedCount']));
+          changes.forEach(change => assert.equal(1, change['addedCount']));
 
-          assert.equal(0, changes[0].index);  // row1
-          assert.equal(3, changes[1].index);  // row4
-          assert.equal(5, changes[2].index);  // row6
-          assert.equal(6, changes[3].index);  // row7
+          assert.equal(0, changes[0].index); // row1
+          assert.equal(3, changes[1].index); // row4
+          assert.equal(5, changes[2].index); // row6
+          assert.equal(6, changes[3].index); // row7
           break;
         case 3:
           assert.equal(1, changes.length);
@@ -185,10 +190,12 @@ describe('DiffCalculator', () => {
   // |rowsPerVersion| is the query results for each version to be simulated.
   // |callback| is the function to be called every time a change is applied.
   function performMutations(
-      rowsPerVersion: Row[][], query: SelectContext,
-      callback: (version: number, change: any[]) => void): void {
+    rowsPerVersion: Row[][],
+    query: SelectContext,
+    callback: (version: number, change: ChangeRecord[]) => void
+  ): void {
     let currentVersion = -1;
-    const observable: any[] = [];
+    const observable: object[] = [];
     let oldResults = Relation.createEmpty();
     const diffCalculator = new DiffCalculator(query, observable);
 
@@ -197,8 +204,9 @@ describe('DiffCalculator', () => {
     const updateResultsToNextVersion = () => {
       currentVersion++;
       const table = schema.table('tableA');
-      const newResults =
-          Relation.fromRows(rowsPerVersion[currentVersion], [table.getName()]);
+      const newResults = Relation.fromRows(rowsPerVersion[currentVersion], [
+        table.getName(),
+      ]);
       const changeRecords = diffCalculator.applyDiff(oldResults, newResults);
       oldResults = newResults;
 
@@ -214,11 +222,12 @@ describe('DiffCalculator', () => {
   // Tests the case where the observed table has an Type.OBJECT column.
   it('DiffCalculation_ObjectColumn', () => {
     const schemaBuilder = new Builder('object_diff', 1);
-    schemaBuilder.createTable('myTable')
-        .addColumn('id', Type.STRING)
-        .addColumn('obj', Type.OBJECT)
-        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
-        .addPrimaryKey(['id']);
+    schemaBuilder
+      .createTable('myTable')
+      .addColumn('id', Type.STRING)
+      .addColumn('obj', Type.OBJECT)
+      .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+      .addPrimaryKey(['id']);
 
     const schema2 = schemaBuilder.getSchema();
     const myTable = schema2.table('myTable');
@@ -231,7 +240,7 @@ describe('DiffCalculator', () => {
     const rowBefore = myTable.createRow({
       arraybuffer: null,
       id: 'dummyId',
-      obj: {hello: 'world'},
+      obj: { hello: 'world' },
     });
 
     let oldResults = Relation.createEmpty();
@@ -247,7 +256,7 @@ describe('DiffCalculator', () => {
     const rowAfter = myTable.createRow({
       arraybuffer: null,
       id: 'dummyId',
-      obj: {hola: 'mundo'},
+      obj: { hello: 'amigo' },
     });
     rowAfter.assignRowId(rowBefore.id());
 

@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../base/enum';
-import {Exception} from '../base/exception';
+import {
+  ConstraintAction,
+  ConstraintTiming,
+  ErrorCode,
+  Order,
+  Type,
+} from '../base/enum';
+import { Exception } from '../base/exception';
 
-import {BaseTable} from './base_table';
-import {ColumnDef} from './column_def';
-import {ForeignKeySpec, RawForeignKeySpec} from './foreign_key_spec';
-import {IndexImpl} from './index_impl';
-import {IndexedColumnSpec} from './indexed_column';
-import {TableImpl} from './table_impl';
+import { BaseTable } from './base_table';
+import { ColumnDef } from './column_def';
+import { ForeignKeySpec, RawForeignKeySpec } from './foreign_key_spec';
+import { IndexImpl } from './index_impl';
+import { IndexedColumnSpec } from './indexed_column';
+import { TableImpl } from './table_impl';
 
 // Dynamic Table schema builder
 // TODO(arthurhsu): FIXME: use a public interface here.
@@ -54,13 +60,13 @@ export class TableBuilder {
     this.uniqueColumns = new Set<string>();
     this.uniqueIndices = new Set<string>();
     this.nullable = new Set<string>();
-    this.pkName = null as any as string;
+    this.pkName = (null as unknown) as string;
     this.indices = new Map<string, IndexedColumnSpec[]>();
     this.persistIndex = false;
     this.fkSpecs = [];
   }
 
-  public addColumn(name: string, type: Type): TableBuilder {
+  addColumn(name: string, type: Type): TableBuilder {
     this.checkNamingRules(name);
     this.checkNameConflicts(name);
     this.columns.set(name, type);
@@ -81,8 +87,10 @@ export class TableBuilder {
   //
   // case 2: (columns: Array<IndexedColumnSpec>)
   //   allows different ordering per-column, but more verbose.
-  public addPrimaryKey(columns: string[]|IndexedColumnSpec[], autoInc = false):
-      TableBuilder {
+  addPrimaryKey(
+    columns: string[] | IndexedColumnSpec[],
+    autoInc = false
+  ): TableBuilder {
     this.pkName = 'pk' + TableBuilder.toPascal(this.name);
     this.checkNamingRules(this.pkName);
     this.checkNameConflicts(this.pkName);
@@ -98,7 +106,7 @@ export class TableBuilder {
   }
 
   // Creates a foreign key on a given table column.
-  public addForeignKey(name: string, rawSpec: RawForeignKeySpec): TableBuilder {
+  addForeignKey(name: string, rawSpec: RawForeignKeySpec): TableBuilder {
     this.checkNamingRules(name);
     this.checkNameConflicts(name);
     if (rawSpec.action === undefined) {
@@ -109,8 +117,10 @@ export class TableBuilder {
     }
 
     const spec = new ForeignKeySpec(rawSpec, this.name, name);
-    if (spec.action === ConstraintAction.CASCADE &&
-        spec.timing === ConstraintTiming.DEFERRABLE) {
+    if (
+      spec.action === ConstraintAction.CASCADE &&
+      spec.timing === ConstraintTiming.DEFERRABLE
+    ) {
       // 506: Lovefield allows only immediate evaluation of cascading
       // constraints.
       throw new Exception(ErrorCode.IMMEDIATE_EVAL_ONLY);
@@ -123,11 +133,14 @@ export class TableBuilder {
 
     this.fkSpecs.push(spec);
     this.addIndex(
-        name, [spec.childColumn], this.uniqueColumns.has(spec.childColumn));
+      name,
+      [spec.childColumn],
+      this.uniqueColumns.has(spec.childColumn)
+    );
     return this;
   }
 
-  public addUnique(name: string, columns: string[]): TableBuilder {
+  addUnique(name: string, columns: string[]): TableBuilder {
     this.checkNamingRules(name);
     this.checkNameConflicts(name);
     const cols = this.normalizeColumns(columns, true);
@@ -140,9 +153,10 @@ export class TableBuilder {
     return this;
   }
 
-  public addNullable(columns: string[]): TableBuilder {
-    this.normalizeColumns(columns, false)
-        .forEach((col) => this.nullable.add(col.name));
+  addNullable(columns: string[]): TableBuilder {
+    this.normalizeColumns(columns, false).forEach(col =>
+      this.nullable.add(col.name)
+    );
     return this;
   }
 
@@ -152,9 +166,12 @@ export class TableBuilder {
   //   adds an index by column names only. All columns have same ordering.
   // case 2: (name, columns: !Array<!TableBuilder.IndexedColumnSpec>, unique)
   //   adds an index, allowing customization of ordering, but more verbose.
-  public addIndex(
-      name: string, columns: string[]|object[], unique = false,
-      order = Order.ASC): TableBuilder {
+  addIndex(
+    name: string,
+    columns: string[] | object[],
+    unique = false,
+    order = Order.ASC
+  ): TableBuilder {
     this.checkNamingRules(name);
     this.checkNameConflicts(name);
     this.indices.set(name, this.normalizeColumns(columns, true, order));
@@ -164,43 +181,52 @@ export class TableBuilder {
     return this;
   }
 
-  public persistentIndex(value: boolean): void {
+  persistentIndex(value: boolean): void {
     this.persistIndex = value;
   }
 
-  public getSchema(): BaseTable {
+  getSchema(): BaseTable {
     this.checkPrimaryKeyNotForeignKey();
     this.checkPrimaryKeyDuplicateIndex();
     this.checkPrimaryKeyNotNullable();
 
-    const columns: ColumnDef[] =
-        Array.from(this.columns.keys()).map((colName) => {
-          return {
-            name: colName,
-            nullable: this.nullable.has(colName) || false,
-            type: this.columns.get(colName) as any as Type,
-            unique: this.uniqueColumns.has(colName) || false,
-          };
-        });
+    const columns: ColumnDef[] = Array.from(this.columns.keys()).map(
+      colName => {
+        return {
+          name: colName,
+          nullable: this.nullable.has(colName) || false,
+          type: (this.columns.get(colName) as unknown) as Type,
+          unique: this.uniqueColumns.has(colName) || false,
+        };
+      }
+    );
 
     // Pass null as indices since Columns are not really constructed yet.
     const table = new TableImpl(
-        this.name, columns, null as any as IndexImpl[], this.persistIndex);
+      this.name,
+      columns,
+      (null as unknown) as IndexImpl[],
+      this.persistIndex
+    );
 
     // Columns shall be constructed within TableImpl ctor, now we can
     // instruct it to construct proper index schema.
     table.constructIndices(
-        this.pkName, this.indices, this.uniqueIndices, this.nullable,
-        this.fkSpecs);
-    return table as any as BaseTable;
+      this.pkName,
+      this.indices,
+      this.uniqueIndices,
+      this.nullable,
+      this.fkSpecs
+    );
+    return table;
   }
 
-  public getFkSpecs(): ForeignKeySpec[] {
+  getFkSpecs(): ForeignKeySpec[] {
     return this.fkSpecs;
   }
 
   private checkNamingRules(name: string): void {
-    if (!(/^[A-Za-z_][A-Za-z0-9_]*$/.test(name))) {
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
       // 502: Naming rule violation: {0}.
       throw new Exception(ErrorCode.INVALID_NAME, name);
     }
@@ -212,8 +238,11 @@ export class TableBuilder {
       throw new Exception(ErrorCode.DUPLICATE_NAME, name);
     }
 
-    if (this.columns.has(name) || this.indices.has(name) ||
-        this.uniqueIndices.has(name)) {
+    if (
+      this.columns.has(name) ||
+      this.indices.has(name) ||
+      this.uniqueIndices.has(name)
+    ) {
       // 503: Name {0} is already defined.
       throw new Exception(ErrorCode.NAME_IN_USE, `${this.name}.${name}`);
     }
@@ -221,10 +250,10 @@ export class TableBuilder {
 
   private checkPrimaryKey(columns: IndexedColumnSpec[]): void {
     let hasAutoIncrement = false;
-    columns.forEach((column) => {
+    columns.forEach(column => {
       const columnType = this.columns.get(column.name);
       hasAutoIncrement =
-          hasAutoIncrement || column.autoIncrement as any as boolean;
+        hasAutoIncrement || ((column.autoIncrement as unknown) as boolean);
       if (column.autoIncrement && columnType !== Type.INTEGER) {
         // 504: Can not use autoIncrement with a non-integer primary key.
         throw new Exception(ErrorCode.INVALID_AUTO_KEY_TYPE);
@@ -246,7 +275,7 @@ export class TableBuilder {
 
     const index = this.indices.get(this.pkName);
     if (index) {
-      const pkColumns = index.map((column) => column.name);
+      const pkColumns = index.map(column => column.name);
       let fkSpecIndex = 0;
       const conflict = this.fkSpecs.some((fkSpec, i) => {
         fkSpecIndex = i;
@@ -256,9 +285,11 @@ export class TableBuilder {
         // 543: Foreign key {0}. A primary key column can't also be a foreign
         // key child column.
         throw new Exception(
-            ErrorCode.PK_CANT_BE_FK, this.fkSpecs[fkSpecIndex].name);
+          ErrorCode.PK_CANT_BE_FK,
+          this.fkSpecs[fkSpecIndex].name
+        );
       }
-    }  // else nothing to check.
+    } // else nothing to check.
   }
 
   // Checks whether the primary key index is identical (in terms of indexed
@@ -278,14 +309,17 @@ export class TableBuilder {
           return;
         }
 
-        if (JSON.stringify(indexedColumnSpecs.map(extractName)) ===
-            pkColumnsJson) {
+        if (
+          JSON.stringify(indexedColumnSpecs.map(extractName)) === pkColumnsJson
+        ) {
           // 544: Duplicate primary key index found at {0}
           throw new Exception(
-              ErrorCode.DUPLICATE_PK, `${this.name}.${indexName}`);
+            ErrorCode.DUPLICATE_PK,
+            `${this.name}.${indexName}`
+          );
         }
       });
-    }  // else nothing to check.
+    } // else nothing to check.
   }
 
   // Checks whether any primary key column has also been marked as nullable.
@@ -296,26 +330,31 @@ export class TableBuilder {
 
     const index = this.indices.get(this.pkName);
     if (index) {
-      index.forEach((indexedColumnSpec) => {
+      index.forEach(indexedColumnSpec => {
         if (this.nullable.has(indexedColumnSpec.name)) {
           // 545: Primary key column {0} can't be marked as nullable
           throw new Exception(
-              ErrorCode.NULLABLE_PK, `${this.name}.${indexedColumnSpec.name}`);
+            ErrorCode.NULLABLE_PK,
+            `${this.name}.${indexedColumnSpec.name}`
+          );
         }
       });
-    }  // else nothing to check.
+    } // else nothing to check.
   }
 
   // Convert different column representations (column name only or column
   // objects) into column object array. Also performs consistency check to make
   // sure referred columns are actually defined.
   private normalizeColumns(
-      columns: string[]|object[], checkIndexable: boolean,
-      sortOrder = Order.ASC, autoInc = false): IndexedColumnSpec[] {
-    let normalized: IndexedColumnSpec[] = null as any as IndexedColumnSpec[];
-    if (typeof (columns[0]) === 'string') {
+    columns: string[] | object[],
+    checkIndexable: boolean,
+    sortOrder = Order.ASC,
+    autoInc = false
+  ): IndexedColumnSpec[] {
+    let normalized: IndexedColumnSpec[] = (null as unknown) as IndexedColumnSpec[];
+    if (typeof columns[0] === 'string') {
       const array = columns as string[];
-      normalized = array.map((col) => {
+      normalized = array.map(col => {
         return {
           autoIncrement: autoInc || false,
           name: col,
@@ -326,7 +365,7 @@ export class TableBuilder {
       normalized = columns as IndexedColumnSpec[];
     }
 
-    normalized.forEach((col) => {
+    normalized.forEach(col => {
       if (!this.columns.has(col.name)) {
         // 508: Table {0} does not have column: {1}.
         throw new Exception(ErrorCode.COLUMN_NOT_FOUND, this.name, col.name);
@@ -336,7 +375,10 @@ export class TableBuilder {
         if (type === Type.ARRAY_BUFFER || type === Type.OBJECT) {
           // 509: Attempt to index table {0} on non-indexable column {1}.
           throw new Exception(
-              ErrorCode.COLUMN_NOT_INDEXABLE, this.name, col.name);
+            ErrorCode.COLUMN_NOT_INDEXABLE,
+            this.name,
+            col.name
+          );
         }
       }
     });
@@ -344,7 +386,7 @@ export class TableBuilder {
   }
 
   private markFkIndexForColumnUnique(column: string): void {
-    this.fkSpecs.forEach((fkSpec) => {
+    this.fkSpecs.forEach(fkSpec => {
       if (fkSpec.childColumn === column) {
         this.uniqueIndices.add(fkSpec.name.split('.')[1]);
       }

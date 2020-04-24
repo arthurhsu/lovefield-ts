@@ -29,6 +29,7 @@
     "gulp-cli": "^2.2.0",
     "gulp-debug": "^4.0.0",
     "gulp-mocha": "^7.0.2",
+    "gulp-run": "^1.7.1",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
     "guppy-cli": "^1.0.1",

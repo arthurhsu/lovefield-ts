@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import {Capability} from '../../lib/base/capability';
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType, Type} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {Builder} from '../../lib/schema/builder';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {SmokeTester} from '../../testing/smoke_tester';
+import { Capability } from '../../lib/base/capability';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import { DataStoreType, Type } from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { Builder } from '../../lib/schema/builder';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { SmokeTester } from '../../testing/smoke_tester';
 
 const assert = chai.assert;
 
@@ -41,13 +41,15 @@ describe('MultiDB', () => {
     // Setup two databases and connect.
     const hr = getHrDbSchemaBuilder();
     const order = new Builder(`order${Date.now}`, 1);
-    order.createTable('Region')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING)
-        .addPrimaryKey(['id']);
+    order
+      .createTable('Region')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING)
+      .addPrimaryKey(['id']);
     const options = {
-      storeType: !capability.indexedDb ? DataStoreType.MEMORY :
-                                         DataStoreType.INDEXED_DB,
+      storeType: !capability.indexedDb
+        ? DataStoreType.MEMORY
+        : DataStoreType.INDEXED_DB,
     };
     dbHr = await hr.connect(options);
     dbOrder = await order.connect(options);
@@ -88,17 +90,23 @@ describe('MultiDB', () => {
       const rows: Row[] = [];
       const tableA = schemaBuilder1.getSchema().table('TableA');
       for (let i = 0; i < 3; i++) {
-        rows.push(tableA.createRow({name: `name_${i}`}));
+        rows.push(tableA.createRow({ name: `name_${i}` }));
       }
       return rows;
     };
 
-    const options = {storeType: DataStoreType.INDEXED_DB};
+    const options = { storeType: DataStoreType.INDEXED_DB };
     await schemaBuilder1.connect(options);
     let sampleRows = createNewTableARows();
-    assert.sameOrderedMembers([1, 2, 3], sampleRows.map((r) => r.id()));
+    assert.sameOrderedMembers(
+      [1, 2, 3],
+      sampleRows.map(r => r.id())
+    );
     await schemaBuilder2.connect(options);
     sampleRows = createNewTableARows();
-    assert.sameOrderedMembers([4, 5, 6], sampleRows.map((r) => r.id()));
+    assert.sameOrderedMembers(
+      [4, 5, 6],
+      sampleRows.map(r => r.id())
+    );
   });
 });

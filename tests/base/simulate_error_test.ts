@@ -55,7 +55,7 @@ describe('SimulateError', () => {
 
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn() as unknown[];
+    const results = (await selectFn()) as unknown[];
     assert.equal(0, results.length);
   });
 
@@ -69,7 +69,7 @@ describe('SimulateError', () => {
 
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn() as string[];
+    const results = (await selectFn()) as string[];
     assert.equal(1, results.length);
     assert.equal(0, results[0].length);
   });
@@ -84,7 +84,7 @@ describe('SimulateError', () => {
     await tx.begin([employee]);
     await TestUtil.assertPromiseReject(ErrorCode.SIMULATED_ERROR, selectFn());
     sandbox.restore();
-    const results = await selectFn() as string[];
+    const results = (await selectFn()) as string[];
     assert.equal(0, results.length);
   });
 });

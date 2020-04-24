@@ -31,7 +31,9 @@ import { IndexedColumn, IndexedColumnSpec } from './indexed_column';
 import { RowImpl } from './row_impl';
 
 export class TableImpl implements BaseTable {
-  public static ROW_ID_INDEX_PATTERN = '#';
+  static ROW_ID_INDEX_PATTERN = '#';
+  [key: string]: unknown;
+
   private static EMPTY_INDICES: IndexImpl[] = [];
 
   private _alias: string;
@@ -99,8 +101,8 @@ export class TableImpl implements BaseTable {
     return this._usePersistentIndex;
   }
 
-  public as(name: string): BaseTable {
-    const colDef = this._columns.map((col) => {
+  as(name: string): BaseTable {
+    const colDef = this._columns.map(col => {
       return {
         name: col.getName(),
         nullable: col.isNullable(),
@@ -109,7 +111,12 @@ export class TableImpl implements BaseTable {
       };
     });
     const clone = new TableImpl(
-        this._name, colDef, this._indices, this._usePersistentIndex, name);
+      this._name,
+      colDef,
+      this._indices,
+      this._usePersistentIndex,
+      name
+    );
     clone._referencingFK = this._referencingFK;
     clone._constraint = this._constraint;
     clone._alias = name;
@@ -134,21 +141,26 @@ export class TableImpl implements BaseTable {
     );
   }
 
-  public deserializeRow(dbRecord: RawRow): Row {
-    const obj = {};
-    this._columns.forEach((col) => {
+  deserializeRow(dbRecord: RawRow): Row {
+    const obj: PayloadType = {};
+    this._columns.forEach(col => {
       const key = col.getName();
       const type = col.getType();
-      let value: any = dbRecord.value[key];
+      let value: unknown = dbRecord.value[key];
       if (type === Type.ARRAY_BUFFER) {
-        value = Row.hexToBin(value as string);
+        value = Row.hexToBin(value as string) as object;
       } else if (type === Type.DATE_TIME) {
-        value = (value !== null) ? new Date(value as number) : null;
+        value = value !== null ? new Date(value as number) : null;
       }
       obj[key] = value;
     });
     return new RowImpl(
-        this._functionMap, this._columns, this._indices, dbRecord.id, obj);
+      this._functionMap,
+      this._columns,
+      this._indices,
+      dbRecord.id,
+      obj
+    );
   }
 
   constructIndices(

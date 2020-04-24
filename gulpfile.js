@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const { exec } = require('child_process');
 const fs = require('fs-extra');
 const glob = require('glob');
 const gulp = require('gulp');
@@ -91,14 +92,13 @@ gulp.task('default', (cb) => {
   log('gulp tasks:');
   log('  build: build all libraries and tests');
   log('  clean: remove all intermediate files');
+  log('  check: run `npx gts check` for lints and errors');
+  log('  fix: run `npx gts fix` to automatically fix errors');
   log('  test: run mocha tests (quick mode only)');
   log('options:');
   log('  --quick, -q: Quick test only');
   log('  --grep, -g: Mocha grep pattern');
   log('  --flag <KEY:VALUE>: Override flags');
-  log('');
-  log('Lovefield-ts uses Google TypeScript Style to lint/format.');
-  log('Run `npx gts help` for its usage.');
   cb();
 });
 
@@ -343,14 +343,31 @@ gulp.task('debug', gulp.series(['dist', 'buildTest'], function actualDebug(cb) {
     return;
   }
 
-  new karma.Server({
+  const server = new karma.Server({
       configFile: path.join(__dirname, 'karma_config.js'),
       singleRun: false,
       client: { mocha: { grep: getGrepPattern() } }
-  }).start();
+  });
+  server.on('run_complete', (ret) => {
+    karma.stopper.stop();
+    cb();
+  });
+  server.start();
 }));
 
-gulp.task('pre-commit', gulp.parallel(['build'],
+gulp.task('check', function gtsCheck(cb) {
+  const cmd = exec('npx gts check');
+  cmd.stdout.on('data', data => { console.log(data); });
+  return cmd;
+});
+
+gulp.task('fix', function gtsFix(cb) {
+  const cmd = exec('npx gts fix');
+  cmd.stdout.on('data', data => { console.log(data); });
+  return cmd;
+});
+
+gulp.task('pre-commit', gulp.parallel(['build', 'check'],
     function preCommitCheck(cb) {
       cb();
     }));

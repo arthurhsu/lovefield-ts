@@ -24,6 +24,9 @@ import { Index } from '../schema/index';
 
 // Pseudo table used for initializing pseudo columns.
 export class UnknownTable implements BaseTable {
+  // Make TypeScript happy.
+  [key: string]: unknown;
+
   private _alias: string;
 
   constructor() {

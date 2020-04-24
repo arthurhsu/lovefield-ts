@@ -2,6 +2,7 @@
   "extends": "gts/tslint.json",
   "linterOptions": {
     "exclude": [
+      "coverage",
       "dist",
       "lib/gen",
       "node_modules",

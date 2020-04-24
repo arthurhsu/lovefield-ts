@@ -16,11 +16,13 @@
 
 import * as chai from 'chai';
 
-import {ErrorCode, Order, Type} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {IndexImpl} from '../../lib/schema/index_impl';
-import {TableBuilder} from '../../lib/schema/table_builder';
-import {TestUtil} from '../../testing/test_util';
+import { ErrorCode, Order, Type } from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { BaseColumn } from '../../lib/schema/base_column';
+import { BaseTable } from '../../lib/schema/base_table';
+import { IndexImpl } from '../../lib/schema/index_impl';
+import { TableBuilder } from '../../lib/schema/table_builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -38,19 +40,21 @@ describe('TableBuilder', () => {
     // 545: Primary key column {0} can't be marked as nullable,
     TestUtil.assertThrowsError(ErrorCode.NULLABLE_PK, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id', Type.STRING)
-          .addPrimaryKey(['id'])
-          .addNullable(['id']);
+      tableBuilder
+        .addColumn('id', Type.STRING)
+        .addPrimaryKey(['id'])
+        .addNullable(['id']);
       tableBuilder.getSchema();
     });
 
     // Testing multi column primary key.
     TestUtil.assertThrowsError(ErrorCode.NULLABLE_PK, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id1', Type.INTEGER)
-          .addColumn('id2', Type.INTEGER)
-          .addPrimaryKey(['id1', 'id2'])
-          .addNullable(['id2']);
+      tableBuilder
+        .addColumn('id1', Type.INTEGER)
+        .addColumn('id2', Type.INTEGER)
+        .addPrimaryKey(['id1', 'id2'])
+        .addNullable(['id2']);
       tableBuilder.getSchema();
     });
   });
@@ -64,8 +68,9 @@ describe('TableBuilder', () => {
 
     TestUtil.assertThrowsError(ErrorCode.COLUMN_NOT_INDEXABLE, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('arraybuffer', Type.ARRAY_BUFFER)
-          .addIndex('idx_arraybuffer', ['arraybuffer']);
+      tableBuilder
+        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+        .addIndex('idx_arraybuffer', ['arraybuffer']);
     });
   });
 
@@ -73,12 +78,13 @@ describe('TableBuilder', () => {
     // 505: Can not use autoIncrement with a cross-column primary key.
     TestUtil.assertThrowsError(ErrorCode.INVALID_AUTO_KEY_COLUMN, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id1', Type.INTEGER)
-          .addColumn('id2', Type.INTEGER)
-          .addPrimaryKey([
-            {name: 'id1', autoIncrement: true},
-            {name: 'id2', autoIncrement: true},
-          ]);
+      tableBuilder
+        .addColumn('id1', Type.INTEGER)
+        .addColumn('id2', Type.INTEGER)
+        .addPrimaryKey([
+          { name: 'id1', autoIncrement: true },
+          { name: 'id2', autoIncrement: true },
+        ]);
     });
   });
 
@@ -99,31 +105,40 @@ describe('TableBuilder', () => {
     // 540: Foreign key {0} has invalid reference syntax.
     TestUtil.assertThrowsError(ErrorCode.INVALID_FK_REF, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('employeeId', Type.STRING)
-          .addForeignKey(
-              'fkemployeeId', {local: 'employeeId1', ref: 'Employee.id'});
+      tableBuilder
+        .addColumn('employeeId', Type.STRING)
+        .addForeignKey('fkEmployeeId', {
+          local: 'employeeId1',
+          ref: 'Employee.id',
+        });
     });
   });
 
   it('throws_DuplicateIndexName', () => {
-    // 503: Name FkTableDupIndex.fkemployeeId is already defined.
+    // 503: Name FkTableDupIndex.fkEmployeeId is already defined.
     // Calling addForeignKey first, addIndex second.
     TestUtil.assertThrowsError(ErrorCode.NAME_IN_USE, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('employeeId', Type.INTEGER)
-          .addForeignKey(
-              'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'})
-          .addIndex('fkemployeeId', ['employeeId'], true, Order.ASC);
+      tableBuilder
+        .addColumn('employeeId', Type.INTEGER)
+        .addForeignKey('fkEmployeeId', {
+          local: 'employeeId',
+          ref: 'Employee.id',
+        })
+        .addIndex('fkEmployeeId', ['employeeId'], true, Order.ASC);
     });
 
-    // 503: Name FkTableDupIndex.fkemployeeId is already defined.
+    // 503: Name FkTableDupIndex.fkEmployeeId is already defined.
     // Calling addIndex first, addForeignKey second.
     TestUtil.assertThrowsError(ErrorCode.NAME_IN_USE, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('employeeId', Type.INTEGER)
-          .addIndex('fkemployeeId', ['employeeId'], true, Order.ASC)
-          .addForeignKey(
-              'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'});
+      tableBuilder
+        .addColumn('employeeId', Type.INTEGER)
+        .addIndex('fkEmployeeId', ['employeeId'], true, Order.ASC)
+        .addForeignKey('fkEmployeeId', {
+          local: 'employeeId',
+          ref: 'Employee.id',
+        });
     });
   });
 
@@ -150,12 +165,13 @@ describe('TableBuilder', () => {
     // child column.
     TestUtil.assertThrowsError(ErrorCode.PK_CANT_BE_FK, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id', Type.INTEGER)
-          .addPrimaryKey(['id'])
-          .addForeignKey('fk_id', {
-            local: 'id',
-            ref: 'OtherTable.id',
-          });
+      tableBuilder
+        .addColumn('id', Type.INTEGER)
+        .addPrimaryKey(['id'])
+        .addForeignKey('fk_id', {
+          local: 'id',
+          ref: 'OtherTable.id',
+        });
       return tableBuilder.getSchema();
     });
   });
@@ -165,94 +181,114 @@ describe('TableBuilder', () => {
     // Testing single column primary key.
     TestUtil.assertThrowsError(ErrorCode.DUPLICATE_PK, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id', Type.INTEGER)
-          .addPrimaryKey(['id'])
-          .addIndex('idx_id', ['id'], false, Order.ASC);
+      tableBuilder
+        .addColumn('id', Type.INTEGER)
+        .addPrimaryKey(['id'])
+        .addIndex('idx_id', ['id'], false, Order.ASC);
       return tableBuilder.getSchema();
     });
 
     // Testing multi column primary key.
     TestUtil.assertThrowsError(ErrorCode.DUPLICATE_PK, () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('id1', Type.INTEGER)
-          .addColumn('id2', Type.INTEGER)
-          .addPrimaryKey(['id1', 'id2'])
-          .addIndex('idx_id', ['id1', 'id2'], false, Order.ASC);
+      tableBuilder
+        .addColumn('id1', Type.INTEGER)
+        .addColumn('id2', Type.INTEGER)
+        .addPrimaryKey(['id1', 'id2'])
+        .addIndex('idx_id', ['id1', 'id2'], false, Order.ASC);
       return tableBuilder.getSchema();
     });
   });
 
   it('isUnique_CrossColumnPk', () => {
     const tableBuilder = new TableBuilder('Table');
-    tableBuilder.addColumn('id1', Type.NUMBER)
-        .addColumn('id2', Type.NUMBER)
-        .addColumn('email', Type.STRING)
-        .addColumn('maxSalary', Type.NUMBER)
-        .addPrimaryKey(['id1', 'id2']);
+    tableBuilder
+      .addColumn('id1', Type.NUMBER)
+      .addColumn('id2', Type.NUMBER)
+      .addColumn('email', Type.STRING)
+      .addColumn('maxSalary', Type.NUMBER)
+      .addPrimaryKey(['id1', 'id2']);
     const schema = tableBuilder.getSchema();
-    assert.isFalse(schema['id1'].unique);
-    assert.isFalse(schema['id2'].unique);
+    assert.isFalse((schema['id1'] as BaseColumn).unique);
+    assert.isFalse((schema['id2'] as BaseColumn).unique);
   });
 
   it('addDuplicateIndexOnFk', () => {
     const tableBuilder = new TableBuilder('Table');
-    tableBuilder.addColumn('employeeId', Type.INTEGER)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'})
-        .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
+    tableBuilder
+      .addColumn('employeeId', Type.INTEGER)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.id',
+      })
+      .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
     const indexNames: Set<string> = new Set();
-    tableBuilder.getSchema().getIndices().forEach(
-        (index) => indexNames.add((index as IndexImpl).name));
-    assert.isTrue(indexNames.has('fkemployeeId'));
+    tableBuilder
+      .getSchema()
+      .getIndices()
+      .forEach(index => indexNames.add((index as IndexImpl).name));
+    assert.isTrue(indexNames.has('fkEmployeeId'));
     assert.isTrue(indexNames.has('idx_employeeId'));
   });
 
   it('fkChildColumnIndex_Unique', () => {
     // Case 1: addUnique called before addForeignKey.
     const tableBuilder1 = new TableBuilder('Table1');
-    tableBuilder1.addColumn('employeeId', Type.INTEGER)
-        .addUnique('uq_employeeId', ['employeeId'])
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'});
-    const fkIndexSchema1 =
-        tableBuilder1.getSchema()['employeeId'].getIndices()[1];
-    assert.equal('fkemployeeId', fkIndexSchema1.name);
+    tableBuilder1
+      .addColumn('employeeId', Type.INTEGER)
+      .addUnique('uq_employeeId', ['employeeId'])
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.id',
+      });
+    const fkIndexSchema1 = (tableBuilder1.getSchema()[
+      'employeeId'
+    ] as BaseTable).getIndices()[1] as IndexImpl;
+    assert.equal('fkEmployeeId', fkIndexSchema1.name);
     assert.isTrue(fkIndexSchema1.isUnique);
 
     // Case 2: addUnique called after addForeignKey.
     const tableBuilder2 = new TableBuilder('Table2');
-    tableBuilder2.addColumn('employeeId', Type.INTEGER)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'})
-        .addUnique('uq_employeeId', ['employeeId']);
-    const fkIndexSchema2 =
-        tableBuilder2.getSchema()['employeeId'].getIndices()[0];
-    assert.equal('fkemployeeId', fkIndexSchema2.name);
+    tableBuilder2
+      .addColumn('employeeId', Type.INTEGER)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.id',
+      })
+      .addUnique('uq_employeeId', ['employeeId']);
+    const fkIndexSchema2 = (tableBuilder2.getSchema()[
+      'employeeId'
+    ] as BaseTable).getIndices()[0] as IndexImpl;
+    assert.equal('fkEmployeeId', fkIndexSchema2.name);
     assert.isTrue(fkIndexSchema2.isUnique);
   });
 
   it('fkChildColumnIndex_NonUnique', () => {
     // Case: Foreign key child column is not unique.
     const tableBuilder = new TableBuilder('Table');
-    tableBuilder.addColumn('employeeId', Type.INTEGER)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.id'})
-        .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
+    tableBuilder
+      .addColumn('employeeId', Type.INTEGER)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.id',
+      })
+      .addIndex('idx_employeeId', ['employeeId'], false, Order.ASC);
     const fkIndexSchema = tableBuilder.getSchema().getIndices()[0] as IndexImpl;
-    assert.equal('fkemployeeId', fkIndexSchema.name);
+    assert.equal('fkEmployeeId', fkIndexSchema.name);
     assert.isFalse(fkIndexSchema.isUnique);
   });
 
   it('createRow_DefaultValues', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('integer', Type.INTEGER)
-          .addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('boolean', Type.BOOLEAN)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addColumn('arraybuffer', Type.ARRAY_BUFFER)
-          .addColumn('object', Type.OBJECT);
+      tableBuilder
+        .addColumn('integer', Type.INTEGER)
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('boolean', Type.BOOLEAN)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+        .addColumn('object', Type.OBJECT);
       return tableBuilder.getSchema();
     };
 
@@ -273,22 +309,23 @@ describe('TableBuilder', () => {
   it('createRow_DefaultValues_Nullable', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('integer', Type.INTEGER)
-          .addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('boolean', Type.BOOLEAN)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addColumn('arraybuffer', Type.ARRAY_BUFFER)
-          .addColumn('object', Type.OBJECT)
-          .addNullable([
-            'integer',
-            'number',
-            'string',
-            'boolean',
-            'datetime',
-            'arraybuffer',
-            'object',
-          ]);
+      tableBuilder
+        .addColumn('integer', Type.INTEGER)
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('boolean', Type.BOOLEAN)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+        .addColumn('object', Type.OBJECT)
+        .addNullable([
+          'integer',
+          'number',
+          'string',
+          'boolean',
+          'datetime',
+          'arraybuffer',
+          'object',
+        ]);
       return tableBuilder.getSchema();
     };
 
@@ -312,14 +349,15 @@ describe('TableBuilder', () => {
   it('keyOfIndex_SingleKey', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('integer', Type.INTEGER)
-          .addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addIndex('idx_datetime', ['datetime'])
-          .addIndex('idx_integer', ['integer'])
-          .addIndex('idx_number', ['number'])
-          .addIndex('idx_string', ['string']);
+      tableBuilder
+        .addColumn('integer', Type.INTEGER)
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addIndex('idx_datetime', ['datetime'])
+        .addIndex('idx_integer', ['integer'])
+        .addIndex('idx_number', ['number'])
+        .addIndex('idx_string', ['string']);
       return tableBuilder.getSchema();
     };
 
@@ -340,40 +378,44 @@ describe('TableBuilder', () => {
   it('keyOfIndex_NullableField', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('integer', Type.INTEGER)
-          .addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addColumn('boolean', Type.BOOLEAN)
-          .addNullable(['datetime', 'integer', 'number', 'string', 'boolean'])
-          .addIndex('idx_datetime', ['datetime'])
-          .addIndex('idx_integer', ['integer'])
-          .addIndex('idx_number', ['number'])
-          .addIndex('idx_string', ['string'])
-          .addIndex('idx_boolean', ['boolean']);
+      tableBuilder
+        .addColumn('integer', Type.INTEGER)
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addColumn('boolean', Type.BOOLEAN)
+        .addNullable(['datetime', 'integer', 'number', 'string', 'boolean'])
+        .addIndex('idx_datetime', ['datetime'])
+        .addIndex('idx_integer', ['integer'])
+        .addIndex('idx_number', ['number'])
+        .addIndex('idx_string', ['string'])
+        .addIndex('idx_boolean', ['boolean']);
       return tableBuilder.getSchema();
     };
 
     const tableSchema = getSchema();
     const row = tableSchema.createRow();
-    tableSchema.getIndices().forEach(
-        (indexSchema) =>
-            assert.isNull(row.keyOfIndex(indexSchema.getNormalizedName())));
+    tableSchema
+      .getIndices()
+      .forEach(indexSchema =>
+        assert.isNull(row.keyOfIndex(indexSchema.getNormalizedName()))
+      );
   });
 
   it('keyOfIndex_CrossColumnKey', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('integer', Type.INTEGER)
-          .addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addColumn('boolean', Type.BOOLEAN)
-          .addPrimaryKey(['string', 'integer'])
-          .addIndex('idx_NumberInteger', ['number', 'integer'])
-          .addIndex('idx_NumberIntegerString', ['number', 'integer', 'string'])
-          .addIndex('idb_DateTimeString', ['datetime', 'string'])
-          .addIndex('idb_BooleanString', ['boolean', 'string']);
+      tableBuilder
+        .addColumn('integer', Type.INTEGER)
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addColumn('boolean', Type.BOOLEAN)
+        .addPrimaryKey(['string', 'integer'])
+        .addIndex('idx_NumberInteger', ['number', 'integer'])
+        .addIndex('idx_NumberIntegerString', ['number', 'integer', 'string'])
+        .addIndex('idb_DateTimeString', ['datetime', 'string'])
+        .addIndex('idb_BooleanString', ['boolean', 'string']);
       return tableBuilder.getSchema();
     };
 
@@ -390,45 +432,56 @@ describe('TableBuilder', () => {
     const indices = tableSchema.getIndices();
     const pkIndexSchema = indices[0];
     assert.sameMembers(
-        ['bar', 2], row.keyOfIndex(pkIndexSchema.getNormalizedName()) as any[]);
+      ['bar', 2],
+      row.keyOfIndex(pkIndexSchema.getNormalizedName()) as unknown[]
+    );
 
     const numberStringIndexSchema = indices[1];
     assert.sameMembers(
-        [3, 2],
-        row.keyOfIndex(numberStringIndexSchema.getNormalizedName()) as any[]);
+      [3, 2],
+      row.keyOfIndex(numberStringIndexSchema.getNormalizedName()) as unknown[]
+    );
 
     const numberIntegerStringIndexSchema = indices[2];
     assert.sameMembers(
-        [3, 2, 'bar'],
-        row.keyOfIndex(numberIntegerStringIndexSchema.getNormalizedName()) as
-            any[]);
+      [3, 2, 'bar'],
+      row.keyOfIndex(
+        numberIntegerStringIndexSchema.getNormalizedName()
+      ) as unknown[]
+    );
 
     const dateTimeStringIndexSchema = indices[3];
     assert.sameMembers(
-        [999, 'bar'],
-        row.keyOfIndex(dateTimeStringIndexSchema.getNormalizedName()) as any[]);
+      [999, 'bar'],
+      row.keyOfIndex(dateTimeStringIndexSchema.getNormalizedName()) as unknown[]
+    );
 
     const booleanStringIndexSchema = indices[4];
     assert.sameMembers(
-        [1, 'bar'],
-        row.keyOfIndex(booleanStringIndexSchema.getNormalizedName()) as any[]);
+      [1, 'bar'],
+      row.keyOfIndex(booleanStringIndexSchema.getNormalizedName()) as unknown[]
+    );
   });
 
   it('serialization', () => {
     const getSchema = () => {
       const tableBuilder = new TableBuilder('Table');
-      tableBuilder.addColumn('number', Type.NUMBER)
-          .addColumn('string', Type.STRING)
-          .addColumn('arraybuffer', Type.ARRAY_BUFFER)
-          .addColumn('datetime', Type.DATE_TIME)
-          .addColumn('object', Type.OBJECT)
-          .addNullable(['datetime']);
+      tableBuilder
+        .addColumn('number', Type.NUMBER)
+        .addColumn('string', Type.STRING)
+        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+        .addColumn('datetime', Type.DATE_TIME)
+        .addColumn('object', Type.OBJECT)
+        .addNullable(['datetime']);
       return tableBuilder.getSchema();
     };
 
     const tableSchema = getSchema();
-    const row =
-        tableSchema.createRow({number: 1, string: 'bar', arraybuffer: null});
+    const row = tableSchema.createRow({
+      number: 1,
+      string: 'bar',
+      arraybuffer: null,
+    });
     const expected = {
       arraybuffer: null,
       datetime: null,
@@ -439,6 +492,8 @@ describe('TableBuilder', () => {
 
     assert.deepEqual(expected, row.toDbPayload());
     assert.deepEqual(
-        expected, tableSchema.deserializeRow(row.serialize()).payload());
+      expected,
+      tableSchema.deserializeRow(row.serialize()).payload()
+    );
   });
 });
