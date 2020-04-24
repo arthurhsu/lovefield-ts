@@ -14,31 +14,37 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {AggregatedColumn} from '../../fn/aggregated_column';
-import {Context} from '../../query/context';
-import {Relation} from '../relation';
-import {AggregationCalculator} from './aggregation_calculator';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { AggregatedColumn } from '../../fn/aggregated_column';
+import { Context } from '../../query/context';
+import { Relation } from '../relation';
+import { AggregationCalculator } from './aggregation_calculator';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class AggregationStep extends PhysicalQueryPlanNode {
   constructor(readonly aggregatedColumns: AggregatedColumn[]) {
     super(PhysicalQueryPlanNode.ANY, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
-    const columnNames =
-        this.aggregatedColumns.map((column) => column.getNormalizedName());
+  toString(): string {
+    const columnNames = this.aggregatedColumns.map(column =>
+      column.getNormalizedName()
+    );
 
     return `aggregation(${columnNames.toString()})`;
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
-    relations.forEach((relation) => {
-      const calculator =
-          new AggregationCalculator(relation, this.aggregatedColumns);
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
+    relations.forEach(relation => {
+      const calculator = new AggregationCalculator(
+        relation,
+        this.aggregatedColumns
+      );
       calculator.calculate();
     }, this);
     return relations;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {Context} from '../query/context';
-import {PhysicalQueryPlan} from './pp/physical_query_plan';
+import { Context } from '../query/context';
+import { PhysicalQueryPlan } from './pp/physical_query_plan';
 
 export interface QueryEngine {
   // Returns the generated plan that can be understood by Runner.

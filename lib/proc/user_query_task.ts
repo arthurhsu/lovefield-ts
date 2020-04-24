@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {Global} from '../base/global';
-import {ObserverRegistry} from '../base/observer_registry';
-import {TaskPriority} from '../base/private_enum';
-import {Service} from '../base/service';
-import {SelectContext} from '../query/select_context';
-import {ObserverQueryTask} from './observer_query_task';
-import {QueryTask} from './query_task';
-import {Relation} from './relation';
-import {Runner} from './runner';
-import {TaskItem} from './task_item';
+import { TransactionType } from '../base/enum';
+import { Global } from '../base/global';
+import { ObserverRegistry } from '../base/observer_registry';
+import { TaskPriority } from '../base/private_enum';
+import { Service } from '../base/service';
+import { SelectContext } from '../query/select_context';
+import { ObserverQueryTask } from './observer_query_task';
+import { QueryTask } from './query_task';
+import { Relation } from './relation';
+import { Runner } from './runner';
+import { TaskItem } from './task_item';
 
 export class UserQueryTask extends QueryTask {
   private runner: Runner;
@@ -36,23 +36,25 @@ export class UserQueryTask extends QueryTask {
     this.observerRegistry = global.getService(Service.OBSERVER_REGISTRY);
   }
 
-  public getPriority(): TaskPriority {
+  getPriority(): TaskPriority {
     return TaskPriority.USER_QUERY_TASK;
   }
 
-  public onSuccess(results: Relation[]): void {
+  onSuccess(results: Relation[]): void {
     // Depending on the type of this QueryTask either notify observers directly,
     // or schedule on ObserverTask for queries that need to re-execute.
-    this.getType() === TransactionType.READ_ONLY ?
-        this.notifyObserversDirectly(results) :
-        this.scheduleObserverTask();
+    this.getType() === TransactionType.READ_ONLY
+      ? this.notifyObserversDirectly(results)
+      : this.scheduleObserverTask();
   }
 
   // Notifies observers of queries that were run as part of this task, if any.
   private notifyObserversDirectly(results: Relation[]): void {
     this.queries.forEach((query, index) => {
       this.observerRegistry.updateResultsForQuery(
-          query as SelectContext, results[index]);
+        query as SelectContext,
+        results[index]
+      );
     });
   }
 
@@ -60,7 +62,8 @@ export class UserQueryTask extends QueryTask {
   // re-executed, if any.
   private scheduleObserverTask(): void {
     const items = this.observerRegistry.getTaskItemsForTables(
-        Array.from(this.getScope().values()));
+      Array.from(this.getScope().values())
+    );
     if (items.length > 0) {
       this.runner.scheduleTask(new ObserverQueryTask(this.global, items));
     }

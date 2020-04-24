@@ -14,44 +14,54 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {Relation} from '../relation';
-import {RelationEntry} from '../relation_entry';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { Relation } from '../relation';
+import { RelationEntry } from '../relation_entry';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class CrossProductStep extends PhysicalQueryPlanNode {
   constructor() {
     super(2, ExecType.ALL);
   }
 
-  public toString(): string {
+  toString(): string {
     return 'cross_product';
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
     return this.crossProduct(relations[0], relations[1]);
   }
 
   // Calculates the cross product of two relations.
-  private crossProduct(leftRelation: Relation, rightRelation: Relation):
-      Relation[] {
+  private crossProduct(
+    leftRelation: Relation,
+    rightRelation: Relation
+  ): Relation[] {
     const combinedEntries: RelationEntry[] = [];
 
     const leftRelationTableNames = leftRelation.getTables();
     const rightRelationTableNames = rightRelation.getTables();
-    leftRelation.entries.forEach((le) => {
-      rightRelation.entries.forEach((re) => {
+    leftRelation.entries.forEach(le => {
+      rightRelation.entries.forEach(re => {
         const combinedEntry = RelationEntry.combineEntries(
-            le, leftRelationTableNames, re, rightRelationTableNames);
+          le,
+          leftRelationTableNames,
+          re,
+          rightRelationTableNames
+        );
         combinedEntries.push(combinedEntry);
       });
     });
 
-    const srcTables =
-        leftRelation.getTables().concat(rightRelation.getTables());
+    const srcTables = leftRelation
+      .getTables()
+      .concat(rightRelation.getTables());
     return [new Relation(combinedEntries, srcTables)];
   }
 }

@@ -17,21 +17,22 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import {op} from '../../../lib/fn/op';
-import {PredicateNode} from '../../../lib/pred/predicate_node';
-import {DeleteNode} from '../../../lib/proc/lp/delete_node';
-import {LogicalQueryPlan} from '../../../lib/proc/lp/logical_query_plan';
-import {SelectNode} from '../../../lib/proc/lp/select_node';
-import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
-import {PhysicalPlanFactory} from '../../../lib/proc/pp/physical_plan_factory';
-import {PhysicalQueryPlanNode} from '../../../lib/proc/pp/physical_query_plan_node';
-import {DeleteContext} from '../../../lib/query/delete_context';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {TreeHelper} from '../../../lib/structs/tree_helper';
-import {TreeNode} from '../../../lib/structs/tree_node';
-import {MockEnv} from '../../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
-import {TestUtil} from '../../../testing/test_util';
+import { op } from '../../../lib/fn/op';
+import { PredicateNode } from '../../../lib/pred/predicate_node';
+import { DeleteNode } from '../../../lib/proc/lp/delete_node';
+import { LogicalQueryPlan } from '../../../lib/proc/lp/logical_query_plan';
+import { SelectNode } from '../../../lib/proc/lp/select_node';
+import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
+import { PhysicalPlanFactory } from '../../../lib/proc/pp/physical_plan_factory';
+import { PhysicalQueryPlanNode } from '../../../lib/proc/pp/physical_query_plan_node';
+import { DeleteContext } from '../../../lib/query/delete_context';
+import { BaseColumn } from '../../../lib/schema/base_column';
+import { Table } from '../../../lib/schema/table';
+import { TreeHelper } from '../../../lib/structs/tree_helper';
+import { TreeNode } from '../../../lib/structs/tree_node';
+import { MockEnv } from '../../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import { TestUtil } from '../../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -77,31 +78,46 @@ describe('PhysicalPlanFactory', () => {
     const table = env.schema.table('tableA');
     const queryContext = new DeleteContext(env.schema);
     queryContext.from = table;
-    queryContext.where = op.and(table['id'].eq('id'), table['name'].eq('name'));
+    queryContext.where = op.and(
+      table.col('id').eq('id'),
+      table.col('name').eq('name')
+    );
 
     TestUtil.simulateIndexCost(
-        sandbox, env.indexStore, table['id'].getIndices()[0], 100);
+      sandbox,
+      env.indexStore,
+      (table.col('id') as BaseColumn).getIndices()[0],
+      100
+    );
     TestUtil.simulateIndexCost(
-        sandbox, env.indexStore, table['name'].getIndices()[0], 1);
+      sandbox,
+      env.indexStore,
+      (table.col('name') as BaseColumn).getIndices()[0],
+      1
+    );
 
     const deleteNode = new DeleteNode(table);
     const selectNode1 = new SelectNode(
-        (queryContext.where as PredicateNode).getChildAt(0) as PredicateNode);
+      (queryContext.where as PredicateNode).getChildAt(0) as PredicateNode
+    );
     deleteNode.addChild(selectNode1);
     const selectNode2 = new SelectNode(
-        (queryContext.where as PredicateNode).getChildAt(1) as PredicateNode);
+      (queryContext.where as PredicateNode).getChildAt(1) as PredicateNode
+    );
     selectNode1.addChild(selectNode2);
     const tableAccessNode = new TableAccessNode(queryContext.from);
     selectNode2.addChild(tableAccessNode);
 
     assert.equal(logicalTree, TreeHelper.toString(deleteNode));
-    const testScope = new Set<BaseTable>();
+    const testScope = new Set<Table>();
     testScope.add(table);
     const logicalPlan = new LogicalQueryPlan(deleteNode, testScope);
     const physicalPlan = physicalPlanFactory.create(logicalPlan, queryContext);
     const toStringFn = (node: TreeNode) =>
-        `${(node as PhysicalQueryPlanNode).toContextString(queryContext)}\n`;
+      `${(node as PhysicalQueryPlanNode).toContextString(queryContext)}\n`;
     assert.equal(
-        physicalTree, TreeHelper.toString(physicalPlan.getRoot(), toStringFn));
+      physicalTree,
+      TreeHelper.toString(physicalPlan.getRoot(), toStringFn)
+    );
   });
 });

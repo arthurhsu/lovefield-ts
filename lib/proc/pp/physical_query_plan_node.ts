@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {assert} from '../../base/assert';
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {TreeNode} from '../../structs/tree_node';
-import {Relation} from '../relation';
+import { assert } from '../../base/assert';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { TreeNode } from '../../structs/tree_node';
+import { Relation } from '../relation';
 
 export abstract class PhysicalQueryPlanNode extends TreeNode {
-  public static ANY = -1;
+  static ANY = -1;
 
   constructor(private numRelations: number, private execType: ExecType) {
     super();
@@ -31,10 +31,13 @@ export abstract class PhysicalQueryPlanNode extends TreeNode {
   // Core logic of this node.
   // Length of |relations| is guaranteed to be consistent with
   // |this.numRelations|.
-  public abstract execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[];
+  abstract execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[];
 
-  public exec(journal?: Journal, context?: Context): Promise<Relation[]> {
+  exec(journal?: Journal, context?: Context): Promise<Relation[]> {
     switch (this.execType) {
       case ExecType.FIRST_CHILD:
         return this.execFirstChild(journal, context);
@@ -42,53 +45,61 @@ export abstract class PhysicalQueryPlanNode extends TreeNode {
       case ExecType.ALL:
         return this.execAllChildren(journal, context);
 
-      default:  // NO_CHILD
+      default:
+        // NO_CHILD
         return this.execNoChild(journal, context);
     }
   }
 
-  public toString(): string {
+  toString(): string {
     return 'dummy_node';
   }
 
   // Returns a string representation of this node taking into account the given
   // context.
-  public toContextString(context: Context): string {
+  toContextString(context: Context): string {
     return this.toString();
   }
 
   private assertInput(relations: Relation[]): void {
     assert(
-        this.numRelations === PhysicalQueryPlanNode.ANY ||
-        relations.length === this.numRelations);
+      this.numRelations === PhysicalQueryPlanNode.ANY ||
+        relations.length === this.numRelations
+    );
   }
 
-  private execNoChild(journal?: Journal, context?: Context):
-      Promise<Relation[]> {
+  private execNoChild(
+    journal?: Journal,
+    context?: Context
+  ): Promise<Relation[]> {
     return new Promise<Relation[]>((resolve, reject) => {
       resolve(this.execInternal([], journal, context));
     });
   }
 
-  private execFirstChild(journal?: Journal, context?: Context):
-      Promise<Relation[]> {
+  private execFirstChild(
+    journal?: Journal,
+    context?: Context
+  ): Promise<Relation[]> {
     return (this.getChildAt(0) as PhysicalQueryPlanNode)
-        .exec(journal, context)
-        .then((results) => {
-          this.assertInput(results);
-          return this.execInternal(results, journal, context);
-        });
+      .exec(journal, context)
+      .then(results => {
+        this.assertInput(results);
+        return this.execInternal(results, journal, context);
+      });
   }
 
-  private execAllChildren(journal?: Journal, context?: Context):
-      Promise<Relation[]> {
-    const promises = this.getChildren().map((child) => {
+  private execAllChildren(
+    journal?: Journal,
+    context?: Context
+  ): Promise<Relation[]> {
+    const promises = this.getChildren().map(child => {
       return (child as PhysicalQueryPlanNode).exec(journal, context);
     });
-    return Promise.all<Relation[]>(promises).then((results) => {
+    return Promise.all<Relation[]>(promises).then(results => {
       const relations: Relation[] = [];
-      results.forEach((result) => {
-        result.forEach((res) => relations.push(res));
+      results.forEach(result => {
+        result.forEach(res => relations.push(res));
       });
       this.assertInput(relations);
       return this.execInternal(relations, journal, context);

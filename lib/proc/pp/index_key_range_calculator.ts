@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {KeyRange, SingleKeyRange} from '../../index/key_range';
-import {Context} from '../../query/context';
+import { KeyRange, SingleKeyRange } from '../../index/key_range';
+import { Context } from '../../query/context';
 
 export interface IndexKeyRangeCalculator {
-  getKeyRangeCombinations(queryContext: Context): SingleKeyRange[]|KeyRange[];
+  getKeyRangeCombinations(queryContext: Context): SingleKeyRange[] | KeyRange[];
 }

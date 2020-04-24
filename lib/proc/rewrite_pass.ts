@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Context} from '../query/context';
+import { Context } from '../query/context';
 
 export abstract class RewritePass<T> {
   protected rootNode!: T;
 
   // Rewrites the query plan, returns (new) root after rewriting.
-  public abstract rewrite(rootNode: T, queryContext?: Context): T;
+  abstract rewrite(rootNode: T, queryContext?: Context): T;
 }

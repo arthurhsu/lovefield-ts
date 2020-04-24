@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ArrayHelper} from '../structs/array_helper';
-import {Task} from './task';
+import { ArrayHelper } from '../structs/array_helper';
+import { Task } from './task';
 
 export class TaskQueue {
   private queue: Task[];
@@ -25,7 +25,7 @@ export class TaskQueue {
   }
 
   // Inserts a task to the queue.
-  public insert(task: Task): void {
+  insert(task: Task): void {
     ArrayHelper.binaryInsert(this.queue, task, (t1: Task, t2: Task): number => {
       const priorityDiff = t1.getPriority() - t2.getPriority();
       return priorityDiff === 0 ? t1.getId() - t2.getId() : priorityDiff;
@@ -33,13 +33,13 @@ export class TaskQueue {
   }
 
   // Returns a shallow copy of this queue.
-  public getValues(): Task[] {
+  getValues(): Task[] {
     return this.queue.slice();
   }
 
   // Removes the given task from the queue. Returns true if the task were
   // removed, false if the task were not found.
-  public remove(task: Task): boolean {
+  remove(task: Task): boolean {
     const i = this.queue.indexOf(task);
     if (i >= 0) {
       this.queue.splice(i, 1);

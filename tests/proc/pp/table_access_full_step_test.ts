@@ -16,12 +16,12 @@
 
 import * as chai from 'chai';
 
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {Table} from '../../../lib/schema/table';
-import {MockEnv} from '../../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { Table } from '../../../lib/schema/table';
+import { MockEnv } from '../../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -41,7 +41,8 @@ describe('TableAccessFullStep', () => {
 
   it('tableAccessFullStep_Alias', () => {
     return checkTableAccessFullStep(
-        schema.table('tableA').as('SomeTableAlias'));
+      schema.table('tableA').as('SomeTableAlias')
+    );
   });
 
   // Checks that a TableAccessByRowIdStep that refers to the given table
@@ -50,11 +51,13 @@ describe('TableAccessFullStep', () => {
     const table = t as BaseTable;
     const step = new TableAccessFullStep(env.global, table);
 
-    return step.exec().then((relations) => {
+    return step.exec().then(relations => {
       const relation = relations[0];
       assert.isFalse(relation.isPrefixApplied());
       assert.sameDeepOrderedMembers(
-          [table.getEffectiveName()], relation.getTables());
+        [table.getEffectiveName()],
+        relation.getTables()
+      );
       assert.isTrue(relation.entries.length > 0);
     });
   }

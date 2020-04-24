@@ -50,7 +50,6 @@ import { ExportTask } from './export_task';
 import { ImportTask } from './import_task';
 import { Runner } from './runner';
 import { RuntimeTransaction } from './runtime_transaction';
-import { BaseTable } from '../schema/base_table';
 
 declare global {
   interface Window {
@@ -147,8 +146,7 @@ export class RuntimeDatabase implements DatabaseConnection {
 
   update(table: Table): UpdateBuilder {
     this.checkActive();
-    // TODO(arthurhsu): FIXME: retiring BaseTable from interface.
-    return new UpdateBuilder(this.global, table as BaseTable);
+    return new UpdateBuilder(this.global, table);
   }
 
   delete(): DeleteBuilder {

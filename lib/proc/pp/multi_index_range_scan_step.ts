@@ -14,31 +14,34 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {Relation} from '../relation';
-import {RelationEntry} from '../relation_entry';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { Relation } from '../relation';
+import { RelationEntry } from '../relation_entry';
 
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class MultiIndexRangeScanStep extends PhysicalQueryPlanNode {
   constructor() {
     super(PhysicalQueryPlanNode.ANY, ExecType.ALL);
   }
 
-  public toString(): string {
+  toString(): string {
     return 'multi_index_range_scan()';
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    ctx?: Context
+  ): Relation[] {
     // Calculate a new Relation that includes the union of the entries of all
     // relations. All child relations must be including rows from the same
     // table.
     const entriesUnion = new Map<number, RelationEntry>();
-    relations.forEach((relation) => {
-      relation.entries.forEach((entry) => {
+    relations.forEach(relation => {
+      relation.entries.forEach(entry => {
         entriesUnion.set(entry.row.id(), entry);
       });
     });

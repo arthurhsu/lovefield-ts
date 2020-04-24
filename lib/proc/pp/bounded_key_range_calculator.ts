@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import {assert} from '../../base/assert';
-import {KeyRange, SingleKeyRange} from '../../index/key_range';
-import {SingleKeyRangeSet} from '../../index/single_key_range_set';
-import {CombinedPredicate} from '../../pred/combined_predicate';
-import {ValuePredicate} from '../../pred/value_predicate';
-import {Context} from '../../query/context';
-import {IndexImpl} from '../../schema/index_impl';
-import {ArrayHelper} from '../../structs/array_helper';
-import {MapSet} from '../../structs/map_set';
-import {IndexKeyRangeCalculator} from './index_key_range_calculator';
+import { assert } from '../../base/assert';
+import { KeyRange, SingleKeyRange } from '../../index/key_range';
+import { SingleKeyRangeSet } from '../../index/single_key_range_set';
+import { CombinedPredicate } from '../../pred/combined_predicate';
+import { ValuePredicate } from '../../pred/value_predicate';
+import { Context } from '../../query/context';
+import { IndexImpl } from '../../schema/index_impl';
+import { ArrayHelper } from '../../structs/array_helper';
+import { MapSet } from '../../structs/map_set';
+import { IndexKeyRangeCalculator } from './index_key_range_calculator';
 
 export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   // The query context that was used for calculating the cached key range
@@ -32,21 +32,23 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
 
   // Caching the keyRange combinations such that they don't need to be
   // calculated twice, in the case where the same query context is used.
-  private combinations: KeyRange[]|SingleKeyRange[];
+  private combinations: KeyRange[] | SingleKeyRange[];
 
   // |this.predicateMap| is a map where a key is the name of an indexed column
   // and the values are predicates IDs that correspond to that column. The IDs
   // are used to grab the actual predicates from the given query context, such
   // that this calculator can be re-used with different query contexts.
   constructor(
-      private indexSchema: IndexImpl,
-      private predicateMap: MapSet<string, number>) {
-    this.lastQueryContext = null as any as Context;
-    this.combinations = null as any as (KeyRange[] | SingleKeyRange[]);
+    private indexSchema: IndexImpl,
+    private predicateMap: MapSet<string, number>
+  ) {
+    this.lastQueryContext = (null as unknown) as Context;
+    this.combinations = (null as unknown) as KeyRange[] | SingleKeyRange[];
   }
 
-  public getKeyRangeCombinations(queryContext: Context):
-      SingleKeyRange[]|KeyRange[] {
+  getKeyRangeCombinations(
+    queryContext: Context
+  ): SingleKeyRange[] | KeyRange[] {
     if (this.lastQueryContext === queryContext) {
       return this.combinations;
     }
@@ -56,9 +58,12 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
 
     // If this IndexRangeCandidate refers to a single column index there is no
     // need to perform cartesian product, since there is only one dimension.
-    this.combinations = this.indexSchema.columns.length === 1 ?
-        Array.from(keyRangeMap.values())[0].getValues() :
-        this.calculateCartesianProduct(this.getSortedKeyRangeSets(keyRangeMap));
+    this.combinations =
+      this.indexSchema.columns.length === 1
+        ? Array.from(keyRangeMap.values())[0].getValues()
+        : this.calculateCartesianProduct(
+            this.getSortedKeyRangeSets(keyRangeMap)
+          );
     this.lastQueryContext = queryContext;
 
     return this.combinations;
@@ -66,19 +71,22 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
 
   // Builds a map where a key is an indexed column name and the value is
   // the SingleKeyRangeSet, created by considering all provided predicates.
-  private calculateKeyRangeMap(queryContext: Context):
-      Map<string, SingleKeyRangeSet> {
+  private calculateKeyRangeMap(
+    queryContext: Context
+  ): Map<string, SingleKeyRangeSet> {
     const keyRangeMap = new Map<string, SingleKeyRangeSet>();
 
-    Array.from(this.predicateMap.keys()).forEach((columnName) => {
+    Array.from(this.predicateMap.keys()).forEach(columnName => {
       const predicateIds = this.predicateMap.get(columnName) as number[];
-      const predicates = predicateIds.map((predicateId) => {
+      const predicates = predicateIds.map(predicateId => {
         return queryContext.getPredicate(predicateId);
-      }, this) as Array<CombinedPredicate|ValuePredicate>;
+      }, this) as Array<CombinedPredicate | ValuePredicate>;
       let keyRangeSetSoFar = new SingleKeyRangeSet([SingleKeyRange.all()]);
-      predicates.forEach((predicate) => {
+      predicates.forEach(predicate => {
         keyRangeSetSoFar = SingleKeyRangeSet.intersect(
-            keyRangeSetSoFar, predicate.toKeyRange());
+          keyRangeSetSoFar,
+          predicate.toKeyRange()
+        );
       });
       keyRangeMap.set(columnName, keyRangeSetSoFar);
     }, this);
@@ -95,8 +103,9 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   // are already bound, but B and D are unbound. Key ranges only for D will be
   // filled in. In practice such a case will have already been rejected by
   // IndexRangeCandidate#isUsable and should never occur here.
-  private fillMissingKeyRanges(keyRangeMap: Map<string, SingleKeyRangeSet>):
-      void {
+  private fillMissingKeyRanges(
+    keyRangeMap: Map<string, SingleKeyRangeSet>
+  ): void {
     const getAllKeyRange = () => new SingleKeyRangeSet([SingleKeyRange.all()]);
     for (let i = this.indexSchema.columns.length - 1; i >= 0; i--) {
       const column = this.indexSchema.columns[i];
@@ -110,22 +119,23 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
 
   // Sorts the key range sets corresponding to this index's columns according to
   // the column order of the index schema.
-  private getSortedKeyRangeSets(keyRangeMap: Map<string, SingleKeyRangeSet>):
-      SingleKeyRangeSet[] {
+  private getSortedKeyRangeSets(
+    keyRangeMap: Map<string, SingleKeyRangeSet>
+  ): SingleKeyRangeSet[] {
     const sortHelper = new Map<string, number>();
     let priority = 0;
-    this.indexSchema.columns.forEach((column) => {
+    this.indexSchema.columns.forEach(column => {
       sortHelper.set(column.schema.getName(), priority);
       priority++;
     });
 
-    const sortedColumnNames =
-        Array.from(keyRangeMap.keys())
-            .sort(
-                (a, b) => (sortHelper.get(a) || 0) - (sortHelper.get(b) || 0));
+    const sortedColumnNames = Array.from(keyRangeMap.keys()).sort(
+      (a, b) => (sortHelper.get(a) || 0) - (sortHelper.get(b) || 0)
+    );
 
     return sortedColumnNames.map(
-        (columnName) => keyRangeMap.get(columnName) as SingleKeyRangeSet);
+      columnName => keyRangeMap.get(columnName) as SingleKeyRangeSet
+    );
   }
 
   // Finds the cartesian product of a collection of SingleKeyRangeSets.
@@ -134,14 +144,17 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   // N-dimensional space (where N is the number of columns in the cross-column
   // index).
   // Returns the cross-column key range combinations.
-  private calculateCartesianProduct(keyRangeSets: SingleKeyRangeSet[]):
-      KeyRange[] {
+  private calculateCartesianProduct(
+    keyRangeSets: SingleKeyRangeSet[]
+  ): KeyRange[] {
     assert(
-        keyRangeSets.length > 1,
-        'Should only be called for cross-column indices.');
+      keyRangeSets.length > 1,
+      'Should only be called for cross-column indices.'
+    );
 
-    const keyRangeSetsAsArrays =
-        keyRangeSets.map((keyRangeSet) => keyRangeSet.getValues());
+    const keyRangeSetsAsArrays = keyRangeSets.map(keyRangeSet =>
+      keyRangeSet.getValues()
+    );
     return ArrayHelper.product(keyRangeSetsAsArrays);
   }
 }

@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-import {SelectContext} from '../../query/select_context';
-import {TreeHelper} from '../../structs/tree_helper';
-import {TreeNode} from '../../structs/tree_node';
-import {RewritePass} from '../rewrite_pass';
+import { SelectContext } from '../../query/select_context';
+import { TreeHelper } from '../../structs/tree_helper';
+import { TreeNode } from '../../structs/tree_node';
+import { RewritePass } from '../rewrite_pass';
 
-import {IndexRangeScanStep} from './index_range_scan_step';
-import {LimitStep} from './limit_step';
-import {OrderByStep} from './order_by_step';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
-import {ProjectStep} from './project_step';
-import {SelectStep} from './select_step';
-import {SkipStep} from './skip_step';
+import { IndexRangeScanStep } from './index_range_scan_step';
+import { LimitStep } from './limit_step';
+import { OrderByStep } from './order_by_step';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import { ProjectStep } from './project_step';
+import { SelectStep } from './select_step';
+import { SkipStep } from './skip_step';
 
 export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
   constructor() {
     super();
   }
 
-  public rewrite(rootNode: PhysicalQueryPlanNode, queryContext: SelectContext):
-      PhysicalQueryPlanNode {
+  rewrite(
+    rootNode: PhysicalQueryPlanNode,
+    queryContext: SelectContext
+  ): PhysicalQueryPlanNode {
     if (queryContext.limit === undefined && queryContext.skip === undefined) {
       // No LIMIT or SKIP exists.
       return rootNode;
@@ -45,14 +47,12 @@ export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
       return rootNode;
     }
 
-    const nodes: Array<SkipStep|LimitStep> =
-        TreeHelper.find(
-            rootNode,
-            (node) =>
-                (node instanceof LimitStep || node instanceof SkipStep)) as
-        Array<SkipStep|LimitStep>;
+    const nodes: Array<SkipStep | LimitStep> = TreeHelper.find(
+      rootNode,
+      node => node instanceof LimitStep || node instanceof SkipStep
+    ) as Array<SkipStep | LimitStep>;
 
-    nodes.forEach((node) => {
+    nodes.forEach(node => {
       this.mergeToIndexRangeScanStep(node, indexRangeScanStep);
     }, this);
 
@@ -61,8 +61,9 @@ export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
 
   // Merges a LimitStep or SkipStep to the given IndexRangeScanStep.
   private mergeToIndexRangeScanStep(
-      node: SkipStep|LimitStep,
-      indexRangeScanStep: IndexRangeScanStep): PhysicalQueryPlanNode {
+    node: SkipStep | LimitStep,
+    indexRangeScanStep: IndexRangeScanStep
+  ): PhysicalQueryPlanNode {
     if (node instanceof LimitStep) {
       indexRangeScanStep.useLimit = true;
     } else {
@@ -74,8 +75,9 @@ export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
 
   // Finds any existing IndexRangeScanStep that can be leveraged to limit and
   // skip results.
-  private findIndexRangeScanStep(rootNode: PhysicalQueryPlanNode):
-      IndexRangeScanStep|null {
+  private findIndexRangeScanStep(
+    rootNode: PhysicalQueryPlanNode
+  ): IndexRangeScanStep | null {
     const filterFn = (node: TreeNode) => {
       return node instanceof IndexRangeScanStep;
     };
@@ -89,13 +91,20 @@ export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
     // not be applied.
     const stopFn = (node: TreeNode) => {
       const hasAggregators =
-          node instanceof ProjectStep && node.hasAggregators();
-      return hasAggregators || node instanceof OrderByStep ||
-          node.getChildCount() !== 1 || node instanceof SelectStep;
+        node instanceof ProjectStep && node.hasAggregators();
+      return (
+        hasAggregators ||
+        node instanceof OrderByStep ||
+        node.getChildCount() !== 1 ||
+        node instanceof SelectStep
+      );
     };
 
-    const indexRangeScanSteps =
-        TreeHelper.find(rootNode, filterFn, stopFn) as IndexRangeScanStep[];
+    const indexRangeScanSteps = TreeHelper.find(
+      rootNode,
+      filterFn,
+      stopFn
+    ) as IndexRangeScanStep[];
     return indexRangeScanSteps.length > 0 ? indexRangeScanSteps[0] : null;
   }
 }

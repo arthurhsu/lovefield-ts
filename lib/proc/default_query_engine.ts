@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {Global} from '../base/global';
-import {Context} from '../query/context';
-import {LogicalPlanFactory} from './lp/logical_plan_factory';
-import {PhysicalPlanFactory} from './pp/physical_plan_factory';
-import {PhysicalQueryPlan} from './pp/physical_query_plan';
-import {QueryEngine} from './query_engine';
+import { Global } from '../base/global';
+import { Context } from '../query/context';
+import { LogicalPlanFactory } from './lp/logical_plan_factory';
+import { PhysicalPlanFactory } from './pp/physical_plan_factory';
+import { PhysicalQueryPlan } from './pp/physical_query_plan';
+import { QueryEngine } from './query_engine';
 
 export class DefaultQueryEngine implements QueryEngine {
   private logicalPlanFactory: LogicalPlanFactory;
@@ -30,7 +30,7 @@ export class DefaultQueryEngine implements QueryEngine {
     this.physicalPlanFactory = new PhysicalPlanFactory(global);
   }
 
-  public getPlan(query: Context): PhysicalQueryPlan {
+  getPlan(query: Context): PhysicalQueryPlan {
     const logicalQueryPlan = this.logicalPlanFactory.create(query);
     return this.physicalPlanFactory.create(logicalQueryPlan, query);
   }

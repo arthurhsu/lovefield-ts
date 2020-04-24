@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import {KeyRange, SingleKeyRange} from '../../index/key_range';
-import {Context} from '../../query/context';
-import {IndexImpl} from '../../schema/index_impl';
-import {IndexKeyRangeCalculator} from './index_key_range_calculator';
+import { KeyRange, SingleKeyRange } from '../../index/key_range';
+import { Context } from '../../query/context';
+import { IndexImpl } from '../../schema/index_impl';
+import { IndexKeyRangeCalculator } from './index_key_range_calculator';
 
 export class UnboundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   constructor(private indexSchema: IndexImpl) {}
 
-  public getKeyRangeCombinations(queryContext: Context):
-      SingleKeyRange[]|KeyRange[] {
-    return this.indexSchema.columns.length === 1 ?
-        [SingleKeyRange.all()] :
-        [this.indexSchema.columns.map((col) => SingleKeyRange.all())];
+  getKeyRangeCombinations(
+    queryContext: Context
+  ): SingleKeyRange[] | KeyRange[] {
+    return this.indexSchema.columns.length === 1
+      ? [SingleKeyRange.all()]
+      : [this.indexSchema.columns.map(col => SingleKeyRange.all())];
   }
 }

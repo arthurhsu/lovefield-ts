@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MapSet} from '../structs/map_set';
+import { MapSet } from '../structs/map_set';
 
 // The following states represent the life cycle of a transaction. These states
 // are exclusive meaning that a tx can be only on one state at a given time.
@@ -29,7 +29,7 @@ export enum TransactionState {
 }
 
 export class StateTransition {
-  public static get(): StateTransition {
+  static get(): StateTransition {
     if (!StateTransition.instance) {
       StateTransition.instance = new StateTransition();
     }
@@ -54,7 +54,7 @@ export class StateTransition {
     this.map.set(TS.ROLLING_BACK, TS.FINALIZED);
   }
 
-  public get(current: TransactionState): Set<TransactionState> {
+  get(current: TransactionState): Set<TransactionState> {
     return this.map.getSet(current);
   }
 }

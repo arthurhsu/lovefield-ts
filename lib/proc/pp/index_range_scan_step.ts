@@ -14,47 +14,52 @@
  * limitations under the License.
  */
 
-import {Global} from '../../base/global';
-import {ExecType} from '../../base/private_enum';
-import {Row} from '../../base/row';
-import {Service} from '../../base/service';
-import {Journal} from '../../cache/journal';
-import {IndexHelper} from '../../index/index_helper';
-import {IndexStore} from '../../index/index_store';
-import {Key, SingleKeyRange} from '../../index/key_range';
-import {RuntimeIndex} from '../../index/runtime_index';
-import {Context} from '../../query/context';
-import {SelectContext} from '../../query/select_context';
-import {IndexImpl} from '../../schema/index_impl';
-import {Relation} from '../relation';
+import { Global } from '../../base/global';
+import { ExecType } from '../../base/private_enum';
+import { Row } from '../../base/row';
+import { Service } from '../../base/service';
+import { Journal } from '../../cache/journal';
+import { IndexHelper } from '../../index/index_helper';
+import { IndexStore } from '../../index/index_store';
+import { Key, SingleKeyRange } from '../../index/key_range';
+import { RuntimeIndex } from '../../index/runtime_index';
+import { Context } from '../../query/context';
+import { SelectContext } from '../../query/select_context';
+import { IndexImpl } from '../../schema/index_impl';
+import { Relation } from '../relation';
 
-import {IndexKeyRangeCalculator} from './index_key_range_calculator';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { IndexKeyRangeCalculator } from './index_key_range_calculator';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class IndexRangeScanStep extends PhysicalQueryPlanNode {
-  public useLimit: boolean;
-  public useSkip: boolean;
+  useLimit: boolean;
+  useSkip: boolean;
   private indexStore: IndexStore;
 
   // |reverseOrder|: return the results in reverse index order.
   constructor(
-      global: Global, public index: IndexImpl,
-      public keyRangeCalculator: IndexKeyRangeCalculator,
-      public reverseOrder: boolean) {
+    global: Global,
+    public index: IndexImpl,
+    public keyRangeCalculator: IndexKeyRangeCalculator,
+    public reverseOrder: boolean
+  ) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
     this.useLimit = false;
     this.useSkip = false;
   }
 
-  public toString(): string {
-    return `index_range_scan(${this.index.getNormalizedName()}, ?, ` +
-        (this.reverseOrder ? 'reverse' : 'natural') +
-        (this.useLimit ? ', limit:?' : '') + (this.useSkip ? ', skip:?' : '') +
-        ')';
+  toString(): string {
+    return (
+      `index_range_scan(${this.index.getNormalizedName()}, ?, ` +
+      (this.reverseOrder ? 'reverse' : 'natural') +
+      (this.useLimit ? ', limit:?' : '') +
+      (this.useSkip ? ', skip:?' : '') +
+      ')'
+    );
   }
 
-  public toContextString(context: SelectContext): string {
+  toContextString(context: SelectContext): string {
     let results = this.toString();
     const keyRanges = this.keyRangeCalculator.getKeyRangeCombinations(context);
     results = results.replace('?', keyRanges.toString());
@@ -69,28 +74,38 @@ export class IndexRangeScanStep extends PhysicalQueryPlanNode {
     return results;
   }
 
-  public execInternal(relations: Relation[], journal?: Journal, ctx?: Context):
-      Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    ctx?: Context
+  ): Relation[] {
     const context = ctx as SelectContext;
     const keyRanges = this.keyRangeCalculator.getKeyRangeCombinations(context);
-    const index =
-        this.indexStore.get(this.index.getNormalizedName()) as RuntimeIndex;
+    const index = this.indexStore.get(
+      this.index.getNormalizedName()
+    ) as RuntimeIndex;
     let rowIds: number[];
-    if (keyRanges.length === 1 && keyRanges[0] instanceof SingleKeyRange &&
-        (keyRanges[0] as SingleKeyRange).isOnly()) {
+    if (
+      keyRanges.length === 1 &&
+      keyRanges[0] instanceof SingleKeyRange &&
+      (keyRanges[0] as SingleKeyRange).isOnly()
+    ) {
       rowIds = IndexHelper.slice(
-          index.get((keyRanges[0] as SingleKeyRange).from as Key),
-          false,  // Single key will never reverse order.
-          this.useLimit ? context.limit : undefined,
-          this.useSkip ? context.skip : undefined);
+        index.get((keyRanges[0] as SingleKeyRange).from as Key),
+        false, // Single key will never reverse order.
+        this.useLimit ? context.limit : undefined,
+        this.useSkip ? context.skip : undefined
+      );
     } else {
       rowIds = index.getRange(
-          keyRanges, this.reverseOrder,
-          this.useLimit ? context.limit : undefined,
-          this.useSkip ? context.skip : undefined);
+        keyRanges,
+        this.reverseOrder,
+        this.useLimit ? context.limit : undefined,
+        this.useSkip ? context.skip : undefined
+      );
     }
 
-    const rows = rowIds.map((rowId) => new Row(rowId, {}));
+    const rows = rowIds.map(rowId => new Row(rowId, {}));
 
     return [Relation.fromRows(rows, [this.index.tableName])];
   }

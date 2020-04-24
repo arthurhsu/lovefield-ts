@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import {Row} from '../../../lib/base/row';
-import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
-import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
-import {Relation} from '../../../lib/proc/relation';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {MockEnv} from '../../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { Row } from '../../../lib/base/row';
+import { CrossProductStep } from '../../../lib/proc/pp/cross_product_step';
+import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
+import { Relation } from '../../../lib/proc/relation';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { MockEnv } from '../../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -44,19 +44,21 @@ describe('CrossProductStep', () => {
     const leftRows: Row[] = new Array(leftRowCount);
     const leftTable = schema.table('tableA');
     for (let i = 0; i < leftRowCount; i++) {
-      leftRows[i] = leftTable.createRow({id: `id${i}`, name: `name${i}`});
+      leftRows[i] = leftTable.createRow({ id: `id${i}`, name: `name${i}` });
     }
 
     const rightRows: Row[] = new Array(rightRowCount);
     const rightTable = schema.table('tableE');
     for (let i = 0; i < rightRowCount; i++) {
-      rightRows[i] = rightTable.createRow({id: `id${i}`, email: `email${i}`});
+      rightRows[i] = rightTable.createRow({ id: `id${i}`, email: `email${i}` });
     }
 
-    const leftChild =
-        new NoOpStep([Relation.fromRows(leftRows, [leftTable.getName()])]);
-    const rightChild =
-        new NoOpStep([Relation.fromRows(rightRows, [rightTable.getName()])]);
+    const leftChild = new NoOpStep([
+      Relation.fromRows(leftRows, [leftTable.getName()]),
+    ]);
+    const rightChild = new NoOpStep([
+      Relation.fromRows(rightRows, [rightTable.getName()]),
+    ]);
 
     const step = new CrossProductStep();
     step.addChild(leftChild);
@@ -64,13 +66,13 @@ describe('CrossProductStep', () => {
 
     const relations = await step.exec();
     const relation = relations[0];
-    const isDefAndNotNull = (a: any) => (a !== undefined && a !== null);
+    const isDefAndNotNull = (a: unknown) => a !== undefined && a !== null;
     assert.equal(leftRowCount * rightRowCount, relation.entries.length);
-    relation.entries.forEach((entry) => {
-      assert.isTrue(isDefAndNotNull(entry.getField(leftTable['id'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(leftTable['name'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(rightTable['id'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(rightTable['email'])));
+    relation.entries.forEach(entry => {
+      assert.isTrue(isDefAndNotNull(entry.getField(leftTable.col('id'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(leftTable.col('name'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(rightTable.col('id'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(rightTable.col('email'))));
     });
   });
 
@@ -82,21 +84,21 @@ describe('CrossProductStep', () => {
     const relation1Rows: Row[] = [];
     const table1 = schema.table('tableA');
     for (let i = 0; i < relation1Count; i++) {
-      const row = table1.createRow({id: `id${i}`, name: `name${i}`});
+      const row = table1.createRow({ id: `id${i}`, name: `name${i}` });
       relation1Rows.push(row);
     }
 
     const relation2Rows: Row[] = [];
     const table2 = schema.table('tableB');
     for (let i = 0; i < relation2Count; i++) {
-      const row = table2.createRow({id: `id${i}`, name: `name${i}`});
+      const row = table2.createRow({ id: `id${i}`, name: `name${i}` });
       relation2Rows.push(row);
     }
 
     const relation3Rows: Row[] = [];
     const table3 = schema.table('tableE');
     for (let i = 0; i < relation3Count; i++) {
-      const row = table3.createRow({id: `id${i}`, email: `email${i}`});
+      const row = table3.createRow({ id: `id${i}`, email: `email${i}` });
       relation3Rows.push(row);
     }
 
@@ -122,16 +124,17 @@ describe('CrossProductStep', () => {
 
     // Expecting the final result to be a cross product of all 3 tables.
     assert.equal(
-        relation1Count * relation2Count * relation3Count,
-        result.entries.length);
-    const isDefAndNotNull = (a: any) => (a !== undefined && a !== null);
-    result.entries.forEach((entry) => {
-      assert.isTrue(isDefAndNotNull(entry.getField(table1['id'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(table1['name'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(table2['id'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(table2['name'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(table3['id'])));
-      assert.isTrue(isDefAndNotNull(entry.getField(table3['email'])));
+      relation1Count * relation2Count * relation3Count,
+      result.entries.length
+    );
+    const isDefAndNotNull = (a: unknown) => a !== undefined && a !== null;
+    result.entries.forEach(entry => {
+      assert.isTrue(isDefAndNotNull(entry.getField(table1.col('id'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(table1.col('name'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(table2.col('id'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(table2.col('name'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(table3.col('id'))));
+      assert.isTrue(isDefAndNotNull(entry.getField(table3.col('email'))));
     });
   });
 });

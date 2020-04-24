@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-import {ExecType} from '../../base/private_enum';
-import {Journal} from '../../cache/journal';
-import {Context} from '../../query/context';
-import {Relation} from '../relation';
-import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import { ExecType } from '../../base/private_enum';
+import { Journal } from '../../cache/journal';
+import { Context } from '../../query/context';
+import { Relation } from '../relation';
+import { PhysicalQueryPlanNode } from './physical_query_plan_node';
 
 export class SelectStep extends PhysicalQueryPlanNode {
   constructor(readonly predicateId: number) {
     super(1, ExecType.FIRST_CHILD);
   }
 
-  public toString(): string {
+  toString(): string {
     return 'select(?)';
   }
 
-  public toContextString(context: Context): string {
+  toContextString(context: Context): string {
     const predicate = context.getPredicate(this.predicateId);
     return this.toString().replace('?', predicate.toString());
   }
 
-  public execInternal(
-      relations: Relation[], journal?: Journal, context?: Context): Relation[] {
+  execInternal(
+    relations: Relation[],
+    journal?: Journal,
+    context?: Context
+  ): Relation[] {
     // context must be provided for SelectStep.
     const predicate = (context as Context).getPredicate(this.predicateId);
     return [predicate.eval(relations[0])];

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import {assert} from '../../base/assert';
-import {IndexStore} from '../../index/index_store';
-import {Range} from '../../index/key_range';
-import {RuntimeIndex} from '../../index/runtime_index';
-import {ValuePredicate} from '../../pred/value_predicate';
-import {Context} from '../../query/context';
-import {IndexImpl} from '../../schema/index_impl';
-import {MapSet} from '../../structs/map_set';
+import { assert } from '../../base/assert';
+import { IndexStore } from '../../index/index_store';
+import { Range } from '../../index/key_range';
+import { RuntimeIndex } from '../../index/runtime_index';
+import { ValuePredicate } from '../../pred/value_predicate';
+import { Context } from '../../query/context';
+import { IndexImpl } from '../../schema/index_impl';
+import { MapSet } from '../../structs/map_set';
 
-import {BoundedKeyRangeCalculator} from './bounded_key_range_calculator';
-import {IndexKeyRangeCalculator} from './index_key_range_calculator';
+import { BoundedKeyRangeCalculator } from './bounded_key_range_calculator';
+import { IndexKeyRangeCalculator } from './index_key_range_calculator';
 
 export class IndexRangeCandidate {
   // The names of all columns that are indexed by this index schema.
@@ -33,39 +33,42 @@ export class IndexRangeCandidate {
   // A map where a key is the name of an indexed column and the values are
   // predicates IDs that correspond to that column. It is initialized lazily,
   // only if a predicate that matches a column of this index schema is found.
-  private predicateMap: MapSet<string, number>|null;
+  private predicateMap: MapSet<string, number> | null;
 
   // The calculator object to be used for generating key ranges based on a given
   // query context. This object will be used by the IndexRangeScanStep during
   // query execution. Initialized lazily.
-  private keyRangeCalculator: IndexKeyRangeCalculator|null;
+  private keyRangeCalculator: IndexKeyRangeCalculator | null;
 
   constructor(private indexStore: IndexStore, readonly indexSchema: IndexImpl) {
     this.indexedColumnNames = new Set<string>(
-        this.indexSchema.columns.map((col) => col.schema.getName()));
+      this.indexSchema.columns.map(col => col.schema.getName())
+    );
     this.predicateMap = null;
     this.keyRangeCalculator = null;
   }
 
   // The predicates that were consumed by this candidate.
-  public getPredicateIds(): number[] {
+  getPredicateIds(): number[] {
     return this.predicateMap ? this.predicateMap.values() : [];
   }
 
-  public getKeyRangeCalculator(): IndexKeyRangeCalculator {
+  getKeyRangeCalculator(): IndexKeyRangeCalculator {
     assert(this.predicateMap !== null);
 
     if (this.keyRangeCalculator === null) {
       this.keyRangeCalculator = new BoundedKeyRangeCalculator(
-          this.indexSchema, this.predicateMap as MapSet<string, number>);
+        this.indexSchema,
+        this.predicateMap as MapSet<string, number>
+      );
     }
     return this.keyRangeCalculator as IndexKeyRangeCalculator;
   }
 
   // Finds which predicates are related to the index schema corresponding to
   // this IndexRangeCandidate.
-  public consumePredicates(predicates: ValuePredicate[]): void {
-    predicates.forEach((predicate) => {
+  consumePredicates(predicates: ValuePredicate[]): void {
+    predicates.forEach(predicate => {
       // If predicate is a ValuePredicate there in only one referred column. If
       // predicate is an OR CombinedPredicate, then it must be referring to a
       // single column (enforced by isKeyRangeCompatible()).
@@ -84,7 +87,7 @@ export class IndexRangeCandidate {
   // cannot be used. For example consider a cross column index on columns
   // ['A', 'B'] and a query that only binds the key range of the 2nd
   // dimension B.
-  public isUsable(): boolean {
+  isUsable(): boolean {
     if (this.predicateMap === null) {
       // If the map was never initialized, it means that no predicate matched
       // this index schema columns.
@@ -93,9 +96,10 @@ export class IndexRangeCandidate {
 
     let unboundColumnFound = false;
     let isUsable = true;
-    this.indexSchema.columns.every((column) => {
-      const isBound = (this.predicateMap as MapSet<string, number>)
-                          .has(column.schema.getName());
+    this.indexSchema.columns.every(column => {
+      const isBound = (this.predicateMap as MapSet<string, number>).has(
+        column.schema.getName()
+      );
       if (unboundColumnFound && isBound) {
         isUsable = false;
         return false;
@@ -109,11 +113,13 @@ export class IndexRangeCandidate {
     return isUsable;
   }
 
-  public calculateCost(queryContext: Context): number {
-    const combinations: Range[] =
-        this.getKeyRangeCalculator().getKeyRangeCombinations(queryContext);
+  calculateCost(queryContext: Context): number {
+    const combinations: Range[] = this.getKeyRangeCalculator().getKeyRangeCombinations(
+      queryContext
+    );
     const indexData = this.indexStore.get(
-                          this.indexSchema.getNormalizedName()) as RuntimeIndex;
+      this.indexSchema.getNormalizedName()
+    ) as RuntimeIndex;
 
     return combinations.reduce((costSoFar: number, combination: Range) => {
       return costSoFar + indexData.cost(combination);

@@ -15,14 +15,15 @@
  */
 
 import * as chai from 'chai';
-import {SingleKeyRange} from '../../../lib/index/key_range';
-import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
-import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {IndexImpl} from '../../../lib/schema/index_impl';
-import {MockEnv} from '../../../testing/mock_env';
-import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { SingleKeyRange } from '../../../lib/index/key_range';
+import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
+import { MultiIndexRangeScanStep } from '../../../lib/proc/pp/multi_index_range_scan_step';
+import { BaseColumn } from '../../../lib/schema/base_column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { IndexImpl } from '../../../lib/schema/index_impl';
+import { MockEnv } from '../../../testing/mock_env';
+import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -40,46 +41,66 @@ describe('MultiIndexRangeScanStep', () => {
 
   it('empty', () => {
     const idKeyRange = new SingleKeyRange(20, 21, false, false);
-    const nameKeyRange =
-        new SingleKeyRange('dummyName' + 200, 'dummyName' + 205, false, false);
+    const nameKeyRange = new SingleKeyRange(
+      'dummyName' + 200,
+      'dummyName' + 205,
+      false,
+      false
+    );
     return assertMultiIndexRangeScanResult(idKeyRange, nameKeyRange, []);
   });
 
   it('scan', () => {
     const idKeyRange = new SingleKeyRange(5, 8, false, false);
-    const nameKeyRange =
-        new SingleKeyRange('dummyName' + 3, 'dummyName' + 5, false, false);
+    const nameKeyRange = new SingleKeyRange(
+      'dummyName' + 3,
+      'dummyName' + 5,
+      false,
+      false
+    );
     // Expecting the idKeyRange to find rows with rowIDs 5, 6, 7, 8.
     // Expecting the nameKeyRange to find rows with rowIDs 3, 4, 5.
     const expectedRowIds = [3, 4, 5, 6, 7, 8];
 
     return assertMultiIndexRangeScanResult(
-        idKeyRange, nameKeyRange, expectedRowIds);
+      idKeyRange,
+      nameKeyRange,
+      expectedRowIds
+    );
   });
 
   // Asserts that MultiIndexRangeScanStep#exec() correctly combines the results
   // of its children IndexRangeScanStep instances.
   function assertMultiIndexRangeScanResult(
-      idKeyRange: SingleKeyRange, nameKeyRange: SingleKeyRange,
-      expectedRowIds: number[]): Promise<void> {
+    idKeyRange: SingleKeyRange,
+    nameKeyRange: SingleKeyRange,
+    expectedRowIds: number[]
+  ): Promise<void> {
     const table = schema.table('tableA');
-    const idIndex: IndexImpl = table['id'].getIndex();
+    const idIndex = (table.col('id') as BaseColumn).getIndex() as IndexImpl;
     const idRangeScanStep = new IndexRangeScanStep(
-        env.global, idIndex, new MockKeyRangeCalculator([idKeyRange]), false);
+      env.global,
+      idIndex,
+      new MockKeyRangeCalculator([idKeyRange]),
+      false
+    );
 
-    const nameIndex: IndexImpl = table['name'].getIndex();
+    const nameIndex = (table.col('name') as BaseColumn).getIndex() as IndexImpl;
     const nameRangeScanStep = new IndexRangeScanStep(
-        env.global, nameIndex, new MockKeyRangeCalculator([nameKeyRange]),
-        false);
+      env.global,
+      nameIndex,
+      new MockKeyRangeCalculator([nameKeyRange]),
+      false
+    );
 
     const step = new MultiIndexRangeScanStep();
     step.addChild(idRangeScanStep);
     step.addChild(nameRangeScanStep);
 
-    return step.exec().then((relations) => {
+    return step.exec().then(relations => {
       assert.equal(1, relations.length);
       const relation = relations[0];
-      const actualRowIds = relation.entries.map((entry) => entry.row.id());
+      const actualRowIds = relation.entries.map(entry => entry.row.id());
       assert.sameMembers(expectedRowIds, actualRowIds);
     });
   }

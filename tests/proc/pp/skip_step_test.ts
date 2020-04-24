@@ -16,14 +16,14 @@
 
 import * as chai from 'chai';
 
-import {Row} from '../../../lib/base/row';
-import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
-import {SkipStep} from '../../../lib/proc/pp/skip_step';
-import {Relation} from '../../../lib/proc/relation';
-import {SelectContext} from '../../../lib/query/select_context';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {MockEnv} from '../../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { Row } from '../../../lib/base/row';
+import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
+import { SkipStep } from '../../../lib/proc/pp/skip_step';
+import { Relation } from '../../../lib/proc/relation';
+import { SelectContext } from '../../../lib/query/select_context';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { MockEnv } from '../../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -65,7 +65,7 @@ describe('LimitStep', () => {
     const step = new SkipStep();
     step.addChild(childStep);
 
-    return step.exec(undefined, queryContext).then((relations) => {
+    return step.exec(undefined, queryContext).then(relations => {
       const relation = relations[0];
       const expectedResults = Math.max(sampleDataCount - skip, 0);
       assert.equal(expectedResults, relation.entries.length);
@@ -73,7 +73,9 @@ describe('LimitStep', () => {
         // Check that the skipped results are not returned.
         for (let i = 0; i < expectedResults; i++) {
           assert.equal(
-              `id${skip + i}`, relation.entries[i].row.payload()['id']);
+            `id${skip + i}`,
+            relation.entries[i].row.payload()['id']
+          );
         }
       }
     });
@@ -83,7 +85,7 @@ describe('LimitStep', () => {
     const rows: Row[] = new Array(rowCount);
 
     for (let i = 0; i < rowCount; i++) {
-      rows[i] = Row.create({id: `id${i}`});
+      rows[i] = Row.create({ id: `id${i}` });
     }
 
     return rows;
