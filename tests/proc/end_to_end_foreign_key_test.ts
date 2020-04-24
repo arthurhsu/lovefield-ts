@@ -16,13 +16,18 @@
 
 import * as chai from 'chai';
 
-import {ConstraintTiming, DataStoreType, ErrorCode, Type} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {Row} from '../../lib/base/row';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {Builder} from '../../lib/schema/builder';
-import {TestUtil} from '../../testing/test_util';
+import {
+  ConstraintTiming,
+  DataStoreType,
+  ErrorCode,
+  Type,
+} from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { Row } from '../../lib/base/row';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { Builder } from '../../lib/schema/builder';
+import { Table } from '../../lib/schema/table';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -30,13 +35,14 @@ describe('EndToEndForeignKey', () => {
   let db: RuntimeDatabase;
   let global: Global;
   let sampleRows: Row[];
-  let parentTable: BaseTable;
-  let childTable: BaseTable;
+  let parentTable: Table;
+  let childTable: Table;
 
   beforeEach(async () => {
     const builder = getSchemaBuilder();
-    db = await builder.connect({storeType: DataStoreType.MEMORY}) as
-        RuntimeDatabase;
+    db = (await builder.connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     global = builder.getGlobal();
     parentTable = db.getSchema().table('Parent');
     childTable = db.getSchema().table('Child');
@@ -47,20 +53,22 @@ describe('EndToEndForeignKey', () => {
 
   function getSchemaBuilder(): Builder {
     const schemaBuilder = new Builder('fk_schema', 1);
-    schemaBuilder.createTable('Parent')
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING)
-        .addPrimaryKey(['id']);
-    schemaBuilder.createTable('Child')
-        .addColumn('id', Type.STRING)
-        .addColumn('parentId', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addNullable(['parentId'])
-        .addForeignKey('fk_parentId', {
-          local: 'parentId',
-          ref: 'Parent.id',
-          timing: ConstraintTiming.DEFERRABLE,
-        });
+    schemaBuilder
+      .createTable('Parent')
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING)
+      .addPrimaryKey(['id']);
+    schemaBuilder
+      .createTable('Child')
+      .addColumn('id', Type.STRING)
+      .addColumn('parentId', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addNullable(['parentId'])
+      .addForeignKey('fk_parentId', {
+        local: 'parentId',
+        ref: 'Parent.id',
+        timing: ConstraintTiming.DEFERRABLE,
+      });
     return schemaBuilder;
   }
 
@@ -84,7 +92,11 @@ describe('EndToEndForeignKey', () => {
   it('deferrable_ImplicitTx_Success', async () => {
     const parentRow = sampleRows[0];
 
-    await db.insert().into(parentTable).values([parentRow]).exec();
+    await db
+      .insert()
+      .into(parentTable)
+      .values([parentRow])
+      .exec();
     const results = await TestUtil.selectAll(global, parentTable);
     assert.equal(1, results.length);
     assert.equal(parentRow.payload()['id'], results[0].payload()['id']);
@@ -94,8 +106,13 @@ describe('EndToEndForeignKey', () => {
   // error when an implicit transaction is used.
   it('deferrable_ImplicitTx_Error', () => {
     return TestUtil.assertPromiseReject(
-        ErrorCode.FK_VIOLATION,
-        db.insert().into(childTable).values([sampleRows[1]]).exec());
+      ErrorCode.FK_VIOLATION,
+      db
+        .insert()
+        .into(childTable)
+        .values([sampleRows[1]])
+        .exec()
+    );
   });
 
   // Tests that a child column value of null, does not trigger a foreign key
@@ -107,7 +124,11 @@ describe('EndToEndForeignKey', () => {
       parentId: null,
     });
 
-    await db.insert().into(childTable).values([childRow]).exec();
+    await db
+      .insert()
+      .into(childTable)
+      .values([childRow])
+      .exec();
     const results = await TestUtil.selectAll(global, childTable);
     assert.equal(1, results.length);
     assert.isNull(results[0].payload()['parentId']);
@@ -120,7 +141,10 @@ describe('EndToEndForeignKey', () => {
 
     const tx = db.createTransaction();
     await tx.begin([childTable]);
-    const q1 = db.insert().into(childTable).values([childRow]);
+    const q1 = db
+      .insert()
+      .into(childTable)
+      .values([childRow]);
     await tx.attach(q1);
     await TestUtil.assertPromiseReject(ErrorCode.FK_VIOLATION, tx.commit());
   });
@@ -133,8 +157,14 @@ describe('EndToEndForeignKey', () => {
 
     const tx1 = db.createTransaction();
     await tx1.exec([
-      db.insert().into(parentTable).values([parentRow]),
-      db.insert().into(childTable).values([childRow]),
+      db
+        .insert()
+        .into(parentTable)
+        .values([parentRow]),
+      db
+        .insert()
+        .into(childTable)
+        .values([childRow]),
     ]);
 
     const tx2 = db.createTransaction();
@@ -153,16 +183,23 @@ describe('EndToEndForeignKey', () => {
 
     const tx1 = db.createTransaction();
     await tx1.exec([
-      db.insert().into(parentTable).values([parentRow]),
-      db.insert().into(childTable).values([childRow]),
+      db
+        .insert()
+        .into(parentTable)
+        .values([parentRow]),
+      db
+        .insert()
+        .into(childTable)
+        .values([childRow]),
     ]);
 
     const tx2 = db.createTransaction();
     await tx2.begin([parentTable, childTable]);
 
     // Updating child to point to a non existing parentId.
-    const q =
-        db.update(childTable).set(childTable['parentId'], 'otherParentId');
+    const q = db
+      .update(childTable)
+      .set(childTable.col('parentId'), 'otherParentId');
     await tx2.attach(q);
     await TestUtil.assertPromiseReject(ErrorCode.FK_VIOLATION, tx2.commit());
   });
@@ -177,11 +214,17 @@ describe('EndToEndForeignKey', () => {
     await tx.begin([parentTable, childTable]);
 
     // Inserting child first, even though parent does not exist yet.
-    const q1 = db.insert().into(childTable).values([childRow]);
+    const q1 = db
+      .insert()
+      .into(childTable)
+      .values([childRow]);
     await tx.attach(q1);
 
     // Inserting parent after child has been inserted.
-    const q2 = db.insert().into(parentTable).values([parentRow]);
+    const q2 = db
+      .insert()
+      .into(parentTable)
+      .values([parentRow]);
     await tx.attach(q2);
 
     await tx.commit();

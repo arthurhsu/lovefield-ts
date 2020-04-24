@@ -15,17 +15,35 @@
  */
 
 import * as chai from 'chai';
-import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {TestIndex} from './test_index';
+import { SingleKey, SingleKeyRange } from '../../lib/index/key_range';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
+import { TestIndex } from './test_index';
 
 const assert = chai.assert;
 
 export class TestMultiRowNumericalKey extends TestIndex {
   // Values that are added in the index in populateIndex().
   private allValues = [
-    20, 30, 21, 31, 22, 32, 23, 33, 24, 34,
-    25, 35, 26, 36, 27, 37, 28, 38, 29, 39,
+    20,
+    30,
+    21,
+    31,
+    22,
+    32,
+    23,
+    33,
+    24,
+    34,
+    25,
+    35,
+    26,
+    36,
+    27,
+    37,
+    28,
+    38,
+    29,
+    39,
   ];
 
   // The key ranges used for testing.
@@ -68,10 +86,10 @@ export class TestMultiRowNumericalKey extends TestIndex {
   ];
 
   // Holds the max key and the corresponding values, populated in populateIndex.
-  private maxKeyValuePair: [SingleKey, number[]]|null;
+  private maxKeyValuePair: [SingleKey, number[]] | null;
 
   // Holds the min key and the corresponding values, populated in populateIndex.
-  private minKeyValuePair: [SingleKey, number[]]|null;
+  private minKeyValuePair: [SingleKey, number[]] | null;
 
   // |reverse| means range expectations shall be reversed or not.
   constructor(constructorFn: () => RuntimeIndex) {
@@ -80,7 +98,7 @@ export class TestMultiRowNumericalKey extends TestIndex {
     this.minKeyValuePair = null;
   }
 
-  public testAddGet(index: RuntimeIndex): void {
+  testAddGet(index: RuntimeIndex): void {
     for (let i = 0; i < 10; ++i) {
       const key = 10 + i;
       const value1 = 20 + i;
@@ -92,7 +110,7 @@ export class TestMultiRowNumericalKey extends TestIndex {
     }
   }
 
-  public testGetRangeCost(index: RuntimeIndex): void {
+  testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     this.keyRanges.forEach((keyRange, counter) => {
@@ -101,7 +119,7 @@ export class TestMultiRowNumericalKey extends TestIndex {
     }, this);
   }
 
-  public testRemove(index: RuntimeIndex): void {
+  testRemove(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     index.remove(11, 21);
@@ -110,10 +128,12 @@ export class TestMultiRowNumericalKey extends TestIndex {
     index.remove(12, 32);
     assert.sameDeepOrderedMembers([], index.get(12));
     assert.sameDeepOrderedMembers(
-        [], index.getRange([SingleKeyRange.only(12)]));
+      [],
+      index.getRange([SingleKeyRange.only(12)])
+    );
   }
 
-  public testSet(index: RuntimeIndex): void {
+  testSet(index: RuntimeIndex): void {
     this.populateIndex(index);
     index.remove(12, 22);
 
@@ -129,19 +149,23 @@ export class TestMultiRowNumericalKey extends TestIndex {
     assert.equal(10, index.getRange().length);
   }
 
-  public testMinMax(index: RuntimeIndex): void {
+  testMinMax(index: RuntimeIndex): void {
     // First try an empty index.
     assert.isNull(index.min());
     assert.isNull(index.max());
 
     this.populateIndex(index);
     assert.sameDeepOrderedMembers(
-        this.minKeyValuePair as any[], index.min() as any[]);
+      this.minKeyValuePair as unknown[],
+      index.min() as unknown[]
+    );
     assert.sameDeepOrderedMembers(
-        this.maxKeyValuePair as any[], index.max() as any[]);
+      this.maxKeyValuePair as unknown[],
+      index.max() as unknown[]
+    );
   }
 
-  public testMultiRange(index: RuntimeIndex): void {
+  testMultiRange(index: RuntimeIndex): void {
     // TODO(arthurhsu): implement, original code does not have it.
   }
 

@@ -36,7 +36,7 @@ const assert = chai.assert;
 
 describe('ExternalChangeObserver', () => {
   let db: RuntimeDatabase;
-  let j: BaseTable;
+  let j: Table;
   let sampleJobs: Row[];
   let mockStore: MockStore;
 
@@ -75,7 +75,7 @@ describe('ExternalChangeObserver', () => {
     modifiedRow.assignRowId(sampleJobs[0].id());
 
     const extractResultsPk = (res: PayloadType[]) => {
-      return res.map(obj => obj[j['id'].getName()]);
+      return res.map(obj => obj[j.col('id').getName()]);
     };
     const extractRowsPk = (rows: Row[]) => rows.map(row => row.payload()['id']);
 
@@ -84,7 +84,7 @@ describe('ExternalChangeObserver', () => {
     let results: PayloadType[] = (await db
       .select()
       .from(j)
-      .orderBy(j['id'])
+      .orderBy(j.col('id'))
       .exec()) as PayloadType[];
     // Ensure that external insertion change is detected and applied properly.
     assert.sameDeepOrderedMembers(
@@ -97,7 +97,7 @@ describe('ExternalChangeObserver', () => {
     results = (await db
       .select()
       .from(j)
-      .orderBy(j['id'])
+      .orderBy(j.col('id'))
       .exec()) as PayloadType[];
     // Ensure that external deletion change is detected and applied properly.
     assert.sameDeepOrderedMembers(
@@ -110,13 +110,13 @@ describe('ExternalChangeObserver', () => {
     results = (await db
       .select()
       .from(j)
-      .where(j['id'].eq(modifiedRow.payload()['id'] as string))
+      .where(j.col('id').eq(modifiedRow.payload()['id'] as string))
       .exec()) as PayloadType[];
     // Ensure that external modification change is detected and applied.
     assert.equal(1, results.length);
     assert.equal(
       modifiedRow.payload()['id'],
-      results[0][j['id'].getName()]
+      results[0][j.col('id').getName()]
     );
 
     // Attempt to insert a row with an existing primary key.
@@ -185,7 +185,7 @@ describe('ExternalChangeObserver', () => {
 
   // Simulates an external insertion/modification change.
   function simulateInsertionModification(
-    tableSchema: BaseTable,
+    tableSchema: Table,
     rows: Row[]
   ): Promise<unknown> {
     const tx = mockStore.createTx(
@@ -206,7 +206,7 @@ describe('ExternalChangeObserver', () => {
   }
 
   // Simulates an external deletion change.
-  function simulateDeletion(tableSchema: BaseTable, rows: Row[]): Promise<unknown> {
+  function simulateDeletion(tableSchema: Table, rows: Row[]): Promise<unknown> {
     const tx = mockStore.createTx(
       TransactionType.READ_WRITE,
       [tableSchema],

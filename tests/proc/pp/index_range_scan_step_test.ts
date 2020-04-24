@@ -15,14 +15,15 @@
  */
 
 import * as chai from 'chai';
-import {Order} from '../../../lib/base/enum';
-import {SingleKeyRange} from '../../../lib/index/key_range';
-import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {IndexImpl} from '../../../lib/schema/index_impl';
-import {MockEnv} from '../../../testing/mock_env';
-import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { Order } from '../../../lib/base/enum';
+import { SingleKeyRange } from '../../../lib/index/key_range';
+import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { IndexImpl } from '../../../lib/schema/index_impl';
+import { MockEnv } from '../../../testing/mock_env';
+import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -48,18 +49,24 @@ describe('IndexRangeScanStep', () => {
 
   // Checks that an IndexRangeScanStep returns results in the expected order.
   function checkIndexRangeScan(
-      order: Order, description: string): Promise<void> {
-    const table = schema.table('tableA');
+    order: Order,
+    description: string
+  ): Promise<void> {
+    const table = schema.table('tableA') as BaseTable;
     const index =
-        order === Order.ASC ? table.getIndices()[0] : table.getIndices()[1];
-    const keyRange = order === Order.ASC ?
-        new SingleKeyRange(5, 8, false, false) :
-        new SingleKeyRange('dummyName' + 5, 'dummyName' + 8, false, false);
+      order === Order.ASC ? table.getIndices()[0] : table.getIndices()[1];
+    const keyRange =
+      order === Order.ASC
+        ? new SingleKeyRange(5, 8, false, false)
+        : new SingleKeyRange('dummyName' + 5, 'dummyName' + 8, false, false);
     const step = new IndexRangeScanStep(
-        env.global, index as IndexImpl, new MockKeyRangeCalculator([keyRange]),
-        false);
+      env.global,
+      index as IndexImpl,
+      new MockKeyRangeCalculator([keyRange]),
+      false
+    );
 
-    return step.exec().then((relations) => {
+    return step.exec().then(relations => {
       const relation = relations[0];
       assert.equal(4, relation.entries.length);
       relation.entries.forEach((entry, j) => {
@@ -71,8 +78,8 @@ describe('IndexRangeScanStep', () => {
         // test.
         const comparator = order === Order.ASC ? 1 : -1;
         assert.isTrue(
-            comparator * (entry.row.id() - relation.entries[j - 1].row.id()) >
-            0);
+          comparator * (entry.row.id() - relation.entries[j - 1].row.id()) > 0
+        );
       });
     });
   }

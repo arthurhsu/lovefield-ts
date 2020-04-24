@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {assert} from '../../lib/base/assert';
-import {Row} from '../../lib/base/row';
-import {getHrDbSchemaBuilder} from './hr_schema_builder';
-import {HRSchemaSamples} from './sample';
+import { assert } from '../../lib/base/assert';
+import { Row } from '../../lib/base/row';
+import { getHrDbSchemaBuilder } from './hr_schema_builder';
+import { HRSchemaSamples } from './sample';
 
 export class EmployeeDataGenerator {
   // A bag of salary values used to assign unique salaries to all generated
@@ -33,28 +33,34 @@ export class EmployeeDataGenerator {
   }
 
   // Sets the number of jobs that will be used for all generated employees.
-  public setJobCount(count: number): void {
+  setJobCount(count: number): void {
     this.jobCount = Math.min(count, HRSchemaSamples.JOB_TITLES.length);
   }
 
   // Sets the number of departments that will be used for all generated
   // employees.
-  public setDepartmentCount(count: number): void {
-    this.departmentCount =
-        Math.min(count, HRSchemaSamples.DEPARTMENT_NAMES.length);
+  setDepartmentCount(count: number): void {
+    this.departmentCount = Math.min(
+      count,
+      HRSchemaSamples.DEPARTMENT_NAMES.length
+    );
   }
 
-  public generate(count: number): Row[] {
+  generate(count: number): Row[] {
     assert(
-        count >= this.jobCount,
-        'employee count must be greater or equal to job count');
+      count >= this.jobCount,
+      'employee count must be greater or equal to job count'
+    );
     assert(
-        count >= this.departmentCount,
-        'employee count must be greater or equal to department count');
+      count >= this.departmentCount,
+      'employee count must be greater or equal to department count'
+    );
 
     const rawData = this.generateRaw(count);
-    const e = getHrDbSchemaBuilder().getSchema().table('Employee');
-    return rawData.map((object) => e.createRow(object));
+    const e = getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Employee');
+    return rawData.map(object => e.createRow(object));
   }
 
   private generateRaw(count: number): object[] {
@@ -62,10 +68,11 @@ export class EmployeeDataGenerator {
     for (let i = 0; i < count; i++) {
       const firstName = this.genFirstName();
       const lastName = this.genLastName();
-      const email = firstName.toLowerCase() + '.' + lastName.toLowerCase() +
-          '@theweb.com';
-      const phoneNumber =
-          String(1000000000 + Math.floor(Math.random() * 999999999));
+      const email =
+        firstName.toLowerCase() + '.' + lastName.toLowerCase() + '@theweb.com';
+      const phoneNumber = String(
+        1000000000 + Math.floor(Math.random() * 999999999)
+      );
       const commissionPercent = 0.15 + Math.random();
 
       // tslint:disable
@@ -82,9 +89,11 @@ export class EmployeeDataGenerator {
         commissionPercent: commissionPercent,
         managerId: 'managerId',
         // Ensuring that each department is assigned at least one employee.
-        departmentId: i < this.departmentCount ? `departmentId${i}` :
-                                                 this.genDepartmentId(),
-        photo: this.genPhoto()
+        departmentId:
+          i < this.departmentCount
+            ? `departmentId${i}`
+            : this.genDepartmentId(),
+        photo: this.genPhoto(),
       };
       // tslint:enable
     }
@@ -125,7 +134,7 @@ export class EmployeeDataGenerator {
   }
 
   private genSalary(): number {
-    const getNewSalary = () => (10000 + Math.floor(Math.random() * 200000));
+    const getNewSalary = () => 10000 + Math.floor(Math.random() * 200000);
     let salary = null;
     do {
       salary = getNewSalary();

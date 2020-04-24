@@ -16,21 +16,21 @@
 
 import * as chai from 'chai';
 
-import {bind} from '../../lib/base/bind';
-import {ChangeRecord} from '../../lib/base/change_record';
-import {DataStoreType, ErrorCode} from '../../lib/base/enum';
-import {Global} from '../../lib/base/global';
-import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {Cache} from '../../lib/cache/cache';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {TaskItem} from '../../lib/proc/task_item';
-import {UserQueryTask} from '../../lib/proc/user_query_task';
-import {BaseTable} from '../../lib/schema/base_table';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
-import {TestUtil} from '../../testing/test_util';
+import { bind } from '../../lib/base/bind';
+import { ChangeRecord } from '../../lib/base/change_record';
+import { DataStoreType, ErrorCode } from '../../lib/base/enum';
+import { Global } from '../../lib/base/global';
+import { Resolver } from '../../lib/base/resolver';
+import { Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { Cache } from '../../lib/cache/cache';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { TaskItem } from '../../lib/proc/task_item';
+import { UserQueryTask } from '../../lib/proc/user_query_task';
+import { Table } from '../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -39,19 +39,23 @@ describe('UserQueryTask', () => {
   let global: Global;
   let cache: Cache;
   let rows: Row[];
-  let j: BaseTable;
+  let j: Table;
   const ROW_COUNT = 5;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     global = db.getGlobal();
     cache = db.getGlobal().getService(Service.CACHE);
     j = db.getSchema().table('Job');
   });
 
   afterEach(async () => {
-    await db.delete().from(j).exec();
+    await db
+      .delete()
+      .from(j)
+      .exec();
     db.close();
   });
 
@@ -63,7 +67,11 @@ describe('UserQueryTask', () => {
       job.payload()['id'] = `jobId${i}`;
       rows.push(job);
     }
-    return db.insert().into(j).values(rows).getTaskItem();
+    return db
+      .insert()
+      .into(j)
+      .values(rows)
+      .getTaskItem();
   }
 
   // Tests that an INSERT query does indeed add a new record in the database,
@@ -91,17 +99,22 @@ describe('UserQueryTask', () => {
     const queryTask = new UserQueryTask(global, [getSampleQuery()]);
     await queryTask.exec();
     assert.equal(ROW_COUNT, cache.getCount());
-    const query = db.update(j).set(j['title'], newTitle).getTaskItem();
+    const query = db
+      .update(j)
+      .set(j.col('title'), newTitle)
+      .getTaskItem();
     const updateQueryTask = new UserQueryTask(global, [query]);
     await updateQueryTask.exec();
     const results = await TestUtil.selectAll(global, j);
     assert.equal(ROW_COUNT, results.length);
     assert.equal(ROW_COUNT, cache.getCount());
     for (let i = 0; i < ROW_COUNT; ++i) {
-      assert.equal(newTitle, results[i].payload()[j['title'].getName()]);
+      assert.equal(newTitle, results[i].payload()[j.col('title').getName()]);
       const id = rows[i].id() as number;
       assert.equal(
-          newTitle, (cache.get(id) as Row).payload()[j['title'].getName()]);
+        newTitle,
+        (cache.get(id) as Row).payload()[j.col('title').getName()]
+      );
     }
   });
 
@@ -113,7 +126,10 @@ describe('UserQueryTask', () => {
     const queryTask = new UserQueryTask(global, [getSampleQuery()]);
     await queryTask.exec();
     assert.equal(ROW_COUNT, cache.getCount());
-    const query = db.delete().from(j).getTaskItem();
+    const query = db
+      .delete()
+      .from(j)
+      .getTaskItem();
     const deleteQueryTask = new UserQueryTask(global, [query]);
     await deleteQueryTask.exec();
     const results = await TestUtil.selectAll(global, j);
@@ -136,22 +152,35 @@ describe('UserQueryTask', () => {
     const newTitle = 'Quantum Physicist';
     const deletedId = 'jobId2';
 
-    const insertQuery = db.insert().into(j).values(rows).getTaskItem();
-    const updateQuery = db.update(j).set(j['title'], newTitle).getTaskItem();
-    const removeQuery =
-        db.delete().from(j).where(j['id'].eq(deletedId)).getTaskItem();
+    const insertQuery = db
+      .insert()
+      .into(j)
+      .values(rows)
+      .getTaskItem();
+    const updateQuery = db
+      .update(j)
+      .set(j.col('title'), newTitle)
+      .getTaskItem();
+    const removeQuery = db
+      .delete()
+      .from(j)
+      .where(j.col('id').eq(deletedId))
+      .getTaskItem();
 
-    const queryTask =
-        new UserQueryTask(global, [insertQuery, updateQuery, removeQuery]);
+    const queryTask = new UserQueryTask(global, [
+      insertQuery,
+      updateQuery,
+      removeQuery,
+    ]);
 
     await queryTask.exec();
     assert.equal(ROW_COUNT - 1, cache.getCount());
 
     const results = await TestUtil.selectAll(global, j);
     assert.equal(ROW_COUNT - 1, results.length);
-    results.forEach((row) => {
-      assert.equal(newTitle, row.payload()[j['title'].getName()]);
-      assert.notEqual(deletedId, row.payload()[j['id'].getName()]);
+    results.forEach(row => {
+      assert.equal(newTitle, row.payload()[j.col('title').getName()]);
+      assert.notEqual(deletedId, row.payload()[j.col('id').getName()]);
     });
   });
 
@@ -166,15 +195,27 @@ describe('UserQueryTask', () => {
     // second query will fail because of a primary key constraint violation.
     // Expecting the entire transaction to be rolled back as if it never
     // happened.
-    const insertQuery = db.insert().into(j).values([job]).getTaskItem();
-    const insertAgainQuery = db.insert().into(j).values([job]).getTaskItem();
+    const insertQuery = db
+      .insert()
+      .into(j)
+      .values([job])
+      .getTaskItem();
+    const insertAgainQuery = db
+      .insert()
+      .into(j)
+      .values([job])
+      .getTaskItem();
 
-    const queryTask =
-        new UserQueryTask(global, [insertQuery, insertAgainQuery]);
+    const queryTask = new UserQueryTask(global, [
+      insertQuery,
+      insertAgainQuery,
+    ]);
 
     // 201: Duplicate keys are not allowed.
     await TestUtil.assertPromiseReject(
-        ErrorCode.DUPLICATE_KEYS, queryTask.exec());
+      ErrorCode.DUPLICATE_KEYS,
+      queryTask.exec()
+    );
     assert.equal(0, cache.getCount());
     const results = await TestUtil.selectAll(global, j);
     assert.equal(0, results.length);
@@ -185,14 +226,16 @@ describe('UserQueryTask', () => {
   it('singlePlan_ParametrizedQuery', () => {
     const promiseResolver = new Resolver();
 
-    const selectQueryBuilder =
-        db.select().from(j).where(j['id'].between(bind(0), bind(1)));
+    const selectQueryBuilder = db
+      .select()
+      .from(j)
+      .where(j.col('id').between(bind(0), bind(1)));
 
     const observerCallback = (changes: ChangeRecord[]): void => {
       // Expecting one "change" record for each of rows with IDs jobId2, jobId3,
       // jobId4.
       assert.equal(3, changes.length);
-      changes.forEach((change) => {
+      changes.forEach(change => {
         assert.equal(1, change['addedCount']);
       });
 
@@ -203,20 +246,22 @@ describe('UserQueryTask', () => {
     const insertQueryTask = new UserQueryTask(global, [getSampleQuery()]);
 
     insertQueryTask.exec().then(
-        () => {
-          // Start observing.
-          db.observe(selectQueryBuilder, observerCallback);
+      () => {
+        // Start observing.
+        db.observe(selectQueryBuilder, observerCallback);
 
-          // Bind parameters to some values.
-          selectQueryBuilder.bind(['jobId2', 'jobId4']);
+        // Bind parameters to some values.
+        selectQueryBuilder.bind(['jobId2', 'jobId4']);
 
-          const selectQueryTask =
-              new UserQueryTask(global, [selectQueryBuilder.getTaskItem()]);
-          return selectQueryTask.exec();
-        },
-        (e) => {
-          promiseResolver.reject(e);
-        });
+        const selectQueryTask = new UserQueryTask(global, [
+          selectQueryBuilder.getTaskItem(),
+        ]);
+        return selectQueryTask.exec();
+      },
+      e => {
+        promiseResolver.reject(e);
+      }
+    );
     return promiseResolver.promise;
   });
 });

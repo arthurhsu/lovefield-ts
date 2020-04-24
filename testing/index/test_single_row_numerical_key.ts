@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {TestIndex} from './test_index';
+import { SingleKey, SingleKeyRange } from '../../lib/index/key_range';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
+import { TestIndex } from './test_index';
 
 const assert = chai.assert;
 
@@ -63,10 +63,10 @@ export class TestSingleRowNumericalKey extends TestIndex {
   ];
 
   // Holds the max key and the corresponding values, populated in populateIndex.
-  private maxKeyValuePair: [SingleKey, number[]]|null;
+  private maxKeyValuePair: [SingleKey, number[]] | null;
 
   // Holds the min key and the corresponding values, populated in populateIndex.
-  private minKeyValuePair: [SingleKey, number[]]|null;
+  private minKeyValuePair: [SingleKey, number[]] | null;
 
   // |reverse| means range expectations shall be reversed or not.
   constructor(constructorFn: () => RuntimeIndex, readonly reverse = false) {
@@ -75,7 +75,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
     this.minKeyValuePair = null;
   }
 
-  public testAddGet(index: RuntimeIndex): void {
+  testAddGet(index: RuntimeIndex): void {
     for (let i = 0; i < 10; ++i) {
       const key = 10 + i;
       const value = 20 + i;
@@ -85,7 +85,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
     }
   }
 
-  public testGetRangeCost(index: RuntimeIndex): void {
+  testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index);
     this.keyRanges.forEach((keyRange, counter) => {
       const expectedResult = this.expectations[counter];
@@ -96,7 +96,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
     }, this);
   }
 
-  public testRemove(index: RuntimeIndex): void {
+  testRemove(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     index.remove(12, 22);
@@ -107,7 +107,7 @@ export class TestSingleRowNumericalKey extends TestIndex {
     assert.equal(0, index.cost(keyRange));
   }
 
-  public testSet(index: RuntimeIndex): void {
+  testSet(index: RuntimeIndex): void {
     this.populateIndex(index);
     index.remove(12, 22);
     assert.equal(9, index.getRange().length);
@@ -123,28 +123,40 @@ export class TestSingleRowNumericalKey extends TestIndex {
     assert.equal(10, index.getRange().length);
   }
 
-  public testMinMax(index: RuntimeIndex): void {
+  testMinMax(index: RuntimeIndex): void {
     // First try an empty index.
     assert.isNull(index.min());
     assert.isNull(index.max());
 
     this.populateIndex(index);
     assert.sameDeepOrderedMembers(
-        this.minKeyValuePair as any[], index.min() as any[]);
+      this.minKeyValuePair as unknown[],
+      index.min() as unknown[]
+    );
     assert.sameDeepOrderedMembers(
-        this.maxKeyValuePair as any[], index.max() as any[]);
+      this.maxKeyValuePair as unknown[],
+      index.max() as unknown[]
+    );
   }
 
-  public testMultiRange(index: RuntimeIndex): void {
+  testMultiRange(index: RuntimeIndex): void {
     for (let i = 0; i < 20; ++i) {
       index.set(i, i);
     }
 
     // Simulate NOT(BETWEEN(2, 18))
-    const range1 =
-        new SingleKeyRange(SingleKeyRange.UNBOUND_VALUE, 2, false, true);
-    const range2 =
-        new SingleKeyRange(18, SingleKeyRange.UNBOUND_VALUE, true, false);
+    const range1 = new SingleKeyRange(
+      SingleKeyRange.UNBOUND_VALUE,
+      2,
+      false,
+      true
+    );
+    const range2 = new SingleKeyRange(
+      18,
+      SingleKeyRange.UNBOUND_VALUE,
+      true,
+      false
+    );
 
     const comparator = index.comparator();
     const expected = [0, 1, 19].sort(comparator.compare.bind(comparator));
@@ -153,9 +165,13 @@ export class TestSingleRowNumericalKey extends TestIndex {
     assert.sameOrderedMembers(expected, index.getRange([range1, range2]));
     assert.sameOrderedMembers(expected, index.getRange([range2, range1]));
     assert.sameOrderedMembers(
-        expectedReverse, index.getRange([range1, range2], true));
+      expectedReverse,
+      index.getRange([range1, range2], true)
+    );
     assert.sameOrderedMembers(
-        expectedReverse, index.getRange([range2, range1], true));
+      expectedReverse,
+      index.getRange([range2, range1], true)
+    );
   }
 
   private populateIndex(index: RuntimeIndex): void {

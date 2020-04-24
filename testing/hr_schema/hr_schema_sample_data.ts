@@ -14,69 +14,81 @@
  * limitations under the License.
  */
 
-import {Row} from '../../lib/base/row';
-import {getHrDbSchemaBuilder} from './hr_schema_builder';
+import { Row } from '../../lib/base/row';
+import { getHrDbSchemaBuilder } from './hr_schema_builder';
 
 export class HRSchemaSampleData {
-  public static generateSampleEmployeeData(): Row {
+  static generateSampleEmployeeData(): Row {
     const buffer = new ArrayBuffer(8);
     const view = new Uint8Array(buffer);
     for (let i = 0; i < 8; ++i) {
       view[i] = i;
     }
 
-    return getHrDbSchemaBuilder().getSchema().table('Employee').createRow({
-      // tslint:disable
-      id: 'empId',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@neverland.com',
-      phoneNumber: '123456',
-      // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
-      hireDate: new Date(476144100000),
-      jobId: 'jobId',
-      salary: 100,
-      commissionPercent: 0.15,
-      managerId: 'managerId',
-      departmentId: 'departmentId',
-      photo: buffer,
-      // tslint:enable
-    });
+    return getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Employee')
+      .createRow({
+        // tslint:disable
+        id: 'empId',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@neverland.com',
+        phoneNumber: '123456',
+        // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
+        hireDate: new Date(476144100000),
+        jobId: 'jobId',
+        salary: 100,
+        commissionPercent: 0.15,
+        managerId: 'managerId',
+        departmentId: 'departmentId',
+        photo: buffer,
+        // tslint:enable
+      });
   }
 
-  public static generateSampleJobData(): Row {
-    return getHrDbSchemaBuilder().getSchema().table('Job').createRow({
-      // tslint:disable
-      id: 'jobId',
-      title: 'Software Engineer',
-      minSalary: 100000,
-      maxSalary: 500000,
-      // tslint:enable
-    });
+  static generateSampleJobData(): Row {
+    return getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Job')
+      .createRow({
+        // tslint:disable
+        id: 'jobId',
+        title: 'Software Engineer',
+        minSalary: 100000,
+        maxSalary: 500000,
+        // tslint:enable
+      });
   }
 
-  public static generateSampleDepartmentData(): Row {
-    return getHrDbSchemaBuilder().getSchema().table('Department').createRow({
-      // tslint:disable
-      id: 'departmentId',
-      name: 'departmentName',
-      managerId: 'managerId',
-      locationId: 'locationId',
-      // tslint:enable
-    });
+  static generateSampleDepartmentData(): Row {
+    return getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Department')
+      .createRow({
+        // tslint:disable
+        id: 'departmentId',
+        name: 'departmentName',
+        managerId: 'managerId',
+        locationId: 'locationId',
+        // tslint:enable
+      });
   }
 
-  public static generateSampleJobHistoryData(): Row {
-    return getHrDbSchemaBuilder().getSchema().table('JobHistory').createRow({
-      // tslint:disable
-      employeeId: 'employeeId',
-      // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
-      startDate: new Date(476144100000),
-      // 'Fri Feb 01 1986 14:15:00 GMT-0800 (PST)'
-      endDate: new Date(507680100000),
-      jobId: 'jobId',
-      departmentId: 'departmentId',
-      // tslint:enable
-    });
+  static generateSampleJobHistoryData(): Row {
+    return getHrDbSchemaBuilder()
+      .getSchema()
+      .table('JobHistory')
+      .createRow({
+        // tslint:disable
+        employeeId: 'employeeId',
+        // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
+        startDate: new Date(476144100000),
+        // 'Fri Feb 01 1986 14:15:00 GMT-0800 (PST)'
+        endDate: new Date(507680100000),
+        jobId: 'jobId',
+        departmentId: 'departmentId',
+        // tslint:enable
+      });
   }
 }

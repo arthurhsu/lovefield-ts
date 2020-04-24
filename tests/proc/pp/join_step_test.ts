@@ -16,23 +16,24 @@
 
 import * as chai from 'chai';
 
-import {Type} from '../../../lib/base/enum';
-import {Row} from '../../../lib/base/row';
-import {JoinPredicate} from '../../../lib/pred/join_predicate';
-import {JoinStep} from '../../../lib/proc/pp/join_step';
-import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
-import {Relation} from '../../../lib/proc/relation';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {Builder} from '../../../lib/schema/builder';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {MockEnv} from '../../../testing/mock_env';
+import { Type } from '../../../lib/base/enum';
+import { Row } from '../../../lib/base/row';
+import { JoinPredicate } from '../../../lib/pred/join_predicate';
+import { Predicate } from '../../../lib/pred/predicate';
+import { JoinStep } from '../../../lib/proc/pp/join_step';
+import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
+import { Relation } from '../../../lib/proc/relation';
+import { Table } from '../../../lib/schema/table';
+import { Builder } from '../../../lib/schema/builder';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { MockEnv } from '../../../testing/mock_env';
 
 const assert = chai.assert;
 
 describe('JoinStep', () => {
   let env: MockEnv;
-  let ta: BaseTable;
-  let tb: BaseTable;
+  let ta: Table;
+  let tb: Table;
   let tableARows: Row[];
   let tableBRows: Row[];
 
@@ -46,22 +47,24 @@ describe('JoinStep', () => {
 
   // Returns the schema to be used for tests in this file.
   function getSchema(): DatabaseSchema {
-    const schemaBuilder = new Builder('testschema', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id', Type.NUMBER)
-        .addColumn('name', Type.STRING)
-        .addIndex('idx_id', ['id']);
+    const schemaBuilder = new Builder('testSchema', 1);
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id', Type.NUMBER)
+      .addColumn('name', Type.STRING)
+      .addIndex('idx_id', ['id']);
 
-    schemaBuilder.createTable('TableB')
-        .addColumn('id', Type.NUMBER)
-        .addColumn('name', Type.STRING)
-        .addIndex('idx_id', ['id']);
+    schemaBuilder
+      .createTable('TableB')
+      .addColumn('id', Type.NUMBER)
+      .addColumn('name', Type.STRING)
+      .addIndex('idx_id', ['id']);
     return schemaBuilder.getSchema();
   }
 
   // Inserts 3 sample rows to the database, for each table.
-  function insertSampleData(): Promise<any> {
-    const generateRowsForTable = (table: BaseTable): Row[] => {
+  function insertSampleData(): Promise<unknown> {
+    const generateRowsForTable = (table: Table): Row[] => {
       const sampleDataCount = 3;
       const rows = new Array(sampleDataCount);
       for (let i = 0; i < sampleDataCount; i++) {
@@ -78,8 +81,14 @@ describe('JoinStep', () => {
 
     const tx = env.db.createTransaction();
     return tx.exec([
-      env.db.insert().into(ta).values(tableARows),
-      env.db.insert().into(tb).values(tableBRows),
+      env.db
+        .insert()
+        .into(ta)
+        .values(tableARows),
+      env.db
+        .insert()
+        .into(tb)
+        .values(tableBRows),
     ]);
   }
 
@@ -91,8 +100,11 @@ describe('JoinStep', () => {
   // (could be either of tableARelation or tableBRelation) includes ALL rows of
   // this table, otherwise index join is invalid and this test would fail.
   function checkIndexJoin(
-      tableARelation: Relation, tableBRelation: Relation,
-      joinPredicate: JoinPredicate): Promise<void> {
+    tableARelation: Relation,
+    tableBRelation: Relation,
+    pred: Predicate
+  ): Promise<void> {
+    const joinPredicate = pred as JoinPredicate;
     const noOpStepA = new NoOpStep([tableARelation]);
     const noOpStepB = new NoOpStep([tableBRelation]);
     const joinStep = new JoinStep(env.global, joinPredicate, false);
@@ -100,17 +112,24 @@ describe('JoinStep', () => {
     joinStep.addChild(noOpStepB);
 
     // Detecting the expected IDs that should appear in the result.
-    const tableAIds = new Set<number>(tableARelation.entries.map(
-        (entry) => entry.getField(ta['id']) as number));
-    const tableBIds = new Set<number>(tableARelation.entries.map(
-        (entry) => entry.getField(tb['id']) as number));
-    const expectedIds =
-        Array.from(setIntersection(tableAIds, tableBIds).values());
+    const tableAIds = new Set<number>(
+      tableARelation.entries.map(
+        entry => entry.getField(ta.col('id')) as number
+      )
+    );
+    const tableBIds = new Set<number>(
+      tableARelation.entries.map(
+        entry => entry.getField(tb.col('id')) as number
+      )
+    );
+    const expectedIds = Array.from(
+      setIntersection(tableAIds, tableBIds).values()
+    );
 
     // Choosing the left predicate column as the indexed column.
     joinStep.markAsIndexJoin(joinPredicate.leftColumn);
     assert.notEqual(-1, joinStep.toString().indexOf('index_nested_loop'));
-    return joinStep.exec().then((relations) => {
+    return joinStep.exec().then(relations => {
       assert.equal(1, relations.length);
       assertTableATableBJoin(relations[0], expectedIds);
     });
@@ -118,7 +137,7 @@ describe('JoinStep', () => {
 
   function setIntersection(set1: Set<number>, set2: Set<number>): Set<number> {
     const intersection = new Set<number>();
-    set1.forEach((value) => {
+    set1.forEach(value => {
       if (set2.has(value)) {
         intersection.add(value);
       }
@@ -126,25 +145,38 @@ describe('JoinStep', () => {
     return intersection;
   }
 
-  // Tests index join for the case where the entire tableA and tabelB contents
+  // Tests index join for the case where the entire tableA and tableB contents
   // are joined.
   it('indexJoin_EntireTables', async () => {
     const tableARelation = Relation.fromRows(tableARows, [ta.getName()]);
     const tableBRelation = Relation.fromRows(tableBRows, [tb.getName()]);
 
     // First calculate index join using the index of TableA's index.
-    await checkIndexJoin(tableARelation, tableBRelation, ta['id'].eq(tb['id']));
+    await checkIndexJoin(
+      tableARelation,
+      tableBRelation,
+      ta.col('id').eq(tb.col('id'))
+    );
     // Then calculate index join using the index of TableB's index.
-    await checkIndexJoin(tableARelation, tableBRelation, tb['id'].eq(ta['id']));
+    await checkIndexJoin(
+      tableARelation,
+      tableBRelation,
+      tb.col('id').eq(ta.col('id'))
+    );
   });
 
   // Tests index join for the case where a subset of TableA is joined with the
   // entire TableB (using TableB's index for the join).
   it('indexJoin_PartialTable', async () => {
-    const tableARelation =
-        Relation.fromRows(tableARows.slice(2), [ta.getName()]);
+    const tableARelation = Relation.fromRows(tableARows.slice(2), [
+      ta.getName(),
+    ]);
     const tableBRelation = Relation.fromRows(tableBRows, [tb.getName()]);
-    await checkIndexJoin(tableARelation, tableBRelation, tb['id'].eq(ta['id']));
+    await checkIndexJoin(
+      tableARelation,
+      tableBRelation,
+      tb.col('id').eq(ta.col('id'))
+    );
   });
 
   // Tests index join for the case where an empty relation is joined with the
@@ -152,21 +184,27 @@ describe('JoinStep', () => {
   it('indexJoin_EmptyTable', async () => {
     const tableARelation = Relation.fromRows([], [ta.getName()]);
     const tableBRelation = Relation.fromRows(tableBRows, [tb.getName()]);
-    await checkIndexJoin(tableARelation, tableBRelation, tb['id'].eq(ta['id']));
+    await checkIndexJoin(
+      tableARelation,
+      tableBRelation,
+      tb.col('id').eq(ta.col('id'))
+    );
   });
 
   // Asserts that the results of joining rows belonging to TableA and TableB is
   // as expected.
   function assertTableATableBJoin(
-      relation: Relation, expectedIds: number[]): void {
+    relation: Relation,
+    expectedIds: number[]
+  ): void {
     assert.equal(expectedIds.length, relation.entries.length);
     relation.entries.forEach((entry, i) => {
       assert.equal(2, Object.keys(entry.row.payload()).length);
       const expectedId = expectedIds[i];
-      assert.equal(expectedId, entry.getField(ta['id']));
-      assert.equal('dummyName' + expectedId, entry.getField(ta['name']));
-      assert.equal(expectedId, entry.getField(tb['id']));
-      assert.equal('dummyName' + expectedId, entry.getField(tb['name']));
+      assert.equal(expectedId, entry.getField(ta.col('id')));
+      assert.equal('dummyName' + expectedId, entry.getField(ta.col('name')));
+      assert.equal(expectedId, entry.getField(tb.col('id')));
+      assert.equal('dummyName' + expectedId, entry.getField(tb.col('name')));
     });
   }
 });

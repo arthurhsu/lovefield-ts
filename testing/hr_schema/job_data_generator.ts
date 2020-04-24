@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-import {assert} from '../../lib/base/assert';
-import {Row} from '../../lib/base/row';
-import {ArrayHelper} from '../../lib/structs/array_helper';
-import {getHrDbSchemaBuilder} from './hr_schema_builder';
-import {HRSchemaSamples} from './sample';
+import { assert } from '../../lib/base/assert';
+import { Row } from '../../lib/base/row';
+import { ArrayHelper } from '../../lib/structs/array_helper';
+import { getHrDbSchemaBuilder } from './hr_schema_builder';
+import { HRSchemaSamples } from './sample';
 
 export class JobDataGenerator {
-  private static SALARY_POOL = [
-    100000,
-    200000,
-    300000,
-    400000,
-    500000,
-    600000,
-  ];
+  private static SALARY_POOL = [100000, 200000, 300000, 400000, 500000, 600000];
 
   private titles: string[];
   constructor() {
@@ -36,16 +29,19 @@ export class JobDataGenerator {
     ArrayHelper.shuffle(this.titles);
   }
 
-  public generate(count: number): Row[] {
-    const j = getHrDbSchemaBuilder().getSchema().table('Job');
+  generate(count: number): Row[] {
+    const j = getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Job');
     const rawData = this.generateRaw(count);
-    return rawData.map((object) => j.createRow(object));
+    return rawData.map(object => j.createRow(object));
   }
 
   private generateRaw(count: number): object[] {
     assert(
-        count <= this.titles.length,
-        `count can be at most ${this.titles.length}`);
+      count <= this.titles.length,
+      `count can be at most ${this.titles.length}`
+    );
     const jobs = new Array<object>(count);
     for (let i = 0; i < count; i++) {
       const salaries = this.genSalaries();
@@ -60,13 +56,15 @@ export class JobDataGenerator {
   }
 
   private genSalaries(): number[] {
-    const salary1Index =
-        Math.floor(Math.random() * JobDataGenerator.SALARY_POOL.length);
-    const salary2Index =
-        Math.floor(Math.random() * JobDataGenerator.SALARY_POOL.length);
+    const salary1Index = Math.floor(
+      Math.random() * JobDataGenerator.SALARY_POOL.length
+    );
+    const salary2Index = Math.floor(
+      Math.random() * JobDataGenerator.SALARY_POOL.length
+    );
     return [
       JobDataGenerator.SALARY_POOL[salary1Index],
       JobDataGenerator.SALARY_POOL[salary2Index],
-    ].sort((a, b) => (a - b));
+    ].sort((a, b) => a - b);
   }
 }

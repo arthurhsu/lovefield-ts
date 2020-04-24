@@ -14,45 +14,46 @@
  * limitations under the License.
  */
 
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
 
-import {BaseTable} from './base_table';
-import {DatabaseSchema} from './database_schema';
-import {Info} from './info';
-import {Pragma} from './pragma';
+import { Table } from './table';
+import { DatabaseSchema } from './database_schema';
+import { Info } from './info';
+import { Pragma } from './pragma';
 
 export class DatabaseSchemaImpl implements DatabaseSchema {
-  public _pragma: Pragma;
+  _pragma: Pragma;
   private _info: Info;
-  private tableMap: Map<string, BaseTable>;
+  private tableMap: Map<string, Table>;
 
   constructor(readonly _name: string, readonly _version: number) {
-    this.tableMap = new Map<string, BaseTable>();
-    this._pragma = {enableBundledMode: false};
-    this._info = undefined as any as Info;
+    this.tableMap = new Map<string, Table>();
+    this._pragma = { enableBundledMode: false };
+    // Lazy initialization
+    this._info = (undefined as unknown) as Info;
   }
 
-  public name(): string {
+  name(): string {
     return this._name;
   }
 
-  public version(): number {
+  version(): number {
     return this._version;
   }
 
-  public info(): Info {
+  info(): Info {
     if (this._info === undefined) {
       this._info = new Info(this);
     }
     return this._info;
   }
 
-  public tables(): BaseTable[] {
+  tables(): Table[] {
     return Array.from(this.tableMap.values());
   }
 
-  public table(tableName: string): BaseTable {
+  table(tableName: string): Table {
     const ret = this.tableMap.get(tableName);
     if (!ret) {
       // 101: Table {0} not found.
@@ -61,11 +62,11 @@ export class DatabaseSchemaImpl implements DatabaseSchema {
     return ret;
   }
 
-  public setTable(table: BaseTable): void {
+  setTable(table: Table): void {
     this.tableMap.set(table.getName(), table);
   }
 
-  public pragma(): Pragma {
+  pragma(): Pragma {
     return this._pragma;
   }
 }

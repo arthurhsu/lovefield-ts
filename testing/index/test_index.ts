@@ -15,22 +15,22 @@
  */
 
 import * as chai from 'chai';
-import {KeyRange, SingleKeyRange} from '../../lib/index/key_range';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
+import { KeyRange, SingleKeyRange } from '../../lib/index/key_range';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
 
 const assert = chai.assert;
 
 export abstract class TestIndex {
   constructor(protected constructorFn: () => RuntimeIndex) {}
 
-  public abstract testAddGet(index: RuntimeIndex): void;
-  public abstract testGetRangeCost(index: RuntimeIndex): void;
-  public abstract testRemove(index: RuntimeIndex): void;
-  public abstract testSet(index: RuntimeIndex): void;
-  public abstract testMinMax(index: RuntimeIndex): void;
-  public abstract testMultiRange(index: RuntimeIndex): void;
+  abstract testAddGet(index: RuntimeIndex): void;
+  abstract testGetRangeCost(index: RuntimeIndex): void;
+  abstract testRemove(index: RuntimeIndex): void;
+  abstract testSet(index: RuntimeIndex): void;
+  abstract testMinMax(index: RuntimeIndex): void;
+  abstract testMultiRange(index: RuntimeIndex): void;
 
-  public run(): void {
+  run(): void {
     const testCases = [
       this.testAddGet,
       this.testGetRangeCost,
@@ -40,7 +40,7 @@ export abstract class TestIndex {
       this.testMultiRange,
     ];
 
-    testCases.forEach((tc) => {
+    testCases.forEach(tc => {
       const index = this.constructorFn();
       tc.call(this, index);
     }, this);
@@ -48,12 +48,16 @@ export abstract class TestIndex {
 
   // Asserts that the return values of getRange() and cost() are as expected for
   // the given index, for the given key range.
-  public assertGetRangeCost(
-      index: RuntimeIndex, keyRange: KeyRange|SingleKeyRange|undefined,
-      expectedResult: number[]): void {
+  assertGetRangeCost(
+    index: RuntimeIndex,
+    keyRange: KeyRange | SingleKeyRange | undefined,
+    expectedResult: number[]
+  ): void {
     const actualResult = index.getRange(
-        keyRange !== undefined ? [keyRange] as SingleKeyRange[] | KeyRange[] :
-                                 undefined);
+      keyRange !== undefined
+        ? ([keyRange] as SingleKeyRange[] | KeyRange[])
+        : undefined
+    );
     assert.sameDeepOrderedMembers(expectedResult, actualResult);
     assert.equal(actualResult.length, index.cost(keyRange));
   }

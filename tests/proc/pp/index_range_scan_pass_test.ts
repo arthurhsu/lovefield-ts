@@ -16,61 +16,65 @@
 
 import * as sinon from 'sinon';
 
-import {DatabaseConnection} from '../../../lib/base/database_connection';
-import {DataStoreType, Order} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {Service} from '../../../lib/base/service';
-import {op} from '../../../lib/fn/op';
-import {IndexStats} from '../../../lib/index/index_stats';
-import {IndexStore} from '../../../lib/index/index_store';
-import {JoinPredicate} from '../../../lib/pred/join_predicate';
-import {Predicate} from '../../../lib/pred/predicate';
-import {PredicateNode} from '../../../lib/pred/predicate_node';
-import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
-import {IndexRangeScanPass} from '../../../lib/proc/pp/index_range_scan_pass';
-import {JoinStep} from '../../../lib/proc/pp/join_step';
-import {LimitStep} from '../../../lib/proc/pp/limit_step';
-import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
-import {TestUtil} from '../../../testing/test_util';
-import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DatabaseConnection } from '../../../lib/base/database_connection';
+import { DataStoreType, Order } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { Service } from '../../../lib/base/service';
+import { op } from '../../../lib/fn/op';
+import { IndexStats } from '../../../lib/index/index_stats';
+import { IndexStore } from '../../../lib/index/index_store';
+import { JoinPredicate } from '../../../lib/pred/join_predicate';
+import { Predicate } from '../../../lib/pred/predicate';
+import { PredicateNode } from '../../../lib/pred/predicate_node';
+import { CrossProductStep } from '../../../lib/proc/pp/cross_product_step';
+import { IndexRangeScanPass } from '../../../lib/proc/pp/index_range_scan_pass';
+import { JoinStep } from '../../../lib/proc/pp/join_step';
+import { LimitStep } from '../../../lib/proc/pp/limit_step';
+import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { BaseColumn } from '../../../lib/schema/base_column';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { Column } from '../../../lib/schema/column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { Table } from '../../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import { TestUtil } from '../../../testing/test_util';
+import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('IndexRangeScanPass', () => {
   let db: DatabaseConnection;
   let schema: DatabaseSchema;
   let global: Global;
-  let e: BaseTable;
-  let j: BaseTable;
-  let d: BaseTable;
-  let cct: BaseTable;
-  let dt: BaseTable;
+  let e: Table;
+  let j: Table;
+  let d: Table;
+  let cct: Table;
+  let dt: Table;
   let indexStore: IndexStore;
   let pass: IndexRangeScanPass;
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    const option = {storeType: DataStoreType.MEMORY};
-    return getHrDbSchemaBuilder().connect(option).then((conn) => {
-      db = conn;
-      schema = db.getSchema();
-      e = schema.table('Employee');
-      j = schema.table('Job');
-      d = schema.table('Department');
-      cct = schema.table('CrossColumnTable');
-      dt = schema.table('DummyTable');
-      global = (db as RuntimeDatabase).getGlobal();
-      indexStore = global.getService(Service.INDEX_STORE);
-      pass = new IndexRangeScanPass(global);
-    });
+    const option = { storeType: DataStoreType.MEMORY };
+    return getHrDbSchemaBuilder()
+      .connect(option)
+      .then(conn => {
+        db = conn;
+        schema = db.getSchema();
+        e = schema.table('Employee');
+        j = schema.table('Job');
+        d = schema.table('Department');
+        cct = schema.table('CrossColumnTable');
+        dt = schema.table('DummyTable');
+        global = (db as RuntimeDatabase).getGlobal();
+        indexStore = global.getService(Service.INDEX_STORE);
+        pass = new IndexRangeScanPass(global);
+      });
   });
 
   afterEach(() => {
@@ -99,27 +103,34 @@ describe('IndexRangeScanPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e];
-      queryContext.where = e['id'].gt('100');
+      queryContext.where = e.col('id').gt('100');
       queryContext.limit = 20;
 
       const limitNode = new LimitStep();
-      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
       limitNode.addChild(projectNode);
-      const selectNode =
-          new SelectStep((queryContext.where as Predicate).getId());
+      const selectNode = new SelectStep(
+        (queryContext.where as Predicate).getId()
+      );
       projectNode.addChild(selectNode);
-      const tableAccessNode =
-          new TableAccessFullStep(global, queryContext.from[0]);
+      const tableAccessNode = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
       selectNode.addChild(tableAccessNode);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: limitNode,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Test a tree that has an IN predicate on a column that has an index. It
@@ -142,20 +153,32 @@ describe('IndexRangeScanPass', () => {
 
     const indexStats = new IndexStats();
     TestUtil.simulateIndexStats(
-        sandbox, indexStore, e.getRowIdIndexName(), indexStats);
+      sandbox,
+      indexStore,
+      (e as BaseTable).getRowIdIndexName(),
+      indexStats
+    );
 
     // Simulating case where the IN predicate has a low enough number of values
     // with respect to the total number of rows to be eligible for optimization.
-    indexStats.totalRows = 200;  // limit = 200 * 0.02 = 4
+    indexStats.totalRows = 200; // limit = 200 * 0.02 = 4
     TreeTestHelper.assertTreeTransformation(
-        constructTreeWithInPredicate(3), treeBefore, treeAfter, pass);
+      constructTreeWithInPredicate(3),
+      treeBefore,
+      treeAfter,
+      pass
+    );
 
     // Simulating case where the IN predicate has a high enough number of values
     // with respect to the total number of rows to NOT be eligible for
     // optimization.
-    indexStats.totalRows = 100;  // limit = 100 * 0.02 = 2
+    indexStats.totalRows = 100; // limit = 100 * 0.02 = 2
     TreeTestHelper.assertTreeTransformation(
-        constructTreeWithInPredicate(3), treeBefore, treeBefore, pass);
+      constructTreeWithInPredicate(3),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   it('tree_WithOrPredicate', () => {
@@ -175,21 +198,33 @@ describe('IndexRangeScanPass', () => {
 
     const indexStats = new IndexStats();
     TestUtil.simulateIndexStats(
-        sandbox, indexStore, e.getRowIdIndexName(), indexStats);
+      sandbox,
+      indexStore,
+      (e as BaseTable).getRowIdIndexName(),
+      indexStats
+    );
 
     // Simulating case where the OR predicate has a low enough number of
     // children with respect to the total number of rows to be eligible for
     // optimization.
-    indexStats.totalRows = 200;  // limit = 200 * 0.02 = 4
+    indexStats.totalRows = 200; // limit = 200 * 0.02 = 4
     TreeTestHelper.assertTreeTransformation(
-        constructTreeWithOrPredicate(3), treeBefore, treeAfter, pass);
+      constructTreeWithOrPredicate(3),
+      treeBefore,
+      treeAfter,
+      pass
+    );
 
     // Simulating case where the OR predicate has a high enough number of
     // children with respect to the total number of rows to NOT be eligible for
     // optimization.
-    indexStats.totalRows = 100;  // limit = 100 * 0.02 = 2
+    indexStats.totalRows = 100; // limit = 100 * 0.02 = 2
     TreeTestHelper.assertTreeTransformation(
-        constructTreeWithOrPredicate(3), treeBefore, treeBefore, pass);
+      constructTreeWithOrPredicate(3),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   it('tree1', () => {
@@ -208,11 +243,24 @@ describe('IndexRangeScanPass', () => {
     ].join('\n');
 
     TestUtil.simulateIndexCost(
-        sandbox, indexStore, e['salary'].getIndices()[0], 100);
-    TestUtil.simulateIndexCost(sandbox, indexStore, e['id'].getIndices()[0], 5);
+      sandbox,
+      indexStore,
+      (e.col('salary') as BaseColumn).getIndices()[0],
+      100
+    );
+    TestUtil.simulateIndexCost(
+      sandbox,
+      indexStore,
+      (e.col('id') as BaseColumn).getIndices()[0],
+      5
+    );
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(), treeBefore, treeAfter, pass);
+      constructTree1(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   it('tree2', () => {
@@ -247,14 +295,36 @@ describe('IndexRangeScanPass', () => {
     ].join('\n');
 
     TestUtil.simulateIndexCost(
-        sandbox, indexStore, e['salary'].getIndices()[0], 100);
-    TestUtil.simulateIndexCost(sandbox, indexStore, e['id'].getIndices()[0], 5);
+      sandbox,
+      indexStore,
+      (e.col('salary') as BaseColumn).getIndices()[0],
+      100
+    );
     TestUtil.simulateIndexCost(
-        sandbox, indexStore, j['maxSalary'].getIndices()[0], 100);
-    TestUtil.simulateIndexCost(sandbox, indexStore, j['id'].getIndices()[0], 5);
+      sandbox,
+      indexStore,
+      (e.col('id') as BaseColumn).getIndices()[0],
+      5
+    );
+    TestUtil.simulateIndexCost(
+      sandbox,
+      indexStore,
+      (j.col('maxSalary') as BaseColumn).getIndices()[0],
+      100
+    );
+    TestUtil.simulateIndexCost(
+      sandbox,
+      indexStore,
+      (j.col('id') as BaseColumn).getIndices()[0],
+      5
+    );
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(), treeBefore, treeAfter, pass);
+      constructTree2(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests the case where a SelectStep node is paired with a TableAccessFullStep
@@ -282,30 +352,39 @@ describe('IndexRangeScanPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [j, d];
-      queryContext.where = j['id'].eq('100');
+      queryContext.where = j.col('id').eq('100');
 
       const crossProductStep = new CrossProductStep();
-      const tableAccessJob =
-          new TableAccessFullStep(global, queryContext.from[0]);
-      const tableAccessDepartment =
-          new TableAccessFullStep(global, queryContext.from[1]);
+      const tableAccessJob = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
+      const tableAccessDepartment = new TableAccessFullStep(
+        global,
+        queryContext.from[1]
+      );
       crossProductStep.addChild(tableAccessJob);
       crossProductStep.addChild(tableAccessDepartment);
 
-      const selectStep =
-          new SelectStep((queryContext.where as Predicate).getId());
+      const selectStep = new SelectStep(
+        (queryContext.where as Predicate).getId()
+      );
       selectStep.addChild(crossProductStep);
-      const rootNode = new ProjectStep([], null as any as BaseColumn[]);
+      const rootNode = new ProjectStep([], (null as unknown) as Column[]);
       rootNode.addChild(selectStep);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: rootNode,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where
@@ -332,12 +411,24 @@ describe('IndexRangeScanPass', () => {
     ].join('\n');
 
     TestUtil.simulateIndexCost(
-        sandbox, indexStore, e['salary'].getIndices()[0], 10);
+      sandbox,
+      indexStore,
+      (e.col('salary') as BaseColumn).getIndices()[0],
+      10
+    );
     TestUtil.simulateIndexCost(
-        sandbox, indexStore, e['id'].getIndices()[0], 500);
+      sandbox,
+      indexStore,
+      (e.col('id') as BaseColumn).getIndices()[0],
+      500
+    );
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree3(), treeBefore, treeAfter, pass);
+      constructTree3(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where
@@ -365,11 +456,11 @@ describe('IndexRangeScanPass', () => {
       '-select(value_pred(CrossColumnTable.integer1 gte 400))',
       '--table_access_by_row_id(CrossColumnTable)',
       '---index_range_scan(CrossColumnTable.idx_crossNull, ' +
-          '(StringValue1, unbound],[StringValue2, StringValue2], natural)',
+        '(StringValue1, unbound],[StringValue2, StringValue2], natural)',
       '',
     ].join('\n');
 
-    const indices = cct.getIndices();
+    const indices = (cct as BaseTable).getIndices();
     TestUtil.simulateIndexCost(sandbox, indexStore, indices[0], 100);
     TestUtil.simulateIndexCost(sandbox, indexStore, indices[1], 10);
 
@@ -377,28 +468,37 @@ describe('IndexRangeScanPass', () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [cct];
       queryContext.where = op.and(
-          cct['string1'].gt('StringValue1'), cct['integer2'].gt(100),
-          cct['integer1'].gte(400), cct['string2'].eq('StringValue2'));
+        cct.col('string1').gt('StringValue1'),
+        cct.col('integer2').gt(100),
+        cct.col('integer1').gte(400),
+        cct.col('string2').eq('StringValue2')
+      );
 
       const selectNode1 = createSelectStep(queryContext, 0);
       const selectNode2 = createSelectStep(queryContext, 1);
       const selectNode3 = createSelectStep(queryContext, 2);
       const selectNode4 = createSelectStep(queryContext, 3);
-      const tableAccessNode =
-          new TableAccessFullStep(global, queryContext.from[0]);
+      const tableAccessNode = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
       selectNode1.addChild(selectNode2);
       selectNode2.addChild(selectNode3);
       selectNode3.addChild(selectNode4);
       selectNode4.addChild(tableAccessNode);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: selectNode1,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where
@@ -421,35 +521,43 @@ describe('IndexRangeScanPass', () => {
       'select(value_pred(DummyTable.integer gt 100))',
       '-table_access_by_row_id(DummyTable)',
       '--index_range_scan(DummyTable.pkDummyTable, ' +
-          '[StringValue, StringValue],[unbound, unbound], natural)',
+        '[StringValue, StringValue],[unbound, unbound], natural)',
       '',
     ].join('\n');
 
-    const indices = dt.getIndices();
+    const indices = (dt as BaseTable).getIndices();
     TestUtil.simulateIndexCost(sandbox, indexStore, indices[0], 10);
     TestUtil.simulateIndexCost(sandbox, indexStore, indices[1], 100);
 
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [dt];
-      queryContext.where =
-          op.and(dt['string'].eq('StringValue'), dt['integer'].gt(100));
+      queryContext.where = op.and(
+        dt.col('string').eq('StringValue'),
+        dt.col('integer').gt(100)
+      );
 
       const selectNode1 = createSelectStep(queryContext, 0);
       const selectNode2 = createSelectStep(queryContext, 1);
-      const tableAccessNode =
-          new TableAccessFullStep(global, queryContext.from[0]);
+      const tableAccessNode = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
       selectNode1.addChild(selectNode2);
       selectNode2.addChild(tableAccessNode);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: selectNode1,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where
@@ -476,26 +584,34 @@ describe('IndexRangeScanPass', () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [dt];
       queryContext.where = op.and(
-          dt['boolean'].eq(false), dt['number'].gt(100),
-          dt['string2'].eq('OtherStringValue'));
+        dt.col('boolean').eq(false),
+        dt.col('number').gt(100),
+        dt.col('string2').eq('OtherStringValue')
+      );
 
       const selectNode1 = createSelectStep(queryContext, 0);
       const selectNode2 = createSelectStep(queryContext, 1);
       const selectNode3 = createSelectStep(queryContext, 2);
-      const tableAccessNode =
-          new TableAccessFullStep(global, queryContext.from[0]);
+      const tableAccessNode = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
       selectNode1.addChild(selectNode2);
       selectNode2.addChild(selectNode3);
       selectNode3.addChild(tableAccessNode);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: selectNode1,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Constructs a tree where:
@@ -504,16 +620,21 @@ describe('IndexRangeScanPass', () => {
   function constructTree1(): TestTree {
     const queryContext = new SelectContext(schema);
     queryContext.from = [e];
-    queryContext.where = op.and(e['id'].gt('100'), e['salary'].eq(10000));
+    queryContext.where = op.and(
+      e.col('id').gt('100'),
+      e.col('salary').eq(10000)
+    );
 
     const selectNode1 = createSelectStep(queryContext, 0);
     const selectNode2 = createSelectStep(queryContext, 1);
     selectNode1.addChild(selectNode2);
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
     selectNode2.addChild(tableAccessNode);
     return {
-      queryContext: queryContext,
+      queryContext,
       root: selectNode1,
     };
   }
@@ -526,16 +647,23 @@ describe('IndexRangeScanPass', () => {
     const queryContext = new SelectContext(schema);
     queryContext.from = [e, j];
     queryContext.where = op.and(
-        e['id'].gt('100'), e['salary'].eq(10000), j['id'].gt('100'),
-        j['maxSalary'].eq(1000), j['id'].eq(e['jobId']));
+      e.col('id').gt('100'),
+      e.col('salary').eq(10000),
+      j.col('id').gt('100'),
+      j.col('maxSalary').eq(1000),
+      j.col('id').eq(e.col('jobId'))
+    );
 
     // Constructing left sub-tree.
     const selectNode1 = createSelectStep(queryContext, 0);
-    const orderByNode1 =
-        new OrderByStep([{column: e['salary'], order: Order.ASC}]);
+    const orderByNode1 = new OrderByStep([
+      { column: e.col('salary'), order: Order.ASC },
+    ]);
     const selectNode2 = createSelectStep(queryContext, 1);
-    const tableAccessNode1 =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode1 = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
 
     selectNode1.addChild(orderByNode1);
     orderByNode1.addChild(selectNode2);
@@ -543,22 +671,27 @@ describe('IndexRangeScanPass', () => {
 
     // Constructing right sub-tree.
     const selectNode3 = createSelectStep(queryContext, 2);
-    const orderByNode2 =
-        new OrderByStep([{column: j['title'], order: Order.ASC}]);
+    const orderByNode2 = new OrderByStep([
+      { column: j.col('title'), order: Order.ASC },
+    ]);
     const selectNode4 = createSelectStep(queryContext, 3);
-    const tableAccessNode2 =
-        new TableAccessFullStep(global, queryContext.from[1]);
+    const tableAccessNode2 = new TableAccessFullStep(
+      global,
+      queryContext.from[1]
+    );
 
     selectNode3.addChild(orderByNode2);
     orderByNode2.addChild(selectNode4);
     selectNode4.addChild(tableAccessNode2);
 
     // Constructing the overall tree.
-    const rootNode = new ProjectStep([], null as any as BaseColumn[]);
-    const orderByNode3 =
-        new OrderByStep([{column: e['salary'], order: Order.ASC}]);
-    const joinPredicate =
-        (queryContext.where as PredicateNode).getChildAt(4) as JoinPredicate;
+    const rootNode = new ProjectStep([], (null as unknown) as Column[]);
+    const orderByNode3 = new OrderByStep([
+      { column: e.col('salary'), order: Order.ASC },
+    ]);
+    const joinPredicate = (queryContext.where as PredicateNode).getChildAt(
+      4
+    ) as JoinPredicate;
     const joinNode = new JoinStep(global, joinPredicate, false);
 
     rootNode.addChild(orderByNode3);
@@ -567,7 +700,7 @@ describe('IndexRangeScanPass', () => {
     joinNode.addChild(selectNode3);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: rootNode,
     };
   }
@@ -575,21 +708,26 @@ describe('IndexRangeScanPass', () => {
   function constructTree3(): TestTree {
     const queryContext = new SelectContext(schema);
     queryContext.from = [e];
-    queryContext.where =
-        op.and(e['salary'].lte(200), e['id'].gt('100'), e['salary'].gte(100));
+    queryContext.where = op.and(
+      e.col('salary').lte(200),
+      e.col('id').gt('100'),
+      e.col('salary').gte(100)
+    );
 
     const selectNode1 = createSelectStep(queryContext, 0);
     const selectNode2 = createSelectStep(queryContext, 1);
     const selectNode3 = createSelectStep(queryContext, 2);
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
 
     selectNode1.addChild(selectNode2);
     selectNode2.addChild(selectNode3);
     selectNode3.addChild(tableAccessNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: selectNode1,
     };
   }
@@ -601,13 +739,13 @@ describe('IndexRangeScanPass', () => {
     for (let i = 0; i < values.length; i++) {
       values[i] = (i + 1).toString();
     }
-    return constructTreeWithPredicate(e['id'].in(values));
+    return constructTreeWithPredicate(e.col('id').in(values));
   }
 
   function constructTreeWithOrPredicate(valueCount: number): TestTree {
     const predicates: Predicate[] = new Array(valueCount);
     for (let i = 0; i < predicates.length; i++) {
-      predicates[i] = e['id'].eq((i + 1).toString());
+      predicates[i] = e.col('id').eq((i + 1).toString());
     }
     const orPredicate = op.or.apply(null, predicates);
     return constructTreeWithPredicate(orPredicate);
@@ -618,24 +756,29 @@ describe('IndexRangeScanPass', () => {
     queryContext.from = [e];
     queryContext.where = predicate;
 
-    const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+    const projectNode = new ProjectStep([], (null as unknown) as Column[]);
     const selectNode = new SelectStep(queryContext.where.getId());
     projectNode.addChild(selectNode);
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
     selectNode.addChild(tableAccessNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectNode,
     };
   }
 
   function createSelectStep(
-      queryContext: SelectContext, predicateIndex: number): SelectStep {
+    queryContext: SelectContext,
+    predicateIndex: number
+  ): SelectStep {
     return new SelectStep(
-        ((queryContext.where as PredicateNode).getChildAt(predicateIndex) as
-         PredicateNode)
-            .getId());
+      ((queryContext.where as PredicateNode).getChildAt(
+        predicateIndex
+      ) as PredicateNode).getId()
+    );
   }
 });

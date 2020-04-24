@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {Order, Type} from '../../lib/base/enum';
-import {BaseTable} from '../../lib/schema/base_table';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {Info} from '../../lib/schema/info';
-import {Pragma} from '../../lib/schema/pragma';
-import {TableBuilder} from '../../lib/schema/table_builder';
+import { Order, Type } from '../../lib/base/enum';
+import { BaseTable } from '../../lib/schema/base_table';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { Info } from '../../lib/schema/info';
+import { Pragma } from '../../lib/schema/pragma';
+import { TableBuilder } from '../../lib/schema/table_builder';
 
 // Dummy schema implementation to be used in tests.
 export class MockSchema implements DatabaseSchema {
@@ -39,18 +39,18 @@ export class MockSchema implements DatabaseSchema {
     this.name_ = 'mock_schema';
     this.version_ = 1;
     this.simulateDropTableA = false;
-    this.pragma_ = {enableBundledMode: false};
+    this.pragma_ = { enableBundledMode: false };
   }
 
-  public name(): string {
+  name(): string {
     return this.name_;
   }
 
-  public version(): number {
+  version(): number {
     return this.version_;
   }
 
-  public tables(): BaseTable[] {
+  tables(): BaseTable[] {
     const tables = [this.tableB];
 
     if (!this.simulateDropTableA) {
@@ -62,15 +62,18 @@ export class MockSchema implements DatabaseSchema {
     return tables;
   }
 
-  public info(): Info {
+  info(): Info {
     if (!this.info_) {
       this.info_ = new Info(this);
     }
     return this.info_;
   }
 
-  public table(tableName: string): BaseTable {
-    const tables = {
+  table(tableName: string): BaseTable {
+    interface TestTableType {
+      [key: string]: BaseTable;
+    }
+    const tables: TestTableType = {
       tableB: this.tableB,
     };
     if (!this.simulateDropTableA) {
@@ -82,32 +85,32 @@ export class MockSchema implements DatabaseSchema {
     return tables[tableName] || null;
   }
 
-  public pragma(): Pragma {
+  pragma(): Pragma {
     return this.pragma_;
   }
 
-  public setName(name: string): void {
+  setName(name: string): void {
     this.name_ = name;
   }
 
-  public setVersion(version: number): void {
+  setVersion(version: number): void {
     this.version_ = version;
   }
 
-  public setBundledMode(mode: boolean): void {
+  setBundledMode(mode: boolean): void {
     this.pragma_.enableBundledMode = mode;
   }
 
-  public setDropTableA(mode: boolean): void {
+  setDropTableA(mode: boolean): void {
     this.simulateDropTableA = mode;
   }
 
   private createTable(tableName: string): BaseTable {
     return new TableBuilder(tableName)
-        .addColumn('id', Type.STRING)
-        .addColumn('name', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addIndex('idxName', ['name'], false, Order.DESC)
-        .getSchema();
+      .addColumn('id', Type.STRING)
+      .addColumn('name', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addIndex('idxName', ['name'], false, Order.DESC)
+      .getSchema();
   }
 }

@@ -16,16 +16,17 @@
 
 import * as chai from 'chai';
 
-import {Page} from '../../lib/backstore/page';
-import {Capability} from '../../lib/base/capability';
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {DataStoreType, TransactionType} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {Builder} from '../../lib/schema/builder';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {SmokeTester} from '../../testing/smoke_tester';
-import {TestUtil} from '../../testing/test_util';
+import { Page } from '../../lib/backstore/page';
+import { Capability } from '../../lib/base/capability';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import { DataStoreType, TransactionType } from '../../lib/base/enum';
+import { PayloadType, Row } from '../../lib/base/row';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Builder } from '../../lib/schema/builder';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { SmokeTester } from '../../testing/smoke_tester';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -51,14 +52,14 @@ describe('CRUD', () => {
   });
 
   function getDynamicSchemaConnector(builder: Builder): Connector {
-    const options = Capability.get().indexedDb ?
-        undefined :
-        {storeType: DataStoreType.MEMORY};
+    const options = Capability.get().indexedDb
+      ? undefined
+      : { storeType: DataStoreType.MEMORY };
     return builder.connect.bind(builder, options);
   }
 
   function getDynamicSchemaBundledConnector(builder: Builder): Connector {
-    builder.setPragma({enableBundledMode: true});
+    builder.setPragma({ enableBundledMode: true });
     return builder.connect.bind(builder, undefined);
   }
 
@@ -106,13 +107,15 @@ describe('CRUD', () => {
       };
       assert.deepEqual(expected, row.toDbPayload());
       assert.deepEqual(
-          expected, dummy.deserializeRow(row.serialize()).payload());
+        expected,
+        (dummy as BaseTable).deserializeRow(row.serialize()).payload()
+      );
 
       if (db.getSchema().pragma().enableBundledMode) {
         const page = new Page(1);
         page.setRows([row]);
         const page2 = Page.deserialize(page.serialize()).getPayload();
-        assert.deepEqual(expected, page2[row.id()]['value']);
+        assert.deepEqual(expected, (page2[row.id()] as PayloadType)['value']);
       }
     });
 
@@ -130,17 +133,25 @@ describe('CRUD', () => {
       }
 
       const table = db.getSchema().table('Region');
-      const originalRow = table.createRow({id: '1', name: 'North America'});
-      const replacementRow =
-          table.createRow({id: '2', name: 'Central America'});
+      const originalRow = table.createRow({ id: '1', name: 'North America' });
+      const replacementRow = table.createRow({
+        id: '2',
+        name: 'Central America',
+      });
 
       // First insert a single record into a table.
       let tx = db.createTransaction(TransactionType.READ_WRITE);
-      const insert = db.insert().into(table).values([originalRow]);
+      const insert = db
+        .insert()
+        .into(table)
+        .values([originalRow]);
       await tx.exec([insert]);
       // Read the entire table directly from IndexedDb and verify that the
       // original record is in place.
-      let results: Row[] = await TestUtil.selectAll(getGlobal(db), table);
+      let results: Row[] = await TestUtil.selectAll(
+        getGlobal(db),
+        table as BaseTable
+      );
       assert.equal(1, results.length);
       assert.deepEqual(originalRow.payload(), results[0].payload());
 
@@ -149,12 +160,15 @@ describe('CRUD', () => {
       tx = db.createTransaction(TransactionType.READ_WRITE);
       await tx.exec([
         db.delete().from(table),
-        db.insert().into(table).values([replacementRow]),
+        db
+          .insert()
+          .into(table)
+          .values([replacementRow]),
       ]);
 
       // Read the entire table, verify that we have a single row present (not
       // zero rows), and that it is the replacement, not the original.
-      results = await TestUtil.selectAll(getGlobal(db), table);
+      results = await TestUtil.selectAll(getGlobal(db), table as BaseTable);
 
       assert.equal(1, results.length);
       assert.deepEqual(replacementRow.payload(), results[0].payload());

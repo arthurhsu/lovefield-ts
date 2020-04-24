@@ -16,15 +16,15 @@
 
 import * as chai from 'chai';
 
-import {BaseTable} from '../../lib/schema/base_table';
-import {DatabaseSchema} from '../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { BaseTable } from '../../lib/schema/base_table';
+import { DatabaseSchema } from '../../lib/schema/database_schema';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('Table', () => {
   const checkAlias = (schema: DatabaseSchema) => {
-    const noAliasTable = schema.table('Job');
+    const noAliasTable = schema.table('Job') as BaseTable;
     const name = noAliasTable.getName();
     const alias = 'OtherJob';
     const aliasTable = noAliasTable.as(alias) as BaseTable;
@@ -43,10 +43,9 @@ describe('Table', () => {
     assert.equal(noAliasTable.constructor, aliasTable.constructor);
   };
 
-  it('alias_StaticSchema',
-     () => {
-         // Will not implement in TypeScript port.
-     });
+  it('alias_StaticSchema', () => {
+    // Will not implement in TypeScript port.
+  });
 
   it('alias_DynamicSchema', () => {
     checkAlias(getHrDbSchemaBuilder().getSchema());

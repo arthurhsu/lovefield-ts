@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import {KeyRange, SingleKeyRange} from '../lib/index/key_range';
-import {IndexKeyRangeCalculator} from '../lib/proc/pp/index_key_range_calculator';
-import {Context} from '../lib/query/context';
+import { KeyRange, SingleKeyRange } from '../lib/index/key_range';
+import { IndexKeyRangeCalculator } from '../lib/proc/pp/index_key_range_calculator';
+import { Context } from '../lib/query/context';
 
 export class MockKeyRangeCalculator implements IndexKeyRangeCalculator {
-  constructor(private keyRanges: KeyRange[]|SingleKeyRange[]) {}
+  constructor(private keyRanges: KeyRange[] | SingleKeyRange[]) {}
 
-  public getKeyRangeCombinations(context: Context):
-      KeyRange[]|SingleKeyRange[] {
+  getKeyRangeCombinations(context: Context): KeyRange[] | SingleKeyRange[] {
     return this.keyRanges;
   }
 }

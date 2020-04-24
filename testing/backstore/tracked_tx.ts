@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../../lib/backstore/back_store';
-import {BaseTx} from '../../lib/backstore/base_tx';
-import {TransactionType} from '../../lib/base/enum';
-import {TableType} from '../../lib/base/private_enum';
-import {RawRow, Row} from '../../lib/base/row';
-import {RuntimeTable} from '../../lib/base/runtime_table';
-import {Journal} from '../../lib/cache/journal';
-import {TableDiff} from '../../lib/cache/table_diff';
+import { BackStore } from '../../lib/backstore/back_store';
+import { BaseTx } from '../../lib/backstore/base_tx';
+import { TransactionType } from '../../lib/base/enum';
+import { TableType } from '../../lib/base/private_enum';
+import { RawRow, Row } from '../../lib/base/row';
+import { RuntimeTable } from '../../lib/base/runtime_table';
+import { Journal } from '../../lib/cache/journal';
+import { TableDiff } from '../../lib/cache/table_diff';
 
-import {TrackedTable} from './tracked_table';
+import { TrackedTable } from './tracked_table';
 
 // Pseudo transaction object that tracks all changes made for a single flush.
 export class TrackedTx extends BaseTx {
@@ -32,7 +32,10 @@ export class TrackedTx extends BaseTx {
   private tables: Map<string, TrackedTable>;
 
   constructor(
-      private store: BackStore, type: TransactionType, journal?: Journal) {
+    private store: BackStore,
+    type: TransactionType,
+    journal?: Journal
+  ) {
     super(type, journal);
     this.tables = new Map<string, TrackedTable>();
     if (type === TransactionType.READ_ONLY) {
@@ -40,24 +43,28 @@ export class TrackedTx extends BaseTx {
     }
   }
 
-  public getTable(
-      tableName: string, deserializeFn: (value: RawRow) => Row,
-      tableType?: TableType): RuntimeTable {
+  getTable(
+    tableName: string,
+    deserializeFn: (value: RawRow) => Row,
+    tableType?: TableType
+  ): RuntimeTable {
     let table = this.tables.get(tableName) || null;
     if (table === null) {
-      table =
-          new TrackedTable(this.store.getTableInternal(tableName), tableName);
+      table = new TrackedTable(
+        this.store.getTableInternal(tableName),
+        tableName
+      );
       this.tables.set(tableName, table);
     }
     return table;
   }
 
-  public abort(): void {
+  abort(): void {
     this.resolver.reject();
   }
 
-  public commitInternal(): Promise<any> {
-    const requests: Array<Promise<any>> = [];
+  commitInternal(): Promise<unknown> {
+    const requests: Array<Promise<unknown>> = [];
     const tableDiffs: TableDiff[] = [];
     this.tables.forEach((table, tableName) => {
       requests.push(table.whenRequestsDone());

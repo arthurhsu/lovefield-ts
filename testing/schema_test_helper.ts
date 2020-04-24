@@ -14,83 +14,88 @@
  * limitations under the License.
  */
 
-import {ConstraintAction, ConstraintTiming, Type} from '../lib/base/enum';
-import {DatabaseSchema} from '../lib/schema/database_schema';
-import {schema} from '../lib/schema/schema';
+import { ConstraintAction, ConstraintTiming, Type } from '../lib/base/enum';
+import { DatabaseSchema } from '../lib/schema/database_schema';
+import { schema } from '../lib/schema/schema';
 
 export class SchemaTestHelper {
   // Returns a schema where TableC refers to TableB, and TableB refers to
   // TableA.
-  public static getTableChain(constraintAction: ConstraintAction):
-      DatabaseSchema {
-    const schemaBuilder = schema.create('contexttest', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id', Type.STRING)
-        .addPrimaryKey(['id']);
-    schemaBuilder.createTable('TableB')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignKey', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addForeignKey('fk_tableA', {
-          action: constraintAction,
-          local: 'foreignKey',
-          ref: 'TableA.id',
-        });
-    schemaBuilder.createTable('TableC')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignKey', Type.STRING)
-        .addForeignKey('fk_tableB', {
-          action: constraintAction,
-          local: 'foreignKey',
-          ref: 'TableB.id',
-        });
+  static getTableChain(constraintAction: ConstraintAction): DatabaseSchema {
+    const schemaBuilder = schema.create('contextTest', 1);
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id', Type.STRING)
+      .addPrimaryKey(['id']);
+    schemaBuilder
+      .createTable('TableB')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignKey', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addForeignKey('fk_tableA', {
+        action: constraintAction,
+        local: 'foreignKey',
+        ref: 'TableA.id',
+      });
+    schemaBuilder
+      .createTable('TableC')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignKey', Type.STRING)
+      .addForeignKey('fk_tableB', {
+        action: constraintAction,
+        local: 'foreignKey',
+        ref: 'TableB.id',
+      });
     return schemaBuilder.getSchema();
   }
 
   // Generates a schema with two tables, Parent and Child, linked with a
   // RESTRICT constraint of the given constraint timing.
-  public static getOneForeignKey(constraintTiming: ConstraintTiming):
-      DatabaseSchema {
-    const schemaBuilder = schema.create('testschema', 1);
-    schemaBuilder.createTable('Child')
-        .addColumn('id', Type.STRING)
-        .addForeignKey('fk_Id', {
-          action: ConstraintAction.RESTRICT,
-          local: 'id',
-          ref: 'Parent.id',
-          timing: constraintTiming,
-        });
-    schemaBuilder.createTable('Parent')
-        .addColumn('id', Type.STRING)
-        .addPrimaryKey(['id']);
+  static getOneForeignKey(constraintTiming: ConstraintTiming): DatabaseSchema {
+    const schemaBuilder = schema.create('testSchema', 1);
+    schemaBuilder
+      .createTable('Child')
+      .addColumn('id', Type.STRING)
+      .addForeignKey('fk_Id', {
+        action: ConstraintAction.RESTRICT,
+        local: 'id',
+        ref: 'Parent.id',
+        timing: constraintTiming,
+      });
+    schemaBuilder
+      .createTable('Parent')
+      .addColumn('id', Type.STRING)
+      .addPrimaryKey(['id']);
     return schemaBuilder.getSchema();
   }
 
   // Returns a schema where TableB1 and TableB2 both refer to TableA.
-  public static getTwoForeignKeys(constraintAction: ConstraintAction):
-      DatabaseSchema {
-    const schemaBuilder = schema.create('contexttest', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id1', Type.STRING)
-        .addColumn('id2', Type.STRING)
-        .addUnique('uq_id1', ['id1'])
-        .addUnique('uq_id2', ['id2']);
-    schemaBuilder.createTable('TableB1')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignKey', Type.STRING)
-        .addForeignKey('fk_tableA', {
-          action: constraintAction,
-          local: 'foreignKey',
-          ref: 'TableA.id1',
-        });
-    schemaBuilder.createTable('TableB2')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignKey', Type.STRING)
-        .addForeignKey('fk_tableA', {
-          action: constraintAction,
-          local: 'foreignKey',
-          ref: 'TableA.id2',
-        });
+  static getTwoForeignKeys(constraintAction: ConstraintAction): DatabaseSchema {
+    const schemaBuilder = schema.create('contextTest', 1);
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id1', Type.STRING)
+      .addColumn('id2', Type.STRING)
+      .addUnique('uq_id1', ['id1'])
+      .addUnique('uq_id2', ['id2']);
+    schemaBuilder
+      .createTable('TableB1')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignKey', Type.STRING)
+      .addForeignKey('fk_tableA', {
+        action: constraintAction,
+        local: 'foreignKey',
+        ref: 'TableA.id1',
+      });
+    schemaBuilder
+      .createTable('TableB2')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignKey', Type.STRING)
+      .addForeignKey('fk_tableA', {
+        action: constraintAction,
+        local: 'foreignKey',
+        ref: 'TableA.id2',
+      });
     return schemaBuilder.getSchema();
   }
 }

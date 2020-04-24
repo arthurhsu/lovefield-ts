@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import {SingleKeyRange} from '../../lib/index/key_range';
-import {RuntimeIndex} from '../../lib/index/runtime_index';
-import {TestIndex} from './test_index';
+import { SingleKeyRange } from '../../lib/index/key_range';
+import { RuntimeIndex } from '../../lib/index/runtime_index';
+import { TestIndex } from './test_index';
 
 const assert = chai.assert;
 
@@ -107,7 +107,7 @@ export class TestMultiKeyIndex extends TestIndex {
     super(constructorFn);
   }
 
-  public testAddGet(index: RuntimeIndex): void {
+  testAddGet(index: RuntimeIndex): void {
     for (let i = 0; i < 26; ++i) {
       const key = [i, String.fromCharCode('z'.charCodeAt(0) - i)];
       const value = 2000 + i;
@@ -117,7 +117,7 @@ export class TestMultiKeyIndex extends TestIndex {
     }
   }
 
-  public testGetRangeCost(index: RuntimeIndex): void {
+  testGetRangeCost(index: RuntimeIndex): void {
     this.populateIndex(index, 10);
 
     this.keyRanges.forEach((range, i) => {
@@ -126,7 +126,7 @@ export class TestMultiKeyIndex extends TestIndex {
     }, this);
   }
 
-  public testRemove(index: RuntimeIndex): void {
+  testRemove(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     // Remove non-existent key shall not yield any error.
@@ -137,7 +137,7 @@ export class TestMultiKeyIndex extends TestIndex {
     assert.sameDeepOrderedMembers([], index.get([8, 'R']));
   }
 
-  public testSet(index: RuntimeIndex): void {
+  testSet(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     index.remove([8, 'R']);
@@ -154,16 +154,19 @@ export class TestMultiKeyIndex extends TestIndex {
     assert.equal(26, index.getRange().length);
   }
 
-  public testMinMax(index: RuntimeIndex): void {
+  testMinMax(index: RuntimeIndex): void {
     // First try an empty index.
     assert.isNull(index.min());
     assert.isNull(index.max());
     this.populateIndex(index);
-    assert.sameDeepOrderedMembers([[0, 'Z'], [2000]], index.min() as any[]);
-    assert.sameDeepOrderedMembers([[25, 'A'], [2025]], index.max() as any[]);
+    assert.sameDeepOrderedMembers([[0, 'Z'], [2000]], index.min() as unknown[]);
+    assert.sameDeepOrderedMembers(
+      [[25, 'A'], [2025]],
+      index.max() as unknown[]
+    );
   }
 
-  public testMultiRange(index: RuntimeIndex): void {
+  testMultiRange(index: RuntimeIndex): void {
     this.populateIndex(index);
 
     // Simulate NOT(BETWEEN([2, 'X'], [24, 'B']))

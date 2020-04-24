@@ -25,7 +25,7 @@ import { PayloadType, Row } from '../../lib/base/row';
 import { Transaction } from '../../lib/base/transaction';
 import { fn } from '../../lib/fn/fn';
 import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { BaseTable } from '../../lib/schema/base_table';
+import { Table } from '../../lib/schema/table';
 import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 import { JobDataGenerator } from '../../testing/hr_schema/job_data_generator';
 import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
@@ -35,9 +35,9 @@ const assert = chai.assert;
 
 describe('EndToEndTransaction', () => {
   let db: RuntimeDatabase;
-  let e: BaseTable;
-  let j: BaseTable;
-  let d: BaseTable;
+  let e: Table;
+  let j: Table;
+  let d: Table;
   let sampleJobs: Row[];
   let sampleEmployees: Row[];
   let sampleDepartments: Row[];
@@ -195,8 +195,8 @@ describe('EndToEndTransaction', () => {
 
   it('exec', async () => {
     tx = db.createTransaction();
-    const q1 = db.select(fn.count(j['id']).as('jid')).from(j);
-    const q2 = db.select(fn.count(d['id']).as('did')).from(d);
+    const q1 = db.select(fn.count(j.col('id')).as('jid')).from(j);
+    const q2 = db.select(fn.count(d.col('id')).as('did')).from(d);
     const q3 = db.delete().from(e);
     const q4 = db.delete().from(j);
     const results = (await tx.exec([q1, q2, q3, q4, q1])) as PayloadType[][];
@@ -227,7 +227,7 @@ describe('EndToEndTransaction', () => {
     const q3 = db
       .delete()
       .from(e)
-      .where(e['hireDate'].eq(hireDate));
+      .where(e.col('hireDate').eq(hireDate));
     await tx.attach(q3);
     const q4 = db.select().from(e);
     results = (await tx.attach(q4)) as unknown[];
@@ -239,13 +239,13 @@ describe('EndToEndTransaction', () => {
     const q6 = db.delete().from(j);
     await tx.attach(q6);
     const q7 = db.select().from(j);
-    const res2 = await tx.attach(q7) as unknown[];
+    results = (await tx.attach(q7)) as unknown[];
     // Expecting all rows to have been deleted within tx context.
-    assert.equal(0, res2.length);
+    assert.equal(0, results.length);
 
     // Expecting all job rows to *not* have been deleted from disk yet, since
     // the transaction has not been committed.
-    results = await TestUtil.selectAll(global, j) as unknown[];
+    results = await TestUtil.selectAll(global, j);
     assert.equal(sampleJobs.length, results.length);
 
     await tx.commit();
@@ -259,15 +259,15 @@ describe('EndToEndTransaction', () => {
 
     // Expecting all job rows to have been deleted from disk, now that the
     // transaction was committed.
-    results = await TestUtil.selectAll(global, j) as unknown[];
+    results = await TestUtil.selectAll(global, j);
     assert.equal(0, results.length);
 
     // Expecting all locks to have been released by previous transaction, which
     // should allow the following query to complete.
-    results = await db
+    results = (await db
       .select()
       .from(e)
-      .exec() as unknown[];
+      .exec()) as unknown[];
     assert.isTrue(results.length < sampleEmployees.length);
   });
 
@@ -279,7 +279,7 @@ describe('EndToEndTransaction', () => {
 
     await tx.begin(scope);
     const q0 = db.select().from(j);
-    let results = await tx.attach(q0) as unknown[];
+    let results = (await tx.attach(q0)) as unknown[];
     assert.equal(sampleJobs.length, results.length);
 
     // Adding a new job row.
@@ -293,12 +293,12 @@ describe('EndToEndTransaction', () => {
     const q2 = db
       .select()
       .from(j)
-      .where(j['id'].eq(newJobId));
-    results = await tx.attach(q2) as unknown[];
+      .where(j.col('id').eq(newJobId));
+    results = (await tx.attach(q2)) as unknown[];
     assert.equal(1, results.length);
 
     const q3 = db.select().from(j);
-    results = await tx.attach(q3) as unknown[];
+    results = (await tx.attach(q3)) as unknown[];
     assert.equal(sampleJobs.length + 1, results.length);
 
     // Attempting to add an employee row that already exists.
@@ -325,17 +325,17 @@ describe('EndToEndTransaction', () => {
 
     // Ensure previous catch block is effective.
     assert.isTrue(isThrown);
-    results = await TestUtil.selectAll(global, j) as unknown[];
+    results = (await TestUtil.selectAll(global, j)) as unknown[];
     // Checking that the entire transaction was rolled back, and therefore that
     // Job row that had been added does not appear on disk.
     assert.equal(sampleJobs.length, results.length);
 
     // Checking that all locks have been released, which will allow other
     // transactions referring to the same scope to execute successfully.
-    results = await db
+    results = (await db
       .select()
       .from(j)
-      .exec() as unknown[];
+      .exec()) as unknown[];
     assert.equal(sampleJobs.length, results.length);
   });
 
@@ -357,12 +357,12 @@ describe('EndToEndTransaction', () => {
     const q2 = db
       .select()
       .from(j)
-      .where(j['id'].eq(newJobId));
-    let results = await tx.attach(q2) as unknown[];
+      .where(j.col('id').eq(newJobId));
+    let results = (await tx.attach(q2)) as unknown[];
     assert.equal(1, results.length);
 
     const q3 = db.select().from(j);
-    results = await tx.attach(q3) as unknown[];
+    results = (await tx.attach(q3)) as unknown[];
     assert.equal(sampleJobs.length + 1, results.length);
 
     await tx.rollback();

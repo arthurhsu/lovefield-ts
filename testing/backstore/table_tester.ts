@@ -15,40 +15,38 @@
  */
 
 import * as chai from 'chai';
-import {Resolver} from '../../lib/base/resolver';
-import {Row} from '../../lib/base/row';
-import {RuntimeTable} from '../../lib/base/runtime_table';
+import { Resolver } from '../../lib/base/resolver';
+import { Row } from '../../lib/base/row';
+import { RuntimeTable } from '../../lib/base/runtime_table';
 
 const assert = chai.assert;
 
 export class TableTester {
   constructor(readonly creator: () => RuntimeTable) {}
 
-  public run(): Promise<void> {
-    return Promise
-        .all([
-          this.testGet_NonExisting(),
-          this.testGet_AllValues(),
-          this.testPut(),
-          this.testRemove(),
-        ])
-        .then(() => Promise.resolve());
+  run(): Promise<void> {
+    return Promise.all([
+      this.testGet_NonExisting(),
+      this.testGet_AllValues(),
+      this.testPut(),
+      this.testRemove(),
+    ]).then(() => Promise.resolve());
   }
 
   private testGet_NonExisting(): Promise<void> {
     const resolver = new Resolver<void>();
     const table = this.creator();
     const nonExistingRowId = 10;
-    table.get([nonExistingRowId])
-        .then(
-            (results) => {
-              assert.sameMembers([], results);
-              resolver.resolve();
-            },
-            () => {
-              assert.isTrue(false, 'Unknown error testGet_NonExisting');
-              resolver.reject();
-            });
+    table.get([nonExistingRowId]).then(
+      results => {
+        assert.sameMembers([], results);
+        resolver.resolve();
+      },
+      () => {
+        assert.isTrue(false, 'Unknown error testGet_NonExisting');
+        resolver.reject();
+      }
+    );
     return resolver.promise;
   }
 
@@ -61,17 +59,19 @@ export class TableTester {
 
     const resolver = new Resolver<void>();
     const table = this.creator();
-    table.put(rows)
-        .then(() => table.get([]))
-        .then(
-            (results) => {
-              assert.equal(rowCount, results.length);
-              resolver.resolve();
-            },
-            () => {
-              assert.isTrue(false, 'Unknown error testGet_AllValues');
-              resolver.reject();
-            });
+    table
+      .put(rows)
+      .then(() => table.get([]))
+      .then(
+        results => {
+          assert.equal(rowCount, results.length);
+          resolver.resolve();
+        },
+        () => {
+          assert.isTrue(false, 'Unknown error testGet_AllValues');
+          resolver.reject();
+        }
+      );
 
     return resolver.promise;
   }
@@ -88,18 +88,20 @@ export class TableTester {
 
     const resolver = new Resolver<void>();
     const table = this.creator();
-    table.put(rows)
-        .then(() => table.get(rowIds))
-        .then(
-            (results) => {
-              const resultRowIds = results.map((row) => row.id());
-              assert.sameOrderedMembers(rowIds, resultRowIds);
-              resolver.resolve();
-            },
-            () => {
-              assert.isTrue(false, 'Unknown error testPut');
-              resolver.reject();
-            });
+    table
+      .put(rows)
+      .then(() => table.get(rowIds))
+      .then(
+        results => {
+          const resultRowIds = results.map(row => row.id());
+          assert.sameOrderedMembers(rowIds, resultRowIds);
+          resolver.resolve();
+        },
+        () => {
+          assert.isTrue(false, 'Unknown error testPut');
+          resolver.reject();
+        }
+      );
 
     return resolver.promise;
   }
@@ -121,25 +123,27 @@ export class TableTester {
 
     const resolver = new Resolver<void>();
     const table = this.creator();
-    table.put(rows)
-        .then(() => table.get([]))
-        .then((results) => {
-          assert.equal(rows.length, results.length);
-          return table.remove(rowIdsToDelete);
-        })
-        .then(() => table.get([]))
-        .then(
-            (results) => {
-              assert.equal(rows.length - rowIdsToDelete.length, results.length);
-              results.forEach((row) => {
-                assert.isTrue(rowIdsToDelete.indexOf(row.id()) === -1);
-              });
-              resolver.resolve();
-            },
-            () => {
-              assert.isTrue(false, 'Unknown error testRemove');
-              resolver.reject();
-            });
+    table
+      .put(rows)
+      .then(() => table.get([]))
+      .then(results => {
+        assert.equal(rows.length, results.length);
+        return table.remove(rowIdsToDelete);
+      })
+      .then(() => table.get([]))
+      .then(
+        results => {
+          assert.equal(rows.length - rowIdsToDelete.length, results.length);
+          results.forEach(row => {
+            assert.isTrue(rowIdsToDelete.indexOf(row.id()) === -1);
+          });
+          resolver.resolve();
+        },
+        () => {
+          assert.isTrue(false, 'Unknown error testRemove');
+          resolver.reject();
+        }
+      );
 
     return resolver.promise;
   }

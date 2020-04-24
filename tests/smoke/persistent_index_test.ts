@@ -16,31 +16,34 @@
 
 import * as chai from 'chai';
 
-import {BackStore} from '../../lib/backstore/back_store';
-import {DataStoreType, TransactionType} from '../../lib/base/enum';
-import {TableType} from '../../lib/base/private_enum';
-import {Row} from '../../lib/base/row';
-import {Service} from '../../lib/base/service';
-import {op} from '../../lib/fn/op';
-import {BTree, BTreeNode} from '../../lib/index/btree';
-import {ComparatorFactory} from '../../lib/index/comparator_factory';
-import {Key} from '../../lib/index/key_range';
-import {RowId} from '../../lib/index/row_id';
-import {RuntimeDatabase} from '../../lib/proc/runtime_database';
-import {BaseTable} from '../../lib/schema/base_table';
-import {IndexImpl} from '../../lib/schema/index_impl';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { BackStore } from '../../lib/backstore/back_store';
+import { DataStoreType, TransactionType } from '../../lib/base/enum';
+import { TableType } from '../../lib/base/private_enum';
+import { Row } from '../../lib/base/row';
+import { Service } from '../../lib/base/service';
+import { op } from '../../lib/fn/op';
+import { BTree, BTreeNode } from '../../lib/index/btree';
+import { ComparatorFactory } from '../../lib/index/comparator_factory';
+import { Key } from '../../lib/index/key_range';
+import { RowId } from '../../lib/index/row_id';
+import { RuntimeDatabase } from '../../lib/proc/runtime_database';
+import { Table } from '../../lib/schema/table';
+import { BaseTable } from '../../lib/schema/base_table';
+import { IndexImpl } from '../../lib/schema/index_impl';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('PersistentIndex', () => {
   let db: RuntimeDatabase;
-  let table: BaseTable;
-  let table2: BaseTable;
+  let table: Table;
+  let table2: Table;
   let backStore: BackStore;
   let sampleRows: Row[];
   let sampleRows2: Row[];
 
+  // This is a hack to access private variables and change it.
+  // tslint:disable:no-any
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -57,6 +60,7 @@ describe('PersistentIndex', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
+  // tslint:enable:no-any
 
   before(() => {
     stubBTreeParam();
@@ -67,8 +71,9 @@ describe('PersistentIndex', () => {
   });
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     backStore = db.getGlobal().getService(Service.BACK_STORE);
     table = db.getSchema().table('Holiday');
     table2 = db.getSchema().table('CrossColumnTable');
@@ -82,7 +87,11 @@ describe('PersistentIndex', () => {
   // persisted indices are being updated appropriately on disk.
   it('PersistedIndices', async () => {
     // Inserts 5 records to the database.
-    await db.insert().into(table).values(generateSampleRows()).exec();
+    await db
+      .insert()
+      .into(table)
+      .values(generateSampleRows())
+      .exec();
     await assertAllIndicesPopulated(table, sampleRows);
 
     // Updates the 'name' field of rows 1 and 3.
@@ -90,13 +99,18 @@ describe('PersistentIndex', () => {
     sampleRows[1].payload()['begin'] = updatedDate;
     sampleRows[3].payload()['begin'] = updatedDate;
 
-    await db.update(table)
-        .where(table['name'].in([
-                 sampleRows[1].payload()['name'],
-                 sampleRows[3].payload()['name'],
-               ]))
-        .set(table['begin'], updatedDate)
-        .exec();
+    await db
+      .update(table)
+      .where(
+        table
+          .col('name')
+          .in([
+            sampleRows[1].payload()['name'],
+            sampleRows[3].payload()['name'],
+          ] as string[])
+      )
+      .set(table.col('begin'), updatedDate)
+      .exec();
     await assertAllIndicesPopulated(table, sampleRows);
 
     // Replaces rows 1 and 3.
@@ -119,27 +133,36 @@ describe('PersistentIndex', () => {
       name: sampleRow3.payload()['name'],
     });
 
-    await db.insertOrReplace()
-        .into(table)
-        .values([replacedRow1, replacedRow3])
-        .exec();
+    await db
+      .insertOrReplace()
+      .into(table)
+      .values([replacedRow1, replacedRow3])
+      .exec();
     await assertAllIndicesPopulated(table, sampleRows);
 
     // Deletes rows 2 and 3.
     const removedRows = sampleRows.splice(2, 2);
 
-    await db.delete()
-        .from(table)
-        .where(table['name'].in([
-                 removedRows[0].payload()['name'],
-                 removedRows[1].payload()['name'],
-               ]))
-        .exec();
+    await db
+      .delete()
+      .from(table)
+      .where(
+        table
+          .col('name')
+          .in([
+            removedRows[0].payload()['name'],
+            removedRows[1].payload()['name'],
+          ] as string[])
+      )
+      .exec();
     await assertAllIndicesPopulated(table, sampleRows);
 
     sampleRows = [];
 
-    await db.delete().from(table).exec();
+    await db
+      .delete()
+      .from(table)
+      .exec();
     return assertAllIndicesPopulated(table, sampleRows);
   });
 
@@ -177,21 +200,28 @@ describe('PersistentIndex', () => {
   // Asserts that all indices are populated with the given rows.
   // |rows| are the only rows that should be present in the persistent index
   // tables.
-  function assertAllIndicesPopulated(
-      targetTable: BaseTable, rows: Row[]): Promise<void> {
-    const tx = backStore.createTx(TransactionType.READ_ONLY, [table]);
+  function assertAllIndicesPopulated(t: Table, rows: Row[]): Promise<void> {
+    const targetTable = t as BaseTable;
+    const tx = backStore.createTx(TransactionType.READ_ONLY, [
+      table as BaseTable,
+    ]);
 
     const tableIndices = targetTable.getIndices();
-    const promises = tableIndices.map((indexSchema) => {
+    const promises = tableIndices.map(indexSchema => {
       const indexName = indexSchema.getNormalizedName();
       return tx.getTable(indexName, Row.deserialize, TableType.INDEX).get([]);
     });
     promises.push(
-        tx.getTable(
-              targetTable.getRowIdIndexName(), Row.deserialize, TableType.INDEX)
-            .get([]));
+      tx
+        .getTable(
+          targetTable.getRowIdIndexName(),
+          Row.deserialize,
+          TableType.INDEX
+        )
+        .get([])
+    );
 
-    return Promise.all(promises).then((results) => {
+    return Promise.all(promises).then(results => {
       const rowIdIndexResults = results.splice(results.length - 1, 1)[0];
       assertRowIdIndex(targetTable, rowIdIndexResults, rows.length);
 
@@ -206,20 +236,27 @@ describe('PersistentIndex', () => {
   // in the backing store. |serializedRows| are the serialized version of the
   // index. |dataRows| are the rows that hold the actual data (not index data).
   function assertIndexContents(
-      indexSchema: IndexImpl, serializedRows: Row[], dataRows: Row[]): void {
+    indexSchema: IndexImpl,
+    serializedRows: Row[],
+    dataRows: Row[]
+  ): void {
     // Expecting at least one row for each index.
     assert.isTrue(serializedRows.length >= 1);
 
     // Reconstructing the index and ensuring it contains all expected keys.
     const comparator = ComparatorFactory.create(indexSchema);
     const btreeIndex = BTree.deserialize(
-        comparator, indexSchema.getNormalizedName(), indexSchema.isUnique,
-        serializedRows);
+      comparator,
+      indexSchema.getNormalizedName(),
+      indexSchema.isUnique,
+      serializedRows
+    );
     assert.equal(dataRows.length, btreeIndex.getRange().length);
 
-    dataRows.forEach((row) => {
-      const expectedKey =
-          row.keyOfIndex(indexSchema.getNormalizedName()) as Key;
+    dataRows.forEach(row => {
+      const expectedKey = row.keyOfIndex(
+        indexSchema.getNormalizedName()
+      ) as Key;
       assert.isTrue(btreeIndex.containsKey(expectedKey));
     });
   }
@@ -227,11 +264,15 @@ describe('PersistentIndex', () => {
   // Asserts that the contents of the RowId index appear as expected in the
   // backing store.
   function assertRowIdIndex(
-      targetTable: BaseTable, serializedRows: Row[],
-      expectedSize: number): void {
+    targetTable: BaseTable,
+    serializedRows: Row[],
+    expectedSize: number
+  ): void {
     assert.equal(1, serializedRows.length);
-    const rowIdIndex =
-        RowId.deserialize(targetTable.getRowIdIndexName(), serializedRows);
+    const rowIdIndex = RowId.deserialize(
+      targetTable.getRowIdIndexName(),
+      serializedRows
+    );
     assert.equal(expectedSize, rowIdIndex.getRange().length);
   }
 
@@ -273,7 +314,11 @@ describe('PersistentIndex', () => {
   // Performs insert, update, replace, delete operations and verifies that
   // persisted indices are being updated appropriately on disk.
   it('PersistedIndices_CrossColumn', async () => {
-    await db.insert().into(table2).values(generateSampleRows2()).exec();
+    await db
+      .insert()
+      .into(table2)
+      .values(generateSampleRows2())
+      .exec();
     await assertAllIndicesPopulated(table2, sampleRows2);
 
     sampleRows2[2].payload()['integer2'] = 33;
@@ -281,16 +326,18 @@ describe('PersistentIndex', () => {
     sampleRows2[4].payload()['integer1'] = 99;
     sampleRows2[4].payload()['string2'] = 'KK';
 
-    let q1 = db.update(table2)
-                 .where(table2['integer1'].eq(3))
-                 .set(table2['integer2'], 33)
-                 .set(table2['string2'], 'RR')
-                 .exec();
-    let q2 = db.update(table2)
-                 .where(table2['string1'].eq('C'))
-                 .set(table2['integer1'], 99)
-                 .set(table2['string2'], 'KK')
-                 .exec();
+    let q1 = db
+      .update(table2)
+      .where(table2.col('integer1').eq(3))
+      .set(table2.col('integer2'), 33)
+      .set(table2.col('string2'), 'RR')
+      .exec();
+    let q2 = db
+      .update(table2)
+      .where(table2.col('string1').eq('C'))
+      .set(table2.col('integer1'), 99)
+      .set(table2.col('string2'), 'KK')
+      .exec();
     await Promise.all([q1, q2]);
     await assertAllIndicesPopulated(table2, sampleRows2);
 
@@ -298,22 +345,30 @@ describe('PersistentIndex', () => {
     sampleRows2.splice(3, 1);
     sampleRows2.splice(2, 1);
 
-    q1 = db.delete()
-             .from(table2)
-             .where(op.and(table2['integer1'].eq(3), table2['integer2'].eq(33)))
-             .exec();
-    q2 = db.delete()
-             .from(table2)
-             .where(
-                 op.and(table2['string1'].isNull(), table2['string2'].isNull()))
-             .exec();
+    q1 = db
+      .delete()
+      .from(table2)
+      .where(
+        op.and(table2.col('integer1').eq(3), table2.col('integer2').eq(33))
+      )
+      .exec();
+    q2 = db
+      .delete()
+      .from(table2)
+      .where(
+        op.and(table2.col('string1').isNull(), table2.col('string2').isNull())
+      )
+      .exec();
     await Promise.all([q1, q2]);
     await assertAllIndicesPopulated(table2, sampleRows2);
 
     // Deletes all remaining rows.
     sampleRows2 = [];
 
-    await db.delete().from(table2).exec();
+    await db
+      .delete()
+      .from(table2)
+      .exec();
     await assertAllIndicesPopulated(table2, sampleRows2);
   });
 });

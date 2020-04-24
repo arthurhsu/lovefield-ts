@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {assert} from '../../lib/base/assert';
-import {Row} from '../../lib/base/row';
-import {ArrayHelper} from '../../lib/structs/array_helper';
-import {getHrDbSchemaBuilder} from './hr_schema_builder';
-import {HRSchemaSamples} from './sample';
+import { assert } from '../../lib/base/assert';
+import { Row } from '../../lib/base/row';
+import { ArrayHelper } from '../../lib/structs/array_helper';
+import { getHrDbSchemaBuilder } from './hr_schema_builder';
+import { HRSchemaSamples } from './sample';
 
 export class DepartmentDataGenerator {
   private names: string[];
@@ -28,16 +28,19 @@ export class DepartmentDataGenerator {
     ArrayHelper.shuffle(this.names);
   }
 
-  public generate(count: number): Row[] {
+  generate(count: number): Row[] {
     const rawData = this.generateRaw(count);
-    const d = getHrDbSchemaBuilder().getSchema().table('Department');
-    return rawData.map((object) => d.createRow(object));
+    const d = getHrDbSchemaBuilder()
+      .getSchema()
+      .table('Department');
+    return rawData.map(object => d.createRow(object));
   }
 
   private generateRaw(count: number): object[] {
     assert(
-        count <= this.names.length,
-        `count can be at most ${this.names.length}`);
+      count <= this.names.length,
+      `count can be at most ${this.names.length}`
+    );
 
     const departments = new Array(count);
     for (let i = 0; i < count; i++) {
@@ -46,7 +49,7 @@ export class DepartmentDataGenerator {
         id: 'departmentId' + i.toString(),
         name: this.names.shift(),
         managerId: 'managerId',
-        locationId: 'locationId'
+        locationId: 'locationId',
       };
       // tslint:enable
     }

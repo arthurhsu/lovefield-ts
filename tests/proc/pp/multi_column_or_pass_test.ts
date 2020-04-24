@@ -14,37 +14,42 @@
  * limitations under the License.
  */
 
-import {DataStoreType} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {op} from '../../../lib/fn/op';
-import {Predicate} from '../../../lib/pred/predicate';
-import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
-import {JoinStep} from '../../../lib/proc/pp/join_step';
-import {MultiColumnOrPass} from '../../../lib/proc/pp/multi_column_or_pass';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
-import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
-import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DataStoreType } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { op } from '../../../lib/fn/op';
+import { Predicate } from '../../../lib/pred/predicate';
+import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
+import { JoinStep } from '../../../lib/proc/pp/join_step';
+import { MultiColumnOrPass } from '../../../lib/proc/pp/multi_column_or_pass';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { BaseColumn } from '../../../lib/schema/base_column';
+import { Column } from '../../../lib/schema/column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { IndexImpl } from '../../../lib/schema/index_impl';
+import { Table } from '../../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
+import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
+import { JoinPredicate } from '../../../lib/pred/join_predicate';
+import { ValuePredicate } from '../../../lib/pred/value_predicate';
 
 describe('MultiColumnOrPass', () => {
   let db: RuntimeDatabase;
   let schema: DatabaseSchema;
-  let e: BaseTable;
-  let j: BaseTable;
+  let e: Table;
+  let j: Table;
   let pass: MultiColumnOrPass;
   let global: Global;
 
   beforeEach(async () => {
-    db = await getHrDbSchemaBuilder().connect(
-             {storeType: DataStoreType.MEMORY}) as RuntimeDatabase;
+    db = (await getHrDbSchemaBuilder().connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     global = db.getGlobal();
     schema = db.getSchema();
     e = schema.table('Employee');
@@ -71,15 +76,16 @@ describe('MultiColumnOrPass', () => {
       '',
     ].join('\n');
 
-    const tree = constructTreeWithPredicates(
-        [op.or(e['id'].eq(100), e['salary'].eq(200))]);
+    const tree = constructTreeWithPredicates([
+      op.or(e.col('id').eq(100), e.col('salary').eq(200)),
+    ]);
     TreeTestHelper.assertTreeTransformation(tree, treeBefore, treeAfter, pass);
   });
 
   // Tests a tree where two separate OR predicates exist for the same table and
   // either of them could potentially be chosen by the optimizer. Currently
   // optimizer chooses the first encountered predicate that is eligible, without
-  // comparing the cost two subsequent candidate prediacates.
+  // comparing the cost two subsequent candidate predicates.
   it('multipleOrPredicates_AllIndexed', () => {
     const treeBefore = [
       'project()',
@@ -100,8 +106,8 @@ describe('MultiColumnOrPass', () => {
     ].join('\n');
 
     const tree = constructTreeWithPredicates([
-      op.or(e['id'].gt(100), e['salary'].gt(200)),
-      op.or(e['jobId'].gt(300), e['departmentId'].gt(400)),
+      op.or(e.col('id').gt(100), e.col('salary').gt(200)),
+      op.or(e.col('jobId').gt(300), e.col('departmentId').gt(400)),
     ]);
     TreeTestHelper.assertTreeTransformation(tree, treeBefore, treeAfter, pass);
   });
@@ -125,13 +131,13 @@ describe('MultiColumnOrPass', () => {
       '---multi_index_range_scan()',
       '----index_range_scan(Employee.fk_JobId, (300, unbound], natural)',
       '----index_range_scan(' +
-          'Employee.fk_DepartmentId, (400, unbound], natural)',
+        'Employee.fk_DepartmentId, (400, unbound], natural)',
       '',
     ].join('\n');
 
     const tree = constructTreeWithPredicates([
-      op.or(e['id'].gt(100), e['commissionPercent'].gt(200)),
-      op.or(e['jobId'].gt(300), e['departmentId'].gt(400)),
+      op.or(e.col('id').gt(100), e.col('commissionPercent').gt(200)),
+      op.or(e.col('jobId').gt(300), e.col('departmentId').gt(400)),
     ]);
     TreeTestHelper.assertTreeTransformation(tree, treeBefore, treeAfter, pass);
   });
@@ -142,11 +148,14 @@ describe('MultiColumnOrPass', () => {
     queryContext.from = [e];
     queryContext.where = op.and.apply(null, predicates);
 
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
-    const selectNodes =
-        predicates.map((predicate) => new SelectStep(predicate.getId()));
-    const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
+    const selectNodes = predicates.map(
+      predicate => new SelectStep(predicate.getId())
+    );
+    const projectNode = new ProjectStep([], (null as unknown) as Column[]);
     let lastSelectNode = selectNodes[0];
     projectNode.addChild(lastSelectNode);
     for (let i = 1; i < selectNodes.length; i++) {
@@ -156,7 +165,7 @@ describe('MultiColumnOrPass', () => {
     selectNodes[selectNodes.length - 1].addChild(tableAccessNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectNode,
     };
   }
@@ -177,17 +186,28 @@ describe('MultiColumnOrPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j];
-      const joinPredicate = j['id'].eq(e['jobId']);
-      const orPredicate = op.or(e['salary'].lte(1000), j['maxSalary'].gte(200));
+      const joinPredicate = j.col('id').eq(e.col('jobId'));
+      const orPredicate = op.or(
+        e.col('salary').lte(1000),
+        j.col('maxSalary').gte(200)
+      );
       queryContext.where = op.and(orPredicate, joinPredicate);
 
-      const projectStep = new ProjectStep([], null as any as BaseColumn[]);
+      const projectStep = new ProjectStep([], (null as unknown) as Column[]);
       const selectStep = new SelectStep(orPredicate.getId());
-      const joinStep = new JoinStep(global, joinPredicate, false);
-      const tableAccessStep1 =
-          new TableAccessFullStep(global, queryContext.from[0]);
-      const tableAccessStep2 =
-          new TableAccessFullStep(global, queryContext.from[1]);
+      const joinStep = new JoinStep(
+        global,
+        joinPredicate as JoinPredicate,
+        false
+      );
+      const tableAccessStep1 = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
+      const tableAccessStep2 = new TableAccessFullStep(
+        global,
+        queryContext.from[1]
+      );
 
       projectStep.addChild(selectStep);
       selectStep.addChild(joinStep);
@@ -195,13 +215,17 @@ describe('MultiColumnOrPass', () => {
       joinStep.addChild(tableAccessStep2);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Test the case where a predicate of the form AND(c1, OR(c2, c3)) exists and
@@ -219,29 +243,41 @@ describe('MultiColumnOrPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [j];
-      const simplePredicate = j['id'].eq('1');
-      const orPredicate = op.or(j['id'].eq('2'), j['maxSalary'].eq(100));
+      const simplePredicate = j.col('id').eq('1') as ValuePredicate;
+      const orPredicate = op.or(
+        j.col('id').eq('2'),
+        j.col('maxSalary').eq(100)
+      );
       queryContext.where = op.and(simplePredicate, orPredicate);
 
-      const projectStep = new ProjectStep([], null as any as BaseColumn[]);
+      const projectStep = new ProjectStep([], (null as unknown) as Column[]);
       const selectStep = new SelectStep(orPredicate.getId());
-      const tableAccessByRowIdStep =
-          new TableAccessByRowIdStep(global, queryContext.from[0]);
+      const tableAccessByRowIdStep = new TableAccessByRowIdStep(
+        global,
+        queryContext.from[0]
+      );
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, j['id'].getIndex(),
-          new MockKeyRangeCalculator(simplePredicate.toKeyRange()), false);
+        global,
+        (j.col('id') as BaseColumn).getIndex() as IndexImpl,
+        new MockKeyRangeCalculator(simplePredicate.toKeyRange().getValues()),
+        false
+      );
 
       projectStep.addChild(selectStep);
       selectStep.addChild(tableAccessByRowIdStep);
       tableAccessByRowIdStep.addChild(indexRangeScanStep);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 });

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import {BackStore} from '../../lib/backstore/back_store';
-import {ObservableStore} from '../../lib/backstore/observable_store';
-import {RawBackStore} from '../../lib/backstore/raw_back_store';
-import {Tx} from '../../lib/backstore/tx';
-import {ErrorCode, TransactionType} from '../../lib/base/enum';
-import {Exception} from '../../lib/base/exception';
-import {RuntimeTable} from '../../lib/base/runtime_table';
-import {Journal} from '../../lib/cache/journal';
-import {TableDiff} from '../../lib/cache/table_diff';
-import {BaseTable} from '../../lib/schema/base_table';
+import { BackStore } from '../../lib/backstore/back_store';
+import { ObservableStore } from '../../lib/backstore/observable_store';
+import { RawBackStore } from '../../lib/backstore/raw_back_store';
+import { Tx } from '../../lib/backstore/tx';
+import { ErrorCode, TransactionType } from '../../lib/base/enum';
+import { Exception } from '../../lib/base/exception';
+import { RuntimeTable } from '../../lib/base/runtime_table';
+import { Journal } from '../../lib/cache/journal';
+import { TableDiff } from '../../lib/cache/table_diff';
+import { Table } from '../../lib/schema/table';
 
-import {TrackedTx} from './tracked_tx';
+import { TrackedTx } from './tracked_tx';
 
 // An Memory wrapper to be used for simulating external changes.
 // An external change is a modification of the backing store that has already
@@ -44,36 +44,35 @@ import {TrackedTx} from './tracked_tx';
 export class MockStore implements BackStore {
   constructor(private store: ObservableStore) {}
 
-  public init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<any> {
+  init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<unknown> {
     return this.store.init(onUpgrade);
   }
 
-  public createTx(type: TransactionType, scope: BaseTable[], journal?: Journal):
-      Tx {
+  createTx(type: TransactionType, scope: Table[], journal?: Journal): Tx {
     return new TrackedTx(this, type, journal);
   }
 
-  public close(): void {
+  close(): void {
     // Nothing to do.
   }
 
-  public getTableInternal(tableName: string): RuntimeTable {
+  getTableInternal(tableName: string): RuntimeTable {
     return this.store.getTableInternal(tableName);
   }
 
-  public subscribe(handler: (diffs: TableDiff[]) => void): void {
+  subscribe(handler: (diffs: TableDiff[]) => void): void {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
 
-  public unsubscribe(handler: (diffs: TableDiff[]) => void): void {
+  unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
 
-  public notify(changes: TableDiff[]): void {
+  notify(changes: TableDiff[]): void {
     this.store.notify(changes);
   }
 
-  public supportsImport(): boolean {
+  supportsImport(): boolean {
     return false;
   }
 }

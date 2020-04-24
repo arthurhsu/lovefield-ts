@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-import {DatabaseConnection} from '../base/database_connection';
-import {ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
-import {Global} from '../base/global';
-import {Service} from '../base/service';
-import {ServiceId} from '../base/service_id';
-import {RuntimeDatabase} from '../proc/runtime_database';
+import { DatabaseConnection } from '../base/database_connection';
+import { ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
+import { Global } from '../base/global';
+import { Service } from '../base/service';
+import { ServiceId } from '../base/service_id';
+import { RuntimeDatabase } from '../proc/runtime_database';
 
-import {ConnectOptions} from './connect_options';
-import {DatabaseSchema} from './database_schema';
-import {DatabaseSchemaImpl} from './database_schema_impl';
-import {GraphNode} from './graph_node';
-import {Pragma} from './pragma';
-import {TableBuilder} from './table_builder';
+import { BaseColumn } from './base_column';
+import { ConnectOptions } from './connect_options';
+import { DatabaseSchema } from './database_schema';
+import { DatabaseSchemaImpl } from './database_schema_impl';
+import { GraphNode } from './graph_node';
+import { Pragma } from './pragma';
+import { TableBuilder } from './table_builder';
 
 // TODO(arthurhsu): FIXME: use a public interface here.
 // @export
@@ -42,18 +43,18 @@ export class Builder {
     this.schema = new DatabaseSchemaImpl(dbName, dbVersion);
     this.tableBuilders = new Map<string, TableBuilder>();
     this.finalized = false;
-    this.db = null as any as RuntimeDatabase;
+    this.db = (null as unknown) as RuntimeDatabase;
     this.connectInProgress = false;
   }
 
-  public getSchema(): DatabaseSchema {
+  getSchema(): DatabaseSchema {
     if (!this.finalized) {
       this.finalize();
     }
     return this.schema;
   }
 
-  public getGlobal(): Global {
+  getGlobal(): Global {
     const namespaceGlobalId = new ServiceId<Global>(`ns_${this.schema.name()}`);
     const global = Global.get();
     let namespacedGlobal: Global;
@@ -69,7 +70,7 @@ export class Builder {
   // Instantiates a connection to the database. Note: This method can only be
   // called once per Builder instance. Subsequent calls will throw an error,
   // unless the previous DB connection has been closed first.
-  public connect(options?: ConnectOptions): Promise<DatabaseConnection> {
+  connect(options?: ConnectOptions): Promise<DatabaseConnection> {
     if (this.connectInProgress || (this.db !== null && this.db.isOpen())) {
       // 113: Attempt to connect() to an already connected/connecting database.
       throw new Exception(ErrorCode.ALREADY_CONNECTED);
@@ -85,21 +86,22 @@ export class Builder {
     }
 
     return this.db.init(options).then(
-        (db) => {
-          this.connectInProgress = false;
-          return db;
-        },
-        (e) => {
-          this.connectInProgress = false;
-          // TODO(arthurhsu): Add a new test case to verify that failed init
-          // call allows the database to be deleted since we close it properly
-          // here.
-          this.db.close();
-          throw e;
-        });
+      db => {
+        this.connectInProgress = false;
+        return db;
+      },
+      e => {
+        this.connectInProgress = false;
+        // TODO(arthurhsu): Add a new test case to verify that failed init
+        // call allows the database to be deleted since we close it properly
+        // here.
+        this.db.close();
+        throw e;
+      }
+    );
   }
 
-  public createTable(tableName: string): TableBuilder {
+  createTable(tableName: string): TableBuilder {
     if (this.tableBuilders.has(tableName)) {
       // 503: Name {0} is already defined.
       throw new Exception(ErrorCode.NAME_IN_USE, tableName);
@@ -115,7 +117,7 @@ export class Builder {
     return ret;
   }
 
-  public setPragma(pragma: Pragma): Builder {
+  setPragma(pragma: Pragma): Builder {
     if (this.finalized) {
       // 535: Schema is already finalized.
       throw new Exception(ErrorCode.SCHEMA_FINALIZED);
@@ -130,11 +132,11 @@ export class Builder {
   private checkFkCycle(): void {
     // Builds graph.
     const nodeMap = new Map<string, GraphNode>();
-    this.schema.tables().forEach((table) => {
+    this.schema.tables().forEach(table => {
       nodeMap.set(table.getName(), new GraphNode(table.getName()));
     }, this);
     this.tableBuilders.forEach((builder, tableName) => {
-      builder.getFkSpecs().forEach((spec) => {
+      builder.getFkSpecs().forEach(spec => {
         const parentNode = nodeMap.get(spec.parentTable);
         if (parentNode) {
           parentNode.edges.add(tableName);
@@ -142,15 +144,16 @@ export class Builder {
       });
     });
     // Checks for cycle.
-    Array.from(nodeMap.values())
-        .forEach((graphNode) => this.checkCycleUtil(graphNode, nodeMap));
+    Array.from(nodeMap.values()).forEach(graphNode =>
+      this.checkCycleUtil(graphNode, nodeMap)
+    );
   }
 
   // Performs foreign key checks like validity of names of parent and
   // child columns, matching of types and uniqueness of referred column
   // in the parent.
   private checkForeignKeyValidity(builder: TableBuilder): void {
-    builder.getFkSpecs().forEach((specs) => {
+    builder.getFkSpecs().forEach(specs => {
       const parentTableName = specs.parentTable;
       const table = this.tableBuilders.get(parentTableName);
       if (!table) {
@@ -166,12 +169,14 @@ export class Builder {
 
       const localSchema = builder.getSchema();
       const localColName = specs.childColumn;
-      if (localSchema[localColName].getType() !==
-          parentSchema[parentColName].getType()) {
+      if (
+        (localSchema[localColName] as BaseColumn).getType() !==
+        (parentSchema[parentColName] as BaseColumn).getType()
+      ) {
         // 538: Foreign key {0} column type mismatch.
         throw new Exception(ErrorCode.INVALID_FK_COLUMN_TYPE, specs.name);
       }
-      if (!parentSchema[parentColName].isUnique()) {
+      if (!(parentSchema[parentColName] as BaseColumn).isUnique()) {
         // 539: Foreign key {0} refers to non-unique column.
         throw new Exception(ErrorCode.FK_COLUMN_NONUNIQUE, specs.name);
       }
@@ -179,12 +184,12 @@ export class Builder {
   }
 
   // Performs checks to avoid chains of foreign keys on same column.
-  private checkForiengKeyChain(builder: TableBuilder): void {
+  private checkForeignKeyChain(builder: TableBuilder): void {
     const fkSpecArray = builder.getFkSpecs();
-    fkSpecArray.forEach((specs) => {
+    fkSpecArray.forEach(specs => {
       const parentBuilder = this.tableBuilders.get(specs.parentTable);
       if (parentBuilder) {
-        parentBuilder.getFkSpecs().forEach((parentSpecs) => {
+        parentBuilder.getFkSpecs().forEach(parentSpecs => {
           if (parentSpecs.childColumn === specs.parentColumn) {
             // 534: Foreign key {0} refers to source column of another
             // foreign key.
@@ -201,8 +206,10 @@ export class Builder {
         this.checkForeignKeyValidity(builder);
         this.schema.setTable(builder.getSchema());
       });
-      Array.from(this.tableBuilders.values())
-          .forEach(this.checkForiengKeyChain, this);
+      Array.from(this.tableBuilders.values()).forEach(
+        this.checkForeignKeyChain,
+        this
+      );
       this.checkFkCycle();
       this.tableBuilders.clear();
       this.finalized = true;
@@ -214,12 +221,14 @@ export class Builder {
   // 3rd Edition By Cormen et Al". It says that a directed graph G
   // can be acyclic if and only DFS of G yields no back edges.
   // @see http://www.geeksforgeeks.org/detect-cycle-in-a-graph/
-  private checkCycleUtil(graphNode: GraphNode, nodeMap: Map<string, GraphNode>):
-      void {
+  private checkCycleUtil(
+    graphNode: GraphNode,
+    nodeMap: Map<string, GraphNode>
+  ): void {
     if (!graphNode.visited) {
       graphNode.visited = true;
       graphNode.onStack = true;
-      graphNode.edges.forEach((edge) => {
+      graphNode.edges.forEach(edge => {
         const childNode = nodeMap.get(edge);
         if (childNode) {
           if (!childNode.visited) {

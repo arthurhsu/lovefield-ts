@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Builder} from './builder';
+import { Builder } from './builder';
 
 // Keep lower case class name for compatibility with Lovefield API.
 // tslint:disable:class-name
@@ -27,7 +27,7 @@ export class schema {
   // been used for connecting a database instance. Once the connection is closed
   // or dropped, the builder cannot be used to reconnect. Instead, the caller
   // needs to construct a new builder for doing so.
-  public static create(name: string, version: number): Builder {
+  static create(name: string, version: number): Builder {
     return new Builder(name, version);
   }
 }

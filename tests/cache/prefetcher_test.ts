@@ -40,10 +40,10 @@ describe('Prefetcher', () => {
     sandbox = sinon.createSandbox();
     env = new MockEnv(getMockSchemaBuilder().getSchema());
     sandbox
-      .stub(env.schema.table('tableA'), 'persistentIndex')
+      .stub((env.schema.table('tableA') as BaseTable), 'persistentIndex')
       .callsFake(() => true);
     sandbox
-      .stub(env.schema.table('tableF'), 'persistentIndex')
+      .stub((env.schema.table('tableF') as BaseTable), 'persistentIndex')
       .callsFake(() => true);
     return env.init();
   });

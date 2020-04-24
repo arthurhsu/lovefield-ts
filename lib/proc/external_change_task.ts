@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-import {TransactionType} from '../base/enum';
-import {Global} from '../base/global';
-import {ObserverRegistry} from '../base/observer_registry';
-import {TaskPriority} from '../base/private_enum';
-import {Resolver} from '../base/resolver';
-import {Service} from '../base/service';
-import {UniqueId} from '../base/unique_id';
-import {InMemoryUpdater} from '../cache/in_memory_updater';
-import {TableDiff} from '../cache/table_diff';
-import {BaseTable} from '../schema/base_table';
+import { TransactionType } from '../base/enum';
+import { Global } from '../base/global';
+import { ObserverRegistry } from '../base/observer_registry';
+import { TaskPriority } from '../base/private_enum';
+import { Resolver } from '../base/resolver';
+import { Service } from '../base/service';
+import { UniqueId } from '../base/unique_id';
+import { InMemoryUpdater } from '../cache/in_memory_updater';
+import { TableDiff } from '../cache/table_diff';
+import { Table } from '../schema/table';
 
-import {ObserverQueryTask} from './observer_query_task';
-import {Relation} from './relation';
-import {Runner} from './runner';
-import {Task} from './task';
+import { ObserverQueryTask } from './observer_query_task';
+import { Relation } from './relation';
+import { Runner } from './runner';
+import { Task } from './task';
 
 export class ExternalChangeTask extends UniqueId implements Task {
   private observerRegistry: ObserverRegistry;
   private runner: Runner;
   private inMemoryUpdater: InMemoryUpdater;
-  private scope: Set<BaseTable>;
+  private scope: Set<Table>;
   private resolver: Resolver<Relation[]>;
 
   constructor(private global: Global, private tableDiffs: TableDiff[]) {
@@ -44,35 +44,36 @@ export class ExternalChangeTask extends UniqueId implements Task {
     this.inMemoryUpdater = new InMemoryUpdater(this.global);
 
     const dbSchema = this.global.getService(Service.SCHEMA);
-    const tableSchemas =
-        this.tableDiffs.map((td) => dbSchema.table(td.getName()));
-    this.scope = new Set<BaseTable>(tableSchemas);
+    const tableSchemas = this.tableDiffs.map(td =>
+      dbSchema.table(td.getName())
+    );
+    this.scope = new Set<Table>(tableSchemas);
     this.resolver = new Resolver<Relation[]>();
   }
 
-  public exec(): Promise<Relation[]> {
+  exec(): Promise<Relation[]> {
     this.inMemoryUpdater.update(this.tableDiffs);
     this.scheduleObserverTask();
     return Promise.resolve([]);
   }
 
-  public getType(): TransactionType {
+  getType(): TransactionType {
     return TransactionType.READ_WRITE;
   }
 
-  public getScope(): Set<BaseTable> {
+  getScope(): Set<Table> {
     return this.scope;
   }
 
-  public getResolver(): Resolver<Relation[]> {
+  getResolver(): Resolver<Relation[]> {
     return this.resolver;
   }
 
-  public getId(): number {
+  getId(): number {
     return this.getUniqueNumber();
   }
 
-  public getPriority(): TaskPriority {
+  getPriority(): TaskPriority {
     return TaskPriority.EXTERNAL_CHANGE_TASK;
   }
 
@@ -80,7 +81,8 @@ export class ExternalChangeTask extends UniqueId implements Task {
   // re-executed, if any.
   private scheduleObserverTask(): void {
     const items = this.observerRegistry.getTaskItemsForTables(
-        Array.from(this.scope.values()));
+      Array.from(this.scope.values())
+    );
     if (items.length !== 0) {
       const observerTask = new ObserverQueryTask(this.global, items);
       this.runner.scheduleTask(observerTask);

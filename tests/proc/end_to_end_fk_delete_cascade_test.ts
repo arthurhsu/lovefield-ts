@@ -16,11 +16,16 @@
 
 import * as chai from 'chai';
 
-import {DatabaseConnection} from '../../lib/base/database_connection';
-import {ConstraintAction, DataStoreType, ErrorCode, Type} from '../../lib/base/enum';
-import {Row} from '../../lib/base/row';
-import {BaseTable} from '../../lib/schema/base_table';
-import {Builder} from '../../lib/schema/builder';
+import { DatabaseConnection } from '../../lib/base/database_connection';
+import {
+  ConstraintAction,
+  DataStoreType,
+  ErrorCode,
+  Type,
+} from '../../lib/base/enum';
+import { Row } from '../../lib/base/row';
+import { Builder } from '../../lib/schema/builder';
+import { Table } from '../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -33,10 +38,10 @@ interface SampleRows {
 
 describe('EndToEndFKDeleteCascade', () => {
   let db: DatabaseConnection;
-  let tA: BaseTable;
-  let tB: BaseTable;
-  let tB1: BaseTable;
-  let tB2: BaseTable;
+  let tA: Table;
+  let tB: Table;
+  let tB1: Table;
+  let tB2: Table;
   let sampleRows: SampleRows;
 
   // Creates a schema that has both CASCADE and RESTRICT constraints as follows.
@@ -49,51 +54,55 @@ describe('EndToEndFKDeleteCascade', () => {
 
   function getSchemaBuilder(): Builder {
     const schemaBuilder = new Builder('fk_schema', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id', Type.STRING)
-        .addPrimaryKey(['id']);
-    schemaBuilder.createTable('TableB')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignId', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addForeignKey('fk_foreignId', {
-          action: ConstraintAction.CASCADE,
-          local: 'foreignId',
-          ref: 'TableA.id',
-        });
-    schemaBuilder.createTable('TableB1')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignId', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addForeignKey('fk_foreignId', {
-          action: ConstraintAction.CASCADE,
-          local: 'foreignId',
-          ref: 'TableB.id',
-        });
-    schemaBuilder.createTable('TableB2')
-        .addColumn('id', Type.STRING)
-        .addColumn('foreignId', Type.STRING)
-        .addPrimaryKey(['id'])
-        .addForeignKey('fk_foreignId', {
-          action: ConstraintAction.RESTRICT,
-          local: 'foreignId',
-          ref: 'TableB.id',
-        });
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id', Type.STRING)
+      .addPrimaryKey(['id']);
+    schemaBuilder
+      .createTable('TableB')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignId', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addForeignKey('fk_foreignId', {
+        action: ConstraintAction.CASCADE,
+        local: 'foreignId',
+        ref: 'TableA.id',
+      });
+    schemaBuilder
+      .createTable('TableB1')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignId', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addForeignKey('fk_foreignId', {
+        action: ConstraintAction.CASCADE,
+        local: 'foreignId',
+        ref: 'TableB.id',
+      });
+    schemaBuilder
+      .createTable('TableB2')
+      .addColumn('id', Type.STRING)
+      .addColumn('foreignId', Type.STRING)
+      .addPrimaryKey(['id'])
+      .addForeignKey('fk_foreignId', {
+        action: ConstraintAction.RESTRICT,
+        local: 'foreignId',
+        ref: 'TableB.id',
+      });
     return schemaBuilder;
   }
 
   // Generates one row for each table.
   function getSampleRows(): SampleRows {
     return {
-      tableA: [tA.createRow({id: 'tableAId'})],
-      tableB: [tB.createRow({id: 'tableBId', foreignId: 'tableAId'})],
-      tableB1: [tB1.createRow({id: 'tableB1Id', foreignId: 'tableBId'})],
-      tableB2: [tB2.createRow({id: 'tableB2Id', foreignId: 'tableBId'})],
+      tableA: [tA.createRow({ id: 'tableAId' })],
+      tableB: [tB.createRow({ id: 'tableBId', foreignId: 'tableAId' })],
+      tableB1: [tB1.createRow({ id: 'tableB1Id', foreignId: 'tableBId' })],
+      tableB2: [tB2.createRow({ id: 'tableB2Id', foreignId: 'tableBId' })],
     };
   }
 
   beforeEach(async () => {
-    db = await getSchemaBuilder().connect({storeType: DataStoreType.MEMORY});
+    db = await getSchemaBuilder().connect({ storeType: DataStoreType.MEMORY });
     const schema = db.getSchema();
     tA = schema.table('TableA');
     tB = schema.table('TableB');
@@ -109,16 +118,31 @@ describe('EndToEndFKDeleteCascade', () => {
   it('cascadeOnlySuccess', async () => {
     let tx = db.createTransaction();
     await tx.exec([
-      db.insert().into(tA).values(sampleRows.tableA),
-      db.insert().into(tB).values(sampleRows.tableB),
-      db.insert().into(tB1).values(sampleRows.tableB1),
+      db
+        .insert()
+        .into(tA)
+        .values(sampleRows.tableA),
+      db
+        .insert()
+        .into(tB)
+        .values(sampleRows.tableB),
+      db
+        .insert()
+        .into(tB1)
+        .values(sampleRows.tableB1),
     ]);
 
-    await db.delete().from(tA).exec();
+    await db
+      .delete()
+      .from(tA)
+      .exec();
 
     tx = db.createTransaction();
-    const results = await tx.exec(
-        [db.select().from(tA), db.select().from(tB), db.select().from(tB1)]);
+    const results = (await tx.exec([
+      db.select().from(tA),
+      db.select().from(tB),
+      db.select().from(tB1),
+    ])) as unknown[][];
 
     assert.equal(0, results[0].length);
     assert.equal(0, results[1].length);
@@ -131,26 +155,41 @@ describe('EndToEndFKDeleteCascade', () => {
   it('runCascadeRestrictFail', async () => {
     let tx = db.createTransaction();
     await tx.exec([
-      db.insert().into(tA).values(sampleRows.tableA),
-      db.insert().into(tB).values(sampleRows.tableB),
-      db.insert().into(tB1).values(sampleRows.tableB1),
-      db.insert().into(tB2).values(sampleRows.tableB2),
+      db
+        .insert()
+        .into(tA)
+        .values(sampleRows.tableA),
+      db
+        .insert()
+        .into(tB)
+        .values(sampleRows.tableB),
+      db
+        .insert()
+        .into(tB1)
+        .values(sampleRows.tableB1),
+      db
+        .insert()
+        .into(tB2)
+        .values(sampleRows.tableB2),
     ]);
 
     let failed = true;
     try {
-      await db.delete().from(tA).exec();
+      await db
+        .delete()
+        .from(tA)
+        .exec();
     } catch (e) {
       // 203: Foreign key constraint violation on constraint {0}.
       assert.equal(ErrorCode.FK_VIOLATION, e.code);
 
       tx = db.createTransaction();
-      const res = await tx.exec([
+      const res = (await tx.exec([
         db.select().from(tA),
         db.select().from(tB),
         db.select().from(tB1),
         db.select().from(tB2),
-      ]);
+      ])) as unknown[][];
 
       assert.equal(1, res[0].length);
       assert.equal(1, res[1].length);

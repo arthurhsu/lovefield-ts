@@ -14,38 +14,39 @@
  * limitations under the License.
  */
 
-import {DatabaseConnection} from '../../../lib/base/database_connection';
-import {DataStoreType, Order} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {fn} from '../../../lib/fn/fn';
-import {op} from '../../../lib/fn/op';
-import {SingleKeyRange} from '../../../lib/index/key_range';
-import {Predicate} from '../../../lib/pred/predicate';
-import {PredicateNode} from '../../../lib/pred/predicate_node';
-import {ValuePredicate} from '../../../lib/pred/value_predicate';
-import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
-import {LimitSkipByIndexPass} from '../../../lib/proc/pp/limit_skip_by_index_pass';
-import {LimitStep} from '../../../lib/proc/pp/limit_step';
-import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {SkipStep} from '../../../lib/proc/pp/skip_step';
-import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {IndexImpl} from '../../../lib/schema/index_impl';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
-import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
-import {TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DatabaseConnection } from '../../../lib/base/database_connection';
+import { DataStoreType, Order } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { fn } from '../../../lib/fn/fn';
+import { op } from '../../../lib/fn/op';
+import { SingleKeyRange } from '../../../lib/index/key_range';
+import { Predicate } from '../../../lib/pred/predicate';
+import { PredicateNode } from '../../../lib/pred/predicate_node';
+import { ValuePredicate } from '../../../lib/pred/value_predicate';
+import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
+import { LimitSkipByIndexPass } from '../../../lib/proc/pp/limit_skip_by_index_pass';
+import { LimitStep } from '../../../lib/proc/pp/limit_step';
+import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { SkipStep } from '../../../lib/proc/pp/skip_step';
+import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { Column } from '../../../lib/schema/column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { IndexImpl } from '../../../lib/schema/index_impl';
+import { Table } from '../../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
+import { TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('LimitSkipByIndexPass', () => {
   let db: DatabaseConnection;
   let schema: DatabaseSchema;
   let global: Global;
-  let e: BaseTable;
+  let e: Table;
   let pass: LimitSkipByIndexPass;
 
   beforeEach(() => {
@@ -53,7 +54,7 @@ describe('LimitSkipByIndexPass', () => {
     schema = builder.getSchema();
     e = schema.table('Employee');
     pass = new LimitSkipByIndexPass();
-    return builder.connect({storeType: DataStoreType.MEMORY}).then((conn) => {
+    return builder.connect({ storeType: DataStoreType.MEMORY }).then(conn => {
       db = conn;
       global = (db as RuntimeDatabase).getGlobal();
     });
@@ -63,9 +64,10 @@ describe('LimitSkipByIndexPass', () => {
     db.close();
   });
 
-  function getIndexByName(table: BaseTable, indexName: string): IndexImpl {
-    return (table.getIndices() as IndexImpl[])
-        .filter((index) => index.name === indexName)[0];
+  function getIndexByName(table: Table, indexName: string): IndexImpl {
+    return ((table as BaseTable).getIndices() as IndexImpl[]).filter(
+      index => index.name === indexName
+    )[0];
   }
 
   // Tests a tree where an existing IndexRangeScanStep can be leveraged for
@@ -77,7 +79,7 @@ describe('LimitSkipByIndexPass', () => {
       '--project()',
       '---table_access_by_row_id(Employee)',
       '----index_range_scan(Employee.idx_salary, ' +
-          '[unbound, 1000],[2000, unbound], reverse)',
+        '[unbound, 1000],[2000, unbound], reverse)',
       '',
     ].join('\n');
 
@@ -85,7 +87,7 @@ describe('LimitSkipByIndexPass', () => {
       'project()',
       '-table_access_by_row_id(Employee)',
       '--index_range_scan(Employee.idx_salary, ' +
-          '[unbound, 1000],[2000, unbound], reverse, limit:100, skip:200)',
+        '[unbound, 1000],[2000, unbound], reverse, limit:100, skip:200)',
       '',
     ].join('\n');
 
@@ -94,31 +96,43 @@ describe('LimitSkipByIndexPass', () => {
       queryContext.from = [e];
       queryContext.limit = 100;
       queryContext.skip = 200;
-      queryContext.where = op.or(e['salary'].lte(1000), e['salary'].gte(2000));
+      queryContext.where = op.or(
+        e.col('salary').lte(1000),
+        e.col('salary').gte(2000)
+      );
 
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
       skipNode.addChild(projectNode);
-      const tableAccessByRowIdNode =
-          new TableAccessByRowIdStep(global, queryContext.from[0]);
+      const tableAccessByRowIdNode = new TableAccessByRowIdStep(
+        global,
+        queryContext.from[0]
+      );
       projectNode.addChild(tableAccessByRowIdNode);
       const child0 = (queryContext.where as PredicateNode).getChildAt(0);
       const child1 = (queryContext.where as PredicateNode).getChildAt(1);
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, getIndexByName(e, 'idx_salary'), new MockKeyRangeCalculator([
-            (child0 as ValuePredicate).toKeyRange().getValues()[0],
-            (child1 as ValuePredicate).toKeyRange().getValues()[0],
-          ]),
-          true);
+        global,
+        getIndexByName(e, 'idx_salary'),
+        new MockKeyRangeCalculator([
+          (child0 as ValuePredicate).toKeyRange().getValues()[0],
+          (child1 as ValuePredicate).toKeyRange().getValues()[0],
+        ]),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return {queryContext: queryContext, root: limitNode};
+      return { queryContext, root: limitNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where an existing IndexRangeScanStep exists, but it can't be
@@ -140,29 +154,39 @@ describe('LimitSkipByIndexPass', () => {
       queryContext.limit = 100;
       queryContext.skip = 200;
       queryContext.from = [e];
-      queryContext.where = e['id'].lt('300');
+      queryContext.where = e.col('id').lt('300');
 
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
       skipNode.addChild(projectNode);
-      const selectNode =
-          new SelectStep((queryContext.where as Predicate).getId());
+      const selectNode = new SelectStep(
+        (queryContext.where as Predicate).getId()
+      );
       projectNode.addChild(selectNode);
-      const tableAccessByRowIdNode =
-          new TableAccessByRowIdStep(global, queryContext.from[0]);
+      const tableAccessByRowIdNode = new TableAccessByRowIdStep(
+        global,
+        queryContext.from[0]
+      );
       selectNode.addChild(tableAccessByRowIdNode);
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, getIndexByName(e, 'idx_salary'),
-          new MockKeyRangeCalculator([SingleKeyRange.all()]), true);
+        global,
+        getIndexByName(e, 'idx_salary'),
+        new MockKeyRangeCalculator([SingleKeyRange.all()]),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return {queryContext: queryContext, root: limitNode};
+      return { queryContext, root: limitNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests a tree where an existing IndexRangeScanStep exists, but it can't be
@@ -175,7 +199,7 @@ describe('LimitSkipByIndexPass', () => {
       '--project(Employee.id, groupBy(Employee.jobId))',
       '---table_access_by_row_id(Employee)',
       '----index_range_scan(Employee.idx_salary, ' +
-          '[unbound, unbound], reverse)',
+        '[unbound, unbound], reverse)',
       '',
     ].join('\n');
 
@@ -187,20 +211,27 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([e['id']], [e['jobId']]);
+      const projectNode = new ProjectStep([e.col('id')], [e.col('jobId')]);
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(global, e);
       projectNode.addChild(tableAccessByRowIdNode);
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, getIndexByName(e, 'idx_salary'),
-          new MockKeyRangeCalculator([SingleKeyRange.all()]), true);
+        global,
+        getIndexByName(e, 'idx_salary'),
+        new MockKeyRangeCalculator([SingleKeyRange.all()]),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return {queryContext: queryContext, root: limitNode};
+      return { queryContext, root: limitNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests a tree where an existing IndexRangeScanStep exists, but it can't be
@@ -213,7 +244,7 @@ describe('LimitSkipByIndexPass', () => {
       '--project(MAX(Employee.salary),MIN(Employee.salary))',
       '---table_access_by_row_id(Employee)',
       '----index_range_scan(Employee.idx_salary, ' +
-          '[unbound, unbound], reverse)',
+        '[unbound, unbound], reverse)',
       '',
     ].join('\n');
 
@@ -226,24 +257,29 @@ describe('LimitSkipByIndexPass', () => {
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
       const projectNode = new ProjectStep(
-          [
-            fn.max(e['salary']),
-            fn.min(e['salary']),
-          ],
-          null as any as BaseColumn[]);
+        [fn.max(e.col('salary')), fn.min(e.col('salary'))],
+        (null as unknown) as Column[]
+      );
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(global, e);
       projectNode.addChild(tableAccessByRowIdNode);
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, getIndexByName(e, 'idx_salary'),
-          new MockKeyRangeCalculator([SingleKeyRange.all()]), true);
+        global,
+        getIndexByName(e, 'idx_salary'),
+        new MockKeyRangeCalculator([SingleKeyRange.all()]),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return {queryContext: queryContext, root: limitNode};
+      return { queryContext, root: limitNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests a tree where an existing IndexRangeScanStep exists, but it can't be
@@ -268,24 +304,33 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], null as any as BaseColumn[]);
+      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
       skipNode.addChild(projectNode);
-      const orderByNode = new OrderByStep([{
-        column: e['salary'],
-        order: Order.DESC,
-      }]);
+      const orderByNode = new OrderByStep([
+        {
+          column: e.col('salary'),
+          order: Order.DESC,
+        },
+      ]);
       projectNode.addChild(orderByNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(global, e);
       orderByNode.addChild(tableAccessByRowIdNode);
       const indexRangeScanStep = new IndexRangeScanStep(
-          global, getIndexByName(e, 'idx_salary'),
-          new MockKeyRangeCalculator([SingleKeyRange.all()]), true);
+        global,
+        getIndexByName(e, 'idx_salary'),
+        new MockKeyRangeCalculator([SingleKeyRange.all()]),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return {queryContext: queryContext, root: limitNode};
+      return { queryContext, root: limitNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 });

@@ -19,14 +19,14 @@ import * as chai from 'chai';
 import { DataStoreType, Order } from '../../lib/base/enum';
 import { PayloadType, Row } from '../../lib/base/row';
 import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { BaseTable } from '../../lib/schema/base_table';
+import { Table } from '../../lib/schema/table';
 import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
 describe('DateIndex', () => {
   let db: RuntimeDatabase;
-  let holiday: BaseTable;
+  let holiday: Table;
 
   beforeEach(async () => {
     db = (await getHrDbSchemaBuilder().connect({
@@ -96,8 +96,8 @@ describe('DateIndex', () => {
     const query = db
       .select()
       .from(holiday)
-      .where(holiday['begin'].gt(new Date(2014, 0, 1)))
-      .orderBy(holiday['begin'], Order.DESC);
+      .where(holiday.col('begin').gt(new Date(2014, 0, 1)))
+      .orderBy(holiday.col('begin'), Order.DESC);
     assert.notEqual(-1, query.explain().indexOf('index_range_scan'));
     const results = (await query.exec()) as PayloadType[];
     assert.sameDeepOrderedMembers(

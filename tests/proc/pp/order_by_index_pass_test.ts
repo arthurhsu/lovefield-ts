@@ -14,41 +14,44 @@
  * limitations under the License.
  */
 
-import {DataStoreType, Order, Type} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {op} from '../../../lib/fn/op';
-import {SingleKeyRange} from '../../../lib/index/key_range';
-import {ValuePredicate} from '../../../lib/pred/value_predicate';
-import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
-import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
-import {OrderByIndexPass} from '../../../lib/proc/pp/order_by_index_pass';
-import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {Builder} from '../../../lib/schema/builder';
-import {IndexImpl} from '../../../lib/schema/index_impl';
-import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
-import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DataStoreType, Order, Type } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { op } from '../../../lib/fn/op';
+import { SingleKeyRange } from '../../../lib/index/key_range';
+import { ValuePredicate } from '../../../lib/pred/value_predicate';
+import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
+import { MultiIndexRangeScanStep } from '../../../lib/proc/pp/multi_index_range_scan_step';
+import { OrderByIndexPass } from '../../../lib/proc/pp/order_by_index_pass';
+import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { BaseColumn } from '../../../lib/schema/base_column';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { Builder } from '../../../lib/schema/builder';
+import { Column } from '../../../lib/schema/column';
+import { IndexImpl } from '../../../lib/schema/index_impl';
+import { Table } from '../../../lib/schema/table';
+import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
+import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('OrderByIndexPass', () => {
   let db: RuntimeDatabase;
   let global: Global;
-  let simpleTable: BaseTable;
-  let crossColumnTable: BaseTable;
+  let simpleTable: Table;
+  let crossColumnTable: Table;
   let pass: OrderByIndexPass;
-  const NULL = null as any as BaseColumn[];
+  const NULL = (null as unknown) as Column[];
 
   beforeEach(async () => {
     const schemaBuilder = getSchemaBuilder();
     global = schemaBuilder.getGlobal();
-    db = await schemaBuilder.connect({storeType: DataStoreType.MEMORY}) as
-        RuntimeDatabase;
+    db = (await schemaBuilder.connect({
+      storeType: DataStoreType.MEMORY,
+    })) as RuntimeDatabase;
     simpleTable = db.getSchema().table('SimpleTable');
     crossColumnTable = db.getSchema().table('CrossColumnTable');
     pass = new OrderByIndexPass(global);
@@ -59,26 +62,29 @@ describe('OrderByIndexPass', () => {
   });
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('orderbyindexpass', 1);
-    schemaBuilder.createTable('SimpleTable')
-        .addColumn('id', Type.INTEGER)
-        .addColumn('salary', Type.INTEGER)
-        .addColumn('age', Type.INTEGER)
-        .addIndex('idx_salary', ['salary'], false, Order.DESC)
-        .addIndex('idx_age', ['age'], false, Order.DESC);
+    const schemaBuilder = new Builder('orderByIndexPass', 1);
+    schemaBuilder
+      .createTable('SimpleTable')
+      .addColumn('id', Type.INTEGER)
+      .addColumn('salary', Type.INTEGER)
+      .addColumn('age', Type.INTEGER)
+      .addIndex('idx_salary', ['salary'], false, Order.DESC)
+      .addIndex('idx_age', ['age'], false, Order.DESC);
 
-    schemaBuilder.createTable('CrossColumnTable')
-        .addColumn('string', Type.STRING)
-        .addColumn('number', Type.NUMBER)
-        .addColumn('boolean', Type.BOOLEAN)
-        .addIndex('idx_crossColumn', ['string', 'number'])
-        .addNullable(['number']);
+    schemaBuilder
+      .createTable('CrossColumnTable')
+      .addColumn('string', Type.STRING)
+      .addColumn('number', Type.NUMBER)
+      .addColumn('boolean', Type.BOOLEAN)
+      .addIndex('idx_crossColumn', ['string', 'number'])
+      .addNullable(['number']);
     return schemaBuilder;
   }
 
   function getIndexByName(table: BaseTable, indexName: string): IndexImpl {
-    return (table.getIndices() as IndexImpl[])
-        .filter((index) => index.name === indexName)[0];
+    return (table.getIndices() as IndexImpl[]).filter(
+      index => index.name === indexName
+    )[0];
   }
 
   // Tests a tree where the contents of a table are filtered by a value
@@ -97,13 +103,16 @@ describe('OrderByIndexPass', () => {
       '-select(value_pred(SimpleTable.id gt 100))',
       '--table_access_by_row_id(SimpleTable)',
       '---index_range_scan(' +
-          'SimpleTable.idx_salary, [unbound, unbound], natural)',
+        'SimpleTable.idx_salary, [unbound, unbound], natural)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(simpleTable['salary'], Order.DESC), treeBefore,
-        treeAfter, pass);
+      constructTree1(simpleTable.col('salary'), Order.DESC),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where an IndexRangeScanStep for the same column used for
@@ -127,33 +136,45 @@ describe('OrderByIndexPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(db.getSchema());
       queryContext.from = [simpleTable];
-      queryContext.where = simpleTable['salary'].gte(10000);
-      queryContext.orderBy = [{
-        column: simpleTable['salary'],
-        order: Order.DESC,
-      }];
+      queryContext.where = simpleTable.col('salary').gte(10000);
+      queryContext.orderBy = [
+        {
+          column: simpleTable.col('salary'),
+          order: Order.DESC,
+        },
+      ];
 
       const rootNode = new ProjectStep([], NULL);
       const orderByNode = new OrderByStep(queryContext.orderBy);
-      const tableAccessByRowIdNode =
-          new TableAccessByRowIdStep(global, queryContext.from[0]);
-      const keyRanges =
-          (queryContext.where as ValuePredicate).toKeyRange().getValues();
+      const tableAccessByRowIdNode = new TableAccessByRowIdStep(
+        global,
+        queryContext.from[0]
+      );
+      const keyRanges = (queryContext.where as ValuePredicate)
+        .toKeyRange()
+        .getValues();
       const indexRangeScanNode = new IndexRangeScanStep(
-          global, simpleTable['salary'].getIndex(),
-          new MockKeyRangeCalculator(keyRanges), true);
+        global,
+        (simpleTable.col('salary') as BaseColumn).getIndex() as IndexImpl,
+        new MockKeyRangeCalculator(keyRanges),
+        true
+      );
       tableAccessByRowIdNode.addChild(indexRangeScanNode);
       orderByNode.addChild(tableAccessByRowIdNode);
       rootNode.addChild(orderByNode);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: rootNode,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests the case where an OrderByNode exists in the tree, but there is no
@@ -170,8 +191,11 @@ describe('OrderByIndexPass', () => {
 
     // Tree should be unaffected, since no index exists on SimpleTable#age.
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(simpleTable['id'], Order.ASC), treeBefore, treeBefore,
-        pass);
+      constructTree1(simpleTable.col('id'), Order.ASC),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests the case where a MultiIndexRangeScanStep exists in the tree,
@@ -192,25 +216,33 @@ describe('OrderByIndexPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(db.getSchema());
       queryContext.from = [simpleTable];
-      const predicate1 = simpleTable['salary'].eq(100) as ValuePredicate;
-      const predicate2 = simpleTable['age'].eq(40) as ValuePredicate;
+      const predicate1 = simpleTable.col('salary').eq(100) as ValuePredicate;
+      const predicate2 = simpleTable.col('age').eq(40) as ValuePredicate;
       queryContext.where = op.or(predicate1, predicate2);
-      queryContext.orderBy = [{
-        column: simpleTable['salary'],
-        order: Order.ASC,
-      }];
+      queryContext.orderBy = [
+        {
+          column: simpleTable.col('salary'),
+          order: Order.ASC,
+        },
+      ];
 
       const indexRangeScanStep1 = new IndexRangeScanStep(
-          global, simpleTable['salary'].getIndex(),
-          new MockKeyRangeCalculator(predicate1.toKeyRange().getValues()),
-          false);
+        global,
+        (simpleTable.col('salary') as BaseColumn).getIndex() as IndexImpl,
+        new MockKeyRangeCalculator(predicate1.toKeyRange().getValues()),
+        false
+      );
       const indexRangeScanStep2 = new IndexRangeScanStep(
-          global, simpleTable['age'].getIndex(),
-          new MockKeyRangeCalculator(predicate2.toKeyRange().getValues()),
-          false);
+        global,
+        (simpleTable.col('age') as BaseColumn).getIndex() as IndexImpl,
+        new MockKeyRangeCalculator(predicate2.toKeyRange().getValues()),
+        false
+      );
       const multiIndexRangeScanStep = new MultiIndexRangeScanStep();
-      const tableAccessByRowIdStep =
-          new TableAccessByRowIdStep(global, queryContext.from[0]);
+      const tableAccessByRowIdStep = new TableAccessByRowIdStep(
+        global,
+        queryContext.from[0]
+      );
       const orderByStep = new OrderByStep(queryContext.orderBy);
       const projectStep = new ProjectStep([], NULL);
       projectStep.addChild(orderByStep);
@@ -220,13 +252,17 @@ describe('OrderByIndexPass', () => {
       multiIndexRangeScanStep.addChild(indexRangeScanStep2);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests the case where a cross-column index can be leveraged to perform the
@@ -245,12 +281,16 @@ describe('OrderByIndexPass', () => {
       '-select(value_pred(CrossColumnTable.boolean eq false))',
       '--table_access_by_row_id(CrossColumnTable)',
       '---index_range_scan(CrossColumnTable.idx_crossColumn, ' +
-          '[unbound, unbound],[unbound, unbound], natural)',
+        '[unbound, unbound],[unbound, unbound], natural)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(Order.ASC, Order.ASC), treeBefore, treeAfter, pass);
+      constructTree2(Order.ASC, Order.ASC),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests the case where a cross-column index can be leveraged to perform the
@@ -269,12 +309,16 @@ describe('OrderByIndexPass', () => {
       '-select(value_pred(CrossColumnTable.boolean eq false))',
       '--table_access_by_row_id(CrossColumnTable)',
       '---index_range_scan(CrossColumnTable.idx_crossColumn, ' +
-          '[unbound, unbound],[unbound, unbound], reverse)',
+        '[unbound, unbound],[unbound, unbound], reverse)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(Order.DESC, Order.DESC), treeBefore, treeAfter, pass);
+      constructTree2(Order.DESC, Order.DESC),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests the case where an existing cross-column index can't be leveraged to
@@ -291,7 +335,11 @@ describe('OrderByIndexPass', () => {
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(Order.DESC, Order.ASC), treeBefore, treeBefore, pass);
+      constructTree2(Order.DESC, Order.ASC),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests the case where an existing IndexRangeScanStep can be leveraged to
@@ -305,7 +353,7 @@ describe('OrderByIndexPass', () => {
       '--select(value_pred(CrossColumnTable.boolean eq false))',
       '---table_access_by_row_id(CrossColumnTable)',
       '----index_range_scan(CrossColumnTable.idx_crossColumn, ' +
-          '[unbound, unbound],[unbound, 10], natural)',
+        '[unbound, unbound],[unbound, 10], natural)',
       '',
     ].join('\n');
 
@@ -314,12 +362,16 @@ describe('OrderByIndexPass', () => {
       '-select(value_pred(CrossColumnTable.boolean eq false))',
       '--table_access_by_row_id(CrossColumnTable)',
       '---index_range_scan(CrossColumnTable.idx_crossColumn, ' +
-          '[unbound, unbound],[unbound, 10], reverse)',
+        '[unbound, unbound],[unbound, 10], reverse)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree3(Order.DESC, Order.DESC), treeBefore, treeAfter, pass);
+      constructTree3(Order.DESC, Order.DESC),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests the case where an existing IndexRangeScanStep can't be leveraged to
@@ -332,35 +384,43 @@ describe('OrderByIndexPass', () => {
       '--select(value_pred(CrossColumnTable.boolean eq false))',
       '---table_access_by_row_id(CrossColumnTable)',
       '----index_range_scan(CrossColumnTable.idx_crossColumn, ' +
-          '[unbound, unbound],[unbound, 10], natural)',
+        '[unbound, unbound],[unbound, 10], natural)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree3(Order.ASC, Order.DESC), treeBefore, treeBefore, pass);
+      constructTree3(Order.ASC, Order.DESC),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
-  function constructTree1(sortColumn: BaseColumn, sortOrder: Order): TestTree {
+  function constructTree1(sortColumn: Column, sortOrder: Order): TestTree {
     const queryContext = new SelectContext(db.getSchema());
     queryContext.from = [simpleTable];
-    queryContext.orderBy = [{
-      column: sortColumn,
-      order: sortOrder,
-    }];
-    queryContext.where = simpleTable['id'].gt(100) as ValuePredicate;
+    queryContext.orderBy = [
+      {
+        column: sortColumn,
+        order: sortOrder,
+      },
+    ];
+    queryContext.where = simpleTable.col('id').gt(100) as ValuePredicate;
 
     const rootNode = new ProjectStep([], NULL);
     const orderByNode = new OrderByStep(queryContext.orderBy);
     const selectNode = new SelectStep(queryContext.where.getId());
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
 
     selectNode.addChild(tableAccessNode);
     orderByNode.addChild(selectNode);
     rootNode.addChild(orderByNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: rootNode,
     };
   }
@@ -368,15 +428,16 @@ describe('OrderByIndexPass', () => {
   function constructTree2(sortOrder1: Order, sortOrder2: Order): TestTree {
     const queryContext = new SelectContext(db.getSchema());
     queryContext.from = [crossColumnTable];
-    queryContext.where =
-        crossColumnTable['boolean'].eq(false) as ValuePredicate;
+    queryContext.where = crossColumnTable
+      .col('boolean')
+      .eq(false) as ValuePredicate;
     queryContext.orderBy = [
       {
-        column: crossColumnTable['string'],
+        column: crossColumnTable.col('string'),
         order: sortOrder1,
       },
       {
-        column: crossColumnTable['number'],
+        column: crossColumnTable.col('number'),
         order: sortOrder2,
       },
     ];
@@ -384,15 +445,17 @@ describe('OrderByIndexPass', () => {
     const projectNode = new ProjectStep([], NULL);
     const orderByNode = new OrderByStep(queryContext.orderBy);
     const selectNode = new SelectStep(queryContext.where.getId());
-    const tableAccessNode =
-        new TableAccessFullStep(global, queryContext.from[0]);
+    const tableAccessNode = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
 
     selectNode.addChild(tableAccessNode);
     orderByNode.addChild(selectNode);
     projectNode.addChild(orderByNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectNode,
     };
   }
@@ -400,15 +463,16 @@ describe('OrderByIndexPass', () => {
   function constructTree3(sortOrder1: Order, sortOrder2: Order): TestTree {
     const queryContext = new SelectContext(db.getSchema());
     queryContext.from = [crossColumnTable];
-    queryContext.where =
-        crossColumnTable['boolean'].eq(false) as ValuePredicate;
+    queryContext.where = crossColumnTable
+      .col('boolean')
+      .eq(false) as ValuePredicate;
     queryContext.orderBy = [
       {
-        column: crossColumnTable['string'],
+        column: crossColumnTable.col('string'),
         order: sortOrder1,
       },
       {
-        column: crossColumnTable['number'],
+        column: crossColumnTable.col('number'),
         order: sortOrder2,
       },
     ];
@@ -416,15 +480,19 @@ describe('OrderByIndexPass', () => {
     const projectNode = new ProjectStep([], NULL);
     const orderByNode = new OrderByStep(queryContext.orderBy);
     const selectNode = new SelectStep(queryContext.where.getId());
-    const tableAccessByRowIdNode =
-        new TableAccessByRowIdStep(global, queryContext.from[0]);
+    const tableAccessByRowIdNode = new TableAccessByRowIdStep(
+      global,
+      queryContext.from[0]
+    );
     const indexRangeScanNode = new IndexRangeScanStep(
-        global, getIndexByName(crossColumnTable, 'idx_crossColumn'),
-        new MockKeyRangeCalculator([
-          SingleKeyRange.all(),
-          SingleKeyRange.upperBound(10),
-        ]),
-        false);
+      global,
+      getIndexByName(crossColumnTable as BaseTable, 'idx_crossColumn'),
+      new MockKeyRangeCalculator([
+        SingleKeyRange.all(),
+        SingleKeyRange.upperBound(10),
+      ]),
+      false
+    );
 
     tableAccessByRowIdNode.addChild(indexRangeScanNode);
     selectNode.addChild(tableAccessByRowIdNode);
@@ -432,7 +500,7 @@ describe('OrderByIndexPass', () => {
     projectNode.addChild(orderByNode);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectNode,
     };
   }

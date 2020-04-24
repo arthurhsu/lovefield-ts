@@ -16,145 +16,185 @@
 
 import * as chai from 'chai';
 
-import {ConstraintAction, ConstraintTiming, ErrorCode, Order, Type} from '../../lib/base/enum';
-import {BaseTable} from '../../lib/schema/base_table';
-import {Builder} from '../../lib/schema/builder';
-import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
-import {IndexImpl} from '../../lib/schema/index_impl';
-import {Info} from '../../lib/schema/info';
-import {TestUtil} from '../../testing/test_util';
+import {
+  ConstraintAction,
+  ConstraintTiming,
+  ErrorCode,
+  Order,
+  Type,
+} from '../../lib/base/enum';
+import { BaseColumn } from '../../lib/schema/base_column';
+import { BaseTable } from '../../lib/schema/base_table';
+import { Builder } from '../../lib/schema/builder';
+import { ForeignKeySpec } from '../../lib/schema/foreign_key_spec';
+import { IndexImpl } from '../../lib/schema/index_impl';
+import { Info } from '../../lib/schema/info';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('Builder', () => {
   const createBuilder = () => {
     const schemaBuilder = new Builder('hr', 1);
-    schemaBuilder.createTable('Job')
-        .addColumn('id', Type.STRING)
-        .addColumn('title', Type.STRING)
-        .addColumn('minSalary', Type.NUMBER)
-        .addColumn('maxSalary', Type.NUMBER)
-        .addPrimaryKey(['id'])
-        .addIndex('idx_maxSalary', ['maxSalary'], false, Order.DESC);
+    schemaBuilder
+      .createTable('Job')
+      .addColumn('id', Type.STRING)
+      .addColumn('title', Type.STRING)
+      .addColumn('minSalary', Type.NUMBER)
+      .addColumn('maxSalary', Type.NUMBER)
+      .addPrimaryKey(['id'])
+      .addIndex('idx_maxSalary', ['maxSalary'], false, Order.DESC);
 
-    schemaBuilder.createTable('JobHistory')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('startDate', Type.DATE_TIME)
-        .addColumn('endDate', Type.DATE_TIME)
-        .addColumn('jobId', Type.STRING)
-        .addColumn('departmentId', Type.INTEGER)
-        .addForeignKey('fk_EmployeeId', {
-          action: ConstraintAction.CASCADE,
-          local: 'employeeId',
-          ref: 'Employee.id',
-        })
-        .addForeignKey('fk_DeptId', {
-          action: ConstraintAction.CASCADE,
-          local: 'departmentId',
-          ref: 'Department.id',
-          timing: ConstraintTiming.IMMEDIATE,
-        });
+    schemaBuilder
+      .createTable('JobHistory')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('startDate', Type.DATE_TIME)
+      .addColumn('endDate', Type.DATE_TIME)
+      .addColumn('jobId', Type.STRING)
+      .addColumn('departmentId', Type.INTEGER)
+      .addForeignKey('fk_EmployeeId', {
+        action: ConstraintAction.CASCADE,
+        local: 'employeeId',
+        ref: 'Employee.id',
+      })
+      .addForeignKey('fk_DeptId', {
+        action: ConstraintAction.CASCADE,
+        local: 'departmentId',
+        ref: 'Department.id',
+        timing: ConstraintTiming.IMMEDIATE,
+      });
 
-    schemaBuilder.createTable('Employee')
-        .addColumn('id', Type.INTEGER)
-        .addColumn('firstName', Type.STRING)
-        .addColumn('lastName', Type.STRING)
-        .addColumn('email', Type.STRING)
-        .addColumn('phoneNumber', Type.STRING)
-        .addColumn('hireDate', Type.DATE_TIME)
-        .addColumn('jobId', Type.STRING)
-        .addColumn('salary', Type.NUMBER)
-        .addColumn('commissionPercent', Type.NUMBER)
-        .addColumn('managerId', Type.STRING)
-        .addColumn('departmentId', Type.INTEGER)
-        .addColumn('photo', Type.ARRAY_BUFFER)
-        .addPrimaryKey([{name: 'id', autoIncrement: true}])
-        .addUnique('uq_email', ['email'])
-        .addIndex('idx_salary', [{name: 'salary', order: Order.DESC}])
-        .addForeignKey(
-            'fk_JobId',
-            {local: 'jobId', ref: 'Job.id', action: ConstraintAction.CASCADE})
-        .addNullable(['hireDate']);
+    schemaBuilder
+      .createTable('Employee')
+      .addColumn('id', Type.INTEGER)
+      .addColumn('firstName', Type.STRING)
+      .addColumn('lastName', Type.STRING)
+      .addColumn('email', Type.STRING)
+      .addColumn('phoneNumber', Type.STRING)
+      .addColumn('hireDate', Type.DATE_TIME)
+      .addColumn('jobId', Type.STRING)
+      .addColumn('salary', Type.NUMBER)
+      .addColumn('commissionPercent', Type.NUMBER)
+      .addColumn('managerId', Type.STRING)
+      .addColumn('departmentId', Type.INTEGER)
+      .addColumn('photo', Type.ARRAY_BUFFER)
+      .addPrimaryKey([{ name: 'id', autoIncrement: true }])
+      .addUnique('uq_email', ['email'])
+      .addIndex('idx_salary', [{ name: 'salary', order: Order.DESC }])
+      .addForeignKey('fk_JobId', {
+        local: 'jobId',
+        ref: 'Job.id',
+        action: ConstraintAction.CASCADE,
+      })
+      .addNullable(['hireDate']);
 
-    schemaBuilder.createTable('Department')
-        .addColumn('id', Type.INTEGER)
-        .addColumn('name', Type.STRING)
-        .addColumn('managerId', Type.INTEGER)
-        .addPrimaryKey([{name: 'id', order: Order.DESC}])
-        .addForeignKey(
-            'fk_ManagerId', {local: 'managerId', ref: 'Employee.id'});
+    schemaBuilder
+      .createTable('Department')
+      .addColumn('id', Type.INTEGER)
+      .addColumn('name', Type.STRING)
+      .addColumn('managerId', Type.INTEGER)
+      .addPrimaryKey([{ name: 'id', order: Order.DESC }])
+      .addForeignKey('fk_ManagerId', {
+        local: 'managerId',
+        ref: 'Employee.id',
+      });
 
-    schemaBuilder.createTable('DummyTable')
-        .addColumn('arraybuffer', Type.ARRAY_BUFFER)
-        .addColumn('boolean', Type.BOOLEAN)
-        .addColumn('datetime', Type.DATE_TIME)
-        .addColumn('integer', Type.INTEGER)
-        .addColumn('number', Type.NUMBER)
-        .addColumn('object', Type.OBJECT)
-        .addColumn('string', Type.STRING)
-        .addIndex('idx_string', ['string'], true, Order.ASC)
-        .addIndex('idx_number', [{name: 'number'}], true)
-        .addNullable(['arraybuffer', 'object']);
+    schemaBuilder
+      .createTable('DummyTable')
+      .addColumn('arraybuffer', Type.ARRAY_BUFFER)
+      .addColumn('boolean', Type.BOOLEAN)
+      .addColumn('datetime', Type.DATE_TIME)
+      .addColumn('integer', Type.INTEGER)
+      .addColumn('number', Type.NUMBER)
+      .addColumn('object', Type.OBJECT)
+      .addColumn('string', Type.STRING)
+      .addIndex('idx_string', ['string'], true, Order.ASC)
+      .addIndex('idx_number', [{ name: 'number' }], true)
+      .addNullable(['arraybuffer', 'object']);
     return schemaBuilder;
   };
 
   it('foreignKeys_SimpleSpec', () => {
     const schema = createBuilder().getSchema();
-    assert.equal(0, schema.table('Job').getConstraint().foreignKeys.length);
     assert.equal(
-        1, schema.table('Department').getConstraint().foreignKeys.length);
+      0,
+      (schema.table('Job') as BaseTable).getConstraint().foreignKeys.length
+    );
+    assert.equal(
+      1,
+      (schema.table('Department') as BaseTable).getConstraint().foreignKeys
+        .length
+    );
 
     const specs = new ForeignKeySpec(
-        {
-          action: ConstraintAction.RESTRICT,
-          local: 'managerId',
-          ref: 'Employee.id',
-          timing: ConstraintTiming.IMMEDIATE,
-        },
-        'Department', 'fk_ManagerId');
+      {
+        action: ConstraintAction.RESTRICT,
+        local: 'managerId',
+        ref: 'Employee.id',
+        timing: ConstraintTiming.IMMEDIATE,
+      },
+      'Department',
+      'fk_ManagerId'
+    );
     assert.deepEqual(
-        specs, schema.table('Department').getConstraint().foreignKeys[0]);
+      specs,
+      (schema.table('Department') as BaseTable).getConstraint().foreignKeys[0]
+    );
   });
 
   it('foreignKeys_TwoSpec', () => {
     const schema = createBuilder().getSchema();
     assert.equal(
-        2, schema.table('JobHistory').getConstraint().foreignKeys.length);
+      2,
+      (schema.table('JobHistory') as BaseTable).getConstraint().foreignKeys
+        .length
+    );
 
     let specs = new ForeignKeySpec(
-        {
-          action: ConstraintAction.CASCADE,
-          local: 'employeeId',
-          ref: 'Employee.id',
-          timing: ConstraintTiming.IMMEDIATE,
-        },
-        'JobHistory', 'fk_EmployeeId');
+      {
+        action: ConstraintAction.CASCADE,
+        local: 'employeeId',
+        ref: 'Employee.id',
+        timing: ConstraintTiming.IMMEDIATE,
+      },
+      'JobHistory',
+      'fk_EmployeeId'
+    );
     assert.deepEqual(
-        specs, schema.table('JobHistory').getConstraint().foreignKeys[0]);
+      specs,
+      (schema.table('JobHistory') as BaseTable).getConstraint().foreignKeys[0]
+    );
     specs = new ForeignKeySpec(
-        {
-          action: ConstraintAction.CASCADE,
-          local: 'departmentId',
-          ref: 'Department.id',
-          timing: ConstraintTiming.IMMEDIATE,
-        },
-        'JobHistory', 'fk_DeptId');
+      {
+        action: ConstraintAction.CASCADE,
+        local: 'departmentId',
+        ref: 'Department.id',
+        timing: ConstraintTiming.IMMEDIATE,
+      },
+      'JobHistory',
+      'fk_DeptId'
+    );
     assert.deepEqual(
-        specs, schema.table('JobHistory').getConstraint().foreignKeys[1]);
+      specs,
+      (schema.table('JobHistory') as BaseTable).getConstraint().foreignKeys[1]
+    );
   });
 
   it('getParentForeignKeys', () => {
     const schema = createBuilder().getSchema();
-    const parentForeignKeys =
-        Info.from(schema).getReferencingForeignKeys('Job');
+    const parentForeignKeys = Info.from(schema).getReferencingForeignKeys(
+      'Job'
+    );
     const spec = new ForeignKeySpec(
-        {
-          action: ConstraintAction.CASCADE,
-          local: 'jobId',
-          ref: 'Job.id',
-          timing: ConstraintTiming.IMMEDIATE,
-        },
-        'Employee', 'fk_JobId');
+      {
+        action: ConstraintAction.CASCADE,
+        local: 'jobId',
+        ref: 'Job.id',
+        timing: ConstraintTiming.IMMEDIATE,
+      },
+      'Employee',
+      'fk_JobId'
+    );
     assert.deepEqual([spec], parentForeignKeys);
   });
 
@@ -170,15 +210,22 @@ describe('Builder', () => {
     const schema = createBuilder().getSchema();
     const employee = schema.table('Employee');
     assert.equal(
-        'Employee.fk_JobId', employee['jobId'].getIndex().getNormalizedName());
+      'Employee.fk_JobId',
+      ((employee[
+        'jobId'
+      ] as BaseColumn).getIndex() as IndexImpl).getNormalizedName()
+    );
   });
 
   it('throws_InvalidFKRefTableName', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable2')
-        .addColumn('employeeId', Type.STRING)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee1.id'});
+    schemaBuilder
+      .createTable('FkTable2')
+      .addColumn('employeeId', Type.STRING)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee1.id',
+      });
     // 536: Foreign key {0} refers to invalid table.
     TestUtil.assertThrowsError(ErrorCode.INVALID_FK_TABLE, () => {
       schemaBuilder.getSchema();
@@ -187,10 +234,13 @@ describe('Builder', () => {
 
   it('throws_ColumnTypeMismatch', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable3')
-        .addColumn('employeeId', Type.STRING)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'FkTable4.employeeId'});
+    schemaBuilder
+      .createTable('FkTable3')
+      .addColumn('employeeId', Type.STRING)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'FkTable4.employeeId',
+      });
     schemaBuilder.createTable('FkTable4').addColumn('employeeId', Type.INTEGER);
     // 538: Foreign key {0} column type mismatch.
     TestUtil.assertThrowsError(ErrorCode.INVALID_FK_COLUMN_TYPE, () => {
@@ -200,10 +250,13 @@ describe('Builder', () => {
 
   it('throws_InValidFKRefColName', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable5')
-        .addColumn('employeeId', Type.STRING)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.id1'});
+    schemaBuilder
+      .createTable('FkTable5')
+      .addColumn('employeeId', Type.STRING)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.id1',
+      });
     // 537: Foreign key {0} refers to invalid column.
     TestUtil.assertThrowsError(ErrorCode.INVALID_FK_COLUMN, () => {
       schemaBuilder.getSchema();
@@ -214,27 +267,37 @@ describe('Builder', () => {
     const schemaBuilder = createBuilder();
     // 540: Foreign key {0} has invalid reference syntax.
     TestUtil.assertThrowsError(ErrorCode.INVALID_FK_REF, () => {
-      schemaBuilder.createTable('FkTable5')
-          .addColumn('employeeId', Type.STRING)
-          .addForeignKey(
-              'fkemployeeId', {local: 'employeeId', ref: 'Employeeid'});
+      schemaBuilder
+        .createTable('FkTable5')
+        .addColumn('employeeId', Type.STRING)
+        .addForeignKey('fkEmployeeId', {
+          local: 'employeeId',
+          ref: 'EmployeeId',
+        });
     });
   });
 
   it('checkForeignKeyChainOnSameColumn', () => {
     const schemaBuilder = new Builder('hr', 1);
-    schemaBuilder.createTable('FkTable1')
-        .addColumn('employeeId', Type.INTEGER)
-        .addForeignKey(
-            'fk_employeeId', {local: 'employeeId', ref: 'FkTable2.employeeId'});
-    schemaBuilder.createTable('FkTable2')
-        .addColumn('employeeId', Type.INTEGER)
-        .addUnique('uq_employeeId', ['employeeId'])
-        .addForeignKey(
-            'fk_employeeId', {local: 'employeeId', ref: 'FkTable3.employeeId'});
-    schemaBuilder.createTable('FkTable3')
-        .addColumn('employeeId', Type.INTEGER)
-        .addPrimaryKey(['employeeId']);
+    schemaBuilder
+      .createTable('FkTable1')
+      .addColumn('employeeId', Type.INTEGER)
+      .addForeignKey('fk_employeeId', {
+        local: 'employeeId',
+        ref: 'FkTable2.employeeId',
+      });
+    schemaBuilder
+      .createTable('FkTable2')
+      .addColumn('employeeId', Type.INTEGER)
+      .addUnique('uq_employeeId', ['employeeId'])
+      .addForeignKey('fk_employeeId', {
+        local: 'employeeId',
+        ref: 'FkTable3.employeeId',
+      });
+    schemaBuilder
+      .createTable('FkTable3')
+      .addColumn('employeeId', Type.INTEGER)
+      .addPrimaryKey(['employeeId']);
 
     // 534: Foreign key {0} refers to source column of another foreign key.
     TestUtil.assertThrowsError(ErrorCode.FK_COLUMN_IN_USE, () => {
@@ -244,32 +307,40 @@ describe('Builder', () => {
 
   it('checkForeignKeyLoop', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable8')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId1',
-            {local: 'employeeId', ref: 'FkTable10.employeeId'});
-    schemaBuilder.createTable('FkTable9')
-        .addColumn('employeeId', Type.INTEGER)
-        .addForeignKey(
-            'fkemployeeId2',
-            {local: 'employeeId', ref: 'FkTable10.employeeId'});
-    schemaBuilder.createTable('FkTable10')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId3',
-            {local: 'employeeId2', ref: 'FkTable11.employeeId'});
-    schemaBuilder.createTable('FkTable11')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId4',
-            {local: 'employeeId2', ref: 'FkTable8.employeeId2'});
+    schemaBuilder
+      .createTable('FkTable8')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId1', {
+        local: 'employeeId',
+        ref: 'FkTable10.employeeId',
+      });
+    schemaBuilder
+      .createTable('FkTable9')
+      .addColumn('employeeId', Type.INTEGER)
+      .addForeignKey('fkEmployeeId2', {
+        local: 'employeeId',
+        ref: 'FkTable10.employeeId',
+      });
+    schemaBuilder
+      .createTable('FkTable10')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId3', {
+        local: 'employeeId2',
+        ref: 'FkTable11.employeeId',
+      });
+    schemaBuilder
+      .createTable('FkTable11')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId4', {
+        local: 'employeeId2',
+        ref: 'FkTable8.employeeId2',
+      });
     // 533: Foreign key loop detected.
     TestUtil.assertThrowsError(ErrorCode.FK_LOOP, () => {
       schemaBuilder.getSchema();
@@ -278,49 +349,60 @@ describe('Builder', () => {
 
   it('checkForeignKeySelfLoop', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable8')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId1',
-            {local: 'employeeId2', ref: 'FkTable8.employeeId'});
+    schemaBuilder
+      .createTable('FkTable8')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId1', {
+        local: 'employeeId2',
+        ref: 'FkTable8.employeeId',
+      });
     schemaBuilder.getSchema();
   });
 
   it('checkForeignKeySelfLoopOfBiggerGraph', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable8')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId1',
-            {local: 'employeeId', ref: 'FkTable9.employeeId2'});
-    schemaBuilder.createTable('FkTable9')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}]);
+    schemaBuilder
+      .createTable('FkTable8')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId1', {
+        local: 'employeeId',
+        ref: 'FkTable9.employeeId2',
+      });
+    schemaBuilder
+      .createTable('FkTable9')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }]);
     // Self loop on table11
-    schemaBuilder.createTable('FkTable11')
-        .addColumn('employeeId', Type.INTEGER)
-        .addColumn('employeeId2', Type.INTEGER)
-        .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
-        .addForeignKey(
-            'fkemployeeId4',
-            {local: 'employeeId2', ref: 'FkTable8.employeeId2'})
-        .addForeignKey(
-            'fkemployeeId2',
-            {local: 'employeeId2', ref: 'FkTable11.employeeId'});
+    schemaBuilder
+      .createTable('FkTable11')
+      .addColumn('employeeId', Type.INTEGER)
+      .addColumn('employeeId2', Type.INTEGER)
+      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addForeignKey('fkEmployeeId4', {
+        local: 'employeeId2',
+        ref: 'FkTable8.employeeId2',
+      })
+      .addForeignKey('fkEmployeeId2', {
+        local: 'employeeId2',
+        ref: 'FkTable11.employeeId',
+      });
     schemaBuilder.getSchema();
   });
 
   it('throws_FKRefKeyNonUnique', () => {
     const schemaBuilder = createBuilder();
-    schemaBuilder.createTable('FkTable5')
-        .addColumn('employeeId', Type.STRING)
-        .addForeignKey(
-            'fkemployeeId', {local: 'employeeId', ref: 'Employee.firstName'});
+    schemaBuilder
+      .createTable('FkTable5')
+      .addColumn('employeeId', Type.STRING)
+      .addForeignKey('fkEmployeeId', {
+        local: 'employeeId',
+        ref: 'Employee.firstName',
+      });
     // 539: Foreign key {0} refers to non-unique column.
     TestUtil.assertThrowsError(ErrorCode.FK_COLUMN_NONUNIQUE, () => {
       schemaBuilder.getSchema();
@@ -340,11 +422,11 @@ describe('Builder', () => {
     const schema = createBuilder().getSchema();
     assert.equal(5, schema.tables().length);
 
-    const emp = schema.table('Employee');
+    const emp = schema.table('Employee') as BaseTable;
     assert.equal('Employee', emp.getEffectiveName());
-    assert.isTrue(emp['id'].unique);
-    assert.isTrue(emp['email'].unique);
-    assert.isTrue(emp['hireDate'].nullable);
+    assert.isTrue(emp.col('id').isUnique());
+    assert.isTrue(emp.col('email').isUnique());
+    assert.isTrue(emp.col('hireDate').isNullable());
 
     const e = emp.as('e') as BaseTable;
     assert.equal('e', e.getEffectiveName());
@@ -352,7 +434,7 @@ describe('Builder', () => {
     assert.equal(12, emp.getColumns().length);
     assert.equal('Employee.#', e.getRowIdIndexName());
 
-    const dummy = schema.table('DummyTable');
+    const dummy = schema.table('DummyTable') as BaseTable;
     const row = dummy.createRow({
       arraybuffer: null,
       boolean: true,
@@ -370,17 +452,17 @@ describe('Builder', () => {
     const schema = createBuilder().getSchema();
 
     // Test case of DESC index.
-    const job = schema.table('Job');
-    const maxSalaryIndexSchema =
-        (job.getIndices() as IndexImpl[])
-            .filter((indexSchema) => indexSchema.name === 'idx_maxSalary')[0];
+    const job = schema.table('Job') as BaseTable;
+    const maxSalaryIndexSchema = (job.getIndices() as IndexImpl[]).filter(
+      indexSchema => indexSchema.name === 'idx_maxSalary'
+    )[0];
     assert.equal(Order.DESC, maxSalaryIndexSchema.columns[0].order);
 
     // Test case of ASC index.
-    const dummyTable = schema.table('DummyTable');
-    const stringIndexSchema =
-        (dummyTable.getIndices() as IndexImpl[])
-            .filter((indexSchema) => indexSchema.name === 'idx_string')[0];
+    const dummyTable = schema.table('DummyTable') as BaseTable;
+    const stringIndexSchema = (dummyTable.getIndices() as IndexImpl[]).filter(
+      indexSchema => indexSchema.name === 'idx_string'
+    )[0];
     assert.equal(Order.ASC, stringIndexSchema.columns[0].order);
   });
 
@@ -393,28 +475,32 @@ describe('Builder', () => {
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
       const schemaBuilder = new Builder('d2', 1);
-      schemaBuilder.createTable('NameTable')
-          .addColumn('22arraybuffer', Type.ARRAY_BUFFER);
+      schemaBuilder
+        .createTable('NameTable')
+        .addColumn('22arraybuffer', Type.ARRAY_BUFFER);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
       const schemaBuilder = new Builder('d3', 1);
-      schemaBuilder.createTable('NameTable')
-          .addColumn('_obj_#ect', Type.OBJECT);
+      schemaBuilder
+        .createTable('NameTable')
+        .addColumn('_obj_#ect', Type.OBJECT);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
       const schemaBuilder = new Builder('d4', 1);
-      schemaBuilder.createTable('NameTable')
-          .addColumn('name', Type.STRING)
-          .addIndex('idx.name', ['name']);
+      schemaBuilder
+        .createTable('NameTable')
+        .addColumn('name', Type.STRING)
+        .addIndex('idx.name', ['name']);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
       const schemaBuilder = new Builder('d4', 1);
-      schemaBuilder.createTable('NameTable')
-          .addColumn('name', Type.STRING)
-          .addUnique('unq#name', ['name']);
+      schemaBuilder
+        .createTable('NameTable')
+        .addColumn('name', Type.STRING)
+        .addUnique('unq#name', ['name']);
     });
   });
 });
