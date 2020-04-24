@@ -15,9 +15,9 @@
  */
 
 export class GraphNode {
-  public visited: boolean;
-  public onStack: boolean;
-  public edges: Set<string>;
+  visited: boolean;
+  onStack: boolean;
+  edges: Set<string>;
 
   constructor(readonly name: string) {
     this.visited = false;

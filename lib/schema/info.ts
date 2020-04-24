@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import {ConstraintAction} from '../base/enum';
-import {MapSet} from '../structs/map_set';
+import { ConstraintAction } from '../base/enum';
+import { MapSet } from '../structs/map_set';
 
-import {BaseTable} from './base_table';
-import {DatabaseSchema} from './database_schema';
-import {DatabaseSchemaImpl} from './database_schema_impl';
-import {ForeignKeySpec} from './foreign_key_spec';
+import { BaseTable } from './base_table';
+import { DatabaseSchema } from './database_schema';
+import { DatabaseSchemaImpl } from './database_schema_impl';
+import { ForeignKeySpec } from './foreign_key_spec';
+import { Table } from './table';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {
-  public static from(dbSchema: DatabaseSchema): Info {
+  static from(dbSchema: DatabaseSchema): Info {
     return (dbSchema as DatabaseSchemaImpl).info();
   }
 
@@ -35,15 +36,15 @@ export class Info {
   private restrictReferringFk: MapSet<string, ForeignKeySpec>;
 
   // The map of table name to their parent tables.
-  private parents: MapSet<string, BaseTable>;
+  private parents: MapSet<string, Table>;
 
   // The map of fully qualified column name to its parent table name.
   private colParent: Map<string, string>;
 
   // The map of table to their child tables.
-  private children: MapSet<string, BaseTable>;
-  private cascadeChildren: MapSet<string, BaseTable>;
-  private restrictChildren: MapSet<string, BaseTable>;
+  private children: MapSet<string, Table>;
+  private cascadeChildren: MapSet<string, Table>;
+  private restrictChildren: MapSet<string, Table>;
 
   // The map of full qualified column name to their child table name.
   private colChild: MapSet<string, string>;
@@ -58,38 +59,45 @@ export class Info {
     this.restrictChildren = new MapSet();
     this.colChild = new MapSet();
 
-    this.dbSchema.tables().forEach((t) => {
+    this.dbSchema.tables().forEach(t => {
       const table = t as BaseTable;
       const tableName = table.getName();
-      table.getConstraint().getForeignKeys().forEach((fkSpec) => {
-        this.parents.set(tableName, this.dbSchema.table(fkSpec.parentTable));
-        this.children.set(fkSpec.parentTable, table);
-        if (fkSpec.action === ConstraintAction.RESTRICT) {
-          this.restrictReferringFk.set(fkSpec.parentTable, fkSpec);
-          this.restrictChildren.set(fkSpec.parentTable, table);
-        } else {  // fkspec.action === ConstraintAction.CASCADE
-          this.cascadeReferringFk.set(fkSpec.parentTable, fkSpec);
-          this.cascadeChildren.set(fkSpec.parentTable, table);
-        }
+      table
+        .getConstraint()
+        .getForeignKeys()
+        .forEach(fkSpec => {
+          this.parents.set(tableName, this.dbSchema.table(fkSpec.parentTable));
+          this.children.set(fkSpec.parentTable, table);
+          if (fkSpec.action === ConstraintAction.RESTRICT) {
+            this.restrictReferringFk.set(fkSpec.parentTable, fkSpec);
+            this.restrictChildren.set(fkSpec.parentTable, table);
+          } else {
+            // fkSpec.action === ConstraintAction.CASCADE
+            this.cascadeReferringFk.set(fkSpec.parentTable, fkSpec);
+            this.cascadeChildren.set(fkSpec.parentTable, table);
+          }
 
-        this.colParent.set(
-            table.getName() + '.' + fkSpec.childColumn, fkSpec.parentTable);
+          this.colParent.set(
+            table.getName() + '.' + fkSpec.childColumn,
+            fkSpec.parentTable
+          );
 
-        const ref = `${fkSpec.parentTable}.${fkSpec.parentColumn}`;
-        this.colChild.set(ref, table.getName());
-      }, this);
+          const ref = `${fkSpec.parentTable}.${fkSpec.parentColumn}`;
+          this.colChild.set(ref, table.getName());
+        }, this);
     }, this);
   }
 
   // Looks up referencing foreign key for a given table.
   // If no constraint action type were provided, all types are included.
-  public getReferencingForeignKeys(
-      tableName: string,
-      constraintAction?: ConstraintAction): ForeignKeySpec[]|null {
+  getReferencingForeignKeys(
+    tableName: string,
+    constraintAction?: ConstraintAction
+  ): ForeignKeySpec[] | null {
     if (constraintAction !== undefined && constraintAction !== null) {
-      return constraintAction === ConstraintAction.CASCADE ?
-          this.cascadeReferringFk.get(tableName) :
-          this.restrictReferringFk.get(tableName);
+      return constraintAction === ConstraintAction.CASCADE
+        ? this.cascadeReferringFk.get(tableName)
+        : this.restrictReferringFk.get(tableName);
     } else {
       const cascadeConstraints = this.cascadeReferringFk.get(tableName);
       const restrictConstraints = this.restrictReferringFk.get(tableName);
@@ -102,26 +110,28 @@ export class Info {
   }
 
   // Look up parent tables for given tables.
-  public getParentTables(tableName: string): BaseTable[] {
+  getParentTables(tableName: string): Table[] {
     return this.expandScope(tableName, this.parents);
   }
 
   // Looks up parent tables for a given column set.
-  public getParentTablesByColumns(colNames: string[]): BaseTable[] {
+  getParentTablesByColumns(colNames: string[]): Table[] {
     const tableNames = new Set<string>();
-    colNames.forEach((col) => {
+    colNames.forEach(col => {
       const table = this.colParent.get(col);
       if (table) {
         tableNames.add(table);
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => this.dbSchema.table(tableName));
+    return tables.map(tableName => this.dbSchema.table(tableName));
   }
 
   // Looks up child tables for given tables.
-  public getChildTables(tableName: string, constraintAction?: ConstraintAction):
-      BaseTable[] {
+  getChildTables(
+    tableName: string,
+    constraintAction?: ConstraintAction
+  ): Table[] {
     if (!(constraintAction !== undefined && constraintAction !== null)) {
       return this.expandScope(tableName, this.children);
     } else if (constraintAction === ConstraintAction.RESTRICT) {
@@ -132,20 +142,19 @@ export class Info {
   }
 
   // Looks up child tables for a given column set.
-  public getChildTablesByColumns(colNames: string[]): BaseTable[] {
+  getChildTablesByColumns(colNames: string[]): Table[] {
     const tableNames = new Set<string>();
-    colNames.forEach((col) => {
+    colNames.forEach(col => {
       const children = this.colChild.get(col);
       if (children) {
-        children.forEach((child) => tableNames.add(child));
+        children.forEach(child => tableNames.add(child));
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map((tableName) => this.dbSchema.table(tableName));
+    return tables.map(tableName => this.dbSchema.table(tableName));
   }
 
-  private expandScope(tableName: string, map: MapSet<string, BaseTable>):
-      BaseTable[] {
+  private expandScope(tableName: string, map: MapSet<string, Table>): Table[] {
     const values = map.get(tableName);
     return values === null ? [] : values;
   }

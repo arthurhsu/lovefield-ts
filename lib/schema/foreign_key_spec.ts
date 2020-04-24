@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {ConstraintAction, ConstraintTiming, ErrorCode} from '../base/enum';
-import {Exception} from '../base/exception';
+import { ConstraintAction, ConstraintTiming, ErrorCode } from '../base/enum';
+import { Exception } from '../base/exception';
 
 // @export
 export interface RawForeignKeySpec {
@@ -26,16 +26,19 @@ export interface RawForeignKeySpec {
 }
 
 export class ForeignKeySpec {
-  public childColumn: string;
-  public parentTable: string;
-  public parentColumn: string;
+  childColumn: string;
+  parentTable: string;
+  parentColumn: string;
   // Normalized name of this foreign key constraint.
-  public name: string;
-  public action: ConstraintAction;
-  public timing: ConstraintTiming;
+  name: string;
+  action: ConstraintAction;
+  timing: ConstraintTiming;
 
   constructor(
-      rawSpec: RawForeignKeySpec, readonly childTable: string, name: string) {
+    rawSpec: RawForeignKeySpec,
+    readonly childTable: string,
+    name: string
+  ) {
     const array = rawSpec.ref.split('.');
     if (array.length !== 2) {
       // 540: Foreign key {0} has invalid reference syntax.

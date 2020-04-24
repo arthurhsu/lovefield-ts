@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import {DatabaseConnection} from '../../../lib/base/database_connection';
-import {DataStoreType, Type} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {AggregatedColumn} from '../../../lib/fn/aggregated_column';
-import {fn} from '../../../lib/fn/fn';
-import {Predicate} from '../../../lib/pred/predicate';
-import {AggregationStep} from '../../../lib/proc/pp/aggregation_step';
-import {GetRowCountPass} from '../../../lib/proc/pp/get_row_count_pass';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {Builder} from '../../../lib/schema/builder';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DatabaseConnection } from '../../../lib/base/database_connection';
+import { DataStoreType, Type } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { AggregatedColumn } from '../../../lib/fn/aggregated_column';
+import { fn } from '../../../lib/fn/fn';
+import { Predicate } from '../../../lib/pred/predicate';
+import { AggregationStep } from '../../../lib/proc/pp/aggregation_step';
+import { GetRowCountPass } from '../../../lib/proc/pp/get_row_count_pass';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { Builder } from '../../../lib/schema/builder';
+import { Column } from '../../../lib/schema/column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('GetRowCountPass', () => {
   let conn: DatabaseConnection;
@@ -39,21 +39,24 @@ describe('GetRowCountPass', () => {
   let pass: GetRowCountPass;
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('testschema', 1);
-    schemaBuilder.createTable('TableFoo')
-        .addColumn('id1', Type.STRING)
-        .addColumn('id2', Type.STRING);
+    const schemaBuilder = new Builder('testSchema', 1);
+    schemaBuilder
+      .createTable('TableFoo')
+      .addColumn('id1', Type.STRING)
+      .addColumn('id2', Type.STRING);
     return schemaBuilder;
   }
 
   beforeEach(() => {
-    const connectOptions = {storeType: DataStoreType.MEMORY};
-    return getSchemaBuilder().connect(connectOptions).then((db) => {
-      conn = db;
-      schema = db.getSchema();
-      global = (db as RuntimeDatabase).getGlobal();
-      pass = new GetRowCountPass(global);
-    });
+    const connectOptions = { storeType: DataStoreType.MEMORY };
+    return getSchemaBuilder()
+      .connect(connectOptions)
+      .then(db => {
+        conn = db;
+        schema = db.getSchema();
+        global = (db as RuntimeDatabase).getGlobal();
+        pass = new GetRowCountPass(global);
+      });
   });
 
   afterEach(() => {
@@ -83,23 +86,32 @@ describe('GetRowCountPass', () => {
       queryContext.from = [tf];
       queryContext.columns = [fn.count()];
 
-      const tableAccessStep =
-          new TableAccessFullStep(global, queryContext.from[0]);
-      const aggregationStep =
-          new AggregationStep(queryContext.columns as AggregatedColumn[]);
-      const projectStep =
-          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+      const tableAccessStep = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
+      const aggregationStep = new AggregationStep(
+        queryContext.columns as AggregatedColumn[]
+      );
+      const projectStep = new ProjectStep(
+        queryContext.columns,
+        (null as unknown) as Column[]
+      );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Test that this optimization does not apply COUNT(column) is used.
@@ -116,25 +128,34 @@ describe('GetRowCountPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [tf];
-      queryContext.columns = [fn.count(tf['id1'])];
+      queryContext.columns = [fn.count(tf.col('id1'))];
 
-      const tableAccessStep =
-          new TableAccessFullStep(global, queryContext.from[0]);
-      const aggregationStep =
-          new AggregationStep(queryContext.columns as AggregatedColumn[]);
-      const projectStep =
-          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+      const tableAccessStep = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
+      const aggregationStep = new AggregationStep(
+        queryContext.columns as AggregatedColumn[]
+      );
+      const projectStep = new ProjectStep(
+        queryContext.columns,
+        (null as unknown) as Column[]
+      );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Test that this optimization does not apply if a WHERE clause exists.
@@ -153,27 +174,37 @@ describe('GetRowCountPass', () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [tf];
       queryContext.columns = [fn.count()];
-      queryContext.where = tf['id1'].eq('someId');
+      queryContext.where = tf.col('id1').eq('someId');
 
-      const tableAccessStep =
-          new TableAccessFullStep(global, queryContext.from[0]);
-      const selectStep =
-          new SelectStep((queryContext.where as Predicate).getId());
-      const aggregationStep =
-          new AggregationStep(queryContext.columns as AggregatedColumn[]);
-      const projectStep =
-          new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+      const tableAccessStep = new TableAccessFullStep(
+        global,
+        queryContext.from[0]
+      );
+      const selectStep = new SelectStep(
+        (queryContext.where as Predicate).getId()
+      );
+      const aggregationStep = new AggregationStep(
+        queryContext.columns as AggregatedColumn[]
+      );
+      const projectStep = new ProjectStep(
+        queryContext.columns,
+        (null as unknown) as Column[]
+      );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(selectStep);
       selectStep.addChild(tableAccessStep);
 
       return {
-        queryContext: queryContext,
+        queryContext,
         root: projectStep,
       };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 });

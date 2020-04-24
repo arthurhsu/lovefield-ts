@@ -16,10 +16,10 @@
 
 import * as chai from 'chai';
 
-import {ConstraintAction} from '../../lib/base/enum';
-import {BaseTable} from '../../lib/schema/base_table';
-import {Info} from '../../lib/schema/info';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import { ConstraintAction } from '../../lib/base/enum';
+import { Info } from '../../lib/schema/info';
+import { Table } from '../../lib/schema/table';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -32,11 +32,14 @@ describe('Info', () => {
   });
 
   function getRefs(
-      info: Info, tableName: string,
-      constraintAction?: ConstraintAction): string[] {
+    info: Info,
+    tableName: string,
+    constraintAction?: ConstraintAction
+  ): string[] {
     const refs = info.getReferencingForeignKeys(tableName, constraintAction);
-    return (refs === null) ? null as any as string[] :
-                             refs.map((ref) => ref.name);
+    return refs === null
+      ? ((null as unknown) as string[])
+      : refs.map(ref => ref.name);
   }
 
   it('getReferencingForeignKeys', () => {
@@ -44,19 +47,28 @@ describe('Info', () => {
     assert.isNull(getRefs(info, 'DummyTable'));
     assert.sameMembers(['Country.fk_RegionId'], getRefs(info, 'Region'));
     assert.sameMembers(
-        ['Country.fk_RegionId'],
-        getRefs(info, 'Region', ConstraintAction.RESTRICT));
+      ['Country.fk_RegionId'],
+      getRefs(info, 'Region', ConstraintAction.RESTRICT)
+    );
     assert.isNull(getRefs(info, 'Region', ConstraintAction.CASCADE));
 
     assert.sameMembers(['Location.fk_CountryId'], getRefs(info, 'Country'));
     assert.sameMembers(
-        ['Location.fk_CountryId'],
-        getRefs(info, 'Country', ConstraintAction.RESTRICT));
+      ['Location.fk_CountryId'],
+      getRefs(info, 'Country', ConstraintAction.RESTRICT)
+    );
     assert.isNull(getRefs(info, 'Country', ConstraintAction.CASCADE));
   });
 
-  function invoke(toTest: (arg: any) => BaseTable[], arg: any): string[] {
-    return toTest(arg).map((table) => table.getName());
+  function invoke(toTest: (arg: string) => Table[], arg: string): string[] {
+    return toTest(arg).map(table => table.getName());
+  }
+
+  function invoke2(
+    toTest: (arg: string[]) => Table[],
+    arg: string[]
+  ): string[] {
+    return toTest(arg).map(table => table.getName());
   }
 
   it('getParentTables', () => {
@@ -70,12 +82,13 @@ describe('Info', () => {
   it('getParentTablesByColumns', () => {
     const info = dynamicInfo;
     const toTest = info.getParentTablesByColumns.bind(info);
-    assert.equal(0, invoke(toTest, []).length);
-    assert.equal(0, invoke(toTest, ['DummyTable.arraybuffer']).length);
-    assert.sameMembers(['Job'], invoke(toTest, ['Employee.jobId']));
+    assert.equal(0, invoke2(toTest, []).length);
+    assert.equal(0, invoke2(toTest, ['DummyTable.arraybuffer']).length);
+    assert.sameMembers(['Job'], invoke2(toTest, ['Employee.jobId']));
     assert.sameMembers(
-        ['Department', 'Job'],
-        invoke(toTest, ['Employee.jobId', 'Employee.departmentId']));
+      ['Department', 'Job'],
+      invoke2(toTest, ['Employee.jobId', 'Employee.departmentId'])
+    );
   });
 
   it('getChildTables_All', () => {
@@ -91,8 +104,10 @@ describe('Info', () => {
     const jobChildren = info.getChildTables('Job', ConstraintAction.RESTRICT);
     assert.equal(1, jobChildren.length);
     assert.equal('Employee', jobChildren[0].getName());
-    const employeeChildren =
-        info.getChildTables('Employee', ConstraintAction.RESTRICT);
+    const employeeChildren = info.getChildTables(
+      'Employee',
+      ConstraintAction.RESTRICT
+    );
     assert.equal(1, employeeChildren.length);
     assert.equal('JobHistory', employeeChildren[0].getName());
   });
@@ -102,17 +117,21 @@ describe('Info', () => {
     const jobChildren = info.getChildTables('Job', ConstraintAction.CASCADE);
     assert.equal(0, jobChildren.length);
 
-    const employeeChildren =
-        info.getChildTables('Employee', ConstraintAction.CASCADE);
+    const employeeChildren = info.getChildTables(
+      'Employee',
+      ConstraintAction.CASCADE
+    );
     assert.equal(0, employeeChildren.length);
   });
 
   it('getChildTablesByColumns', () => {
     const info = dynamicInfo;
     const toTest = info.getChildTablesByColumns.bind(info);
-    assert.equal(0, invoke(toTest, []).length);
-    assert.equal(0, invoke(toTest, ['DummyTable.arraybuffer']).length);
+    assert.equal(0, invoke2(toTest, []).length);
+    assert.equal(0, invoke2(toTest, ['DummyTable.arraybuffer']).length);
     assert.sameMembers(
-        ['Employee', 'JobHistory'], invoke(toTest, ['Department.id']));
+      ['Employee', 'JobHistory'],
+      invoke2(toTest, ['Department.id'])
+    );
   });
 });

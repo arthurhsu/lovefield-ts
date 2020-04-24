@@ -18,13 +18,13 @@ import { DEFAULT_VALUES, Type } from '../base/enum';
 import { PayloadType, Row } from '../base/row';
 import { Key } from '../index/key_range';
 
-import { BaseColumn } from './base_column';
+import { Column } from './column';
 import { Index } from './index';
 
 export class RowImpl extends Row {
   constructor(
     private functionMap: Map<string, (payload: PayloadType) => Key>,
-    private columns: BaseColumn[],
+    private columns: Column[],
     indices: Index[],
     id: number,
     payload?: PayloadType

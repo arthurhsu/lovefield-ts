@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import {Order} from '../base/enum';
-import {BaseColumn} from './base_column';
+import { Order } from '../base/enum';
+
+import { Column } from './column';
 
 export interface IndexedColumnSpec {
   name: string;
@@ -25,7 +26,7 @@ export interface IndexedColumnSpec {
 
 // @export
 export interface IndexedColumn {
-  schema: BaseColumn;
+  schema: Column;
   order: Order;
   autoIncrement: boolean;
 }

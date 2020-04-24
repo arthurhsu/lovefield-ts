@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import {DatabaseConnection} from '../../../lib/base/database_connection';
-import {DataStoreType, Type} from '../../../lib/base/enum';
-import {Global} from '../../../lib/base/global';
-import {op} from '../../../lib/fn/op';
-import {IndexJoinPass} from '../../../lib/proc/pp/index_join_pass';
-import {JoinStep} from '../../../lib/proc/pp/join_step';
-import {ProjectStep} from '../../../lib/proc/pp/project_step';
-import {SelectStep} from '../../../lib/proc/pp/select_step';
-import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
-import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseColumn} from '../../../lib/schema/base_column';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {Builder} from '../../../lib/schema/builder';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {Table} from '../../../lib/schema/table';
-import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
+import { DatabaseConnection } from '../../../lib/base/database_connection';
+import { DataStoreType, Type } from '../../../lib/base/enum';
+import { Global } from '../../../lib/base/global';
+import { op } from '../../../lib/fn/op';
+import { JoinPredicate } from '../../../lib/pred/join_predicate';
+import { IndexJoinPass } from '../../../lib/proc/pp/index_join_pass';
+import { JoinStep } from '../../../lib/proc/pp/join_step';
+import { ProjectStep } from '../../../lib/proc/pp/project_step';
+import { SelectStep } from '../../../lib/proc/pp/select_step';
+import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
+import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
+import { SelectContext } from '../../../lib/query/select_context';
+import { Builder } from '../../../lib/schema/builder';
+import { Column } from '../../../lib/schema/column';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { Table } from '../../../lib/schema/table';
+import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('IndexJoinPass', () => {
   let conn: DatabaseConnection;
@@ -39,26 +39,28 @@ describe('IndexJoinPass', () => {
   let pass: IndexJoinPass;
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('testschema', 1);
-    schemaBuilder.createTable('TableA')
-        .addColumn('id', Type.NUMBER)
-        .addIndex('idx_id', ['id']);
-    schemaBuilder.createTable('TableB')
-        .addColumn('id', Type.NUMBER)
-        .addIndex('idx_id', ['id']);
+    const schemaBuilder = new Builder('testSchema', 1);
+    schemaBuilder
+      .createTable('TableA')
+      .addColumn('id', Type.NUMBER)
+      .addIndex('idx_id', ['id']);
+    schemaBuilder
+      .createTable('TableB')
+      .addColumn('id', Type.NUMBER)
+      .addIndex('idx_id', ['id']);
     schemaBuilder.createTable('TableC').addColumn('id', Type.NUMBER);
     return schemaBuilder;
   }
 
   beforeEach(() => {
     return getSchemaBuilder()
-        .connect({storeType: DataStoreType.MEMORY})
-        .then((db) => {
-          conn = db;
-          schema = db.getSchema();
-          global = (db as RuntimeDatabase).getGlobal();
-          pass = new IndexJoinPass();
-        });
+      .connect({ storeType: DataStoreType.MEMORY })
+      .then(db => {
+        conn = db;
+        schema = db.getSchema();
+        global = (db as RuntimeDatabase).getGlobal();
+        pass = new IndexJoinPass();
+      });
   });
 
   afterEach(() => {
@@ -82,15 +84,18 @@ describe('IndexJoinPass', () => {
     const treeAfter = [
       'project()',
       '-join(type: inner, impl: index_nested_loop, ' +
-          'join_pred(TableA.id eq TableB.id))',
+        'join_pred(TableA.id eq TableB.id))',
       '--table_access(TableA)',
       '--no_op_step(TableB)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(schema.table('TableA'), schema.table('TableB'), false),
-        treeBefore, treeAfter, pass);
+      constructTree1(schema.table('TableA'), schema.table('TableB'), false),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a simple tree, where
@@ -112,15 +117,18 @@ describe('IndexJoinPass', () => {
     const treeAfter = [
       'project()',
       '-join(type: inner, impl: index_nested_loop, ' +
-          'join_pred(TableB.id eq TableA.id))',
+        'join_pred(TableB.id eq TableA.id))',
       '--table_access(TableA)',
       '--no_op_step(TableB)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(schema.table('TableA'), schema.table('TableB'), true),
-        treeBefore, treeAfter, pass);
+      constructTree1(schema.table('TableA'), schema.table('TableB'), true),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a simple tree, where
@@ -139,14 +147,18 @@ describe('IndexJoinPass', () => {
     const treeAfter = [
       'project()',
       '-join(type: inner, impl: index_nested_loop, ' +
-          'join_pred(TableA.id eq TableC.id))',
+        'join_pred(TableA.id eq TableC.id))',
       '--no_op_step(TableA)',
       '--table_access(TableC)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(false), treeBefore, treeAfter, pass);
+      constructTree2(false),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a simple tree, where
@@ -165,14 +177,18 @@ describe('IndexJoinPass', () => {
     const treeAfter = [
       'project()',
       '-join(type: inner, impl: index_nested_loop, ' +
-          'join_pred(TableA.id eq TableC.id))',
+        'join_pred(TableA.id eq TableC.id))',
       '--table_access(TableC)',
       '--no_op_step(TableA)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree2(true), treeBefore, treeAfter, pass);
+      constructTree2(true),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a simple tree, where
@@ -192,17 +208,22 @@ describe('IndexJoinPass', () => {
     const treeAfter = [
       'project()',
       '-join(type: inner, impl: index_nested_loop, ' +
-          'join_pred(t1.id eq t2.id))',
+        'join_pred(t1.id eq t2.id))',
       '--table_access(TableA as t1)',
       '--no_op_step(t2)',
       '',
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree1(
-            schema.table('TableA').as('t1'), schema.table('TableA').as('t2'),
-            false),
-        treeBefore, treeAfter, pass);
+      constructTree1(
+        schema.table('TableA').as('t1'),
+        schema.table('TableA').as('t2'),
+        false
+      ),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a simple tree, where
@@ -222,66 +243,87 @@ describe('IndexJoinPass', () => {
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree3(), treeBefore, treeBefore, pass);
+      constructTree3(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // |predicateReverseOrder| Whether to construct the predicate in reverse
-  // order (table2 refrred on the left side of the predicate, table1 on the
+  // order (table2 referred on the left side of the predicate, table1 on the
   // right)
   function constructTree1(
-      t1: Table, t2: Table, predicateReverseOrder: boolean): TestTree {
-    const table1 = t1 as BaseTable;
-    const table2 = t2 as BaseTable;
+    t1: Table,
+    t2: Table,
+    predicateReverseOrder: boolean
+  ): TestTree {
+    const table1 = t1;
+    const table2 = t2;
     const queryContext = new SelectContext(schema);
     queryContext.from = [table1, table2];
     queryContext.columns = [];
-    const joinPredicate = predicateReverseOrder ?
-        table2['id'].eq(table1['id']) :
-        table1['id'].eq(table2['id']);
+    const joinPredicate = (predicateReverseOrder
+      ? table2.col('id').eq(table1.col('id'))
+      : table1.col('id').eq(table2.col('id'))) as JoinPredicate;
     queryContext.where = joinPredicate;
 
-    const tableAccessStep1 =
-        new TableAccessFullStep(global, queryContext.from[0]);
-    const tableAccessStep2 =
-        new TableAccessFullStep(global, queryContext.from[1]);
+    const tableAccessStep1 = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
+    const tableAccessStep2 = new TableAccessFullStep(
+      global,
+      queryContext.from[1]
+    );
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
-    const projectStep =
-        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+    const projectStep = new ProjectStep(
+      queryContext.columns,
+      (null as unknown) as Column[]
+    );
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
     joinStep.addChild(tableAccessStep2);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectStep,
     };
   }
 
-  function constructTree2(tableRerevseOrder: boolean): TestTree {
+  function constructTree2(tableReverseOrder: boolean): TestTree {
     const tableA = schema.table('TableA');
     const tableC = schema.table('TableC');
-    const t1 = tableRerevseOrder ? tableC : tableA;
-    const t2 = tableRerevseOrder ? tableA : tableC;
+    const t1 = tableReverseOrder ? tableC : tableA;
+    const t2 = tableReverseOrder ? tableA : tableC;
 
     const queryContext = new SelectContext(schema);
     queryContext.from = [t1, t2];
     queryContext.columns = [];
-    const joinPredicate = tableA['id'].eq(tableC['id']);
+    const joinPredicate = tableA
+      .col('id')
+      .eq(tableC.col('id')) as JoinPredicate;
     queryContext.where = joinPredicate;
 
-    const tableAccessStep1 =
-        new TableAccessFullStep(global, queryContext.from[0]);
-    const tableAccessStep2 =
-        new TableAccessFullStep(global, queryContext.from[1]);
+    const tableAccessStep1 = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
+    const tableAccessStep2 = new TableAccessFullStep(
+      global,
+      queryContext.from[1]
+    );
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
-    const projectStep =
-        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+    const projectStep = new ProjectStep(
+      queryContext.columns,
+      (null as unknown) as Column[]
+    );
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
     joinStep.addChild(tableAccessStep2);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectStep,
     };
   }
@@ -292,20 +334,29 @@ describe('IndexJoinPass', () => {
 
     const queryContext = new SelectContext(schema);
     queryContext.from = [t1, t2];
-    const joinPredicate = t1['id'].eq(t2['id']);
-    const valuePredicate = t2['id'].gt(100);
+    const joinPredicate = t1.col('id').eq(t2.col('id')) as JoinPredicate;
+    const valuePredicate = t2.col('id').gt(100);
     queryContext.where = op.and(valuePredicate, joinPredicate);
     queryContext.columns = [];
 
-    const tableAccessStep1 =
-        new TableAccessFullStep(global, queryContext.from[0]);
-    const tableAccessStep2 =
-        new TableAccessFullStep(global, queryContext.from[1]);
+    const tableAccessStep1 = new TableAccessFullStep(
+      global,
+      queryContext.from[0]
+    );
+    const tableAccessStep2 = new TableAccessFullStep(
+      global,
+      queryContext.from[1]
+    );
     const selectStep = new SelectStep(valuePredicate.getId());
-    const joinStep =
-        new JoinStep(global, joinPredicate, false /* isOuterJoin*/);
-    const projectStep =
-        new ProjectStep(queryContext.columns, null as any as BaseColumn[]);
+    const joinStep = new JoinStep(
+      global,
+      joinPredicate,
+      false /* isOuterJoin*/
+    );
+    const projectStep = new ProjectStep(
+      queryContext.columns,
+      (null as unknown) as Column[]
+    );
 
     joinStep.addChild(tableAccessStep1);
     selectStep.addChild(tableAccessStep2);
@@ -313,7 +364,7 @@ describe('IndexJoinPass', () => {
     projectStep.addChild(joinStep);
 
     return {
-      queryContext: queryContext,
+      queryContext,
       root: projectStep,
     };
   }
