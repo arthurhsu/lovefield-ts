@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {Predicate} from '../../pred/predicate';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { Predicate } from '../../pred/predicate';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class SelectNode extends LogicalQueryPlanNode {
   constructor(readonly predicate: Predicate) {
     super();
   }
 
-  public toString(): string {
+  toString(): string {
     return `select(${this.predicate.toString()})`;
   }
 }

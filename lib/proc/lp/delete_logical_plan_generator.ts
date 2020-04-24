@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-import {DeleteContext} from '../../query/delete_context';
-import {RewritePass} from '../rewrite_pass';
+import { DeleteContext } from '../../query/delete_context';
+import { RewritePass } from '../rewrite_pass';
 
-import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
-import {DeleteNode} from './delete_node';
-import {LogicalPlanRewriter} from './logical_plan_rewriter';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {SelectNode} from './select_node';
-import {TableAccessNode} from './table_access_node';
+import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
+import { DeleteNode } from './delete_node';
+import { LogicalPlanRewriter } from './logical_plan_rewriter';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import { SelectNode } from './select_node';
+import { TableAccessNode } from './table_access_node';
 
-export class DeleteLogicalPlanGenerator extends
-    BaseLogicalPlanGenerator<DeleteContext> {
+export class DeleteLogicalPlanGenerator extends BaseLogicalPlanGenerator<
+  DeleteContext
+> {
   constructor(
-      query: DeleteContext,
-      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
+    query: DeleteContext,
+    private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>
+  ) {
     super(query);
   }
 
-  public generateInternal(): LogicalQueryPlanNode {
+  generateInternal(): LogicalQueryPlanNode {
     const deleteNode = new DeleteNode(this.query.from);
-    const selectNode =
-        this.query.where ? new SelectNode(this.query.where.copy()) : null;
+    const selectNode = this.query.where
+      ? new SelectNode(this.query.where.copy())
+      : null;
     const tableAccessNode = new TableAccessNode(this.query.from);
 
     if (selectNode === null) {
@@ -46,8 +49,11 @@ export class DeleteLogicalPlanGenerator extends
     }
 
     // Optimizing the "naive" logical plan.
-    const planRewriter =
-        new LogicalPlanRewriter(deleteNode, this.query, this.rewritePasses);
+    const planRewriter = new LogicalPlanRewriter(
+      deleteNode,
+      this.query,
+      this.rewritePasses
+    );
     return planRewriter.generate();
   }
 }

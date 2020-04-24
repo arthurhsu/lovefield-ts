@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-import {JoinPredicate} from '../../pred/join_predicate';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { JoinPredicate } from '../../pred/join_predicate';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class JoinNode extends LogicalQueryPlanNode {
   constructor(
-      readonly predicate: JoinPredicate, readonly isOuterJoin: boolean) {
+    readonly predicate: JoinPredicate,
+    readonly isOuterJoin: boolean
+  ) {
     super();
   }
 
-  public toString(): string {
-    return `join(type: ${this.isOuterJoin ? 'outer' : 'inner'}, ` +
-        `${this.predicate.toString()})`;
+  toString(): string {
+    return (
+      `join(type: ${this.isOuterJoin ? 'outer' : 'inner'}, ` +
+      `${this.predicate.toString()})`
+    );
   }
 }

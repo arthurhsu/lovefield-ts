@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-import {AggregatedColumn} from '../../fn/aggregated_column';
-import {SelectContext} from '../../query/select_context';
-import {RewritePass} from '../rewrite_pass';
+import { AggregatedColumn } from '../../fn/aggregated_column';
+import { SelectContext } from '../../query/select_context';
+import { RewritePass } from '../rewrite_pass';
 
-import {AggregationNode} from './aggregation_node';
-import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
-import {CrossProductNode} from './cross_product_node';
-import {GroupByNode} from './group_by_node';
-import {LimitNode} from './limit_node';
-import {LogicalPlanRewriter} from './logical_plan_rewriter';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {OrderByNode} from './orderby_node';
-import {ProjectNode} from './project_node';
-import {SelectNode} from './select_node';
-import {SkipNode} from './skip_node';
-import {TableAccessNode} from './table_access_node';
+import { AggregationNode } from './aggregation_node';
+import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
+import { CrossProductNode } from './cross_product_node';
+import { GroupByNode } from './group_by_node';
+import { LimitNode } from './limit_node';
+import { LogicalPlanRewriter } from './logical_plan_rewriter';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import { OrderByNode } from './orderby_node';
+import { ProjectNode } from './project_node';
+import { SelectNode } from './select_node';
+import { SkipNode } from './skip_node';
+import { TableAccessNode } from './table_access_node';
 
-export class SelectLogicalPlanGenerator extends
-    BaseLogicalPlanGenerator<SelectContext> {
+export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<
+  SelectContext
+> {
   private tableAccessNodes: LogicalQueryPlanNode[];
   private crossProductNode: LogicalQueryPlanNode;
   private selectNode: LogicalQueryPlanNode;
@@ -44,27 +45,31 @@ export class SelectLogicalPlanGenerator extends
   private projectNode: LogicalQueryPlanNode;
 
   constructor(
-      query: SelectContext,
-      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
+    query: SelectContext,
+    private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>
+  ) {
     super(query);
-    this.tableAccessNodes = null as any as LogicalQueryPlanNode[];
-    this.crossProductNode = null as any as LogicalQueryPlanNode;
-    this.selectNode = null as any as LogicalQueryPlanNode;
-    this.groupByNode = null as any as LogicalQueryPlanNode;
-    this.aggregationNode = null as any as LogicalQueryPlanNode;
-    this.orderByNode = null as any as LogicalQueryPlanNode;
-    this.skipNode = null as any as LogicalQueryPlanNode;
-    this.limitNode = null as any as LogicalQueryPlanNode;
-    this.projectNode = null as any as LogicalQueryPlanNode;
+    this.tableAccessNodes = (null as unknown) as LogicalQueryPlanNode[];
+    this.crossProductNode = (null as unknown) as LogicalQueryPlanNode;
+    this.selectNode = (null as unknown) as LogicalQueryPlanNode;
+    this.groupByNode = (null as unknown) as LogicalQueryPlanNode;
+    this.aggregationNode = (null as unknown) as LogicalQueryPlanNode;
+    this.orderByNode = (null as unknown) as LogicalQueryPlanNode;
+    this.skipNode = (null as unknown) as LogicalQueryPlanNode;
+    this.limitNode = (null as unknown) as LogicalQueryPlanNode;
+    this.projectNode = (null as unknown) as LogicalQueryPlanNode;
   }
 
-  public generateInternal(): LogicalQueryPlanNode {
+  generateInternal(): LogicalQueryPlanNode {
     this.generateNodes();
     const rootNode = this.connectNodes();
 
     // Optimizing the "naive" logical plan.
-    const planRewriter =
-        new LogicalPlanRewriter(rootNode, this.query, this.rewritePasses);
+    const planRewriter = new LogicalPlanRewriter(
+      rootNode,
+      this.query,
+      this.rewritePasses
+    );
     return planRewriter.generate();
   }
 
@@ -97,7 +102,7 @@ export class SelectLogicalPlanGenerator extends
     ];
 
     let lastExistingParentIndex = -1;
-    let rootNode: LogicalQueryPlanNode = null as any as LogicalQueryPlanNode;
+    let rootNode: LogicalQueryPlanNode = (null as unknown) as LogicalQueryPlanNode;
     for (let i = 0; i < parentOrder.length; i++) {
       const node = parentOrder[i];
       if (node !== null) {
@@ -110,7 +115,7 @@ export class SelectLogicalPlanGenerator extends
       }
     }
 
-    this.tableAccessNodes.forEach((tableAccessNode) => {
+    this.tableAccessNodes.forEach(tableAccessNode => {
       parentOrder[lastExistingParentIndex].addChild(tableAccessNode);
     });
 
@@ -118,8 +123,9 @@ export class SelectLogicalPlanGenerator extends
   }
 
   private generateTableAccessNodes(): void {
-    this.tableAccessNodes =
-        this.query.from.map((table) => new TableAccessNode(table));
+    this.tableAccessNodes = this.query.from.map(
+      table => new TableAccessNode(table)
+    );
   }
 
   private generateCrossProductNode(): void {
@@ -159,12 +165,12 @@ export class SelectLogicalPlanGenerator extends
   }
 
   private generateAggregationNode(): void {
-    const aggregatedColumns = this.query.columns.filter((column) => {
+    const aggregatedColumns = this.query.columns.filter(column => {
       return column instanceof AggregatedColumn;
     });
 
     if (this.query.orderBy) {
-      this.query.orderBy.forEach((orderBy) => {
+      this.query.orderBy.forEach(orderBy => {
         if (orderBy.column instanceof AggregatedColumn) {
           aggregatedColumns.push(orderBy.column);
         }
@@ -172,13 +178,16 @@ export class SelectLogicalPlanGenerator extends
     }
 
     if (aggregatedColumns.length > 0) {
-      this.aggregationNode =
-          new AggregationNode(aggregatedColumns as any as AggregatedColumn[]);
+      this.aggregationNode = new AggregationNode(
+        aggregatedColumns as AggregatedColumn[]
+      );
     }
   }
 
   private generateProjectNode(): void {
-    this.projectNode =
-        new ProjectNode(this.query.columns || [], this.query.groupBy || null);
+    this.projectNode = new ProjectNode(
+      this.query.columns || [],
+      this.query.groupBy || null
+    );
   }
 }

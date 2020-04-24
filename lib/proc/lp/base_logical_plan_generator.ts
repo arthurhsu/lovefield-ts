@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import {Context} from '../../query/context';
-import {LogicalPlanGenerator} from './logical_plan_generator';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { Context } from '../../query/context';
+import { LogicalPlanGenerator } from './logical_plan_generator';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 // TODO(arthurhsu): this abstract base class is not necessary. Refactor to
 // remove and simplify code structure.
-export abstract class BaseLogicalPlanGenerator<T extends Context> implements
-    LogicalPlanGenerator {
+export abstract class BaseLogicalPlanGenerator<T extends Context>
+  implements LogicalPlanGenerator {
   private rootNode: LogicalQueryPlanNode;
 
   constructor(protected query: T) {
-    this.rootNode = null as any as LogicalQueryPlanNode;
+    this.rootNode = (null as unknown) as LogicalQueryPlanNode;
   }
 
-  public generate(): LogicalQueryPlanNode {
+  generate(): LogicalQueryPlanNode {
     if (this.rootNode === null) {
       this.rootNode = this.generateInternal();
     }
@@ -36,5 +36,5 @@ export abstract class BaseLogicalPlanGenerator<T extends Context> implements
     return this.rootNode;
   }
 
-  public abstract generateInternal(): LogicalQueryPlanNode;
+  abstract generateInternal(): LogicalQueryPlanNode;
 }

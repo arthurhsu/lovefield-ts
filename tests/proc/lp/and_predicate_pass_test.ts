@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import {op} from '../../../lib/fn/op';
-import {AndPredicatePass} from '../../../lib/proc/lp/and_predicate_pass';
-import {SelectNode} from '../../../lib/proc/lp/select_node';
-import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {TreeHelper} from '../../../lib/structs/tree_helper';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import { op } from '../../../lib/fn/op';
+import { AndPredicatePass } from '../../../lib/proc/lp/and_predicate_pass';
+import { SelectNode } from '../../../lib/proc/lp/select_node';
+import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { TreeHelper } from '../../../lib/structs/tree_helper';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -49,10 +49,11 @@ describe('AndPredicatePass', () => {
 
     // Generating a simple tree that has just one SelectNode corresponding to an
     // AND predicate.
-    const leftPredicate = e['id'].gt('100');
-    const rightPredicate = e['salary'].lt(100);
-    const rootNodeBefore =
-        new SelectNode(op.and(leftPredicate, rightPredicate));
+    const leftPredicate = e.col('id').gt('100');
+    const rightPredicate = e.col('salary').lt(100);
+    const rootNodeBefore = new SelectNode(
+      op.and(leftPredicate, rightPredicate)
+    );
     const tableAccessNode = new TableAccessNode(e);
     rootNodeBefore.addChild(tableAccessNode);
     assert.equal(treeBefore, TreeHelper.toString(rootNodeBefore));

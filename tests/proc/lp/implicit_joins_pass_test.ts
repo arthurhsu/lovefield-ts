@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import {Predicate} from '../../../lib/pred/predicate';
-import {CrossProductNode} from '../../../lib/proc/lp/cross_product_node';
-import {ImplicitJoinsPass} from '../../../lib/proc/lp/implicit_joins_pass';
-import {SelectNode} from '../../../lib/proc/lp/select_node';
-import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
-import {SelectContext} from '../../../lib/query/select_context';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
-import {TreeTestHelper} from '../../../testing/tree_test_helper';
+import { Predicate } from '../../../lib/pred/predicate';
+import { CrossProductNode } from '../../../lib/proc/lp/cross_product_node';
+import { ImplicitJoinsPass } from '../../../lib/proc/lp/implicit_joins_pass';
+import { SelectNode } from '../../../lib/proc/lp/select_node';
+import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
+import { SelectContext } from '../../../lib/query/select_context';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import { TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('ImplicitJoinsPass', () => {
   let schema: DatabaseSchema;
@@ -54,20 +54,24 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j];
-      queryContext.where = e['jobId'].eq(j['id']);
+      queryContext.where = e.col('jobId').eq(j.col('id'));
 
       const selectNode = new SelectNode(queryContext.where as Predicate);
       const crossProductNode = new CrossProductNode();
       selectNode.addChild(crossProductNode);
-      queryContext.from.forEach((tableSchema) => {
+      queryContext.from.forEach(tableSchema => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 
-      return {queryContext: queryContext, root: selectNode};
+      return { queryContext, root: selectNode };
     };
 
     const pass = new ImplicitJoinsPass();
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 });

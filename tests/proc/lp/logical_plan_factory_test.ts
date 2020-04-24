@@ -15,16 +15,16 @@
  */
 
 import * as chai from 'chai';
-import {bind} from '../../../lib/base/bind';
-import {op} from '../../../lib/fn/op';
-import {PredicateNode} from '../../../lib/pred/predicate_node';
-import {LogicalPlanFactory} from '../../../lib/proc/lp/logical_plan_factory';
-import {DeleteBuilder} from '../../../lib/query/delete_builder';
-import {SelectBuilder} from '../../../lib/query/select_builder';
-import {UpdateBuilder} from '../../../lib/query/update_builder';
-import {TreeHelper} from '../../../lib/structs/tree_helper';
-import {MockEnv} from '../../../testing/mock_env';
-import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import { bind } from '../../../lib/base/bind';
+import { op } from '../../../lib/fn/op';
+import { PredicateNode } from '../../../lib/pred/predicate_node';
+import { LogicalPlanFactory } from '../../../lib/proc/lp/logical_plan_factory';
+import { DeleteBuilder } from '../../../lib/query/delete_builder';
+import { SelectBuilder } from '../../../lib/query/select_builder';
+import { UpdateBuilder } from '../../../lib/query/update_builder';
+import { TreeHelper } from '../../../lib/structs/tree_helper';
+import { MockEnv } from '../../../testing/mock_env';
+import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -34,7 +34,9 @@ describe('LogicalPlanFactory', () => {
 
   beforeEach(() => {
     env = new MockEnv(getMockSchemaBuilder().getSchema());
-    return env.init().then(() => logicalPlanFactory = new LogicalPlanFactory());
+    return env
+      .init()
+      .then(() => (logicalPlanFactory = new LogicalPlanFactory()));
   });
 
   // Tests that the generated logical query plan for a simple DELETE query is as
@@ -46,8 +48,9 @@ describe('LogicalPlanFactory', () => {
   it('create_DeletePlan', () => {
     const table = env.schema.table('tableA');
     const queryBuilder = new DeleteBuilder(env.global);
-    queryBuilder.from(table).where(
-        op.and(table['id'].eq('id'), table['name'].eq('name')));
+    queryBuilder
+      .from(table)
+      .where(op.and(table.col('id').eq('id'), table.col('name').eq('name')));
 
     const query = queryBuilder.getQuery();
     assert.equal(2, (query.where as PredicateNode).getChildCount());
@@ -71,8 +74,9 @@ describe('LogicalPlanFactory', () => {
   it('create_SelectPlan', () => {
     const table = env.schema.table('tableA');
     const queryBuilder = new SelectBuilder(env.global, []);
-    queryBuilder.from(table).where(
-        op.and(table['id'].eq('id'), table['name'].eq('name')));
+    queryBuilder
+      .from(table)
+      .where(op.and(table.col('id').eq('id'), table.col('name').eq('name')));
 
     const query = queryBuilder.getQuery();
     assert.equal(2, (query.where as PredicateNode).getChildCount());
@@ -99,11 +103,7 @@ describe('LogicalPlanFactory', () => {
     queryBuilder.from(table).skip(0);
 
     const query = queryBuilder.getQuery();
-    const expectedTree = [
-      'project()',
-      '-table_access(tableA)',
-      '',
-    ].join('\n');
+    const expectedTree = ['project()', '-table_access(tableA)', ''].join('\n');
 
     const logicalPlan = logicalPlanFactory.create(query);
     assert.equal(expectedTree, TreeHelper.toString(logicalPlan.getRoot()));
@@ -176,8 +176,9 @@ describe('LogicalPlanFactory', () => {
     const table = env.schema.table('tableA');
 
     const queryBuilder = new UpdateBuilder(env.global, table);
-    queryBuilder.set(table['name'], 'NewName')
-        .where(op.and(table['id'].eq('id'), table['name'].eq('name')));
+    queryBuilder
+      .set(table.col('name'), 'NewName')
+      .where(op.and(table.col('id').eq('id'), table.col('name').eq('name')));
 
     const query = queryBuilder.getQuery();
     assert.equal(2, (query.where as PredicateNode).getChildCount());

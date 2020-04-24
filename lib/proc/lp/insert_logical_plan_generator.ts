@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-import {InsertContext} from '../../query/insert_context';
-import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
-import {InsertNode} from './insert_node';
-import {InsertOrReplaceNode} from './insert_or_replace_node';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { InsertContext } from '../../query/insert_context';
+import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
+import { InsertNode } from './insert_node';
+import { InsertOrReplaceNode } from './insert_or_replace_node';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
-export class InsertLogicalPlanGenerator extends
-    BaseLogicalPlanGenerator<InsertContext> {
+export class InsertLogicalPlanGenerator extends BaseLogicalPlanGenerator<
+  InsertContext
+> {
   constructor(query: InsertContext) {
     super(query);
   }
 
-  public generateInternal(): LogicalQueryPlanNode {
-    return this.query.allowReplace ?
-        new InsertOrReplaceNode(this.query.into, this.query.values) :
-        new InsertNode(this.query.into, this.query.values);
+  generateInternal(): LogicalQueryPlanNode {
+    return this.query.allowReplace
+      ? new InsertOrReplaceNode(this.query.into, this.query.values)
+      : new InsertNode(this.query.into, this.query.values);
   }
 }

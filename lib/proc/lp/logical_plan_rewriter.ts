@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-import {Context} from '../../query/context';
-import {RewritePass} from '../rewrite_pass';
+import { Context } from '../../query/context';
+import { RewritePass } from '../rewrite_pass';
 
-import {LogicalPlanGenerator} from './logical_plan_generator';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { LogicalPlanGenerator } from './logical_plan_generator';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 // Rewrites the logical query plan such that the resulting logical query plan is
 // faster to execute than the original "naive" plan.
 export class LogicalPlanRewriter implements LogicalPlanGenerator {
   constructor(
-      private rootNode: LogicalQueryPlanNode, private queryContext: Context,
-      private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>) {
-    // TODO(arthurhsu): weird hack here, refactor to remove abstract class.
-    // It should be a clean interface with default implementation.
-  }
+    private rootNode: LogicalQueryPlanNode,
+    private queryContext: Context,
+    private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>
+  ) {}
 
-  public generate(): LogicalQueryPlanNode {
-    this.rewritePasses.forEach((rewritePass) => {
+  generate(): LogicalQueryPlanNode {
+    this.rewritePasses.forEach(rewritePass => {
       this.rootNode = rewritePass.rewrite(this.rootNode, this.queryContext);
     }, this);
     return this.rootNode;

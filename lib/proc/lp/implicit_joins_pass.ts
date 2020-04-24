@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-import {assert} from '../../base/assert';
-import {JoinPredicate} from '../../pred/join_predicate';
-import {Context} from '../../query/context';
-import {SelectContext} from '../../query/select_context';
-import {TreeHelper} from '../../structs/tree_helper';
-import {RewritePass} from '../rewrite_pass';
+import { assert } from '../../base/assert';
+import { JoinPredicate } from '../../pred/join_predicate';
+import { Context } from '../../query/context';
+import { SelectContext } from '../../query/select_context';
+import { TreeHelper } from '../../structs/tree_helper';
+import { RewritePass } from '../rewrite_pass';
 
-import {CrossProductNode} from './cross_product_node';
-import {JoinNode} from './join_node';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {SelectNode} from './select_node';
+import { CrossProductNode } from './cross_product_node';
+import { JoinNode } from './join_node';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import { SelectNode } from './select_node';
 
 export class ImplicitJoinsPass extends RewritePass<LogicalQueryPlanNode> {
   constructor() {
     super();
   }
 
-  public rewrite(rootNode: LogicalQueryPlanNode, context: Context):
-      LogicalQueryPlanNode {
+  rewrite(
+    rootNode: LogicalQueryPlanNode,
+    context: Context
+  ): LogicalQueryPlanNode {
     const queryContext = context as SelectContext;
     if (queryContext.from.length < 2) {
       return rootNode;
@@ -43,19 +45,25 @@ export class ImplicitJoinsPass extends RewritePass<LogicalQueryPlanNode> {
     return this.rootNode;
   }
 
-  private traverse(rootNode: LogicalQueryPlanNode, queryContext: SelectContext):
-      void {
-    if (rootNode instanceof SelectNode &&
-        rootNode.predicate instanceof JoinPredicate) {
+  private traverse(
+    rootNode: LogicalQueryPlanNode,
+    queryContext: SelectContext
+  ): void {
+    if (
+      rootNode instanceof SelectNode &&
+      rootNode.predicate instanceof JoinPredicate
+    ) {
       assert(
-          rootNode.getChildCount() === 1,
-          'SelectNode must have exactly one child.');
+        rootNode.getChildCount() === 1,
+        'SelectNode must have exactly one child.'
+      );
       const predicateId = rootNode.predicate.getId();
 
       const child = rootNode.getChildAt(0);
       if (child instanceof CrossProductNode) {
-        const isOuterJoin = queryContext.outerJoinPredicates &&
-            queryContext.outerJoinPredicates.has(predicateId);
+        const isOuterJoin =
+          queryContext.outerJoinPredicates &&
+          queryContext.outerJoinPredicates.has(predicateId);
         const joinNode = new JoinNode(rootNode.predicate, isOuterJoin);
         TreeHelper.replaceChainWithNode(rootNode, child, joinNode);
         if (rootNode === this.rootNode) {
@@ -64,7 +72,6 @@ export class ImplicitJoinsPass extends RewritePass<LogicalQueryPlanNode> {
         rootNode = joinNode;
       }
     }
-    rootNode.getChildren().forEach(
-        (child) => this.traverse(child, queryContext));
+    rootNode.getChildren().forEach(child => this.traverse(child, queryContext));
   }
 }

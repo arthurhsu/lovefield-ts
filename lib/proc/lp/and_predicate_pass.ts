@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-import {assert} from '../../base/assert';
-import {Operator} from '../../base/private_enum';
-import {CombinedPredicate} from '../../pred/combined_predicate';
-import {PredicateNode} from '../../pred/predicate_node';
-import {Context} from '../../query/context';
-import {ArrayHelper} from '../../structs/array_helper';
-import {TreeHelper} from '../../structs/tree_helper';
-import {RewritePass} from '../rewrite_pass';
+import { assert } from '../../base/assert';
+import { Operator } from '../../base/private_enum';
+import { CombinedPredicate } from '../../pred/combined_predicate';
+import { PredicateNode } from '../../pred/predicate_node';
+import { Context } from '../../query/context';
+import { ArrayHelper } from '../../structs/array_helper';
+import { TreeHelper } from '../../structs/tree_helper';
+import { RewritePass } from '../rewrite_pass';
 
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
-import {SelectNode} from './select_node';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import { SelectNode } from './select_node';
 
 export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
   constructor() {
     super();
   }
 
-  public rewrite(rootNode: LogicalQueryPlanNode, context?: Context):
-      LogicalQueryPlanNode {
+  rewrite(
+    rootNode: LogicalQueryPlanNode,
+    context?: Context
+  ): LogicalQueryPlanNode {
     this.rootNode = rootNode;
     this.traverse(this.rootNode);
     return this.rootNode;
@@ -43,11 +45,13 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
   private traverse(rootNode: LogicalQueryPlanNode): void {
     if (rootNode instanceof SelectNode) {
       assert(
-          rootNode.getChildCount() === 1,
-          'SelectNode must have exactly one child.');
+        rootNode.getChildCount() === 1,
+        'SelectNode must have exactly one child.'
+      );
 
-      const predicates =
-          this.breakAndPredicate(rootNode.predicate as PredicateNode);
+      const predicates = this.breakAndPredicate(
+        rootNode.predicate as PredicateNode
+      );
       const newNodes = this.createSelectNodeChain(predicates);
       TreeHelper.replaceNodeWithChain(rootNode, newNodes[0], newNodes[1]);
 
@@ -57,7 +61,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
       rootNode = newNodes[0];
     }
 
-    rootNode.getChildren().forEach((child) => this.traverse(child));
+    rootNode.getChildren().forEach(child => this.traverse(child));
   }
 
   // Recursively breaks down an AND predicate to its components.
@@ -75,18 +79,21 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
       return [predicate];
     }
 
-    const predicates =
-        combinedPredicate.getChildren().slice().map((childPredicate) => {
-          combinedPredicate.removeChild(childPredicate);
-          return this.breakAndPredicate(childPredicate as PredicateNode);
-        });
+    const predicates = combinedPredicate
+      .getChildren()
+      .slice()
+      .map(childPredicate => {
+        combinedPredicate.removeChild(childPredicate);
+        return this.breakAndPredicate(childPredicate as PredicateNode);
+      });
     return ArrayHelper.flatten(predicates) as PredicateNode[];
   }
 
-  private createSelectNodeChain(predicates: PredicateNode[]):
-      LogicalQueryPlanNode[] {
-    let parentNode: LogicalQueryPlanNode|null = null;
-    let lastNode: LogicalQueryPlanNode|null = null;
+  private createSelectNodeChain(
+    predicates: PredicateNode[]
+  ): LogicalQueryPlanNode[] {
+    let parentNode: LogicalQueryPlanNode | null = null;
+    let lastNode: LogicalQueryPlanNode | null = null;
     predicates.map((predicate, index) => {
       const node = new SelectNode(predicate);
       if (index === 0) {
@@ -98,8 +105,8 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
     }, this);
 
     return [
-      parentNode as any as LogicalQueryPlanNode,
-      lastNode as any as LogicalQueryPlanNode,
+      (parentNode as unknown) as LogicalQueryPlanNode,
+      (lastNode as unknown) as LogicalQueryPlanNode,
     ];
   }
 }

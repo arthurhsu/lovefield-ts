@@ -16,11 +16,12 @@
 
 import * as chai from 'chai';
 
-import {Capability} from '../../lib/base/capability';
-import {DataStoreType} from '../../lib/base/enum';
-import {ConnectOptions} from '../../lib/schema/connect_options';
-import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
-import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
+import { Capability } from '../../lib/base/capability';
+import { DataStoreType } from '../../lib/base/enum';
+import { PayloadType } from '../../lib/base/row';
+import { ConnectOptions } from '../../lib/schema/connect_options';
+import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
 
 const assert = chai.assert;
 
@@ -36,7 +37,10 @@ describe('ImportTask', () => {
     const builder2 = getHrDbSchemaBuilder(`hr2_${new Date().getTime()}`);
     const dataGen = new MockDataGenerator();
     dataGen.generate(
-        /* jobCount */ 100, /* employeeCount */ 1000, /* departmentCount */ 10);
+      /* jobCount */ 100,
+      /* employeeCount */ 1000,
+      /* departmentCount */ 10
+    );
 
     const db = await builder1.connect(options);
     const d = db.getSchema().table('Department');
@@ -48,27 +52,45 @@ describe('ImportTask', () => {
 
     const tx = db.createTransaction();
     await tx.exec([
-      db.insert().into(r).values(dataGen.sampleRegions),
-      db.insert().into(c).values(dataGen.sampleCountries),
-      db.insert().into(l).values(dataGen.sampleLocations),
-      db.insert().into(d).values(dataGen.sampleDepartments),
-      db.insert().into(j).values(dataGen.sampleJobs),
-      db.insert().into(e).values(dataGen.sampleEmployees),
+      db
+        .insert()
+        .into(r)
+        .values(dataGen.sampleRegions),
+      db
+        .insert()
+        .into(c)
+        .values(dataGen.sampleCountries),
+      db
+        .insert()
+        .into(l)
+        .values(dataGen.sampleLocations),
+      db
+        .insert()
+        .into(d)
+        .values(dataGen.sampleDepartments),
+      db
+        .insert()
+        .into(j)
+        .values(dataGen.sampleJobs),
+      db
+        .insert()
+        .into(e)
+        .values(dataGen.sampleEmployees),
     ]);
 
-    const data = await db.export();
+    const data = (await db.export()) as PayloadType;
     db.close();
     const db2 = await builder2.connect(options);
     data['name'] = builder2.getSchema().name();
     await db2.import(data);
-    const exportedData = await db2.export();
+    const exportedData = (await db2.export()) as PayloadType;
     assert.equal(builder2.getSchema().name(), exportedData['name']);
     assert.equal(builder2.getSchema().version(), exportedData['version']);
     assert.deepEqual(data, exportedData);
   }
 
   it('import_MemDB', async () => {
-    await runTestImport({storeType: DataStoreType.MEMORY});
+    await runTestImport({ storeType: DataStoreType.MEMORY });
   });
 
   it('import_IndexedDB', async () => {
@@ -76,7 +98,7 @@ describe('ImportTask', () => {
       return;
     }
 
-    await runTestImport({storeType: DataStoreType.INDEXED_DB});
+    await runTestImport({ storeType: DataStoreType.INDEXED_DB });
   });
 
   it('import_WebSql', async () => {
@@ -84,12 +106,12 @@ describe('ImportTask', () => {
       return;
     }
 
-    await runTestImport({storeType: DataStoreType.WEB_SQL});
+    await runTestImport({ storeType: DataStoreType.WEB_SQL });
   });
 
-  it.skip('benchmark', async () => {
-    const ROW_COUNT = 62500;
-    const LOOP_COUNT = 30;
+  it('benchmark', async () => {
+    const ROW_COUNT = 1; // 62500;
+    const LOOP_COUNT = 1; // 30;
 
     const jobs: object[] = new Array(ROW_COUNT);
     for (let i = 0; i < ROW_COUNT; ++i) {
@@ -107,11 +129,11 @@ describe('ImportTask', () => {
       const builder = getHrDbSchemaBuilder();
       const data = {
         name: builder.getSchema().name(),
-        tables: {Job: jobs},
+        tables: { Job: jobs },
         version: builder.getSchema().version(),
       };
 
-      const db = await builder.connect({storeType: DataStoreType.MEMORY});
+      const db = await builder.connect({ storeType: DataStoreType.MEMORY });
       start = performance.now();
       await db.import(data);
       const end = performance.now();
@@ -120,17 +142,21 @@ describe('ImportTask', () => {
 
     const runInsert = async () => {
       const builder = getHrDbSchemaBuilder();
-      const db = await builder.connect({storeType: DataStoreType.MEMORY});
+      const db = await builder.connect({ storeType: DataStoreType.MEMORY });
       const j = db.getSchema().table('Job');
       start = performance.now();
-      const rows = jobs.map((data) => j.createRow(data));
-      await db.insert().into(j).values(rows).exec();
+      const rows = jobs.map(data => j.createRow(data));
+      await db
+        .insert()
+        .into(j)
+        .values(rows)
+        .exec();
       const end = performance.now();
       results.push(end - start);
     };
 
     const compute = () => {
-      const base = results.sort((a, b) => (a < b) ? -1 : ((a > b) ? 1 : 0));
+      const base = results.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
       const average = base.reduce((p, c) => p + c, 0) / LOOP_COUNT;
       console['log'](average);
     };

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {Order} from '../../../lib/base/enum';
-import {op} from '../../../lib/fn/op';
-import {Predicate} from '../../../lib/pred/predicate';
-import {CrossProductNode} from '../../../lib/proc/lp/cross_product_node';
-import {OrderByNode} from '../../../lib/proc/lp/orderby_node';
-import {PushDownSelectionsPass} from '../../../lib/proc/lp/push_down_selections_pass';
-import {SelectNode} from '../../../lib/proc/lp/select_node';
-import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
-import {SelectContext} from '../../../lib/query/select_context';
-import {BaseTable} from '../../../lib/schema/base_table';
-import {DatabaseSchema} from '../../../lib/schema/database_schema';
-import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
-import {TreeTestHelper} from '../../../testing/tree_test_helper';
+import { Order } from '../../../lib/base/enum';
+import { op } from '../../../lib/fn/op';
+import { Predicate } from '../../../lib/pred/predicate';
+import { CrossProductNode } from '../../../lib/proc/lp/cross_product_node';
+import { OrderByNode } from '../../../lib/proc/lp/orderby_node';
+import { PushDownSelectionsPass } from '../../../lib/proc/lp/push_down_selections_pass';
+import { SelectNode } from '../../../lib/proc/lp/select_node';
+import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
+import { SelectContext } from '../../../lib/query/select_context';
+import { BaseTable } from '../../../lib/schema/base_table';
+import { DatabaseSchema } from '../../../lib/schema/database_schema';
+import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import { TreeTestHelper } from '../../../testing/tree_test_helper';
 
 describe('ImplicitJoinsPass', () => {
   let schema: DatabaseSchema;
@@ -38,7 +38,7 @@ describe('ImplicitJoinsPass', () => {
   });
 
   // Tests a simple tree where 3 ValuePredicate selections are pushed below a
-  // cross ploduct node. Two of the selections are pushed on one branch and the
+  // cross product node. Two of the selections are pushed on one branch and the
   // other selections are pushed on the other.
   it('tree_ValuePredicates1', () => {
     const e = schema.table('Employee');
@@ -71,11 +71,11 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j];
-      const predicate1 = e['salary'].gt(1000);
-      const predicate2 = j['minSalary'].gt(100);
-      const predicate3 = e['hireDate'].lt(hireDate);
+      const predicate1 = e.col('salary').gt(1000);
+      const predicate2 = j.col('minSalary').gt(100);
+      const predicate3 = e.col('hireDate').lt(hireDate);
       queryContext.where = op.and(predicate1, predicate2, predicate3);
-      queryContext.orderBy = [{column: e['id'], order: Order.ASC}];
+      queryContext.orderBy = [{ column: e.col('id'), order: Order.ASC }];
 
       const orderByNode = new OrderByNode(queryContext.orderBy);
       const selectNode1 = new SelectNode(predicate1);
@@ -86,15 +86,19 @@ describe('ImplicitJoinsPass', () => {
       selectNode2.addChild(selectNode3);
       const crossProductNode = new CrossProductNode();
       selectNode3.addChild(crossProductNode);
-      queryContext.from.forEach((tableSchema) => {
+      queryContext.from.forEach(tableSchema => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 
-      return {queryContext: queryContext, root: orderByNode};
+      return { queryContext, root: orderByNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Testing case where two ValuePredicate select nodes exist, but they can't be
@@ -114,10 +118,10 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e];
-      const predicate1 = e['salary'].gt(10);
-      const predicate2 = e['salary'].lt(20);
+      const predicate1 = e.col('salary').gt(10);
+      const predicate2 = e.col('salary').lt(20);
       queryContext.where = op.and(predicate1, predicate2);
-      queryContext.orderBy = [{column: e['id'], order: Order.ASC}];
+      queryContext.orderBy = [{ column: e.col('id'), order: Order.ASC }];
 
       const orderByNode = new OrderByNode(queryContext.orderBy);
       const selectNode1 = new SelectNode(predicate1);
@@ -127,11 +131,15 @@ describe('ImplicitJoinsPass', () => {
       const tableAccess = new TableAccessNode(queryContext.from[0]);
       selectNode2.addChild(tableAccess);
 
-      return {queryContext: queryContext, root: orderByNode};
+      return { queryContext, root: orderByNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Ensuring that the order of cross-product/join children is not changed
@@ -161,23 +169,27 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j];
-      queryContext.where = e['salary'].gt(10);
-      queryContext.orderBy = [{column: e['id'], order: Order.ASC}];
+      queryContext.where = e.col('salary').gt(10);
+      queryContext.orderBy = [{ column: e.col('id'), order: Order.ASC }];
 
       const orderByNode = new OrderByNode(queryContext.orderBy);
       const selectNode = new SelectNode(queryContext.where as Predicate);
       orderByNode.addChild(selectNode);
       const crossProductNode = new CrossProductNode();
       selectNode.addChild(crossProductNode);
-      queryContext.from.forEach(
-          (tableSchema) =>
-              crossProductNode.addChild(new TableAccessNode(tableSchema)));
+      queryContext.from.forEach(tableSchema =>
+        crossProductNode.addChild(new TableAccessNode(tableSchema))
+      );
 
-      return {queryContext: queryContext, root: orderByNode};
+      return { queryContext, root: orderByNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree where two value predicates and two join predicates exist (one
@@ -221,13 +233,16 @@ describe('ImplicitJoinsPass', () => {
 
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j, d];
-      const innerJoinPredicate = e['jobId'].eq(j['id']);
-      const outerJoinPredicate = e['departmentId'].eq(d['id']);
-      const valuePredicate1 = d['id'].isNull();
-      const valuePredicate2 = j['id'].isNull();
+      const innerJoinPredicate = e.col('jobId').eq(j.col('id'));
+      const outerJoinPredicate = e.col('departmentId').eq(d.col('id'));
+      const valuePredicate1 = d.col('id').isNull();
+      const valuePredicate2 = j.col('id').isNull();
       queryContext.where = op.and(
-          valuePredicate1, valuePredicate2, innerJoinPredicate,
-          outerJoinPredicate);
+        valuePredicate1,
+        valuePredicate2,
+        innerJoinPredicate,
+        outerJoinPredicate
+      );
       queryContext.outerJoinPredicates = new Set<number>();
       queryContext.outerJoinPredicates.add(outerJoinPredicate.getId());
 
@@ -247,11 +262,15 @@ describe('ImplicitJoinsPass', () => {
       selectNode3.addChild(selectNode4);
       selectNode4.addChild(crossProductNode2);
 
-      return {queryContext: queryContext, root: selectNode1};
+      return { queryContext, root: selectNode1 };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree that involves a 3 table join. It ensures that the
@@ -287,8 +306,8 @@ describe('ImplicitJoinsPass', () => {
 
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j, d];
-      const predicate1 = e['departmentId'].eq(d['id']);
-      const predicate2 = e['jobId'].eq(j['id']);
+      const predicate1 = e.col('departmentId').eq(d.col('id'));
+      const predicate2 = e.col('jobId').eq(j.col('id'));
       queryContext.where = op.and(predicate1, predicate2);
 
       const crossProductNode1 = new CrossProductNode();
@@ -303,11 +322,15 @@ describe('ImplicitJoinsPass', () => {
       const selectNode2 = new SelectNode(predicate2);
       selectNode2.addChild(selectNode1);
 
-      return {queryContext: queryContext, root: selectNode2};
+      return { queryContext, root: selectNode2 };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree that involves a 5 table join. It ensures that all predicate
@@ -359,13 +382,18 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j, d, jh, c];
-      const predicate1 = jh['jobId'].eq(j['id']);
-      const predicate2 = e['jobId'].eq(j['id']);
-      const predicate3 = e['departmentId'].eq(d['id']);
-      const predicate4 = e['id'].eq('empId');
-      const predicate5 = c['id'].eq(d['id']);
-      queryContext.where =
-          op.and(predicate1, predicate2, predicate3, predicate4, predicate5);
+      const predicate1 = jh.col('jobId').eq(j.col('id'));
+      const predicate2 = e.col('jobId').eq(j.col('id'));
+      const predicate3 = e.col('departmentId').eq(d.col('id'));
+      const predicate4 = e.col('id').eq('empId');
+      const predicate5 = c.col('id').eq(d.col('id'));
+      queryContext.where = op.and(
+        predicate1,
+        predicate2,
+        predicate3,
+        predicate4,
+        predicate5
+      );
 
       const crossProductNode1 = new CrossProductNode();
       crossProductNode1.addChild(new TableAccessNode(e));
@@ -394,11 +422,15 @@ describe('ImplicitJoinsPass', () => {
       const selectStep5 = new SelectNode(predicate5);
       selectStep5.addChild(selectStep4);
 
-      return {queryContext: queryContext, root: selectStep5};
+      return { queryContext, root: selectStep5 };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree that involves a self-table join and table aliases. The value
@@ -430,8 +462,8 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [j1 as BaseTable, j2 as BaseTable];
-      const predicate1 = j1['maxSalary'].lt(30000);
-      const predicate2 = j1['maxSalary'].eq(j2['minSalary']);
+      const predicate1 = j1.col('maxSalary').lt(30000);
+      const predicate2 = j1.col('maxSalary').eq(j2.col('minSalary'));
       queryContext.where = op.and(predicate1, predicate2);
 
       const crossProductNode = new CrossProductNode();
@@ -442,11 +474,15 @@ describe('ImplicitJoinsPass', () => {
       const selectNode2 = new SelectNode(predicate2);
       selectNode2.addChild(selectNode1);
 
-      return {queryContext: queryContext, root: selectNode2};
+      return { queryContext, root: selectNode2 };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 
   // Tests a tree that involves a left outer join and also has an additional
@@ -469,8 +505,8 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [r, c];
-      const valuePredicate = c['id'].eq(1);
-      const joinPredicate = r['id'].eq(c['regionId']);
+      const valuePredicate = c.col('id').eq(1);
+      const joinPredicate = r.col('id').eq(c.col('regionId'));
       queryContext.where = op.and(valuePredicate, joinPredicate);
       queryContext.outerJoinPredicates = new Set<number>();
       queryContext.outerJoinPredicates.add(joinPredicate.getId());
@@ -484,11 +520,15 @@ describe('ImplicitJoinsPass', () => {
       crossProductNode.addChild(new TableAccessNode(r));
       crossProductNode.addChild(new TableAccessNode(c));
 
-      return {queryContext: queryContext, root: selectNode1};
+      return { queryContext, root: selectNode1 };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeBefore, pass);
+      constructTree(),
+      treeBefore,
+      treeBefore,
+      pass
+    );
   });
 
   // Tests a tree where to OR predicates exist, each one refers to a single
@@ -522,11 +562,16 @@ describe('ImplicitJoinsPass', () => {
     const constructTree = () => {
       const queryContext = new SelectContext(schema);
       queryContext.from = [e, j];
-      const predicate1 =
-          op.or(e['salary'].gt(1000), e['commissionPercent'].gt(10));
-      const predicate2 = op.or(j['minSalary'].gt(100), j['maxSalary'].gt(200));
+      const predicate1 = op.or(
+        e.col('salary').gt(1000),
+        e.col('commissionPercent').gt(10)
+      );
+      const predicate2 = op.or(
+        j.col('minSalary').gt(100),
+        j.col('maxSalary').gt(200)
+      );
       queryContext.where = op.and(predicate1, predicate2);
-      queryContext.orderBy = [{column: e['id'], order: Order.ASC}];
+      queryContext.orderBy = [{ column: e.col('id'), order: Order.ASC }];
 
       const orderByNode = new OrderByNode(queryContext.orderBy);
       const selectNode1 = new SelectNode(predicate1);
@@ -535,14 +580,18 @@ describe('ImplicitJoinsPass', () => {
       orderByNode.addChild(selectNode1);
       selectNode1.addChild(selectNode2);
       selectNode2.addChild(crossProductNode);
-      queryContext.from.forEach((tableSchema) => {
+      queryContext.from.forEach(tableSchema => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 
-      return {queryContext: queryContext, root: orderByNode};
+      return { queryContext, root: orderByNode };
     };
 
     TreeTestHelper.assertTreeTransformation(
-        constructTree(), treeBefore, treeAfter, pass);
+      constructTree(),
+      treeBefore,
+      treeAfter,
+      pass
+    );
   });
 });

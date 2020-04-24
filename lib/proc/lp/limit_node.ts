@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class LimitNode extends LogicalQueryPlanNode {
   constructor(readonly limit: number) {
     super();
   }
 
-  public toString(): string {
+  toString(): string {
     return `limit(${this.limit})`;
   }
 }

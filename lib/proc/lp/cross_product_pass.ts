@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import {Context} from '../../query/context';
-import {SelectContext} from '../../query/select_context';
-import {RewritePass} from '../rewrite_pass';
+import { Context } from '../../query/context';
+import { SelectContext } from '../../query/select_context';
+import { RewritePass } from '../rewrite_pass';
 
-import {CrossProductNode} from './cross_product_node';
-import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import { CrossProductNode } from './cross_product_node';
+import { LogicalQueryPlanNode } from './logical_query_plan_node';
 
 export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
   constructor() {
     super();
   }
 
-  public rewrite(rootNode: LogicalQueryPlanNode, queryContext: Context):
-      LogicalQueryPlanNode {
+  rewrite(
+    rootNode: LogicalQueryPlanNode,
+    queryContext: Context
+  ): LogicalQueryPlanNode {
     if ((queryContext as SelectContext).from.length < 3) {
       return rootNode;
     }
@@ -38,7 +40,7 @@ export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
   }
 
   private traverse(rootNode: LogicalQueryPlanNode): void {
-    // If rootNode is a CrossProduct and has more than 2 childs, break it down.
+    // If rootNode is a CrossProduct and has more than 2 children, break it down.
     // TODO(dpapad): This needs optimization, since the order chosen here
     // affects whether subsequent steps will be able to convert the
     // cross-product to a join.
@@ -53,6 +55,6 @@ export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
       }
     }
 
-    rootNode.getChildren().forEach((child) => this.traverse(child));
+    rootNode.getChildren().forEach(child => this.traverse(child));
   }
 }
