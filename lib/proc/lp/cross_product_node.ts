@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class CrossProductNode extends LogicalQueryPlanNode {
   constructor() {

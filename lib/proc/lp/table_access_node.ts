@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { BaseTable } from '../../schema/base_table';
-import { Table } from '../../schema/table';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {BaseTable} from '../../schema/base_table';
+import {Table} from '../../schema/table';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class TableAccessNode extends LogicalQueryPlanNode {
   constructor(readonly table: Table) {

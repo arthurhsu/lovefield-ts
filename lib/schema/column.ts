@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Type } from '../base/enum';
-import { PredicateProvider } from '../pred/predicate_provider';
+import {Type} from '../base/enum';
+import {PredicateProvider} from '../pred/predicate_provider';
 
-import { Table } from './table';
+import {Table} from './table';
 
 // Public column interface
 // @export

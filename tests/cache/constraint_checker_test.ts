@@ -22,17 +22,17 @@ import {
   ErrorCode,
   Type,
 } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { ConstraintChecker } from '../../lib/cache/constraint_checker';
-import { Modification } from '../../lib/cache/modification';
-import { Key } from '../../lib/index/key_range';
-import { RuntimeIndex } from '../../lib/index/runtime_index';
-import { BaseTable } from '../../lib/schema/base_table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { schema } from '../../lib/schema/schema';
-import { MockEnv } from '../../testing/mock_env';
-import { SchemaTestHelper } from '../../testing/schema_test_helper';
-import { TestUtil } from '../../testing/test_util';
+import {Row} from '../../lib/base/row';
+import {ConstraintChecker} from '../../lib/cache/constraint_checker';
+import {Modification} from '../../lib/cache/modification';
+import {Key} from '../../lib/index/key_range';
+import {RuntimeIndex} from '../../lib/index/runtime_index';
+import {BaseTable} from '../../lib/schema/base_table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
+import {MockEnv} from '../../testing/mock_env';
+import {SchemaTestHelper} from '../../testing/schema_test_helper';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -65,8 +65,8 @@ describe('ConstraintChecker', () => {
       pkIndexSchema.getNormalizedName()
     ) as RuntimeIndex;
 
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
     const pk1 = row1.payload()['id'] as Key;
     const pk2 = row2.payload()['id'] as Key;
     pkIndex.add(pk1, row1.id());
@@ -74,9 +74,9 @@ describe('ConstraintChecker', () => {
     assert.isTrue(pkIndex.containsKey(pk1));
     assert.isTrue(pkIndex.containsKey(pk2));
 
-    const row3 = table.createRow({ id: pk1, name: 'DummyName' });
-    const row4 = table.createRow({ id: pk2, name: 'DummyName' });
-    const row5 = table.createRow({ id: 'otherPk', name: 'DummyName' });
+    const row3 = table.createRow({id: pk1, name: 'DummyName'});
+    const row4 = table.createRow({id: pk2, name: 'DummyName'});
+    const row5 = table.createRow({id: 'otherPk', name: 'DummyName'});
 
     assert.equal(row1.id(), checker.findExistingRowIdInPkIndex(table, row3));
     assert.equal(row2.id(), checker.findExistingRowIdInPkIndex(table, row4));
@@ -99,7 +99,7 @@ describe('ConstraintChecker', () => {
 
     // Attempting to insert rows that violate the NOT_NULLABLE constraint.
     const invalidRows = [1, 2, 3].map(primaryKey => {
-      return table.createRow({ id: primaryKey.toString(), email: null });
+      return table.createRow({id: primaryKey.toString(), email: null});
     });
 
     TestUtil.assertThrowsError(
@@ -135,7 +135,7 @@ describe('ConstraintChecker', () => {
     const schema1 = SchemaTestHelper.getOneForeignKey(constraintTiming);
     await setUpEnvForSchema(schema1);
     const childTable = env.schema.table('Child') as BaseTable;
-    const childRow = childTable.createRow({ id: 'dummyId' });
+    const childRow = childTable.createRow({id: 'dummyId'});
 
     const checkFn = (timing: ConstraintTiming) => {
       checker.checkForeignKeysForInsert(childTable, [childRow], timing);
@@ -162,19 +162,13 @@ describe('ConstraintChecker', () => {
     await setUpEnvForSchema(schema1);
     const parentTable = env.schema.table('Parent');
     const childTable = env.schema.table('Child');
-    const parentRow = parentTable.createRow({ id: 'dummyId' });
-    const childRow = childTable.createRow({ id: 'dummyId' });
+    const parentRow = parentTable.createRow({id: 'dummyId'});
+    const childRow = childTable.createRow({id: 'dummyId'});
 
     const tx = env.db.createTransaction();
     await tx.exec([
-      env.db
-        .insert()
-        .into(parentTable)
-        .values([parentRow]),
-      env.db
-        .insert()
-        .into(childTable)
-        .values([childRow]),
+      env.db.insert().into(parentTable).values([parentRow]),
+      env.db.insert().into(childTable).values([childRow]),
     ]);
 
     const checkFn = (timing: ConstraintTiming) =>
@@ -207,21 +201,15 @@ describe('ConstraintChecker', () => {
     await setUpEnvForSchema(schema1);
     const parentTable = env.schema.table('Parent');
     const childTable = env.schema.table('Child');
-    const parentRow = parentTable.createRow({ id: 'dummyId' });
-    const childRow = childTable.createRow({ id: 'dummyId' });
+    const parentRow = parentTable.createRow({id: 'dummyId'});
+    const childRow = childTable.createRow({id: 'dummyId'});
 
     const tx = env.db.createTransaction();
     await tx.exec([
-      env.db
-        .insert()
-        .into(parentTable)
-        .values([parentRow]),
-      env.db
-        .insert()
-        .into(childTable)
-        .values([childRow]),
+      env.db.insert().into(parentTable).values([parentRow]),
+      env.db.insert().into(childTable).values([childRow]),
     ]);
-    const parentRowAfter = parentTable.createRow({ id: 'otherId' });
+    const parentRowAfter = parentTable.createRow({id: 'otherId'});
     const modification = [parentRow, parentRowAfter] as Modification;
 
     const checkFn = (timing: ConstraintTiming) =>
@@ -242,7 +230,7 @@ describe('ConstraintChecker', () => {
     const tableA = env.schema.table('TableA') as BaseTable;
     const tableB = env.schema.table('TableB');
     const tableC = env.schema.table('TableC');
-    const tableARow = tableA.createRow({ id: 'tableADummyId' });
+    const tableARow = tableA.createRow({id: 'tableADummyId'});
     const tableBRow = tableB.createRow({
       foreignKey: tableARow.payload()['id'],
       id: 'tableBDummyId',
@@ -252,11 +240,7 @@ describe('ConstraintChecker', () => {
       id: 'tableCDummyId',
     });
 
-    await env.db
-      .insert()
-      .into(tableA)
-      .values([tableARow])
-      .exec();
+    await env.db.insert().into(tableA).values([tableARow]).exec();
 
     // Checking the case where no referring rows exist.
     let cascadedDeletion = checker.detectCascadeDeletion(tableA, [tableARow]);
@@ -264,11 +248,7 @@ describe('ConstraintChecker', () => {
     assert.equal(0, cascadedDeletion.rowIdsPerTable.size);
 
     // Inserting row referring to TableA's row.
-    await env.db
-      .insert()
-      .into(tableB)
-      .values([tableBRow])
-      .exec();
+    await env.db.insert().into(tableB).values([tableBRow]).exec();
     cascadedDeletion = checker.detectCascadeDeletion(tableA, [tableARow]);
     // Ensure that TableB's row has been detected for deletion.
     assert.equal(1, cascadedDeletion.tableOrder.length);
@@ -283,11 +263,7 @@ describe('ConstraintChecker', () => {
     );
 
     // Inserting row referring to TableB's row.
-    await env.db
-      .insert()
-      .into(tableC)
-      .values([tableCRow])
-      .exec();
+    await env.db.insert().into(tableC).values([tableCRow]).exec();
 
     cascadedDeletion = checker.detectCascadeDeletion(tableA, [tableARow]);
     // Ensure that both TableC's and TableB's row have been detected for
@@ -331,18 +307,9 @@ describe('ConstraintChecker', () => {
 
     const tx = env.db.createTransaction();
     await tx.exec([
-      env.db
-        .insert()
-        .into(tableA)
-        .values([tableARow]),
-      env.db
-        .insert()
-        .into(tableB1)
-        .values([tableB1Row]),
-      env.db
-        .insert()
-        .into(tableB2)
-        .values([tableB2Row]),
+      env.db.insert().into(tableA).values([tableARow]),
+      env.db.insert().into(tableB1).values([tableB1Row]),
+      env.db.insert().into(tableB2).values([tableB2Row]),
     ]);
 
     const cascadedDeletion = checker.detectCascadeDeletion(tableA, [tableARow]);

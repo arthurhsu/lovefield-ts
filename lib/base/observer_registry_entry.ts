@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Relation } from '../proc/relation';
-import { TaskItem } from '../proc/task_item';
-import { SelectBuilder } from '../query/select_builder';
-import { SelectContext } from '../query/select_context';
-import { assert } from './assert';
-import { ChangeRecord } from './change_record';
-import { DiffCalculator } from './diff_calculator';
+import {Relation} from '../proc/relation';
+import {TaskItem} from '../proc/task_item';
+import {SelectBuilder} from '../query/select_builder';
+import {SelectContext} from '../query/select_context';
+import {assert} from './assert';
+import {ChangeRecord} from './change_record';
+import {DiffCalculator} from './diff_calculator';
 
 export type ObserverCallback = (changes: ChangeRecord[]) => void;
 export class ObserverRegistryEntry {

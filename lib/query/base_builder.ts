@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { Global } from '../base/global';
-import { Service } from '../base/service';
-import { PhysicalQueryPlan } from '../proc/pp/physical_query_plan';
-import { PhysicalQueryPlanNode } from '../proc/pp/physical_query_plan_node';
-import { QueryEngine } from '../proc/query_engine';
-import { Runner } from '../proc/runner';
-import { TaskItem } from '../proc/task_item';
-import { UserQueryTask } from '../proc/user_query_task';
-import { TreeHelper } from '../structs/tree_helper';
-import { TreeNode } from '../structs/tree_node';
-import { Context } from './context';
-import { QueryBuilder } from './query_builder';
-import { SqlHelper } from './to_sql';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {PhysicalQueryPlan} from '../proc/pp/physical_query_plan';
+import {PhysicalQueryPlanNode} from '../proc/pp/physical_query_plan_node';
+import {QueryEngine} from '../proc/query_engine';
+import {Runner} from '../proc/runner';
+import {TaskItem} from '../proc/task_item';
+import {UserQueryTask} from '../proc/user_query_task';
+import {TreeHelper} from '../structs/tree_helper';
+import {TreeNode} from '../structs/tree_node';
+import {Context} from './context';
+import {QueryBuilder} from './query_builder';
+import {SqlHelper} from './to_sql';
 
 export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   protected query: CONTEXT;

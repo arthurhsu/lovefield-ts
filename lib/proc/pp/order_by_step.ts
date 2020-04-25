@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-import { Order } from '../../base/enum';
-import { IndexableType } from '../../base/eval';
-import { ExecType } from '../../base/private_enum';
-import { Journal } from '../../cache/journal';
-import { AggregatedColumn } from '../../fn/aggregated_column';
-import { fn } from '../../fn/fn';
-import { Context } from '../../query/context';
-import {
-  SelectContext,
-  SelectContextOrderBy,
-} from '../../query/select_context';
-import { Column } from '../../schema/column';
+import {Order} from '../../base/enum';
+import {IndexableType} from '../../base/eval';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {AggregatedColumn} from '../../fn/aggregated_column';
+import {fn} from '../../fn/fn';
+import {Context} from '../../query/context';
+import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
+import {Column} from '../../schema/column';
 
-import { Relation } from '../relation';
-import { RelationEntry } from '../relation_entry';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {Relation} from '../relation';
+import {RelationEntry} from '../relation_entry';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class OrderByStep extends PhysicalQueryPlanNode {
   constructor(readonly orderBy: SelectContextOrderBy[]) {

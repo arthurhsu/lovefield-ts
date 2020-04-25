@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import { DatabaseConnection } from '../../../lib/base/database_connection';
-import { DataStoreType, Order } from '../../../lib/base/enum';
-import { Global } from '../../../lib/base/global';
-import { fn } from '../../../lib/fn/fn';
-import { op } from '../../../lib/fn/op';
-import { SingleKeyRange } from '../../../lib/index/key_range';
-import { Predicate } from '../../../lib/pred/predicate';
-import { PredicateNode } from '../../../lib/pred/predicate_node';
-import { ValuePredicate } from '../../../lib/pred/value_predicate';
-import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
-import { LimitSkipByIndexPass } from '../../../lib/proc/pp/limit_skip_by_index_pass';
-import { LimitStep } from '../../../lib/proc/pp/limit_step';
-import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
-import { ProjectStep } from '../../../lib/proc/pp/project_step';
-import { SelectStep } from '../../../lib/proc/pp/select_step';
-import { SkipStep } from '../../../lib/proc/pp/skip_step';
-import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
-import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
-import { SelectContext } from '../../../lib/query/select_context';
-import { BaseTable } from '../../../lib/schema/base_table';
-import { Column } from '../../../lib/schema/column';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { IndexImpl } from '../../../lib/schema/index_impl';
-import { Table } from '../../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
-import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
-import { TreeTestHelper } from '../../../testing/tree_test_helper';
+import {DatabaseConnection} from '../../../lib/base/database_connection';
+import {DataStoreType, Order} from '../../../lib/base/enum';
+import {Global} from '../../../lib/base/global';
+import {fn} from '../../../lib/fn/fn';
+import {op} from '../../../lib/fn/op';
+import {SingleKeyRange} from '../../../lib/index/key_range';
+import {Predicate} from '../../../lib/pred/predicate';
+import {PredicateNode} from '../../../lib/pred/predicate_node';
+import {ValuePredicate} from '../../../lib/pred/value_predicate';
+import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
+import {LimitSkipByIndexPass} from '../../../lib/proc/pp/limit_skip_by_index_pass';
+import {LimitStep} from '../../../lib/proc/pp/limit_step';
+import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
+import {ProjectStep} from '../../../lib/proc/pp/project_step';
+import {SelectStep} from '../../../lib/proc/pp/select_step';
+import {SkipStep} from '../../../lib/proc/pp/skip_step';
+import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
+import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
+import {SelectContext} from '../../../lib/query/select_context';
+import {BaseTable} from '../../../lib/schema/base_table';
+import {Column} from '../../../lib/schema/column';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {IndexImpl} from '../../../lib/schema/index_impl';
+import {Table} from '../../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
+import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('LimitSkipByIndexPass', () => {
   let db: DatabaseConnection;
@@ -54,7 +54,7 @@ describe('LimitSkipByIndexPass', () => {
     schema = builder.getSchema();
     e = schema.table('Employee');
     pass = new LimitSkipByIndexPass();
-    return builder.connect({ storeType: DataStoreType.MEMORY }).then(conn => {
+    return builder.connect({storeType: DataStoreType.MEMORY}).then(conn => {
       db = conn;
       global = (db as RuntimeDatabase).getGlobal();
     });
@@ -124,7 +124,7 @@ describe('LimitSkipByIndexPass', () => {
       );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return { queryContext, root: limitNode };
+      return {queryContext, root: limitNode};
     };
 
     TreeTestHelper.assertTreeTransformation(
@@ -178,7 +178,7 @@ describe('LimitSkipByIndexPass', () => {
       );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return { queryContext, root: limitNode };
+      return {queryContext, root: limitNode};
     };
 
     TreeTestHelper.assertTreeTransformation(
@@ -223,7 +223,7 @@ describe('LimitSkipByIndexPass', () => {
       );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return { queryContext, root: limitNode };
+      return {queryContext, root: limitNode};
     };
 
     TreeTestHelper.assertTreeTransformation(
@@ -271,7 +271,7 @@ describe('LimitSkipByIndexPass', () => {
       );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return { queryContext, root: limitNode };
+      return {queryContext, root: limitNode};
     };
 
     TreeTestHelper.assertTreeTransformation(
@@ -323,7 +323,7 @@ describe('LimitSkipByIndexPass', () => {
       );
       tableAccessByRowIdNode.addChild(indexRangeScanStep);
 
-      return { queryContext, root: limitNode };
+      return {queryContext, root: limitNode};
     };
 
     TreeTestHelper.assertTreeTransformation(

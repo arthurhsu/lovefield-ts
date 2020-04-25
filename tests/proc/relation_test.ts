@@ -16,15 +16,15 @@
 
 import * as chai from 'chai';
 
-import { Row, PayloadType } from '../../lib/base/row';
-import { Relation } from '../../lib/proc/relation';
-import { RelationEntry } from '../../lib/proc/relation_entry';
-import { BaseColumn } from '../../lib/schema/base_column';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Column } from '../../lib/schema/column';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { Table } from '../../lib/schema/table';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {Row, PayloadType} from '../../lib/base/row';
+import {Relation} from '../../lib/proc/relation';
+import {RelationEntry} from '../../lib/proc/relation_entry';
+import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Column} from '../../lib/schema/column';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {Table} from '../../lib/schema/table';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

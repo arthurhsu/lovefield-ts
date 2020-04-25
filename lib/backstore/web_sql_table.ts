@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
 
-import { WebSqlTx } from './web_sql_tx';
+import {WebSqlTx} from './web_sql_tx';
 
 // Table stream based on a given WebSQL table.
 export class WebSqlTable implements RuntimeTable {

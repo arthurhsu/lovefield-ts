@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Key } from '../index/key_range';
+import {Key} from '../index/key_range';
 
 export interface PayloadType {
   [key: string]: unknown;
@@ -133,7 +133,7 @@ export class Row {
   }
 
   serialize(): RawRow {
-    return { id: this.id_, value: this.toDbPayload() };
+    return {id: this.id_, value: this.toDbPayload()};
   }
 
   keyOfIndex(indexName: string): Key {

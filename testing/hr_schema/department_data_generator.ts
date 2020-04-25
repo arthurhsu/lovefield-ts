@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { assert } from '../../lib/base/assert';
-import { Row } from '../../lib/base/row';
-import { ArrayHelper } from '../../lib/structs/array_helper';
-import { getHrDbSchemaBuilder } from './hr_schema_builder';
-import { HRSchemaSamples } from './sample';
+import {assert} from '../../lib/base/assert';
+import {Row} from '../../lib/base/row';
+import {ArrayHelper} from '../../lib/structs/array_helper';
+import {getHrDbSchemaBuilder} from './hr_schema_builder';
+import {HRSchemaSamples} from './sample';
 
 export class DepartmentDataGenerator {
   private names: string[];
@@ -30,9 +30,7 @@ export class DepartmentDataGenerator {
 
   generate(count: number): Row[] {
     const rawData = this.generateRaw(count);
-    const d = getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Department');
+    const d = getHrDbSchemaBuilder().getSchema().table('Department');
     return rawData.map(object => d.createRow(object));
   }
 

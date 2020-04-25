@@ -16,15 +16,15 @@
 
 import * as chai from 'chai';
 
-import { BackStore } from '../lib/backstore/back_store';
-import { TransactionStats } from '../lib/backstore/transaction_stats';
-import { DatabaseConnection } from '../lib/base/database_connection';
-import { ErrorCode, TransactionType } from '../lib/base/enum';
-import { Global } from '../lib/base/global';
-import { TableType } from '../lib/base/private_enum';
-import { Row } from '../lib/base/row';
-import { Service } from '../lib/base/service';
-import { BaseTable } from '../lib/schema/base_table';
+import {BackStore} from '../lib/backstore/back_store';
+import {TransactionStats} from '../lib/backstore/transaction_stats';
+import {DatabaseConnection} from '../lib/base/database_connection';
+import {ErrorCode, TransactionType} from '../lib/base/enum';
+import {Global} from '../lib/base/global';
+import {TableType} from '../lib/base/private_enum';
+import {Row} from '../lib/base/row';
+import {Service} from '../lib/base/service';
+import {BaseTable} from '../lib/schema/base_table';
 
 const assert = chai.assert;
 
@@ -43,10 +43,7 @@ export class SmokeTester {
   clearDb(): Promise<unknown> {
     const tables = this.db.getSchema().tables();
     const deletePromises = tables.map(table => {
-      return this.db
-        .delete()
-        .from(table)
-        .exec();
+      return this.db.delete().from(table).exec();
     }, this);
 
     return Promise.all(deletePromises);
@@ -60,28 +57,19 @@ export class SmokeTester {
 
     // Inserts 5 records to the database.
     const insertFn = () => {
-      return db
-        .insert()
-        .into(r)
-        .values(regionRows)
-        .exec();
+      return db.insert().into(r).values(regionRows).exec();
     };
 
     // Selects all records from the database.
     const selectAllFn = () => {
-      return db
-        .select()
-        .from(r)
-        .exec() as Promise<unknown[]>;
+      return db.select().from(r).exec() as Promise<unknown[]>;
     };
 
     // Selects some records from the database.
     const selectFn = (ids: string[]) => {
-      return db
-        .select()
-        .from(r)
-        .where(r.col('id').in(ids))
-        .exec() as Promise<unknown[]>;
+      return db.select().from(r).where(r.col('id').in(ids)).exec() as Promise<
+        unknown[]
+      >;
     };
 
     // Updates the 'name' field of two specific rows.
@@ -95,8 +83,8 @@ export class SmokeTester {
 
     // Updates two specific records by replacing the entire row.
     const replaceFn = () => {
-      const regionRow0 = r.createRow({ id: '1', name: 'Venus' });
-      const regionRow1 = r.createRow({ id: '2', name: 'Zeus' });
+      const regionRow0 = r.createRow({id: '1', name: 'Venus'});
+      const regionRow1 = r.createRow({id: '2', name: 'Zeus'});
 
       return db
         .insertOrReplace()
@@ -117,21 +105,21 @@ export class SmokeTester {
     await insertFn();
     let results: unknown[] = await selectFn(['1', '5']);
     assert.equal(2, results.length);
-    assert.deepEqual({ id: '1', name: 'North America' }, results[0]);
-    assert.deepEqual({ id: '5', name: 'Southern Europe' }, results[1]);
+    assert.deepEqual({id: '1', name: 'North America'}, results[0]);
+    assert.deepEqual({id: '5', name: 'Southern Europe'}, results[1]);
 
     results = await selectAllFn();
     assert.equal(regionRows.length, results.length);
 
     await updateFn();
     results = await selectFn(['1', '2']);
-    assert.deepEqual({ id: '1', name: 'Mars' }, results[0]);
-    assert.deepEqual({ id: '2', name: 'Mars' }, results[1]);
+    assert.deepEqual({id: '1', name: 'Mars'}, results[0]);
+    assert.deepEqual({id: '2', name: 'Mars'}, results[1]);
 
     await replaceFn();
     results = await selectFn(['1', '2']);
-    assert.deepEqual({ id: '1', name: 'Venus' }, results[0]);
-    assert.deepEqual({ id: '2', name: 'Zeus' }, results[1]);
+    assert.deepEqual({id: '1', name: 'Venus'}, results[0]);
+    assert.deepEqual({id: '2', name: 'Zeus'}, results[1]);
 
     await deleteFn();
     results = await selectAllFn();
@@ -150,11 +138,7 @@ export class SmokeTester {
     // Issuing multiple queries back to back (no waiting on the previous query
     // to finish). All rows to be inserted have the same primary key.
     const promises = rows.map(row => {
-      return db
-        .insertOrReplace()
-        .into(r)
-        .values([row])
-        .exec();
+      return db.insertOrReplace().into(r).values([row]).exec();
     });
 
     await Promise.all(promises);
@@ -182,14 +166,8 @@ export class SmokeTester {
     const r = this.r;
     const db = this.db;
     const tx = db.createTransaction(TransactionType.READ_WRITE);
-    const insert1 = db
-      .insert()
-      .into(r)
-      .values(rows.slice(1));
-    const insert2 = db
-      .insert()
-      .into(r)
-      .values([rows[0]]);
+    const insert1 = db.insert().into(r).values(rows.slice(1));
+    const insert2 = db.insert().into(r).values([rows[0]]);
 
     await tx.exec([insert1, insert2]);
 
@@ -231,11 +209,11 @@ export class SmokeTester {
   private generateSampleRows(): Row[] {
     const r = this.r;
     return [
-      r.createRow({ id: '1', name: 'North America' }),
-      r.createRow({ id: '2', name: 'Central America' }),
-      r.createRow({ id: '3', name: 'South America' }),
-      r.createRow({ id: '4', name: 'Western Europe' }),
-      r.createRow({ id: '5', name: 'Southern Europe' }),
+      r.createRow({id: '1', name: 'North America'}),
+      r.createRow({id: '2', name: 'Central America'}),
+      r.createRow({id: '3', name: 'South America'}),
+      r.createRow({id: '4', name: 'Western Europe'}),
+      r.createRow({id: '5', name: 'Southern Europe'}),
     ];
   }
 
@@ -246,7 +224,7 @@ export class SmokeTester {
     const sampleRows = new Array(count);
 
     for (let i = 0; i < count; i++) {
-      sampleRows[i] = r.createRow({ id: 1, name: 'Region' + i.toString() });
+      sampleRows[i] = r.createRow({id: 1, name: 'Region' + i.toString()});
     }
 
     return sampleRows;

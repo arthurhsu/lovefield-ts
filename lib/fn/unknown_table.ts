@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { RawRow, Row } from '../base/row';
-import { BaseTable } from '../schema/base_table';
-import { Column } from '../schema/column';
-import { Constraint } from '../schema/constraint';
-import { Index } from '../schema/index';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {RawRow, Row} from '../base/row';
+import {BaseTable} from '../schema/base_table';
+import {Column} from '../schema/column';
+import {Constraint} from '../schema/constraint';
+import {Index} from '../schema/index';
 
 // Pseudo table used for initializing pseudo columns.
 export class UnknownTable implements BaseTable {

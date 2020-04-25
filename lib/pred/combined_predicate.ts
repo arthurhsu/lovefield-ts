@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Operator } from '../base/private_enum';
-import { SingleKeyRangeSet } from '../index/single_key_range_set';
-import { Relation } from '../proc/relation';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
-import { TreeHelper } from '../structs/tree_helper';
-import { PredicateNode } from './predicate_node';
-import { ValuePredicate } from './value_predicate';
+import {assert} from '../base/assert';
+import {Operator} from '../base/private_enum';
+import {SingleKeyRangeSet} from '../index/single_key_range_set';
+import {Relation} from '../proc/relation';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
+import {TreeHelper} from '../structs/tree_helper';
+import {PredicateNode} from './predicate_node';
+import {ValuePredicate} from './value_predicate';
 
 export class CombinedPredicate extends PredicateNode {
   private isComplement: boolean;

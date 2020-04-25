@@ -16,22 +16,22 @@
 
 import * as chai from 'chai';
 
-import { bind } from '../../lib/base/bind';
-import { Capability } from '../../lib/base/capability';
-import { ChangeRecord } from '../../lib/base/change_record';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, ErrorCode, Order } from '../../lib/base/enum';
-import { Resolver } from '../../lib/base/resolver';
-import { Row, PayloadType } from '../../lib/base/row';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { InsertQuery } from '../../lib/query/insert_query';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Builder } from '../../lib/schema/builder';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { JobDataGenerator } from '../../testing/hr_schema/job_data_generator';
-import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
-import { TestUtil } from '../../testing/test_util';
+import {bind} from '../../lib/base/bind';
+import {Capability} from '../../lib/base/capability';
+import {ChangeRecord} from '../../lib/base/change_record';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
+import {Resolver} from '../../lib/base/resolver';
+import {Row, PayloadType} from '../../lib/base/row';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {InsertQuery} from '../../lib/query/insert_query';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Builder} from '../../lib/schema/builder';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
+import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -76,26 +76,11 @@ describe('EndToEndTest', () => {
 
     const tx = db.createTransaction();
     return tx.exec([
-      db
-        .insert()
-        .into(r)
-        .values(dataGenerator.sampleRegions),
-      db
-        .insert()
-        .into(c)
-        .values(dataGenerator.sampleCountries),
-      db
-        .insert()
-        .into(l)
-        .values(dataGenerator.sampleLocations),
-      db
-        .insert()
-        .into(d)
-        .values(dataGenerator.sampleDepartments),
-      db
-        .insert()
-        .into(j)
-        .values(sampleJobs),
+      db.insert().into(r).values(dataGenerator.sampleRegions),
+      db.insert().into(c).values(dataGenerator.sampleCountries),
+      db.insert().into(l).values(dataGenerator.sampleLocations),
+      db.insert().into(d).values(dataGenerator.sampleDepartments),
+      db.insert().into(j).values(sampleJobs),
     ]);
   }
 
@@ -103,7 +88,7 @@ describe('EndToEndTest', () => {
     builderFn: () => InsertQuery
   ): Promise<void> {
     const r = db.getSchema().table('Region');
-    const regionRow = r.createRow({ id: 'regionId', name: 'dummyRegionName' });
+    const regionRow = r.createRow({id: 'regionId', name: 'dummyRegionName'});
 
     const c = db.getSchema().table('Country');
 
@@ -147,11 +132,7 @@ describe('EndToEndTest', () => {
     manualRow.payload()['regionId'] = 'regionId';
     const global = getGlobal(db);
 
-    await db
-      .insert()
-      .into(r)
-      .values([regionRow])
-      .exec();
+    await db.insert().into(r).values([regionRow]).exec();
     let results = (await builderFn()
       .into(c)
       .values(firstBatch)
@@ -194,11 +175,7 @@ describe('EndToEndTest', () => {
     // Testing that previously assigned primary keys that have now been
     // freed are not re-used.
     // Removing the row with the max primary key encountered so far.
-    await db
-      .delete()
-      .from(c)
-      .where(c.col('id').eq(manuallyAssignedId))
-      .exec();
+    await db.delete().from(c).where(c.col('id').eq(manuallyAssignedId)).exec();
 
     // Adding a new row. Expecting that the automatically assigned primary
     // key will be greater than the max primary key ever encountered in this
@@ -215,11 +192,11 @@ describe('EndToEndTest', () => {
   }
 
   function getDynamicSchemaConnector(builder: Builder): Connector {
-    return builder.connect.bind(builder, { storeType: DataStoreType.MEMORY });
+    return builder.connect.bind(builder, {storeType: DataStoreType.MEMORY});
   }
 
   function getDynamicSchemaBundledConnector(builder: Builder): Connector {
-    builder.setPragma({ enableBundledMode: true });
+    builder.setPragma({enableBundledMode: true});
     return builder.connect.bind(builder, undefined);
   }
 
@@ -237,10 +214,7 @@ describe('EndToEndTest', () => {
       const row = j.createRow();
       row.payload()['id'] = 'dummyJobId';
 
-      const queryBuilder = db
-        .insert()
-        .into(j)
-        .values([row]);
+      const queryBuilder = db.insert().into(j).values([row]);
       const res1 = (await queryBuilder.exec()) as PayloadType[];
       assert.equal(1, res1.length);
       assert.equal(row.payload()['id'], res1[0]['id']);
@@ -264,17 +238,11 @@ describe('EndToEndTest', () => {
         'departmentId'
       ] = dataGenerator.sampleDepartments[0].payload()['id'];
 
-      const queryBuilder = db
-        .insert()
-        .into(jobHistory)
-        .values([row]);
+      const queryBuilder = db.insert().into(jobHistory).values([row]);
       const tx = db.createTransaction();
       // Adding necessary rows to avoid triggering foreign key constraints.
       await tx.exec([
-        db
-          .insert()
-          .into(e)
-          .values(dataGenerator.sampleEmployees.slice(0, 1)),
+        db.insert().into(e).values(dataGenerator.sampleEmployees.slice(0, 1)),
       ]);
       const res1 = (await queryBuilder.exec()) as PayloadType[];
       assert.equal(1, res1.length);
@@ -285,14 +253,8 @@ describe('EndToEndTest', () => {
     it(`${key}_Insert_CrossColumnPrimaryKey`, async () => {
       const table = db.getSchema().table('DummyTable');
 
-      const q1 = db
-        .insert()
-        .into(table)
-        .values([table.createRow()]);
-      const q2 = db
-        .insert()
-        .into(table)
-        .values([table.createRow()]);
+      const q1 = db.insert().into(table).values([table.createRow()]);
+      const q2 = db.insert().into(table).values([table.createRow()]);
 
       const results = (await q1.exec()) as unknown[];
       assert.equal(1, results.length);
@@ -327,14 +289,8 @@ describe('EndToEndTest', () => {
         string2: 'string2',
       });
 
-      const q1 = db
-        .insert()
-        .into(table)
-        .values([row1]);
-      const q2 = db
-        .insert()
-        .into(table)
-        .values([row2]);
+      const q1 = db.insert().into(table).values([row1]);
+      const q2 = db.insert().into(table).values([row2]);
 
       const results = (await q1.exec()) as unknown[];
       assert.equal(1, results.length);
@@ -451,11 +407,7 @@ describe('EndToEndTest', () => {
 
       return TestUtil.assertPromiseReject(
         ErrorCode.FK_VIOLATION,
-        db
-          .insertOrReplace()
-          .into(d)
-          .values([rowAfter])
-          .exec()
+        db.insertOrReplace().into(d).values([rowAfter]).exec()
       );
     });
 
@@ -463,8 +415,8 @@ describe('EndToEndTest', () => {
     it(`${key}_InsertOrReplace_Bind`, async () => {
       const region = db.getSchema().table('Region');
       const rows = [
-        region.createRow({ id: 'd1', name: 'dummyName' }),
-        region.createRow({ id: 'd2', name: 'dummyName' }),
+        region.createRow({id: 'd1', name: 'dummyName'}),
+        region.createRow({id: 'd2', name: 'dummyName'}),
       ];
 
       const queryBuilder = db
@@ -481,14 +433,11 @@ describe('EndToEndTest', () => {
     it(`${key}_InsertOrReplace_BindArray`, async () => {
       const region = db.getSchema().table('Region');
       const rows = [
-        region.createRow({ id: 'd1', name: 'dummyName' }),
-        region.createRow({ id: 'd2', name: 'dummyName' }),
+        region.createRow({id: 'd1', name: 'dummyName'}),
+        region.createRow({id: 'd2', name: 'dummyName'}),
       ];
 
-      const queryBuilder = db
-        .insertOrReplace()
-        .into(region)
-        .values(bind(0));
+      const queryBuilder = db.insertOrReplace().into(region).values(bind(0));
 
       await queryBuilder.bind([rows]).exec();
       const results = await TestUtil.selectAll(getGlobal(db), region);
@@ -671,10 +620,7 @@ describe('EndToEndTest', () => {
       await addSampleData();
 
       const jobId = 'jobId' + Math.floor(sampleJobs.length / 2).toString();
-      const queryBuilder = db
-        .delete()
-        .from(j)
-        .where(j.col('id').eq(jobId));
+      const queryBuilder = db.delete().from(j).where(j.col('id').eq(jobId));
 
       await queryBuilder.exec();
       const results = await TestUtil.selectAll(getGlobal(db), j);
@@ -719,10 +665,7 @@ describe('EndToEndTest', () => {
     it(`${key}_Delete_All`, async () => {
       await addSampleData();
 
-      await db
-        .delete()
-        .from(j)
-        .exec();
+      await db.delete().from(j).exec();
       const results = await TestUtil.selectAll(getGlobal(db), j);
       assert.equal(0, results.length);
     });

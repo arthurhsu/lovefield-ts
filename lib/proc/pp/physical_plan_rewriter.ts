@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Context } from '../../query/context';
-import { RewritePass } from '../rewrite_pass';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {Context} from '../../query/context';
+import {RewritePass} from '../rewrite_pass';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 // Rewrites the logical query plan such that the resulting physical query plan
 // is faster to calculate than the original "naive" plan.

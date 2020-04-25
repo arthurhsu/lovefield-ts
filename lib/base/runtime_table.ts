@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Row } from './row';
+import {Row} from './row';
 
 // Interface that models a table in runtime. This is different from schema
 // table. A runtime table is the collection of rows.

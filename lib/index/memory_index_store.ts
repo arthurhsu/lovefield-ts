@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { IndexImpl } from '../schema/index_impl';
-import { BTree } from './btree';
-import { ComparatorFactory } from './comparator_factory';
-import { IndexStore } from './index_store';
-import { NullableIndex } from './nullable_index';
-import { RowId } from './row_id';
-import { RuntimeIndex } from './runtime_index';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {IndexImpl} from '../schema/index_impl';
+import {BTree} from './btree';
+import {ComparatorFactory} from './comparator_factory';
+import {IndexStore} from './index_store';
+import {NullableIndex} from './nullable_index';
+import {RowId} from './row_id';
+import {RuntimeIndex} from './runtime_index';
 
 // In-memory index store that builds all indices at the time of init.
 export class MemoryIndexStore implements IndexStore {

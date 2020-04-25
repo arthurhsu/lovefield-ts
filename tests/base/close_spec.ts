@@ -15,11 +15,11 @@
  */
 
 import * as chai from 'chai';
-import { Capability } from '../../lib/base/capability';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { TestUtil } from '../../testing/test_util';
+import {Capability} from '../../lib/base/capability';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -44,9 +44,9 @@ describe('Close', () => {
       () => {
         const schemaBuilder = getHrDbSchemaBuilder();
         schemaBuilder
-          .connect({ storeType: DataStoreType.MEMORY })
+          .connect({storeType: DataStoreType.MEMORY})
           .then(conn => (db = conn));
-        schemaBuilder.connect({ storeType: DataStoreType.MEMORY });
+        schemaBuilder.connect({storeType: DataStoreType.MEMORY});
       }
     );
   });

@@ -16,34 +16,34 @@
 
 import * as sinon from 'sinon';
 
-import { DatabaseConnection } from '../../../lib/base/database_connection';
-import { DataStoreType, Order } from '../../../lib/base/enum';
-import { Global } from '../../../lib/base/global';
-import { Service } from '../../../lib/base/service';
-import { op } from '../../../lib/fn/op';
-import { IndexStats } from '../../../lib/index/index_stats';
-import { IndexStore } from '../../../lib/index/index_store';
-import { JoinPredicate } from '../../../lib/pred/join_predicate';
-import { Predicate } from '../../../lib/pred/predicate';
-import { PredicateNode } from '../../../lib/pred/predicate_node';
-import { CrossProductStep } from '../../../lib/proc/pp/cross_product_step';
-import { IndexRangeScanPass } from '../../../lib/proc/pp/index_range_scan_pass';
-import { JoinStep } from '../../../lib/proc/pp/join_step';
-import { LimitStep } from '../../../lib/proc/pp/limit_step';
-import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
-import { ProjectStep } from '../../../lib/proc/pp/project_step';
-import { SelectStep } from '../../../lib/proc/pp/select_step';
-import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
-import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
-import { SelectContext } from '../../../lib/query/select_context';
-import { BaseColumn } from '../../../lib/schema/base_column';
-import { BaseTable } from '../../../lib/schema/base_table';
-import { Column } from '../../../lib/schema/column';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { Table } from '../../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
-import { TestUtil } from '../../../testing/test_util';
-import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
+import {DatabaseConnection} from '../../../lib/base/database_connection';
+import {DataStoreType, Order} from '../../../lib/base/enum';
+import {Global} from '../../../lib/base/global';
+import {Service} from '../../../lib/base/service';
+import {op} from '../../../lib/fn/op';
+import {IndexStats} from '../../../lib/index/index_stats';
+import {IndexStore} from '../../../lib/index/index_store';
+import {JoinPredicate} from '../../../lib/pred/join_predicate';
+import {Predicate} from '../../../lib/pred/predicate';
+import {PredicateNode} from '../../../lib/pred/predicate_node';
+import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
+import {IndexRangeScanPass} from '../../../lib/proc/pp/index_range_scan_pass';
+import {JoinStep} from '../../../lib/proc/pp/join_step';
+import {LimitStep} from '../../../lib/proc/pp/limit_step';
+import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
+import {ProjectStep} from '../../../lib/proc/pp/project_step';
+import {SelectStep} from '../../../lib/proc/pp/select_step';
+import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
+import {SelectContext} from '../../../lib/query/select_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
+import {Column} from '../../../lib/schema/column';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {Table} from '../../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import {TestUtil} from '../../../testing/test_util';
+import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('IndexRangeScanPass', () => {
   let db: DatabaseConnection;
@@ -60,7 +60,7 @@ describe('IndexRangeScanPass', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    const option = { storeType: DataStoreType.MEMORY };
+    const option = {storeType: DataStoreType.MEMORY};
     return getHrDbSchemaBuilder()
       .connect(option)
       .then(conn => {
@@ -657,7 +657,7 @@ describe('IndexRangeScanPass', () => {
     // Constructing left sub-tree.
     const selectNode1 = createSelectStep(queryContext, 0);
     const orderByNode1 = new OrderByStep([
-      { column: e.col('salary'), order: Order.ASC },
+      {column: e.col('salary'), order: Order.ASC},
     ]);
     const selectNode2 = createSelectStep(queryContext, 1);
     const tableAccessNode1 = new TableAccessFullStep(
@@ -672,7 +672,7 @@ describe('IndexRangeScanPass', () => {
     // Constructing right sub-tree.
     const selectNode3 = createSelectStep(queryContext, 2);
     const orderByNode2 = new OrderByStep([
-      { column: j.col('title'), order: Order.ASC },
+      {column: j.col('title'), order: Order.ASC},
     ]);
     const selectNode4 = createSelectStep(queryContext, 3);
     const tableAccessNode2 = new TableAccessFullStep(
@@ -687,7 +687,7 @@ describe('IndexRangeScanPass', () => {
     // Constructing the overall tree.
     const rootNode = new ProjectStep([], (null as unknown) as Column[]);
     const orderByNode3 = new OrderByStep([
-      { column: e.col('salary'), order: Order.ASC },
+      {column: e.col('salary'), order: Order.ASC},
     ]);
     const joinPredicate = (queryContext.where as PredicateNode).getChildAt(
       4

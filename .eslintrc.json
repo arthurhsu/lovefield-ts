@@ -16,9 +16,7 @@
         "args": "none",
         "ignoreResetSiblings": false
       }
-    ],
-    // TODO(arthurhsu): unset prettier override
-    "prettier/prettier": [1]
+    ]
   },
   "ignorePatterns": [
     "coverage/",

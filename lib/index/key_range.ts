@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Favor } from '../base/private_enum';
-import { UnboundKey } from './unbound_key';
+import {Favor} from '../base/private_enum';
+import {UnboundKey} from './unbound_key';
 
 // TODO(arthurhsu): original SingleKey can be null.
 export type SingleKey = string | number;

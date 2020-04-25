@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PayloadType, RawRow, Row } from '../base/row';
+import {PayloadType, RawRow, Row} from '../base/row';
 
 // The base page class for bundled rows. Each page is a physical row in
 // IndexedDB, and contains 2^BUNDLE_EXPONENT logical rows.

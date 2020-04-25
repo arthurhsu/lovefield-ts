@@ -17,23 +17,23 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { IndexedDB } from '../../lib/backstore/indexed_db';
-import { IndexedDBRawBackStore } from '../../lib/backstore/indexed_db_raw_back_store';
-import { Page } from '../../lib/backstore/page';
-import { RawBackStore } from '../../lib/backstore/raw_back_store';
-import { Capability } from '../../lib/base/capability';
-import { Type } from '../../lib/base/enum';
-import { RawRow, Row, PayloadType } from '../../lib/base/row';
-import { Builder } from '../../lib/schema/builder';
-import { TestUtil } from '../../testing/test_util';
+import {IndexedDB} from '../../lib/backstore/indexed_db';
+import {IndexedDBRawBackStore} from '../../lib/backstore/indexed_db_raw_back_store';
+import {Page} from '../../lib/backstore/page';
+import {RawBackStore} from '../../lib/backstore/raw_back_store';
+import {Capability} from '../../lib/base/capability';
+import {Type} from '../../lib/base/enum';
+import {RawRow, Row, PayloadType} from '../../lib/base/row';
+import {Builder} from '../../lib/schema/builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 const skip = !Capability.get().indexedDb;
 const test = skip ? describe.skip : describe;
 
 test('IndexedDBRawBackStore', () => {
-  const CONTENTS = { id: 'hello', name: 'world' };
-  const CONTENTS2 = { id: 'hello2', name: 'world2' };
+  const CONTENTS = {id: 'hello', name: 'world'};
+  const CONTENTS2 = {id: 'hello2', name: 'world2'};
   const MAGIC = Math.pow(2, Page.BUNDLE_EXPONENT);
   let builder1: Builder;
   let builder2: Builder;
@@ -194,8 +194,8 @@ test('IndexedDBRawBackStore', () => {
   });
 
   it('addTableColumn_Bundled', () => {
-    builder1.setPragma({ enableBundledMode: true });
-    builder2.setPragma({ enableBundledMode: true });
+    builder1.setPragma({enableBundledMode: true});
+    builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
@@ -260,8 +260,8 @@ test('IndexedDBRawBackStore', () => {
   });
 
   it('dropTableColumn_Bundled', () => {
-    builder1.setPragma({ enableBundledMode: true });
-    builder2.setPragma({ enableBundledMode: true });
+    builder1.setPragma({enableBundledMode: true});
+    builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
@@ -326,8 +326,8 @@ test('IndexedDBRawBackStore', () => {
   });
 
   it('renameTableColumn_Bundled', () => {
-    builder1.setPragma({ enableBundledMode: true });
-    builder2.setPragma({ enableBundledMode: true });
+    builder1.setPragma({enableBundledMode: true});
+    builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
@@ -416,8 +416,8 @@ test('IndexedDBRawBackStore', () => {
   });
 
   it('dump_Bundled', () => {
-    builder1.setPragma({ enableBundledMode: true });
-    builder2.setPragma({ enableBundledMode: true });
+    builder1.setPragma({enableBundledMode: true});
+    builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()

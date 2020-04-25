@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { BackStore } from '../backstore/back_store';
-import { Tx } from '../backstore/tx';
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { TableType } from '../base/private_enum';
-import { Row } from '../base/row';
-import { Service } from '../base/service';
-import { BTree } from '../index/btree';
-import { ComparatorFactory } from '../index/comparator_factory';
-import { IndexStore } from '../index/index_store';
-import { Key } from '../index/key_range';
-import { NullableIndex } from '../index/nullable_index';
-import { RowId } from '../index/row_id';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { IndexImpl } from '../schema/index_impl';
+import {BackStore} from '../backstore/back_store';
+import {Tx} from '../backstore/tx';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {TableType} from '../base/private_enum';
+import {Row} from '../base/row';
+import {Service} from '../base/service';
+import {BTree} from '../index/btree';
+import {ComparatorFactory} from '../index/comparator_factory';
+import {IndexStore} from '../index/index_store';
+import {Key} from '../index/key_range';
+import {NullableIndex} from '../index/nullable_index';
+import {RowId} from '../index/row_id';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {IndexImpl} from '../schema/index_impl';
 
-import { Cache } from './cache';
+import {Cache} from './cache';
 
 // Prefetcher fetches rows from database into cache and build indices.
 export class Prefetcher {

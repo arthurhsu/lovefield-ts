@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TableDiff } from '../cache/table_diff';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { BackStore } from './back_store';
-import { LocalStorageTable } from './local_storage_table';
-import { LocalStorageTx } from './local_storage_tx';
-import { RawBackStore } from './raw_back_store';
-import { Tx } from './tx';
+import {BackStore} from './back_store';
+import {LocalStorageTable} from './local_storage_table';
+import {LocalStorageTx} from './local_storage_tx';
+import {RawBackStore} from './raw_back_store';
+import {Tx} from './tx';
 
 type StorageEventHandler = (ev: StorageEvent) => unknown;
 

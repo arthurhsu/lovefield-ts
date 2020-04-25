@@ -17,20 +17,20 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { RawBackStore } from '../../lib/backstore/raw_back_store';
-import { WebSql } from '../../lib/backstore/web_sql';
-import { Capability } from '../../lib/base/capability';
-import { DataStoreType, Type } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { Resolver } from '../../lib/base/resolver';
-import { PayloadType } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { ServiceId } from '../../lib/base/service_id';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { Builder } from '../../lib/schema/builder';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { NestedPayloadType, TestUtil } from '../../testing/test_util';
+import {RawBackStore} from '../../lib/backstore/raw_back_store';
+import {WebSql} from '../../lib/backstore/web_sql';
+import {Capability} from '../../lib/base/capability';
+import {DataStoreType, Type} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {Resolver} from '../../lib/base/resolver';
+import {PayloadType} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {ServiceId} from '../../lib/base/service_id';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {Builder} from '../../lib/schema/builder';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {NestedPayloadType, TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -110,8 +110,8 @@ describe('WebSqlRawBackStore', () => {
   });
 
   async function populateOldData(): Promise<void> {
-    const CONTENTS = { id: 'hello', name: 'world' };
-    const CONTENTS2 = { id: 'hello2', name: 'world2' };
+    const CONTENTS = {id: 'hello', name: 'world'};
+    const CONTENTS2 = {id: 'hello2', name: 'world2'};
 
     const builder = new Builder(upgradeDbName, 1);
     builder
@@ -119,18 +119,11 @@ describe('WebSqlRawBackStore', () => {
       .addColumn('id', Type.STRING)
       .addColumn('name', Type.STRING);
 
-    const db = await builder.connect({ storeType: DataStoreType.WEB_SQL });
+    const db = await builder.connect({storeType: DataStoreType.WEB_SQL});
     const tableA = db.getSchema().tables()[0];
     const rows = [tableA.createRow(CONTENTS), tableA.createRow(CONTENTS2)];
-    await db
-      .insert()
-      .into(tableA)
-      .values(rows)
-      .exec();
-    const results = (await db
-      .select()
-      .from(tableA)
-      .exec()) as unknown[];
+    await db.insert().into(tableA).values(rows).exec();
+    const results = (await db.select().from(tableA).exec()) as unknown[];
     assert.equal(2, results.length);
   }
 
@@ -169,10 +162,7 @@ describe('WebSqlRawBackStore', () => {
       storeType: DataStoreType.WEB_SQL,
     });
     const tableA = db.getSchema().tables()[0];
-    const results = (await db
-      .select()
-      .from(tableA)
-      .exec()) as PayloadType[];
+    const results = (await db.select().from(tableA).exec()) as PayloadType[];
     checker(results);
     return results;
   }

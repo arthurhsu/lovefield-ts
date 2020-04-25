@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { PayloadType, Row } from '../../lib/base/row';
-import { Table } from '../../lib/schema/table';
-import { BaseTable } from '../../lib/schema/base_table';
-import { MathHelper } from '../../lib/structs/math_helper';
-import { DepartmentDataGenerator } from './department_data_generator';
-import { EmployeeDataGenerator } from './employee_data_generator';
-import { getHrDbSchemaBuilder } from './hr_schema_builder';
-import { JobDataGenerator } from './job_data_generator';
+import {PayloadType, Row} from '../../lib/base/row';
+import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
+import {MathHelper} from '../../lib/structs/math_helper';
+import {DepartmentDataGenerator} from './department_data_generator';
+import {EmployeeDataGenerator} from './employee_data_generator';
+import {getHrDbSchemaBuilder} from './hr_schema_builder';
+import {JobDataGenerator} from './job_data_generator';
 
 interface EmployeeGroundTruth {
   minSalary: number;

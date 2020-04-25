@@ -16,10 +16,10 @@
 
 import * as chai from 'chai';
 
-import { DataStoreType, Type } from '../../lib/base/enum';
-import { Inspector } from '../../lib/base/inspect';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { Builder } from '../../lib/schema/builder';
+import {DataStoreType, Type} from '../../lib/base/enum';
+import {Inspector} from '../../lib/base/inspect';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {Builder} from '../../lib/schema/builder';
 
 const assert = chai.assert;
 
@@ -59,11 +59,7 @@ describe('Inspect', () => {
         })
       );
     }
-    return db
-      .insert()
-      .into(table)
-      .values(rows)
-      .exec();
+    return db.insert().into(table).values(rows).exec();
   }
 
   async function addSample2(db: RuntimeDatabase): Promise<unknown> {
@@ -78,11 +74,7 @@ describe('Inspect', () => {
         })
       );
     }
-    return db
-      .insert()
-      .into(table)
-      .values(rows)
-      .exec();
+    return db.insert().into(table).values(rows).exec();
   }
 
   it('inspect', async () => {

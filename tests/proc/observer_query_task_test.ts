@@ -16,15 +16,15 @@
 
 import * as chai from 'chai';
 
-import { ChangeRecord } from '../../lib/base/change_record';
-import { DataStoreType } from '../../lib/base/enum';
-import { Resolver } from '../../lib/base/resolver';
-import { ObserverQueryTask } from '../../lib/proc/observer_query_task';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { SelectBuilder } from '../../lib/query/select_builder';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
+import {ChangeRecord} from '../../lib/base/change_record';
+import {DataStoreType} from '../../lib/base/enum';
+import {Resolver} from '../../lib/base/resolver';
+import {ObserverQueryTask} from '../../lib/proc/observer_query_task';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {SelectBuilder} from '../../lib/query/select_builder';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
 const assert = chai.assert;
 
@@ -49,11 +49,7 @@ describe('ObserverQueryTask', () => {
       job.payload()['id'] = `jobId${i}`;
       rows.push(job);
     }
-    return db
-      .insert()
-      .into(j)
-      .values(rows)
-      .exec();
+    return db.insert().into(j).values(rows).exec();
   }
 
   it('exec', () => {

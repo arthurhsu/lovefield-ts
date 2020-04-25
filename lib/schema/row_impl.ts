@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { DEFAULT_VALUES, Type } from '../base/enum';
-import { PayloadType, Row } from '../base/row';
-import { Key } from '../index/key_range';
+import {DEFAULT_VALUES, Type} from '../base/enum';
+import {PayloadType, Row} from '../base/row';
+import {Key} from '../index/key_range';
 
-import { Column } from './column';
-import { Index } from './index';
+import {Column} from './column';
+import {Index} from './index';
 
 export class RowImpl extends Row {
   constructor(

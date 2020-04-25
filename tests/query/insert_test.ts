@@ -15,15 +15,15 @@
  */
 
 import * as chai from 'chai';
-import { bind } from '../../lib/base/bind';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { InsertBuilder } from '../../lib/query/insert_builder';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
-import { TestUtil } from '../../testing/test_util';
+import {bind} from '../../lib/base/bind';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {InsertBuilder} from '../../lib/query/insert_builder';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -32,7 +32,7 @@ describe('InsertTest', () => {
   let global: Global;
   before(() => {
     return getHrDbSchemaBuilder()
-      .connect({ storeType: DataStoreType.MEMORY })
+      .connect({storeType: DataStoreType.MEMORY})
       .then(conn => {
         db = conn;
         global = (db as RuntimeDatabase).getGlobal();
@@ -55,11 +55,7 @@ describe('InsertTest', () => {
   // Tests that Insert#exec() fails if values() has not been called first.
   it('exec_ThrowsMissingValues', () => {
     const query = new InsertBuilder(global);
-    query.into(
-      getHrDbSchemaBuilder()
-        .getSchema()
-        .table('Job')
-    );
+    query.into(getHrDbSchemaBuilder().getSchema().table('Job'));
     // 518: Invalid usage of insert().
     return TestUtil.assertPromiseReject(ErrorCode.INVALID_INSERT, query.exec());
   });
@@ -71,11 +67,7 @@ describe('InsertTest', () => {
     const query = new InsertBuilder(global, /* allowReplace */ true);
 
     query
-      .into(
-        getHrDbSchemaBuilder()
-          .getSchema()
-          .table('JobHistory')
-      )
+      .into(getHrDbSchemaBuilder().getSchema().table('JobHistory'))
       .values([jobHistoryRow]);
     // 519: Attempted to insert or replace in a table with no primary key.
     return TestUtil.assertPromiseReject(
@@ -100,9 +92,7 @@ describe('InsertTest', () => {
     const query = new InsertBuilder(global);
 
     const buildQuery = () => {
-      const jobTable = getHrDbSchemaBuilder()
-        .getSchema()
-        .table('Job');
+      const jobTable = getHrDbSchemaBuilder().getSchema().table('Job');
       query.into(jobTable).into(jobTable);
     };
 
@@ -112,9 +102,7 @@ describe('InsertTest', () => {
 
   it('values_ThrowMissingBinding', () => {
     const query = new InsertBuilder(global);
-    const jobTable = getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Job');
+    const jobTable = getHrDbSchemaBuilder().getSchema().table('Job');
     query.into(jobTable).values(bind(0));
     // 518: Invalid usage of insert().
     return TestUtil.assertPromiseReject(ErrorCode.INVALID_INSERT, query.exec());
@@ -122,10 +110,7 @@ describe('InsertTest', () => {
 
   it('context_Clone', () => {
     const j = db.getSchema().table('Job');
-    const query = db
-      .insert()
-      .into(j)
-      .values(bind(0)) as InsertBuilder;
+    const query = db.insert().into(j).values(bind(0)) as InsertBuilder;
     const context = query.getQuery();
     const context2 = context.clone();
     assert.deepEqual(context.into, context2.into);

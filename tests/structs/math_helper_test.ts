@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { MathHelper } from '../../lib/structs/math_helper';
+import {MathHelper} from '../../lib/structs/math_helper';
 
 const assert = chai.assert;
 
@@ -52,10 +52,10 @@ describe('MathHelper', () => {
       return a.field === b.field;
     };
 
-    const a1: A = { field: 'a1', field2: 'hello' };
-    const a2: A = { field: 'a2', field2: 33 };
-    const a3: A = { field: 'a3' };
-    const a4: A = { field: 'a3' };
+    const a1: A = {field: 'a1', field2: 'hello'};
+    const a2: A = {field: 'a2', field2: 33};
+    const a3: A = {field: 'a3'};
+    const a4: A = {field: 'a3'};
 
     assert.sameOrderedMembers(
       [a1, a2],

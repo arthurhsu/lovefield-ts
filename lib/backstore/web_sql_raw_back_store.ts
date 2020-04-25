@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Resolver } from '../base/resolver';
-import { PayloadType, RawRow, Row } from '../base/row';
-import { Journal } from '../cache/journal';
-import { BaseTable } from '../schema/base_table';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Resolver} from '../base/resolver';
+import {PayloadType, RawRow, Row} from '../base/row';
+import {Journal} from '../cache/journal';
+import {BaseTable} from '../schema/base_table';
 
-import { IndexedDBRawBackStore } from './indexed_db_raw_back_store';
-import { RawBackStore } from './raw_back_store';
-import { WebSqlTx } from './web_sql_tx';
+import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
+import {RawBackStore} from './raw_back_store';
+import {WebSqlTx} from './web_sql_tx';
 
 // WebSQL raw back store. Please note that all altering functions will commit
 // immediately due to implementation restrictions. This is different from the

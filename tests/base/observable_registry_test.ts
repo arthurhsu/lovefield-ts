@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import { ChangeRecord } from '../../lib/base/change_record';
-import { ObserverRegistry } from '../../lib/base/observer_registry';
-import { Resolver } from '../../lib/base/resolver';
-import { Relation } from '../../lib/proc/relation';
-import { SelectBuilder } from '../../lib/query/select_builder';
-import { SelectContext } from '../../lib/query/select_context';
-import { Table } from '../../lib/schema/table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { MockEnv } from '../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {ChangeRecord} from '../../lib/base/change_record';
+import {ObserverRegistry} from '../../lib/base/observer_registry';
+import {Resolver} from '../../lib/base/resolver';
+import {Relation} from '../../lib/proc/relation';
+import {SelectBuilder} from '../../lib/query/select_builder';
+import {SelectContext} from '../../lib/query/select_context';
+import {Table} from '../../lib/schema/table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {MockEnv} from '../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -52,8 +52,8 @@ describe('ObservableRegistry', () => {
     const callback = (changes: ChangeRecord[]) => promiseResolver.resolve();
 
     registry.addObserver(builder, callback);
-    const row1 = table.createRow({ id: 'dummyId1', value: 'dummyValue1' });
-    const row2 = table.createRow({ id: 'dummyId2', value: 'dummyValue2' });
+    const row1 = table.createRow({id: 'dummyId1', value: 'dummyValue1'});
+    const row2 = table.createRow({id: 'dummyId2', value: 'dummyValue2'});
 
     const firstResults = Relation.fromRows([row1], [table.getName()]);
     assert.isTrue(
@@ -75,7 +75,7 @@ describe('ObservableRegistry', () => {
     const callback = () => assert.fail('Observer not removed');
     registry.addObserver(builder, callback);
     registry.removeObserver(builder, callback);
-    const row = table.createRow({ id: 'dummyId', value: 'dummyValue' });
+    const row = table.createRow({id: 'dummyId', value: 'dummyValue'});
     const newResults = Relation.fromRows([row], [table.getName()]);
     assert.isFalse(
       registry.updateResultsForQuery(builder.getQuery(), newResults)

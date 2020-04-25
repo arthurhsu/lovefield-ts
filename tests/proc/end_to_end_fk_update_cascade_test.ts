@@ -16,12 +16,12 @@
 
 import * as chai from 'chai';
 
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { ConstraintAction, DataStoreType, Type } from '../../lib/base/enum';
-import { Row, PayloadType } from '../../lib/base/row';
-import { op } from '../../lib/fn/op';
-import { Builder } from '../../lib/schema/builder';
-import { Table } from '../../lib/schema/table';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {ConstraintAction, DataStoreType, Type} from '../../lib/base/enum';
+import {Row, PayloadType} from '../../lib/base/row';
+import {op} from '../../lib/fn/op';
+import {Builder} from '../../lib/schema/builder';
+import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -32,7 +32,7 @@ interface SampleRows {
 
 describe('EndToEndFKUpdateCascade', () => {
   let db: DatabaseConnection;
-  const options = { storeType: DataStoreType.MEMORY };
+  const options = {storeType: DataStoreType.MEMORY};
 
   afterEach(() => db.close());
 
@@ -47,14 +47,8 @@ describe('EndToEndFKUpdateCascade', () => {
 
     let tx = db.createTransaction();
     await tx.exec([
-      db
-        .insert()
-        .into(tA)
-        .values(sampleRows.tableA),
-      db
-        .insert()
-        .into(tB)
-        .values(sampleRows.tableB),
+      db.insert().into(tA).values(sampleRows.tableA),
+      db.insert().into(tB).values(sampleRows.tableB),
     ]);
     await db
       .update(tA)
@@ -64,14 +58,8 @@ describe('EndToEndFKUpdateCascade', () => {
 
     tx = db.createTransaction();
     const results = (await tx.exec([
-      db
-        .select()
-        .from(tA)
-        .where(tA.col('id').eq(updatedId)),
-      db
-        .select()
-        .from(tB)
-        .where(tB.col('foreignId').eq(updatedId)),
+      db.select().from(tA).where(tA.col('id').eq(updatedId)),
+      db.select().from(tB).where(tB.col('foreignId').eq(updatedId)),
     ])) as unknown[][];
 
     assert.equal(1, results[0].length);
@@ -100,10 +88,10 @@ describe('EndToEndFKUpdateCascade', () => {
   // Generates two rows for TableA and four rows for TableB, where there are two
   // rows referring to each row in TableA.
   function getSampleRows1(tA: Table, tB: Table): SampleRows {
-    const rows: SampleRows = { tableA: [], tableB: [] };
+    const rows: SampleRows = {tableA: [], tableB: []};
 
     for (let i = 0; i < 2; i++) {
-      rows.tableA.push(tA.createRow({ id: `tableAId${i}` }));
+      rows.tableA.push(tA.createRow({id: `tableAId${i}`}));
 
       for (let j = 0; j < 2; j++) {
         rows.tableB.push(
@@ -129,14 +117,8 @@ describe('EndToEndFKUpdateCascade', () => {
 
     let tx = db.createTransaction();
     await tx.exec([
-      db
-        .insert()
-        .into(tA)
-        .values(sampleRows.tableA),
-      db
-        .insert()
-        .into(tB)
-        .values(sampleRows.tableB),
+      db.insert().into(tA).values(sampleRows.tableA),
+      db.insert().into(tB).values(sampleRows.tableB),
     ]);
 
     await db
@@ -159,10 +141,7 @@ describe('EndToEndFKUpdateCascade', () => {
         .where(
           op.and(tA.col('id1').eq(updatedId1), tA.col('id2').eq(updatedId2))
         ),
-      db
-        .select()
-        .from(tB)
-        .orderBy(tB.col('id')),
+      db.select().from(tB).orderBy(tB.col('id')),
     ])) as unknown[][];
 
     assert.equal(1, results[0].length);
@@ -201,14 +180,14 @@ describe('EndToEndFKUpdateCascade', () => {
   function getSampleRows2(tA: Table, tB: Table): SampleRows {
     return {
       tableA: [
-        tA.createRow({ id1: 1, id2: 4 }),
-        tA.createRow({ id1: 2, id2: 5 }),
-        tA.createRow({ id1: 3, id2: 6 }),
+        tA.createRow({id1: 1, id2: 4}),
+        tA.createRow({id1: 2, id2: 5}),
+        tA.createRow({id1: 3, id2: 6}),
       ],
       tableB: [
-        tB.createRow({ id: 0, foreignId1: 1, foreignId2: 4 }),
-        tB.createRow({ id: 1, foreignId1: 2, foreignId2: 4 }),
-        tB.createRow({ id: 2, foreignId1: 3, foreignId2: 6 }),
+        tB.createRow({id: 0, foreignId1: 1, foreignId2: 4}),
+        tB.createRow({id: 1, foreignId1: 2, foreignId2: 4}),
+        tB.createRow({id: 2, foreignId1: 3, foreignId2: 6}),
       ],
     };
   }

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ConstraintAction } from '../base/enum';
-import { MapSet } from '../structs/map_set';
+import {ConstraintAction} from '../base/enum';
+import {MapSet} from '../structs/map_set';
 
-import { BaseTable } from './base_table';
-import { DatabaseSchema } from './database_schema';
-import { DatabaseSchemaImpl } from './database_schema_impl';
-import { ForeignKeySpec } from './foreign_key_spec';
-import { Table } from './table';
+import {BaseTable} from './base_table';
+import {DatabaseSchema} from './database_schema';
+import {DatabaseSchemaImpl} from './database_schema_impl';
+import {ForeignKeySpec} from './foreign_key_spec';
+import {Table} from './table';
 
 // Read-only objects that provides information for schema metadata.
 export class Info {

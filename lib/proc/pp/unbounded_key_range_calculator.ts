@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { KeyRange, SingleKeyRange } from '../../index/key_range';
-import { Context } from '../../query/context';
-import { IndexImpl } from '../../schema/index_impl';
-import { IndexKeyRangeCalculator } from './index_key_range_calculator';
+import {KeyRange, SingleKeyRange} from '../../index/key_range';
+import {Context} from '../../query/context';
+import {IndexImpl} from '../../schema/index_impl';
+import {IndexKeyRangeCalculator} from './index_key_range_calculator';
 
 export class UnboundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   constructor(private indexSchema: IndexImpl) {}

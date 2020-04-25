@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-import { ConstraintAction, ConstraintTiming, ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Row } from '../base/row';
-import { Service } from '../base/service';
-import { IndexStore } from '../index/index_store';
-import { Key } from '../index/key_range';
-import { RuntimeIndex } from '../index/runtime_index';
-import { BaseColumn } from '../schema/base_column';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { ForeignKeySpec } from '../schema/foreign_key_spec';
-import { Index } from '../schema/index';
-import { Info } from '../schema/info';
-import { MapSet } from '../structs/map_set';
+import {ConstraintAction, ConstraintTiming, ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Row} from '../base/row';
+import {Service} from '../base/service';
+import {IndexStore} from '../index/index_store';
+import {Key} from '../index/key_range';
+import {RuntimeIndex} from '../index/runtime_index';
+import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {ForeignKeySpec} from '../schema/foreign_key_spec';
+import {Index} from '../schema/index';
+import {Info} from '../schema/info';
+import {MapSet} from '../structs/map_set';
 
-import { Cache } from './cache';
-import { CascadeDeletion, CascadeUpdate, CascadeUpdateItem } from './cascade';
-import { Modification } from './modification';
+import {Cache} from './cache';
+import {CascadeDeletion, CascadeUpdate, CascadeUpdateItem} from './cascade';
+import {Modification} from './modification';
 
 export class ConstraintChecker {
   private static didColumnValueChange(

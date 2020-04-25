@@ -17,12 +17,12 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { Exception } from '../../lib/base/exception';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { TestUtil } from '../../testing/test_util';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Exception} from '../../lib/base/exception';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 

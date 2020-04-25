@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { TaskPriority } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { PayloadType, Row } from '../base/row';
-import { Service } from '../base/service';
-import { UniqueId } from '../base/unique_id';
-import { RuntimeIndex } from '../index/runtime_index';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Table } from '../schema/table';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {TaskPriority} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {PayloadType, Row} from '../base/row';
+import {Service} from '../base/service';
+import {UniqueId} from '../base/unique_id';
+import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Table} from '../schema/table';
 
-import { Relation } from './relation';
-import { RelationEntry } from './relation_entry';
-import { Task } from './task';
+import {Relation} from './relation';
+import {RelationEntry} from './relation_entry';
+import {Task} from './task';
 
 export class ExportTask extends UniqueId implements Task {
   private schema: DatabaseSchema;

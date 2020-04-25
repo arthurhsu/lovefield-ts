@@ -16,12 +16,12 @@
 
 import * as chai from 'chai';
 
-import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
-import { BaseTable } from '../../../lib/schema/base_table';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { Table } from '../../../lib/schema/table';
-import { MockEnv } from '../../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {BaseTable} from '../../../lib/schema/base_table';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {Table} from '../../../lib/schema/table';
+import {MockEnv} from '../../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

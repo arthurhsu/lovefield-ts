@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MapSet } from '../structs/map_set';
+import {MapSet} from '../structs/map_set';
 
 // The following states represent the life cycle of a transaction. These states
 // are exclusive meaning that a tx can be only on one state at a given time.

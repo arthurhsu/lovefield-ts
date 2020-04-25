@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import { Page } from '../../lib/backstore/page';
-import { Row } from '../../lib/base/row';
+import {Page} from '../../lib/backstore/page';
+import {Row} from '../../lib/base/row';
 
 const assert = chai.assert;
 
@@ -40,7 +40,7 @@ describe('Page', () => {
   function createRows(): Row[] {
     const rows: Row[] = [];
     for (let i = 0; i <= 4 * MAGIC; i += MAGIC / 2) {
-      rows.push(new Row(i, { id: i }));
+      rows.push(new Row(i, {id: i}));
     }
     return rows;
   }

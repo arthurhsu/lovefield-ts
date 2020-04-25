@@ -17,18 +17,18 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { Row } from '../../lib/base/row';
-import { Prefetcher } from '../../lib/cache/prefetcher';
-import { BTree } from '../../lib/index/btree';
-import { Key } from '../../lib/index/key_range';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { NullableIndex } from '../../lib/index/nullable_index';
-import { RowId } from '../../lib/index/row_id';
-import { RuntimeIndex } from '../../lib/index/runtime_index';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Table } from '../../lib/schema/table';
-import { MockEnv } from '../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {Row} from '../../lib/base/row';
+import {Prefetcher} from '../../lib/cache/prefetcher';
+import {BTree} from '../../lib/index/btree';
+import {Key} from '../../lib/index/key_range';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {NullableIndex} from '../../lib/index/nullable_index';
+import {RowId} from '../../lib/index/row_id';
+import {RuntimeIndex} from '../../lib/index/runtime_index';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Table} from '../../lib/schema/table';
+import {MockEnv} from '../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

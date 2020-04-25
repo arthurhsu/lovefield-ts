@@ -17,22 +17,22 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { op } from '../../../lib/fn/op';
-import { PredicateNode } from '../../../lib/pred/predicate_node';
-import { DeleteNode } from '../../../lib/proc/lp/delete_node';
-import { LogicalQueryPlan } from '../../../lib/proc/lp/logical_query_plan';
-import { SelectNode } from '../../../lib/proc/lp/select_node';
-import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
-import { PhysicalPlanFactory } from '../../../lib/proc/pp/physical_plan_factory';
-import { PhysicalQueryPlanNode } from '../../../lib/proc/pp/physical_query_plan_node';
-import { DeleteContext } from '../../../lib/query/delete_context';
-import { BaseColumn } from '../../../lib/schema/base_column';
-import { Table } from '../../../lib/schema/table';
-import { TreeHelper } from '../../../lib/structs/tree_helper';
-import { TreeNode } from '../../../lib/structs/tree_node';
-import { MockEnv } from '../../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
-import { TestUtil } from '../../../testing/test_util';
+import {op} from '../../../lib/fn/op';
+import {PredicateNode} from '../../../lib/pred/predicate_node';
+import {DeleteNode} from '../../../lib/proc/lp/delete_node';
+import {LogicalQueryPlan} from '../../../lib/proc/lp/logical_query_plan';
+import {SelectNode} from '../../../lib/proc/lp/select_node';
+import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
+import {PhysicalPlanFactory} from '../../../lib/proc/pp/physical_plan_factory';
+import {PhysicalQueryPlanNode} from '../../../lib/proc/pp/physical_query_plan_node';
+import {DeleteContext} from '../../../lib/query/delete_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
+import {Table} from '../../../lib/schema/table';
+import {TreeHelper} from '../../../lib/structs/tree_helper';
+import {TreeNode} from '../../../lib/structs/tree_node';
+import {MockEnv} from '../../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
+import {TestUtil} from '../../../testing/test_util';
 
 const assert = chai.assert;
 

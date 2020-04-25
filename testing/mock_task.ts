@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../lib/base/enum';
-import { TaskPriority } from '../lib/base/private_enum';
-import { Resolver } from '../lib/base/resolver';
-import { UniqueId } from '../lib/base/unique_id';
-import { Relation } from '../lib/proc/relation';
-import { Task } from '../lib/proc/task';
-import { Table } from '../lib/schema/table';
+import {TransactionType} from '../lib/base/enum';
+import {TaskPriority} from '../lib/base/private_enum';
+import {Resolver} from '../lib/base/resolver';
+import {UniqueId} from '../lib/base/unique_id';
+import {Relation} from '../lib/proc/relation';
+import {Task} from '../lib/proc/task';
+import {Table} from '../lib/schema/table';
 
 export class MockTask extends UniqueId implements Task {
   name: string;

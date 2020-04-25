@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import { Favor } from '../../lib/base/private_enum';
-import { SingleKeyRange } from '../../lib/index/key_range';
+import {Favor} from '../../lib/base/private_enum';
+import {SingleKeyRange} from '../../lib/index/key_range';
 
 const assert = chai.assert;
 
@@ -200,7 +200,7 @@ describe('KeyRange', () => {
     assert.isFalse(xor(false, false));
   });
 
-  function generateTestRanges(): { [key: string]: SingleKeyRange } {
+  function generateTestRanges(): {[key: string]: SingleKeyRange} {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),

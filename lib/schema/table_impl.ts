@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { ErrorCode, Order, Type } from '../base/enum';
-import { EvalRegistry, IndexableType } from '../base/eval';
-import { Exception } from '../base/exception';
-import { PayloadType, RawRow, Row } from '../base/row';
-import { Key, SingleKey } from '../index/key_range';
+import {ErrorCode, Order, Type} from '../base/enum';
+import {EvalRegistry, IndexableType} from '../base/eval';
+import {Exception} from '../base/exception';
+import {PayloadType, RawRow, Row} from '../base/row';
+import {Key, SingleKey} from '../index/key_range';
 
-import { BaseTable } from './base_table';
-import { Column } from './column';
-import { ColumnDef } from './column_def';
-import { ColumnImpl } from './column_impl';
-import { Constraint } from './constraint';
-import { ForeignKeySpec } from './foreign_key_spec';
-import { IndexImpl } from './index_impl';
-import { IndexedColumn, IndexedColumnSpec } from './indexed_column';
-import { RowImpl } from './row_impl';
+import {BaseTable} from './base_table';
+import {Column} from './column';
+import {ColumnDef} from './column_def';
+import {ColumnImpl} from './column_impl';
+import {Constraint} from './constraint';
+import {ForeignKeySpec} from './foreign_key_spec';
+import {IndexImpl} from './index_impl';
+import {IndexedColumn, IndexedColumnSpec} from './indexed_column';
+import {RowImpl} from './row_impl';
 
 export class TableImpl implements BaseTable {
   static ROW_ID_INDEX_PATTERN = '#';

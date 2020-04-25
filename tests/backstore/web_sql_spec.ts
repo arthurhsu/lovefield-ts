@@ -16,18 +16,18 @@
 
 import * as chai from 'chai';
 
-import { WebSql } from '../../lib/backstore/web_sql';
-import { Capability } from '../../lib/base/capability';
-import { DataStoreType, Type } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { PayloadType, Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { Builder } from '../../lib/schema/builder';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { ScudTester } from '../../testing/backstore/scud_tester';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {WebSql} from '../../lib/backstore/web_sql';
+import {Capability} from '../../lib/base/capability';
+import {DataStoreType, Type} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {PayloadType, Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {Builder} from '../../lib/schema/builder';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {ScudTester} from '../../testing/backstore/scud_tester';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -99,13 +99,9 @@ describe('WebSql', () => {
       storeType: DataStoreType.WEB_SQL,
     });
     const t = db.getSchema().table('foo');
-    const row = t.createRow({ id: 1 });
+    const row = t.createRow({id: 1});
 
-    await db
-      .insert()
-      .into(t)
-      .values([row])
-      .exec();
+    await db.insert().into(t).values([row]).exec();
   });
 
   it('scanRowId', async () => {
@@ -113,7 +109,7 @@ describe('WebSql', () => {
       return;
     }
 
-    await getSchemaBuilder().connect({ storeType: DataStoreType.WEB_SQL });
+    await getSchemaBuilder().connect({storeType: DataStoreType.WEB_SQL});
     assert.equal(2, Row.getNextId());
   });
 
@@ -123,7 +119,7 @@ describe('WebSql', () => {
     }
 
     const builder = getMockSchemaBuilder(`foo${Date.now()}`, true);
-    return builder.connect({ storeType: DataStoreType.WEB_SQL });
+    return builder.connect({storeType: DataStoreType.WEB_SQL});
   });
 
   it('reservedWordAsTableName', async () => {
@@ -133,22 +129,16 @@ describe('WebSql', () => {
 
     const builder = new Builder(`foo${Date.now()}`, 1);
     builder.createTable('Group').addColumn('id', Type.INTEGER);
-    const db = await builder.connect({ storeType: DataStoreType.WEB_SQL });
+    const db = await builder.connect({storeType: DataStoreType.WEB_SQL});
     const g = db.getSchema().table('Group');
     await db
       .insert()
       .into(g)
-      .values([g.createRow({ id: 1 })])
+      .values([g.createRow({id: 1})])
       .exec();
-    const results = (await db
-      .select()
-      .from(g)
-      .exec()) as PayloadType[];
+    const results = (await db.select().from(g).exec()) as PayloadType[];
     assert.equal(1, results.length);
     assert.equal(1, results[0]['id']);
-    await db
-      .delete()
-      .from(g)
-      .exec();
+    await db.delete().from(g).exec();
   });
 });

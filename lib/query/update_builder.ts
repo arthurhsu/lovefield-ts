@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Service } from '../base/service';
-import { Predicate } from '../pred/predicate';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
-import { BaseBuilder } from './base_builder';
-import { UpdateContext } from './update_context';
+import {Binder} from '../base/bind';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {Predicate} from '../pred/predicate';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
+import {BaseBuilder} from './base_builder';
+import {UpdateContext} from './update_context';
 
 export class UpdateBuilder extends BaseBuilder<UpdateContext> {
   constructor(global: Global, table: Table) {

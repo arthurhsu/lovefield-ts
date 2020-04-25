@@ -15,10 +15,10 @@
  */
 
 import * as chai from 'chai';
-import { BaseColumn } from '../../lib/schema/base_column';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {BaseColumn} from '../../lib/schema/base_column';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

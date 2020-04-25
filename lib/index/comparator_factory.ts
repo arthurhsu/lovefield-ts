@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { IndexImpl } from '../schema/index_impl';
-import { MultiKeyComparator } from './multi_key_comparator';
-import { MultiKeyComparatorWithNull } from './multi_key_comparator_with_null';
-import { SimpleComparator } from './simple_comparator';
+import {IndexImpl} from '../schema/index_impl';
+import {MultiKeyComparator} from './multi_key_comparator';
+import {MultiKeyComparatorWithNull} from './multi_key_comparator_with_null';
+import {SimpleComparator} from './simple_comparator';
 
 export class ComparatorFactory {
   static create(

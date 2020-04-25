@@ -16,23 +16,23 @@
 
 import * as chai from 'chai';
 
-import { ObservableStore } from '../../lib/backstore/observable_store';
-import { TransactionType } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { TableType } from '../../lib/base/private_enum';
-import { Resolver } from '../../lib/base/resolver';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { Cache } from '../../lib/cache/cache';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { Journal } from '../../lib/cache/journal';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { BaseTable } from '../../lib/schema/base_table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { Table } from '../../lib/schema/table';
-import { MockStore } from '../../testing/backstore/mock_store';
-import { ScudTester } from '../../testing/backstore/scud_tester';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {ObservableStore} from '../../lib/backstore/observable_store';
+import {TransactionType} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {TableType} from '../../lib/base/private_enum';
+import {Resolver} from '../../lib/base/resolver';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {Cache} from '../../lib/cache/cache';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {Journal} from '../../lib/cache/journal';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {BaseTable} from '../../lib/schema/base_table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {Table} from '../../lib/schema/table';
+import {MockStore} from '../../testing/backstore/mock_store';
+import {ScudTester} from '../../testing/backstore/scud_tester';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

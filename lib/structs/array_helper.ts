@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
+import {assert} from '../base/assert';
 
 export class ArrayHelper {
   // Returns true if the value were inserted, false otherwise.

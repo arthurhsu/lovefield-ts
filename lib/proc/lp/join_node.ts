@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { JoinPredicate } from '../../pred/join_predicate';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {JoinPredicate} from '../../pred/join_predicate';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class JoinNode extends LogicalQueryPlanNode {
   constructor(

@@ -16,22 +16,22 @@
 
 import * as chai from 'chai';
 
-import { bind } from '../../lib/base/bind';
-import { DataStoreType, ErrorCode, Order } from '../../lib/base/enum';
-import { PayloadType, Row } from '../../lib/base/row';
-import { fn } from '../../lib/fn/fn';
-import { op } from '../../lib/fn/op';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { SelectQuery } from '../../lib/query/select_query';
-import { BaseColumn } from '../../lib/schema/base_column';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Column } from '../../lib/schema/column';
-import { Table } from '../../lib/schema/table';
-import { ArrayHelper } from '../../lib/structs/array_helper';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
-import { NestedPayloadType } from '../../testing/test_util';
-import { ValueOperandType } from '../../lib/pred/operand_type';
+import {bind} from '../../lib/base/bind';
+import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
+import {PayloadType, Row} from '../../lib/base/row';
+import {fn} from '../../lib/fn/fn';
+import {op} from '../../lib/fn/op';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {SelectQuery} from '../../lib/query/select_query';
+import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Column} from '../../lib/schema/column';
+import {Table} from '../../lib/schema/table';
+import {ArrayHelper} from '../../lib/structs/array_helper';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
+import {NestedPayloadType} from '../../testing/test_util';
+import {ValueOperandType} from '../../lib/pred/operand_type';
 
 const assert = chai.assert;
 
@@ -72,36 +72,17 @@ describe('EndToEndSelectTest', () => {
       /* departmentCount */ 10
     );
 
-    return db.createTransaction().exec([
-      db
-        .insert()
-        .into(r)
-        .values(dataGenerator.sampleRegions),
-      db
-        .insert()
-        .into(c)
-        .values(dataGenerator.sampleCountries),
-      db
-        .insert()
-        .into(l)
-        .values(dataGenerator.sampleLocations),
-      db
-        .insert()
-        .into(d)
-        .values(dataGenerator.sampleDepartments),
-      db
-        .insert()
-        .into(j)
-        .values(dataGenerator.sampleJobs),
-      db
-        .insert()
-        .into(e)
-        .values(dataGenerator.sampleEmployees),
-      db
-        .insert()
-        .into(cct)
-        .values(getSampleCrossColumnTable()),
-    ]);
+    return db
+      .createTransaction()
+      .exec([
+        db.insert().into(r).values(dataGenerator.sampleRegions),
+        db.insert().into(c).values(dataGenerator.sampleCountries),
+        db.insert().into(l).values(dataGenerator.sampleLocations),
+        db.insert().into(d).values(dataGenerator.sampleDepartments),
+        db.insert().into(j).values(dataGenerator.sampleJobs),
+        db.insert().into(e).values(dataGenerator.sampleEmployees),
+        db.insert().into(cct).values(getSampleCrossColumnTable()),
+      ]);
   }
 
   // Sample rows for the CrossColumnTable, which contains a nullable
@@ -145,10 +126,7 @@ describe('EndToEndSelectTest', () => {
   });
 
   function checkSelectLimit(limit: number): Promise<void> {
-    const queryBuilder = db
-      .select()
-      .from(j)
-      .limit(limit);
+    const queryBuilder = db.select().from(j).limit(limit);
 
     return queryBuilder
       .exec()
@@ -194,10 +172,7 @@ describe('EndToEndSelectTest', () => {
   });
 
   function checkSelectSkip(skip: number): Promise<void> {
-    const queryBuilder = db
-      .select()
-      .from(j)
-      .skip(skip);
+    const queryBuilder = db.select().from(j).skip(skip);
 
     return queryBuilder
       .exec()
@@ -223,10 +198,7 @@ describe('EndToEndSelectTest', () => {
 
   // Tests that a SELECT query that uses a binder for SKIP works correctly.
   it('SkipBinder', async () => {
-    const queryBuilder = db
-      .select()
-      .from(j)
-      .skip(bind(0));
+    const queryBuilder = db.select().from(j).skip(bind(0));
 
     let results = (await queryBuilder.bind([0]).exec()) as PayloadType[];
     assert.equal(dataGenerator.sampleJobs.length, results.length);
@@ -257,10 +229,7 @@ describe('EndToEndSelectTest', () => {
   it('Predicate', async () => {
     const targetId = dataGenerator.sampleJobs[3].payload()['id'] as string;
 
-    const queryBuilder = db
-      .select()
-      .from(j)
-      .where(j.col('id').eq(targetId));
+    const queryBuilder = db.select().from(j).where(j.col('id').eq(targetId));
     const results = (await queryBuilder.exec()) as PayloadType[];
     assert.equal(1, results.length);
     assert.equal(targetId, (results[0] as PayloadType)['id']);
@@ -348,10 +317,7 @@ describe('EndToEndSelectTest', () => {
       .select(j.col('id').as('Foo'))
       .from(j)
       .where(j.col('id').eq(targetId));
-    const q2 = db
-      .select(j.col('id'))
-      .from(j)
-      .where(j.col('id').eq(targetId));
+    const q2 = db.select(j.col('id')).from(j).where(j.col('id').eq(targetId));
 
     let results = (await q1.exec()) as PayloadType[];
     assert.equal(1, results.length);

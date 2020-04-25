@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { TableDiff } from '../cache/table_diff';
-import { DatabaseSchema } from '../schema/database_schema';
+import {TableDiff} from '../cache/table_diff';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { Memory } from './memory';
+import {Memory} from './memory';
 
 // A backing store implementation that holds all data in-memory, without
 // persisting anything to disk, and can be observed. This only makes sense

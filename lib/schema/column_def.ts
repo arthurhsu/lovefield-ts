@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Type } from '../base/enum';
+import {Type} from '../base/enum';
 
 export interface ColumnDef {
   name: string;

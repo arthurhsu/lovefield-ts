@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import { DatabaseConnection } from '../../../lib/base/database_connection';
-import { DataStoreType, Type } from '../../../lib/base/enum';
-import { Global } from '../../../lib/base/global';
-import { AggregatedColumn } from '../../../lib/fn/aggregated_column';
-import { fn } from '../../../lib/fn/fn';
-import { Predicate } from '../../../lib/pred/predicate';
-import { AggregationStep } from '../../../lib/proc/pp/aggregation_step';
-import { GetRowCountPass } from '../../../lib/proc/pp/get_row_count_pass';
-import { ProjectStep } from '../../../lib/proc/pp/project_step';
-import { SelectStep } from '../../../lib/proc/pp/select_step';
-import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
-import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
-import { SelectContext } from '../../../lib/query/select_context';
-import { Builder } from '../../../lib/schema/builder';
-import { Column } from '../../../lib/schema/column';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { TreeTestHelper } from '../../../testing/tree_test_helper';
+import {DatabaseConnection} from '../../../lib/base/database_connection';
+import {DataStoreType, Type} from '../../../lib/base/enum';
+import {Global} from '../../../lib/base/global';
+import {AggregatedColumn} from '../../../lib/fn/aggregated_column';
+import {fn} from '../../../lib/fn/fn';
+import {Predicate} from '../../../lib/pred/predicate';
+import {AggregationStep} from '../../../lib/proc/pp/aggregation_step';
+import {GetRowCountPass} from '../../../lib/proc/pp/get_row_count_pass';
+import {ProjectStep} from '../../../lib/proc/pp/project_step';
+import {SelectStep} from '../../../lib/proc/pp/select_step';
+import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
+import {SelectContext} from '../../../lib/query/select_context';
+import {Builder} from '../../../lib/schema/builder';
+import {Column} from '../../../lib/schema/column';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('GetRowCountPass', () => {
   let conn: DatabaseConnection;
@@ -48,7 +48,7 @@ describe('GetRowCountPass', () => {
   }
 
   beforeEach(() => {
-    const connectOptions = { storeType: DataStoreType.MEMORY };
+    const connectOptions = {storeType: DataStoreType.MEMORY};
     return getSchemaBuilder()
       .connect(connectOptions)
       .then(db => {

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { JoinPredicate } from '../../pred/join_predicate';
-import { Context } from '../../query/context';
-import { SelectContext } from '../../query/select_context';
-import { Table } from '../../schema/table';
-import { isSubset } from '../../structs/set_util';
-import { TreeHelper } from '../../structs/tree_helper';
-import { TreeNode } from '../../structs/tree_node';
-import { RewritePass } from '../rewrite_pass';
+import {JoinPredicate} from '../../pred/join_predicate';
+import {Context} from '../../query/context';
+import {SelectContext} from '../../query/select_context';
+import {Table} from '../../schema/table';
+import {isSubset} from '../../structs/set_util';
+import {TreeHelper} from '../../structs/tree_helper';
+import {TreeNode} from '../../structs/tree_node';
+import {RewritePass} from '../rewrite_pass';
 
-import { CrossProductNode } from './cross_product_node';
-import { JoinNode } from './join_node';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
-import { SelectNode } from './select_node';
-import { TableAccessNode } from './table_access_node';
+import {CrossProductNode} from './cross_product_node';
+import {JoinNode} from './join_node';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import {SelectNode} from './select_node';
+import {TableAccessNode} from './table_access_node';
 
 export class PushDownSelectionsPass extends RewritePass<LogicalQueryPlanNode> {
   // A set of SelectNodes that have already been pushed down. This is necessary

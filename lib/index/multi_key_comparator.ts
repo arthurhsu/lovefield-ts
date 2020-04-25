@@ -14,17 +14,11 @@
  * limitations under the License.
  */
 
-import { Order } from '../base/enum';
-import { Favor } from '../base/private_enum';
-import { Comparator } from './comparator';
-import {
-  Key,
-  KeyRange,
-  MultiKey,
-  SingleKey,
-  SingleKeyRange,
-} from './key_range';
-import { SimpleComparator } from './simple_comparator';
+import {Order} from '../base/enum';
+import {Favor} from '../base/private_enum';
+import {Comparator} from './comparator';
+import {Key, KeyRange, MultiKey, SingleKey, SingleKeyRange} from './key_range';
+import {SimpleComparator} from './simple_comparator';
 
 export class MultiKeyComparator implements Comparator {
   static createOrders(numKeys: number, order: Order): Order[] {

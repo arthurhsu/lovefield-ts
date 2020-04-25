@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ExecType } from '../../base/private_enum';
-import { Journal } from '../../cache/journal';
-import { Context } from '../../query/context';
-import { Relation } from '../relation';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {Context} from '../../query/context';
+import {Relation} from '../relation';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 // A dummy execution step that performs no actual work.
 export class NoOpStep extends PhysicalQueryPlanNode {

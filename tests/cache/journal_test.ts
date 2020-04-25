@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import { ErrorCode } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { Journal } from '../../lib/cache/journal';
-import { Key, SingleKeyRange } from '../../lib/index/key_range';
-import { RuntimeIndex } from '../../lib/index/runtime_index';
-import { BaseTable } from '../../lib/schema/base_table';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { MockEnv } from '../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
-import { TestUtil } from '../../testing/test_util';
+import {ErrorCode} from '../../lib/base/enum';
+import {Row} from '../../lib/base/row';
+import {Journal} from '../../lib/cache/journal';
+import {Key, SingleKeyRange} from '../../lib/index/key_range';
+import {RuntimeIndex} from '../../lib/index/runtime_index';
+import {BaseTable} from '../../lib/schema/base_table';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {MockEnv} from '../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -64,7 +64,7 @@ describe('Journal', () => {
     ) as RuntimeIndex;
 
     const primaryKey = '100';
-    const row = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row = table.createRow({id: primaryKey, name: 'DummyName'});
 
     // First testing case where the row does not already exist.
     assert.equal(0, env.cache.getCount());
@@ -85,7 +85,7 @@ describe('Journal', () => {
   it('insert_PrimaryKeyViolation_SingleColumn', () => {
     const table = env.schema.table('tableA') as BaseTable;
     const primaryKey = '100';
-    const row = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row = table.createRow({id: primaryKey, name: 'DummyName'});
     const otherRow = table.createRow({
       id: primaryKey,
       name: 'OtherDummyName',
@@ -147,7 +147,7 @@ describe('Journal', () => {
     ) as RuntimeIndex;
 
     const primaryKey = '100';
-    const row1 = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row1 = table.createRow({id: primaryKey, name: 'DummyName'});
 
     // Inserting row without committing. Indices and cache are updated
     // immediately regardless of committing or not.
@@ -157,7 +157,7 @@ describe('Journal', () => {
     assert.isTrue(pkIndex.containsKey(primaryKey));
 
     // Inserting a row with the same primary key.
-    const row2 = table.createRow({ id: primaryKey, name: 'OtherDummyName' });
+    const row2 = table.createRow({id: primaryKey, name: 'OtherDummyName'});
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
       journal.insert.bind(journal, table, [row2])
@@ -181,10 +181,10 @@ describe('Journal', () => {
 
     const rows = [];
     for (let i = 0; i < 3; i++) {
-      rows.push(table.createRow({ id: `pk${i}`, name: 'DummyName' }));
+      rows.push(table.createRow({id: `pk${i}`, name: 'DummyName'}));
     }
     for (let j = 0; j < 3; j++) {
-      rows.push(table.createRow({ id: 'samePk', name: 'DummyName' }));
+      rows.push(table.createRow({id: 'samePk', name: 'DummyName'}));
     }
 
     const journal = createJournal([table]);
@@ -223,8 +223,8 @@ describe('Journal', () => {
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
       () => {
-        const row1 = table.createRow({ id: 'samePk', email: 'email1' });
-        const row2 = table.createRow({ id: 'samePk', email: 'email2' });
+        const row1 = table.createRow({id: 'samePk', email: 'email1'});
+        const row2 = table.createRow({id: 'samePk', email: 'email2'});
         journal.insert(table, [row1, row2]);
       }
     );
@@ -239,8 +239,8 @@ describe('Journal', () => {
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
       () => {
-        const row1 = table.createRow({ id: 'pk1', email: 'sameEmail' });
-        const row2 = table.createRow({ id: 'pk2', email: 'sameEmail' });
+        const row1 = table.createRow({id: 'pk1', email: 'sameEmail'});
+        const row2 = table.createRow({id: 'pk2', email: 'sameEmail'});
         journal.insert(table, [row1, row2]);
       }
     );
@@ -266,7 +266,7 @@ describe('Journal', () => {
     ) as RuntimeIndex;
 
     let journal = createJournal([table]);
-    const row1 = table.createRow({ id: 'pk1', email: 'emailAddress1' });
+    const row1 = table.createRow({id: 'pk1', email: 'emailAddress1'});
     journal.insert(table, [row1]);
     journal.commit();
     assert.isTrue(emailIndex.containsKey(row1.payload()['email'] as Key));
@@ -274,7 +274,7 @@ describe('Journal', () => {
     assert.equal(1, env.cache.getCount());
 
     journal = createJournal([table]);
-    const row2 = table.createRow({ id: 'pk2', email: 'emailAddress1' });
+    const row2 = table.createRow({id: 'pk2', email: 'emailAddress1'});
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
       journal.insert.bind(journal, table, [row2])
@@ -315,7 +315,7 @@ describe('Journal', () => {
     assert.equal(0, env.cache.getCount());
 
     const journal = createJournal([table]);
-    const row1 = table.createRow({ id: 'pk1', email: null });
+    const row1 = table.createRow({id: 'pk1', email: null});
     TestUtil.assertThrowsError(
       // Attempted to insert NULL value to non-nullable field {0}.
       ErrorCode.NOT_NULLABLE,
@@ -333,7 +333,7 @@ describe('Journal', () => {
 
     // Attempting to insert a new invalid row.
     let journal = createJournal([table]);
-    const row1 = table.createRow({ id: 'pk1', email: null });
+    const row1 = table.createRow({id: 'pk1', email: null});
     TestUtil.assertThrowsError(
       // Attempted to insert NULL value to non-nullable field {0}.
       ErrorCode.NOT_NULLABLE,
@@ -343,13 +343,13 @@ describe('Journal', () => {
     assert.equal(0, env.cache.getCount());
 
     // Attempting to insert a new valid row.
-    const row2 = table.createRow({ id: 'pk2', email: 'emailAddress' });
+    const row2 = table.createRow({id: 'pk2', email: 'emailAddress'});
     journal = createJournal([table]);
     journal.insertOrReplace(table, [row2]);
     assert.equal(1, env.cache.getCount());
 
     // Attempting to replace existing row with an invalid one.
-    const row2Updated = table.createRow({ id: 'pk2', email: null });
+    const row2Updated = table.createRow({id: 'pk2', email: null});
     journal = createJournal([table]);
     TestUtil.assertThrowsError(
       // Attempted to insert NULL value to non-nullable field {0}.
@@ -365,13 +365,13 @@ describe('Journal', () => {
     const table = env.schema.table('tableE') as BaseTable;
     assert.equal(0, env.cache.getCount());
 
-    const row = table.createRow({ id: 'pk1', email: 'emailAddress' });
+    const row = table.createRow({id: 'pk1', email: 'emailAddress'});
     let journal = createJournal([table]);
     journal.insert(table, [row]);
     assert.equal(1, env.cache.getCount());
 
     journal = createJournal([table]);
-    const rowUpdatedInvalid = table.createRow({ id: 'pk1', email: null });
+    const rowUpdatedInvalid = table.createRow({id: 'pk1', email: null});
     rowUpdatedInvalid.assignRowId(row.id());
     TestUtil.assertThrowsError(
       // Attempted to insert NULL value to non-nullable field {0}.
@@ -400,7 +400,7 @@ describe('Journal', () => {
       table.getRowIdIndexName()
     ) as RuntimeIndex;
 
-    const row = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const row = table.createRow({id: 'pk1', name: 'DummyName'});
     let journal = createJournal([table]);
     journal.insert(table, [row]);
     journal.commit();
@@ -442,8 +442,8 @@ describe('Journal', () => {
       pkIndexSchema.getNormalizedName()
     ) as RuntimeIndex;
 
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
 
     let journal = createJournal([table]);
     journal.insert(table, [row1, row2]);
@@ -476,8 +476,8 @@ describe('Journal', () => {
       pkIndexSchema.getNormalizedName()
     ) as RuntimeIndex;
 
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
 
     const journal = createJournal([table]);
     journal.insert(table, [row1, row2]);
@@ -509,7 +509,7 @@ describe('Journal', () => {
 
     const rows: Row[] = [];
     for (let i = 0; i < 3; i++) {
-      rows.push(table.createRow({ id: `pk${i}`, name: 'DummyName' }));
+      rows.push(table.createRow({id: `pk${i}`, name: 'DummyName'}));
     }
 
     let journal = createJournal([table]);
@@ -521,7 +521,7 @@ describe('Journal', () => {
     );
 
     const rowsUpdated = rows.map(row => {
-      const updatedRow = table.createRow({ id: 'somePk', name: 'DummyName' });
+      const updatedRow = table.createRow({id: 'somePk', name: 'DummyName'});
       updatedRow.assignRowId(row.id());
       return updatedRow;
     });
@@ -542,7 +542,7 @@ describe('Journal', () => {
     assert.equal(0, nameIndex.getRange().length);
 
     // Inserting a new row with a null key.
-    const row = table.createRow({ id: 'pk0', id2: 'id2x', name: null });
+    const row = table.createRow({id: 'pk0', id2: 'id2x', name: null});
     let journal = createJournal([table]);
     journal.insert(table, [row]);
     journal.commit();
@@ -563,7 +563,7 @@ describe('Journal', () => {
     assert.equal(1, nameIndex.getRange().length);
 
     // Updating an existing row replacing a non-null key with null.
-    updatedRow = table.createRow({ id: 'pk0', id2: 'id2x', name: null });
+    updatedRow = table.createRow({id: 'pk0', id2: 'id2x', name: null});
     updatedRow.assignRowId(row.id());
     journal = createJournal([table]);
     journal.update(table, [updatedRow]);
@@ -590,7 +590,7 @@ describe('Journal', () => {
     ) as RuntimeIndex;
 
     const primaryKey = '100';
-    const row1 = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row1 = table.createRow({id: primaryKey, name: 'DummyName'});
 
     // First adding the row and committing.
     let journal = createJournal([table]);
@@ -603,7 +603,7 @@ describe('Journal', () => {
 
     // Inserting a row that has the primary key that was just removed within the
     // same journal.
-    const row2 = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row2 = table.createRow({id: primaryKey, name: 'DummyName'});
     journal.insert(table, [row2]);
     journal.commit();
 
@@ -623,7 +623,7 @@ describe('Journal', () => {
     ) as RuntimeIndex;
 
     const primaryKey = '100';
-    const row1 = table.createRow({ id: primaryKey, name: 'DummyName' });
+    const row1 = table.createRow({id: primaryKey, name: 'DummyName'});
 
     // First testing case where the row does not already exist.
     assert.equal(0, env.cache.getCount());
@@ -640,7 +640,7 @@ describe('Journal', () => {
 
     // Now testing case where the row is being replaced. There should be no
     // exception thrown.
-    const row2 = table.createRow({ id: primaryKey, name: 'OtherDummyName' });
+    const row2 = table.createRow({id: primaryKey, name: 'OtherDummyName'});
     journal = createJournal([table]);
     journal.insertOrReplace(table, [row2]);
     journal.commit();
@@ -660,8 +660,8 @@ describe('Journal', () => {
       emailIndexSchema.getNormalizedName()
     ) as RuntimeIndex;
 
-    const row1 = table.createRow({ id: 'pk1', email: 'emailAddress1' });
-    const row2 = table.createRow({ id: 'pk2', email: 'emailAddress2' });
+    const row1 = table.createRow({id: 'pk1', email: 'emailAddress1'});
+    const row2 = table.createRow({id: 'pk2', email: 'emailAddress2'});
 
     let journal = createJournal([table]);
     journal.insertOrReplace(table, [row1, row2]);
@@ -671,7 +671,7 @@ describe('Journal', () => {
 
     // Attempting to insert a new row that has the same 'email' field as an
     // existing row.
-    const row3 = table.createRow({ id: 'pk3', email: row1.payload()['email'] });
+    const row3 = table.createRow({id: 'pk3', email: row1.payload()['email']});
     journal = createJournal([table]);
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
@@ -682,8 +682,8 @@ describe('Journal', () => {
 
     // Attempting to insert two new rows, that have the same 'email' field with
     // each other, and also it is not occupied by any existing row.
-    const row4 = table.createRow({ id: 'pk4', email: 'otherEmailAddress' });
-    const row5 = table.createRow({ id: 'pk5', email: 'otherEmailAddress' });
+    const row4 = table.createRow({id: 'pk4', email: 'otherEmailAddress'});
+    const row5 = table.createRow({id: 'pk5', email: 'otherEmailAddress'});
     journal = createJournal([table]);
     TestUtil.assertThrowsError(
       ErrorCode.DUPLICATE_KEYS, // Duplicate keys are not allowed.
@@ -732,7 +732,7 @@ describe('Journal', () => {
     const rowIdIndex = env.indexStore.get(
       table.getRowIdIndexName()
     ) as RuntimeIndex;
-    const payload = { id: 'something', name: 'dummyName' };
+    const payload = {id: 'something', name: 'dummyName'};
 
     assert.equal(0, env.cache.getCount());
     const row = new Row(1, payload);
@@ -748,7 +748,7 @@ describe('Journal', () => {
     assert.isTrue(rowIdIndex.containsKey(row2.id()));
 
     journal = createJournal([table]);
-    const payload2 = { id: 'nothing', name: 'dummyName' };
+    const payload2 = {id: 'nothing', name: 'dummyName'};
     const row3 = new Row(0, payload2);
     const row4 = new Row(4, payload2);
     journal.insert(table, [row3]);
@@ -775,15 +775,15 @@ describe('Journal', () => {
     const indices = table.getIndices();
     const journal = createJournal([table]);
 
-    const row1 = table.createRow({ id: '1', name: '1' });
+    const row1 = table.createRow({id: '1', name: '1'});
     row1.assignRowId(1);
-    const row2 = table.createRow({ id: '2', name: '2' });
+    const row2 = table.createRow({id: '2', name: '2'});
     row2.assignRowId(2);
-    const row3 = table.createRow({ id: '3', name: '2' });
+    const row3 = table.createRow({id: '3', name: '2'});
     row3.assignRowId(3);
-    const row4 = table.createRow({ id: '4', name: '1' });
+    const row4 = table.createRow({id: '4', name: '1'});
     row4.assignRowId(1);
-    const row5 = table.createRow({ id: '4', name: '4' });
+    const row5 = table.createRow({id: '4', name: '4'});
     row5.assignRowId(1);
 
     const pkId = env.indexStore.get(
@@ -845,9 +845,9 @@ describe('Journal', () => {
     const keyRange1 = new SingleKeyRange('aaa', 'bbb', false, false);
     const keyRange2 = new SingleKeyRange('ccc', 'eee', false, false);
 
-    const row1 = table.createRow({ id: 'dummyId1', name: 'aba' });
-    const row2 = table.createRow({ id: 'dummyId2', name: 'cdc' });
-    const row3 = table.createRow({ id: 'dummyId3', name: 'abb' });
+    const row1 = table.createRow({id: 'dummyId1', name: 'aba'});
+    const row2 = table.createRow({id: 'dummyId2', name: 'cdc'});
+    const row3 = table.createRow({id: 'dummyId3', name: 'abb'});
 
     // Adding row3 in the index such that it is within the range [aaa,bbb].
     journal.insert(table, [row3]);
@@ -865,7 +865,7 @@ describe('Journal', () => {
     // Inserting new rows within this journal, where row1 and row2 are within
     // the specified range, and modifying row3 such that it is not within range
     // anymore.
-    const row3Updated = table.createRow({ id: 'dummyId3', name: 'bbba' });
+    const row3Updated = table.createRow({id: 'dummyId3', name: 'bbba'});
     journal.insertOrReplace(table, [row1, row2, row3Updated]);
     rowIds = index.getRange([keyRange1, keyRange2]);
     assert.sameDeepMembers([row1.id(), row2.id()], rowIds);
@@ -875,14 +875,14 @@ describe('Journal', () => {
   it('rollback', () => {
     const table = env.schema.table('tableA') as BaseTable;
 
-    const rowToInsert = table.createRow({ id: 'add', name: 'DummyName' });
-    const rowToModifyOld = table.createRow({ id: 'modify', name: 'DummyName' });
+    const rowToInsert = table.createRow({id: 'add', name: 'DummyName'});
+    const rowToModifyOld = table.createRow({id: 'modify', name: 'DummyName'});
     const rowToModifyNew = table.createRow({
       id: 'modify',
       name: 'UpdatedDummyName',
     });
     rowToModifyNew.assignRowId(rowToModifyOld.id());
-    const rowToRemove = table.createRow({ id: 'delete', name: 'DummyName' });
+    const rowToRemove = table.createRow({id: 'delete', name: 'DummyName'});
 
     const pkIndexSchema = table.getConstraint().getPrimaryKey();
     const pkIndex = env.indexStore.get(

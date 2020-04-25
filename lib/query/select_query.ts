@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Order } from '../base/enum';
-import { Predicate } from '../pred/predicate';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
-import { QueryBuilder } from './query_builder';
+import {Binder} from '../base/bind';
+import {Order} from '../base/enum';
+import {Predicate} from '../pred/predicate';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
+import {QueryBuilder} from './query_builder';
 
 // Query Builder which constructs a SELECT query. The builder is stateful.
 // All member functions, except orderBy(), can only be called once. Otherwise

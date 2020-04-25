@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { BackStore } from '../../lib/backstore/back_store';
-import { BaseTx } from '../../lib/backstore/base_tx';
-import { TransactionType } from '../../lib/base/enum';
-import { TableType } from '../../lib/base/private_enum';
-import { RawRow, Row } from '../../lib/base/row';
-import { RuntimeTable } from '../../lib/base/runtime_table';
-import { Journal } from '../../lib/cache/journal';
-import { TableDiff } from '../../lib/cache/table_diff';
+import {BackStore} from '../../lib/backstore/back_store';
+import {BaseTx} from '../../lib/backstore/base_tx';
+import {TransactionType} from '../../lib/base/enum';
+import {TableType} from '../../lib/base/private_enum';
+import {RawRow, Row} from '../../lib/base/row';
+import {RuntimeTable} from '../../lib/base/runtime_table';
+import {Journal} from '../../lib/cache/journal';
+import {TableDiff} from '../../lib/cache/table_diff';
 
-import { TrackedTable } from './tracked_table';
+import {TrackedTable} from './tracked_table';
 
 // Pseudo transaction object that tracks all changes made for a single flush.
 export class TrackedTx extends BaseTx {

@@ -16,17 +16,17 @@
 
 import * as chai from 'chai';
 
-import { Type } from '../../../lib/base/enum';
-import { Row } from '../../../lib/base/row';
-import { JoinPredicate } from '../../../lib/pred/join_predicate';
-import { Predicate } from '../../../lib/pred/predicate';
-import { JoinStep } from '../../../lib/proc/pp/join_step';
-import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
-import { Relation } from '../../../lib/proc/relation';
-import { Table } from '../../../lib/schema/table';
-import { Builder } from '../../../lib/schema/builder';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { MockEnv } from '../../../testing/mock_env';
+import {Type} from '../../../lib/base/enum';
+import {Row} from '../../../lib/base/row';
+import {JoinPredicate} from '../../../lib/pred/join_predicate';
+import {Predicate} from '../../../lib/pred/predicate';
+import {JoinStep} from '../../../lib/proc/pp/join_step';
+import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
+import {Relation} from '../../../lib/proc/relation';
+import {Table} from '../../../lib/schema/table';
+import {Builder} from '../../../lib/schema/builder';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {MockEnv} from '../../../testing/mock_env';
 
 const assert = chai.assert;
 
@@ -81,14 +81,8 @@ describe('JoinStep', () => {
 
     const tx = env.db.createTransaction();
     return tx.exec([
-      env.db
-        .insert()
-        .into(ta)
-        .values(tableARows),
-      env.db
-        .insert()
-        .into(tb)
-        .values(tableBRows),
+      env.db.insert().into(ta).values(tableARows),
+      env.db.insert().into(tb).values(tableBRows),
     ]);
   }
 

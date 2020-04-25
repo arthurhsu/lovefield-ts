@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Table } from './table';
-import { Pragma } from './pragma';
+import {Table} from './table';
+import {Pragma} from './pragma';
 
 // Models the return value of Database.getSchema().
 // @export

@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import { Capability } from '../../lib/base/capability';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, Type } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { Builder } from '../../lib/schema/builder';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { SmokeTester } from '../../testing/smoke_tester';
+import {Capability} from '../../lib/base/capability';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, Type} from '../../lib/base/enum';
+import {Row} from '../../lib/base/row';
+import {Builder} from '../../lib/schema/builder';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {SmokeTester} from '../../testing/smoke_tester';
 
 const assert = chai.assert;
 
@@ -90,12 +90,12 @@ describe('MultiDB', () => {
       const rows: Row[] = [];
       const tableA = schemaBuilder1.getSchema().table('TableA');
       for (let i = 0; i < 3; i++) {
-        rows.push(tableA.createRow({ name: `name_${i}` }));
+        rows.push(tableA.createRow({name: `name_${i}`}));
       }
       return rows;
     };
 
-    const options = { storeType: DataStoreType.INDEXED_DB };
+    const options = {storeType: DataStoreType.INDEXED_DB};
     await schemaBuilder1.connect(options);
     let sampleRows = createNewTableARows();
     assert.sameOrderedMembers(

@@ -15,10 +15,10 @@
  */
 
 import * as chai from 'chai';
-import { Type } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { Builder } from '../../lib/schema/builder';
+import {Type} from '../../lib/base/enum';
+import {Row} from '../../lib/base/row';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {Builder} from '../../lib/schema/builder';
 
 const assert = chai.assert;
 
@@ -31,7 +31,7 @@ describe('DefaultCache', () => {
     const cache = new DefaultCache(builder.getSchema());
 
     assert.sameMembers([null, null], cache.getMany([1, 2]));
-    const payload = { id: 'something' };
+    const payload = {id: 'something'};
     const row = new Row(1, payload);
     const row2 = new Row(4, payload);
     const row3 = new Row(3, payload);

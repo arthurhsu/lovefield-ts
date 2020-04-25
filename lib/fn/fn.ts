@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { FnType } from '../base/private_enum';
-import { AggregatedColumn } from './aggregated_column';
-import { Column } from '../schema/column';
-import { StarColumn } from './star_column';
+import {FnType} from '../base/private_enum';
+import {AggregatedColumn} from './aggregated_column';
+import {Column} from '../schema/column';
+import {StarColumn} from './star_column';
 
 // Keep lower case class name for compatibility with Lovefield API.
 /* eslint-disable @typescript-eslint/class-name-casing */

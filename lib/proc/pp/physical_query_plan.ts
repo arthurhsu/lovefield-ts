@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Table } from '../../schema/table';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {Table} from '../../schema/table';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class PhysicalQueryPlan {
   // Calculates the combined scope of the given list of physical query plans.

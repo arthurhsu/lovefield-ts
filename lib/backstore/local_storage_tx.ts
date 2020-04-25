@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { TableType } from '../base/private_enum';
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
+import {TransactionType} from '../base/enum';
+import {TableType} from '../base/private_enum';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
 
-import { BaseTx } from './base_tx';
-import { LocalStorage } from './local_storage';
+import {BaseTx} from './base_tx';
+import {LocalStorage} from './local_storage';
 
 // Fake transaction object for LocalStorage backstore.
 export class LocalStorageTx extends BaseTx {

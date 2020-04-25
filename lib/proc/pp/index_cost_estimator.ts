@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { EvalType } from '../../base/eval';
-import { Global } from '../../base/global';
-import { Service } from '../../base/service';
-import { IndexStore } from '../../index/index_store';
-import { RuntimeIndex } from '../../index/runtime_index';
-import { CombinedPredicate } from '../../pred/combined_predicate';
-import { Predicate } from '../../pred/predicate';
-import { ValuePredicate } from '../../pred/value_predicate';
-import { Context } from '../../query/context';
-import { BaseTable } from '../../schema/base_table';
-import { Table } from '../../schema/table';
-import { IndexImpl } from '../../schema/index_impl';
+import {EvalType} from '../../base/eval';
+import {Global} from '../../base/global';
+import {Service} from '../../base/service';
+import {IndexStore} from '../../index/index_store';
+import {RuntimeIndex} from '../../index/runtime_index';
+import {CombinedPredicate} from '../../pred/combined_predicate';
+import {Predicate} from '../../pred/predicate';
+import {ValuePredicate} from '../../pred/value_predicate';
+import {Context} from '../../query/context';
+import {BaseTable} from '../../schema/base_table';
+import {Table} from '../../schema/table';
+import {IndexImpl} from '../../schema/index_impl';
 
-import { IndexRangeCandidate } from './index_range_candidate';
+import {IndexRangeCandidate} from './index_range_candidate';
 
 // The maximum percent of
 // 1) values an EvalType.IN predicate can have or

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as chai from 'chai';
-import { ErrorCode } from '../../lib/base/enum';
-import { Exception } from '../../lib/base/exception';
-import { Flags } from '../../lib/gen/flags';
+import {ErrorCode} from '../../lib/base/enum';
+import {Exception} from '../../lib/base/exception';
+import {Flags} from '../../lib/gen/flags';
 
 const assert = chai.assert;
 

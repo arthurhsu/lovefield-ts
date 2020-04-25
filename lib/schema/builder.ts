@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { DatabaseConnection } from '../base/database_connection';
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Service } from '../base/service';
-import { ServiceId } from '../base/service_id';
-import { RuntimeDatabase } from '../proc/runtime_database';
+import {DatabaseConnection} from '../base/database_connection';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {ServiceId} from '../base/service_id';
+import {RuntimeDatabase} from '../proc/runtime_database';
 
-import { BaseColumn } from './base_column';
-import { ConnectOptions } from './connect_options';
-import { DatabaseSchema } from './database_schema';
-import { DatabaseSchemaImpl } from './database_schema_impl';
-import { GraphNode } from './graph_node';
-import { Pragma } from './pragma';
-import { TableBuilder } from './table_builder';
+import {BaseColumn} from './base_column';
+import {ConnectOptions} from './connect_options';
+import {DatabaseSchema} from './database_schema';
+import {DatabaseSchemaImpl} from './database_schema_impl';
+import {GraphNode} from './graph_node';
+import {Pragma} from './pragma';
+import {TableBuilder} from './table_builder';
 
 // TODO(arthurhsu): FIXME: use a public interface here.
 // @export

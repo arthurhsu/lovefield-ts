@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Row } from '../base/row';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Row} from '../base/row';
 
-import { Comparator } from './comparator';
-import { IndexStats } from './index_stats';
-import { Key, KeyRange, SingleKeyRange } from './key_range';
-import { RuntimeIndex } from './runtime_index';
+import {Comparator} from './comparator';
+import {IndexStats} from './index_stats';
+import {Key, KeyRange, SingleKeyRange} from './key_range';
+import {RuntimeIndex} from './runtime_index';
 
 // Wraps another index which does not support NULL to accept NULL values.
 export class NullableIndex implements RuntimeIndex {

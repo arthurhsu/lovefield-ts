@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
+import {Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
 
 export class MemoryTable implements RuntimeTable {
   private data: Map<number, Row>;

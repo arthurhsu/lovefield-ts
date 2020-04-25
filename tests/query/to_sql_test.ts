@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import { bind } from '../../lib/base/bind';
-import { DataStoreType, Order } from '../../lib/base/enum';
-import { fn } from '../../lib/fn/fn';
-import { op } from '../../lib/fn/op';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { DeleteBuilder } from '../../lib/query/delete_builder';
-import { InsertBuilder } from '../../lib/query/insert_builder';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
+import {bind} from '../../lib/base/bind';
+import {DataStoreType, Order} from '../../lib/base/enum';
+import {fn} from '../../lib/fn/fn';
+import {op} from '../../lib/fn/op';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {DeleteBuilder} from '../../lib/query/delete_builder';
+import {InsertBuilder} from '../../lib/query/insert_builder';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
 const assert = chai.assert;
 
@@ -70,10 +70,7 @@ describe('toSql', () => {
   });
 
   it('deleteToSql_Where', () => {
-    let query = db
-      .delete()
-      .from(j)
-      .where(j.col('id').eq('1'));
+    let query = db.delete().from(j).where(j.col('id').eq('1'));
     assert.equal("DELETE FROM Job WHERE Job.id = '1';", query.toSql());
 
     query = db
@@ -82,31 +79,19 @@ describe('toSql', () => {
       .where(j.col('id').eq(bind(0)));
     assert.equal('DELETE FROM Job WHERE Job.id = ?0;', query.toSql());
 
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('minSalary').lt(10000));
+    query = db.delete().from(j).where(j.col('minSalary').lt(10000));
     assert.equal('DELETE FROM Job WHERE Job.minSalary < 10000;', query.toSql());
 
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('minSalary').lte(10000));
+    query = db.delete().from(j).where(j.col('minSalary').lte(10000));
     assert.equal(
       'DELETE FROM Job WHERE Job.minSalary <= 10000;',
       query.toSql()
     );
 
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('minSalary').gt(10000));
+    query = db.delete().from(j).where(j.col('minSalary').gt(10000));
     assert.equal('DELETE FROM Job WHERE Job.minSalary > 10000;', query.toSql());
 
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('minSalary').gte(10000));
+    query = db.delete().from(j).where(j.col('minSalary').gte(10000));
     assert.equal(
       'DELETE FROM Job WHERE Job.minSalary >= 10000;',
       query.toSql()
@@ -121,20 +106,14 @@ describe('toSql', () => {
       query.toSql()
     );
 
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('minSalary').between(10000, 20000));
+    query = db.delete().from(j).where(j.col('minSalary').between(10000, 20000));
     assert.equal(
       'DELETE FROM Job WHERE Job.minSalary BETWEEN 10000 AND 20000;',
       query.toSql()
     );
 
     // The LIKE conversion is incompatible with SQL, which is known.
-    query = db
-      .delete()
-      .from(j)
-      .where(j.col('id').match(/ab+c/));
+    query = db.delete().from(j).where(j.col('id').match(/ab+c/));
     assert.equal("DELETE FROM Job WHERE Job.id LIKE '/ab+c/';", query.toSql());
 
     query = db
@@ -481,10 +460,7 @@ describe('toSql', () => {
       salary: 10000,
     });
 
-    const query = db
-      .insert()
-      .into(e)
-      .values([row]);
+    const query = db.insert().into(e).values([row]);
     assert.equal(
       'INSERT INTO Employee(id, firstName, lastName, email, phoneNumber, ' +
         'hireDate, jobId, salary, commissionPercent, managerId, departmentId, ' +
@@ -513,10 +489,7 @@ describe('toSql', () => {
     );
 
     const job = HRSchemaSampleData.generateSampleJobData();
-    const query2 = db
-      .insert()
-      .into(j)
-      .values([job]);
+    const query2 = db.insert().into(j).values([job]);
     assert.equal(
       'INSERT INTO Job(id, title, minSalary, maxSalary) VALUES (#, #, #, #);',
       query2.toSql(true)
@@ -524,15 +497,9 @@ describe('toSql', () => {
   });
 
   it('nullConversion', () => {
-    let query = db
-      .select()
-      .from(j)
-      .where(j.col('id').isNull());
+    let query = db.select().from(j).where(j.col('id').isNull());
     assert.equal('SELECT * FROM Job WHERE Job.id IS NULL;', query.toSql());
-    query = db
-      .select()
-      .from(j)
-      .where(j.col('id').isNotNull());
+    query = db.select().from(j).where(j.col('id').isNotNull());
     assert.equal(
       'SELECT * FROM Job WHERE Job.id IS NOT NULL;',
       query.toSql(true)

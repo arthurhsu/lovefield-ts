@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { RawBackStore } from '../backstore/raw_back_store';
-import { DataStoreType } from '../base/enum';
+import {RawBackStore} from '../backstore/raw_back_store';
+import {DataStoreType} from '../base/enum';
 
 // @export
 export interface ConnectOptions {

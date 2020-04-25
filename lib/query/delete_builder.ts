@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Service } from '../base/service';
-import { Predicate } from '../pred/predicate';
-import { Table } from '../schema/table';
-import { BaseBuilder } from './base_builder';
-import { DeleteContext } from './delete_context';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {Predicate} from '../pred/predicate';
+import {Table} from '../schema/table';
+import {BaseBuilder} from './base_builder';
+import {DeleteContext} from './delete_context';
 
 export class DeleteBuilder extends BaseBuilder<DeleteContext> {
   constructor(global: Global) {

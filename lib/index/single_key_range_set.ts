@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SingleKey, SingleKeyRange } from './key_range';
+import {SingleKey, SingleKeyRange} from './key_range';
 
 export class SingleKeyRangeSet {
   // Intersection of two range sets.

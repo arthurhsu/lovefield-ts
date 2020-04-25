@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { AggregatedColumn } from '../../fn/aggregated_column';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {AggregatedColumn} from '../../fn/aggregated_column';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class AggregationNode extends LogicalQueryPlanNode {
   constructor(readonly columns: AggregatedColumn[]) {

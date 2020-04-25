@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { FnType } from '../base/private_enum';
-import { Row } from '../base/row';
-import { AggregatedColumn } from '../fn/aggregated_column';
-import { Column } from '../schema/column';
-import { Relation } from './relation';
-import { RelationEntry } from './relation_entry';
+import {FnType} from '../base/private_enum';
+import {Row} from '../base/row';
+import {AggregatedColumn} from '../fn/aggregated_column';
+import {Column} from '../schema/column';
+import {Relation} from './relation';
+import {RelationEntry} from './relation_entry';
 
 export class RelationTransformer {
   // Transforms a list of relations to a single relation. Each input relation is

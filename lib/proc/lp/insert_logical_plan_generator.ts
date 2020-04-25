@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { InsertContext } from '../../query/insert_context';
-import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
-import { InsertNode } from './insert_node';
-import { InsertOrReplaceNode } from './insert_or_replace_node';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {InsertContext} from '../../query/insert_context';
+import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
+import {InsertNode} from './insert_node';
+import {InsertOrReplaceNode} from './insert_or_replace_node';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class InsertLogicalPlanGenerator extends BaseLogicalPlanGenerator<
   InsertContext

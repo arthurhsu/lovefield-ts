@@ -16,11 +16,11 @@
 
 import * as chai from 'chai';
 
-import { DataStoreType } from '../../lib/base/enum';
-import { Row, PayloadType } from '../../lib/base/row';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { BaseColumn } from '../../lib/schema/base_column';
+import {DataStoreType} from '../../lib/base/enum';
+import {Row, PayloadType} from '../../lib/base/row';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {BaseColumn} from '../../lib/schema/base_column';
 
 const assert = chai.assert;
 
@@ -41,12 +41,7 @@ describe('NullPredicate', () => {
   // Deletes the contents of all tables.
   async function clearDb(): Promise<void> {
     const tables = db.getSchema().tables();
-    const deletePromises = tables.map(table =>
-      db
-        .delete()
-        .from(table)
-        .exec()
-    );
+    const deletePromises = tables.map(table => db.delete().from(table).exec());
 
     return Promise.all(deletePromises).then(() => {
       return;
@@ -97,14 +92,8 @@ describe('NullPredicate', () => {
     const region = db.getSchema().table('Region');
     const tx = db.createTransaction();
     return tx.exec([
-      db
-        .insert()
-        .into(dummy)
-        .values(generateSampleDummyData()),
-      db
-        .insert()
-        .into(region)
-        .values(generateSampleRegionData()),
+      db.insert().into(dummy).values(generateSampleDummyData()),
+      db.insert().into(region).values(generateSampleRegionData()),
     ]);
   }
 

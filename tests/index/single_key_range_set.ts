@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import { SingleKeyRange } from '../../lib/index/key_range';
-import { SingleKeyRangeSet } from '../../lib/index/single_key_range_set';
+import {SingleKeyRange} from '../../lib/index/key_range';
+import {SingleKeyRangeSet} from '../../lib/index/single_key_range_set';
 
 const assert = chai.assert;
 
 describe('SingleKeyRangeSet', () => {
-  function generateTestRanges(): { [key: string]: SingleKeyRange } {
+  function generateTestRanges(): {[key: string]: SingleKeyRange} {
     return {
       all: SingleKeyRange.all(),
       atLeast1: SingleKeyRange.lowerBound(1),

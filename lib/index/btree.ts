@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Favor } from '../base/private_enum';
-import { Row } from '../base/row';
-import { ArrayHelper } from '../structs/array_helper';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Favor} from '../base/private_enum';
+import {Row} from '../base/row';
+import {ArrayHelper} from '../structs/array_helper';
 
-import { Comparator } from './comparator';
-import { IndexHelper } from './index_helper';
-import { IndexStats } from './index_stats';
-import { Key, KeyRange, SingleKey, SingleKeyRange } from './key_range';
-import { RuntimeIndex } from './runtime_index';
+import {Comparator} from './comparator';
+import {IndexHelper} from './index_helper';
+import {IndexStats} from './index_stats';
+import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
+import {RuntimeIndex} from './runtime_index';
 
 // Wrapper of the BTree.
 export class BTree implements RuntimeIndex {

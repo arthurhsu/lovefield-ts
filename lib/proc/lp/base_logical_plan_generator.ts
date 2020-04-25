@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Context } from '../../query/context';
-import { LogicalPlanGenerator } from './logical_plan_generator';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {Context} from '../../query/context';
+import {LogicalPlanGenerator} from './logical_plan_generator';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 // TODO(arthurhsu): this abstract base class is not necessary. Refactor to
 // remove and simplify code structure.

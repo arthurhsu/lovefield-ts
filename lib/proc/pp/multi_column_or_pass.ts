@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { Operator } from '../../base/private_enum';
-import { CombinedPredicate } from '../../pred/combined_predicate';
-import { PredicateNode } from '../../pred/predicate_node';
-import { Context } from '../../query/context';
-import { TreeHelper } from '../../structs/tree_helper';
-import { TreeNode } from '../../structs/tree_node';
-import { RewritePass } from '../rewrite_pass';
+import {Global} from '../../base/global';
+import {Operator} from '../../base/private_enum';
+import {CombinedPredicate} from '../../pred/combined_predicate';
+import {PredicateNode} from '../../pred/predicate_node';
+import {Context} from '../../query/context';
+import {TreeHelper} from '../../structs/tree_helper';
+import {TreeNode} from '../../structs/tree_node';
+import {RewritePass} from '../rewrite_pass';
 
-import { IndexCostEstimator } from './index_cost_estimator';
-import { IndexRangeCandidate } from './index_range_candidate';
-import { IndexRangeScanStep } from './index_range_scan_step';
-import { MultiIndexRangeScanStep } from './multi_index_range_scan_step';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
-import { SelectStep } from './select_step';
-import { TableAccessByRowIdStep } from './table_access_by_row_id_step';
-import { TableAccessFullStep } from './table_access_full_step';
+import {IndexCostEstimator} from './index_cost_estimator';
+import {IndexRangeCandidate} from './index_range_candidate';
+import {IndexRangeScanStep} from './index_range_scan_step';
+import {MultiIndexRangeScanStep} from './multi_index_range_scan_step';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import {SelectStep} from './select_step';
+import {TableAccessByRowIdStep} from './table_access_by_row_id_step';
+import {TableAccessFullStep} from './table_access_full_step';
 
 // An optimization pass that detects if there are any OR predicates that
 // 1) Refer to a single table.

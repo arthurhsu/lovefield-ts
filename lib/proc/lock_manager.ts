@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { LockType } from '../base/private_enum';
-import { Table } from '../schema/table';
-import { LockTableEntry } from './lock_table_entry';
+import {LockType} from '../base/private_enum';
+import {Table} from '../schema/table';
+import {LockTableEntry} from './lock_table_entry';
 
 // LockManager is responsible for granting locks to tasks. Each lock corresponds
 // to a database table.

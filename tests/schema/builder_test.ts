@@ -23,13 +23,13 @@ import {
   Order,
   Type,
 } from '../../lib/base/enum';
-import { BaseColumn } from '../../lib/schema/base_column';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Builder } from '../../lib/schema/builder';
-import { ForeignKeySpec } from '../../lib/schema/foreign_key_spec';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { Info } from '../../lib/schema/info';
-import { TestUtil } from '../../testing/test_util';
+import {BaseColumn} from '../../lib/schema/base_column';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Builder} from '../../lib/schema/builder';
+import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {Info} from '../../lib/schema/info';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -78,9 +78,9 @@ describe('Builder', () => {
       .addColumn('managerId', Type.STRING)
       .addColumn('departmentId', Type.INTEGER)
       .addColumn('photo', Type.ARRAY_BUFFER)
-      .addPrimaryKey([{ name: 'id', autoIncrement: true }])
+      .addPrimaryKey([{name: 'id', autoIncrement: true}])
       .addUnique('uq_email', ['email'])
-      .addIndex('idx_salary', [{ name: 'salary', order: Order.DESC }])
+      .addIndex('idx_salary', [{name: 'salary', order: Order.DESC}])
       .addForeignKey('fk_JobId', {
         local: 'jobId',
         ref: 'Job.id',
@@ -93,7 +93,7 @@ describe('Builder', () => {
       .addColumn('id', Type.INTEGER)
       .addColumn('name', Type.STRING)
       .addColumn('managerId', Type.INTEGER)
-      .addPrimaryKey([{ name: 'id', order: Order.DESC }])
+      .addPrimaryKey([{name: 'id', order: Order.DESC}])
       .addForeignKey('fk_ManagerId', {
         local: 'managerId',
         ref: 'Employee.id',
@@ -109,7 +109,7 @@ describe('Builder', () => {
       .addColumn('object', Type.OBJECT)
       .addColumn('string', Type.STRING)
       .addIndex('idx_string', ['string'], true, Order.ASC)
-      .addIndex('idx_number', [{ name: 'number' }], true)
+      .addIndex('idx_number', [{name: 'number'}], true)
       .addNullable(['arraybuffer', 'object']);
     return schemaBuilder;
   };
@@ -311,7 +311,7 @@ describe('Builder', () => {
       .createTable('FkTable8')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}])
       .addForeignKey('fkEmployeeId1', {
         local: 'employeeId',
         ref: 'FkTable10.employeeId',
@@ -327,7 +327,7 @@ describe('Builder', () => {
       .createTable('FkTable10')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
       .addForeignKey('fkEmployeeId3', {
         local: 'employeeId2',
         ref: 'FkTable11.employeeId',
@@ -336,7 +336,7 @@ describe('Builder', () => {
       .createTable('FkTable11')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
       .addForeignKey('fkEmployeeId4', {
         local: 'employeeId2',
         ref: 'FkTable8.employeeId2',
@@ -353,7 +353,7 @@ describe('Builder', () => {
       .createTable('FkTable8')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
       .addForeignKey('fkEmployeeId1', {
         local: 'employeeId2',
         ref: 'FkTable8.employeeId',
@@ -367,7 +367,7 @@ describe('Builder', () => {
       .createTable('FkTable8')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}])
       .addForeignKey('fkEmployeeId1', {
         local: 'employeeId',
         ref: 'FkTable9.employeeId2',
@@ -376,13 +376,13 @@ describe('Builder', () => {
       .createTable('FkTable9')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId2', order: Order.DESC }]);
+      .addPrimaryKey([{name: 'employeeId2', order: Order.DESC}]);
     // Self loop on table11
     schemaBuilder
       .createTable('FkTable11')
       .addColumn('employeeId', Type.INTEGER)
       .addColumn('employeeId2', Type.INTEGER)
-      .addPrimaryKey([{ name: 'employeeId', order: Order.DESC }])
+      .addPrimaryKey([{name: 'employeeId', order: Order.DESC}])
       .addForeignKey('fkEmployeeId4', {
         local: 'employeeId2',
         ref: 'FkTable8.employeeId2',

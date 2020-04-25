@@ -16,12 +16,12 @@
 
 import * as chai from 'chai';
 
-import { GroupByStep } from '../../../lib/proc/pp/group_by_step';
-import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
-import { Relation } from '../../../lib/proc/relation';
-import { Table } from '../../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
-import { MockDataGenerator } from '../../../testing/hr_schema/mock_data_generator';
+import {GroupByStep} from '../../../lib/proc/pp/group_by_step';
+import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
+import {Relation} from '../../../lib/proc/relation';
+import {Table} from '../../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 
 const assert = chai.assert;
 

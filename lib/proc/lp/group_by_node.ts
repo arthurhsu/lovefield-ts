@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Column } from '../../schema/column';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {Column} from '../../schema/column';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class GroupByNode extends LogicalQueryPlanNode {
   constructor(readonly columns: Column[]) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LockType } from '../base/private_enum';
+import {LockType} from '../base/private_enum';
 
 export class LockTableEntry {
   exclusiveLock: number | null;

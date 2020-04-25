@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  SelectContext,
-  SelectContextOrderBy,
-} from '../../query/select_context';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {SelectContext, SelectContextOrderBy} from '../../query/select_context';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class OrderByNode extends LogicalQueryPlanNode {
   constructor(readonly orderBy: SelectContextOrderBy[]) {

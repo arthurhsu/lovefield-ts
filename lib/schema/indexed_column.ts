@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Order } from '../base/enum';
+import {Order} from '../base/enum';
 
-import { Column } from './column';
+import {Column} from './column';
 
 export interface IndexedColumnSpec {
   name: string;

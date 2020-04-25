@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { TableType } from '../base/private_enum';
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {TableType} from '../base/private_enum';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
 
-import { BaseTx } from './base_tx';
-import { BundledObjectStore } from './bundled_object_store';
-import { ObjectStore } from './object_store';
+import {BaseTx} from './base_tx';
+import {BundledObjectStore} from './bundled_object_store';
+import {ObjectStore} from './object_store';
 
 export class IndexedDBTx extends BaseTx {
   constructor(

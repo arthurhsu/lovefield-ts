@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 // Interface for all logical plan generators to implement. Generator objects are
 // designed as a one-time use objects.

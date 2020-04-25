@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Resolver } from '../base/resolver';
-import { Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TableDiff } from '../cache/table_diff';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Resolver} from '../base/resolver';
+import {Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { BackStore } from './back_store';
-import { RawBackStore } from './raw_back_store';
-import { Tx } from './tx';
-import { WebSqlRawBackStore } from './web_sql_raw_back_store';
-import { WebSqlTx } from './web_sql_tx';
+import {BackStore} from './back_store';
+import {RawBackStore} from './raw_back_store';
+import {Tx} from './tx';
+import {WebSqlRawBackStore} from './web_sql_raw_back_store';
+import {WebSqlTx} from './web_sql_tx';
 
 type UpgradeCallback = (db: RawBackStore) => Promise<void>;
 

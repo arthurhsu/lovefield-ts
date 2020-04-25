@@ -15,18 +15,18 @@
  */
 
 import * as chai from 'chai';
-import { EvalType } from '../../lib/base/eval';
-import { Row } from '../../lib/base/row';
-import { fn } from '../../lib/fn/fn';
-import { JoinPredicate } from '../../lib/pred/join_predicate';
-import { Relation } from '../../lib/proc/relation';
-import { RelationEntry } from '../../lib/proc/relation_entry';
-import { RelationTransformer } from '../../lib/proc/relation_transformer';
-import { Column } from '../../lib/schema/column';
-import { Table } from '../../lib/schema/table';
-import { EmployeeDataGenerator } from '../../testing/hr_schema/employee_data_generator';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { JobDataGenerator } from '../../testing/hr_schema/job_data_generator';
+import {EvalType} from '../../lib/base/eval';
+import {Row} from '../../lib/base/row';
+import {fn} from '../../lib/fn/fn';
+import {JoinPredicate} from '../../lib/pred/join_predicate';
+import {Relation} from '../../lib/proc/relation';
+import {RelationEntry} from '../../lib/proc/relation_entry';
+import {RelationTransformer} from '../../lib/proc/relation_transformer';
+import {Column} from '../../lib/schema/column';
+import {Table} from '../../lib/schema/table';
+import {EmployeeDataGenerator} from '../../testing/hr_schema/employee_data_generator';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 
 const assert = chai.assert;
 
@@ -218,8 +218,8 @@ describe('RelationTransformer', () => {
     relation.setAggregationResult(fn.max(j.col('maxSalary')), 100);
     relation.setAggregationResult(fn.min(j.col('maxSalary')), 0);
 
-    const entry1 = new RelationEntry(new Row(1, { maxSalary: 1000 }), false);
-    const entry2 = new RelationEntry(new Row(1, { maxSalary: 2000 }), false);
+    const entry1 = new RelationEntry(new Row(1, {maxSalary: 1000}), false);
+    const entry2 = new RelationEntry(new Row(1, {maxSalary: 2000}), false);
     const distinctRelation = new Relation([entry1, entry2], [j.getName()]);
     relation.setAggregationResult(
       fn.distinct(j.col('maxSalary')),
@@ -250,8 +250,8 @@ describe('RelationTransformer', () => {
     joinedRelation.setAggregationResult(fn.min(e.col('hireDate')), 0);
     joinedRelation.setAggregationResult(fn.max(e.col('hireDate')), 0);
 
-    const entry1 = new RelationEntry(new Row(1, { maxSalary: 1000 }), false);
-    const entry2 = new RelationEntry(new Row(1, { maxSalary: 2000 }), false);
+    const entry1 = new RelationEntry(new Row(1, {maxSalary: 1000}), false);
+    const entry2 = new RelationEntry(new Row(1, {maxSalary: 2000}), false);
     const distinctRelation = new Relation([entry1, entry2], [j.getName()]);
     joinedRelation.setAggregationResult(
       fn.distinct(j.col('maxSalary')),

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { assert } from '../../base/assert';
-import { KeyRange, SingleKeyRange } from '../../index/key_range';
-import { SingleKeyRangeSet } from '../../index/single_key_range_set';
-import { CombinedPredicate } from '../../pred/combined_predicate';
-import { ValuePredicate } from '../../pred/value_predicate';
-import { Context } from '../../query/context';
-import { IndexImpl } from '../../schema/index_impl';
-import { ArrayHelper } from '../../structs/array_helper';
-import { MapSet } from '../../structs/map_set';
-import { IndexKeyRangeCalculator } from './index_key_range_calculator';
+import {assert} from '../../base/assert';
+import {KeyRange, SingleKeyRange} from '../../index/key_range';
+import {SingleKeyRangeSet} from '../../index/single_key_range_set';
+import {CombinedPredicate} from '../../pred/combined_predicate';
+import {ValuePredicate} from '../../pred/value_predicate';
+import {Context} from '../../query/context';
+import {IndexImpl} from '../../schema/index_impl';
+import {ArrayHelper} from '../../structs/array_helper';
+import {MapSet} from '../../structs/map_set';
+import {IndexKeyRangeCalculator} from './index_key_range_calculator';
 
 export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   // The query context that was used for calculating the cached key range

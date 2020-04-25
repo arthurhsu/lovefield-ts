@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ExecType } from '../../base/private_enum';
-import { Journal } from '../../cache/journal';
-import { AggregatedColumn } from '../../fn/aggregated_column';
-import { Context } from '../../query/context';
-import { Column } from '../../schema/column';
-import { Relation } from '../relation';
-import { RelationTransformer } from '../relation_transformer';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {AggregatedColumn} from '../../fn/aggregated_column';
+import {Context} from '../../query/context';
+import {Column} from '../../schema/column';
+import {Relation} from '../relation';
+import {RelationTransformer} from '../relation_transformer';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class ProjectStep extends PhysicalQueryPlanNode {
   constructor(private columns: Column[], private groupByColumns: Column[]) {

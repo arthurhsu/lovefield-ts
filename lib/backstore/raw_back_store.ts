@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Row } from '../base/row';
+import {Row} from '../base/row';
 
 // Raw data store interface passed to onUpgrade() function.
 // @export

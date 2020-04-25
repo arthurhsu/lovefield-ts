@@ -16,11 +16,11 @@
 
 import * as chai from 'chai';
 
-import { DataStoreType, Order } from '../../lib/base/enum';
-import { PayloadType, Row } from '../../lib/base/row';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {DataStoreType, Order} from '../../lib/base/enum';
+import {PayloadType, Row} from '../../lib/base/row';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -88,11 +88,7 @@ describe('DateIndex', () => {
       .slice(1)
       .reverse();
 
-    await db
-      .insert()
-      .into(holiday)
-      .values(rows)
-      .exec();
+    await db.insert().into(holiday).values(rows).exec();
     const query = db
       .select()
       .from(holiday)

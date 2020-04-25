@@ -15,8 +15,8 @@
  */
 
 import * as chai from 'chai';
-import { TreeHelper } from '../../lib/structs/tree_helper';
-import { TreeNode } from '../../lib/structs/tree_node';
+import {TreeHelper} from '../../lib/structs/tree_helper';
+import {TreeNode} from '../../lib/structs/tree_node';
 
 const assert = chai.assert;
 

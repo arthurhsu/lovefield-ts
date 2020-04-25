@@ -15,16 +15,16 @@
  */
 
 import * as chai from 'chai';
-import { Row } from '../../lib/base/row';
-import { RelationEntry } from '../../lib/proc/relation_entry';
+import {Row} from '../../lib/base/row';
+import {RelationEntry} from '../../lib/proc/relation_entry';
 
 const assert = chai.assert;
 
 describe('RelationEntry', () => {
   it('combineEntries', () => {
-    const row1 = new Row(Row.DUMMY_ID, { foo: 'FOO' });
-    const row2 = new Row(Row.DUMMY_ID, { bar: 'BAR' });
-    const row3 = new Row(Row.DUMMY_ID, { baz: 'BAZ' });
+    const row1 = new Row(Row.DUMMY_ID, {foo: 'FOO'});
+    const row2 = new Row(Row.DUMMY_ID, {bar: 'BAR'});
+    const row3 = new Row(Row.DUMMY_ID, {baz: 'BAZ'});
 
     const entry1 = new RelationEntry(row1, false);
     const entry2 = new RelationEntry(row2, false);

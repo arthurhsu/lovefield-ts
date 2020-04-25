@@ -16,21 +16,21 @@
 
 import * as chai from 'chai';
 
-import { ExternalChangeObserver } from '../../lib/backstore/external_change_observer';
-import { ObservableStore } from '../../lib/backstore/observable_store';
-import { DataStoreType, ErrorCode, TransactionType } from '../../lib/base/enum';
-import { TableType } from '../../lib/base/private_enum';
-import { Resolver } from '../../lib/base/resolver';
-import { PayloadType, Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { Journal } from '../../lib/cache/journal';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Table } from '../../lib/schema/table';
-import { MockStore } from '../../testing/backstore/mock_store';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
-import { TestUtil } from '../../testing/test_util';
+import {ExternalChangeObserver} from '../../lib/backstore/external_change_observer';
+import {ObservableStore} from '../../lib/backstore/observable_store';
+import {DataStoreType, ErrorCode, TransactionType} from '../../lib/base/enum';
+import {TableType} from '../../lib/base/private_enum';
+import {Resolver} from '../../lib/base/resolver';
+import {PayloadType, Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {Journal} from '../../lib/cache/journal';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Table} from '../../lib/schema/table';
+import {MockStore} from '../../testing/backstore/mock_store';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -124,11 +124,7 @@ describe('ExternalChangeObserver', () => {
     // as a result of external changes.
     await TestUtil.assertPromiseReject(
       ErrorCode.DUPLICATE_KEYS, // 201: Duplicate keys are not allowed.
-      db
-        .insert()
-        .into(j)
-        .values([modifiedRow])
-        .exec()
+      db.insert().into(j).values([modifiedRow]).exec()
     );
   });
 
@@ -173,11 +169,7 @@ describe('ExternalChangeObserver', () => {
     });
 
     Promise.all([
-      db
-        .insert()
-        .into(j)
-        .values(sampleJobs1)
-        .exec(),
+      db.insert().into(j).values(sampleJobs1).exec(),
       simulateInsertionModification(j, sampleJobs2),
     ]);
     return resolver.promise;

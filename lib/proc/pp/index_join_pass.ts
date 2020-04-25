@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { EvalType } from '../../base/eval';
-import { SelectContext } from '../../query/select_context';
-import { BaseColumn } from '../../schema/base_column';
-import { BaseTable } from '../../schema/base_table';
-import { Column } from '../../schema/column';
-import { TreeHelper } from '../../structs/tree_helper';
-import { Relation } from '../relation';
-import { RewritePass } from '../rewrite_pass';
+import {EvalType} from '../../base/eval';
+import {SelectContext} from '../../query/select_context';
+import {BaseColumn} from '../../schema/base_column';
+import {BaseTable} from '../../schema/base_table';
+import {Column} from '../../schema/column';
+import {TreeHelper} from '../../structs/tree_helper';
+import {Relation} from '../relation';
+import {RewritePass} from '../rewrite_pass';
 
-import { JoinStep } from './join_step';
-import { NoOpStep } from './no_op_step';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
-import { TableAccessFullStep } from './table_access_full_step';
+import {JoinStep} from './join_step';
+import {NoOpStep} from './no_op_step';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import {TableAccessFullStep} from './table_access_full_step';
 
 // An optimization pass responsible for identifying JoinSteps that can be
 // calculated as index nested loop joins. It transforms the tree by specifying

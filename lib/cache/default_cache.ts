@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Row } from '../base/row';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Cache } from './cache';
+import {assert} from '../base/assert';
+import {Row} from '../base/row';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Cache} from './cache';
 
 export class DefaultCache implements Cache {
   private map: Map<number, Row>;

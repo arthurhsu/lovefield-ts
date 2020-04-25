@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ArrayHelper } from '../structs/array_helper';
-import { Task } from './task';
+import {ArrayHelper} from '../structs/array_helper';
+import {Task} from './task';
 
 export class TaskQueue {
   private queue: Task[];

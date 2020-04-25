@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Order } from '../base/enum';
-import { Favor } from '../base/private_enum';
-import { Comparator } from './comparator';
-import { SingleKey, SingleKeyRange } from './key_range';
+import {Order} from '../base/enum';
+import {Favor} from '../base/private_enum';
+import {Comparator} from './comparator';
+import {SingleKey, SingleKeyRange} from './key_range';
 
 export class SimpleComparator implements Comparator {
   static compareAscending(lhs: SingleKey, rhs: SingleKey): Favor {

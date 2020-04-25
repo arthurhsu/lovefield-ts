@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Column } from './column';
-import { Index } from './index';
+import {Column} from './column';
+import {Index} from './index';
 
 export interface BaseColumn extends Column {
   getAlias(): string;

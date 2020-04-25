@@ -15,16 +15,16 @@
  */
 
 import * as chai from 'chai';
-import { bind } from '../../../lib/base/bind';
-import { op } from '../../../lib/fn/op';
-import { PredicateNode } from '../../../lib/pred/predicate_node';
-import { LogicalPlanFactory } from '../../../lib/proc/lp/logical_plan_factory';
-import { DeleteBuilder } from '../../../lib/query/delete_builder';
-import { SelectBuilder } from '../../../lib/query/select_builder';
-import { UpdateBuilder } from '../../../lib/query/update_builder';
-import { TreeHelper } from '../../../lib/structs/tree_helper';
-import { MockEnv } from '../../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import {bind} from '../../../lib/base/bind';
+import {op} from '../../../lib/fn/op';
+import {PredicateNode} from '../../../lib/pred/predicate_node';
+import {LogicalPlanFactory} from '../../../lib/proc/lp/logical_plan_factory';
+import {DeleteBuilder} from '../../../lib/query/delete_builder';
+import {SelectBuilder} from '../../../lib/query/select_builder';
+import {UpdateBuilder} from '../../../lib/query/update_builder';
+import {TreeHelper} from '../../../lib/structs/tree_helper';
+import {MockEnv} from '../../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

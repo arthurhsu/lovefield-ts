@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { PayloadType, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { TableDiff } from '../cache/table_diff';
+import {PayloadType, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {TableDiff} from '../cache/table_diff';
 
 // Tables are stored in LocalStorage as a stringified data object in the format
 // of {id1: row1, id2: row2, ..., idN: rowN}.

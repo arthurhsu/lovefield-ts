@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { TaskPriority } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { Table } from '../schema/table';
-import { Relation } from './relation';
+import {TransactionType} from '../base/enum';
+import {TaskPriority} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {Table} from '../schema/table';
+import {Relation} from './relation';
 
 export interface Task {
   exec(): Promise<Relation[]>;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ExecType } from '../../base/private_enum';
-import { Journal } from '../../cache/journal';
-import { Context } from '../../query/context';
-import { SelectContext } from '../../query/select_context';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {Context} from '../../query/context';
+import {SelectContext} from '../../query/select_context';
 
-import { Relation } from '../relation';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {Relation} from '../relation';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class LimitStep extends PhysicalQueryPlanNode {
   constructor() {

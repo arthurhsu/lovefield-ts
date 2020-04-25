@@ -15,12 +15,12 @@
  */
 
 import * as chai from 'chai';
-import { ComparatorFactory } from '../../lib/index/comparator_factory';
-import { MultiKeyComparator } from '../../lib/index/multi_key_comparator';
-import { SimpleComparator } from '../../lib/index/simple_comparator';
-import { BaseTable } from '../../lib/schema/base_table';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {ComparatorFactory} from '../../lib/index/comparator_factory';
+import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
+import {SimpleComparator} from '../../lib/index/simple_comparator';
+import {BaseTable} from '../../lib/schema/base_table';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 

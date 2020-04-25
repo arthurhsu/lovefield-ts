@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { DatabaseSchema } from '../schema/database_schema';
-import { RuntimeIndex } from './runtime_index';
+import {DatabaseSchema} from '../schema/database_schema';
+import {RuntimeIndex} from './runtime_index';
 
 export interface IndexStore {
   // Initializes index store. This will create empty index instances.

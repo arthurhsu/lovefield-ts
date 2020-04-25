@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import { LogicalQueryPlanNode } from '../lib/proc/lp/logical_query_plan_node';
-import { PhysicalQueryPlanNode } from '../lib/proc/pp/physical_query_plan_node';
-import { RewritePass } from '../lib/proc/rewrite_pass';
-import { Context } from '../lib/query/context';
-import { SelectContext } from '../lib/query/select_context';
-import { TreeHelper } from '../lib/structs/tree_helper';
-import { TreeNode } from '../lib/structs/tree_node';
+import {LogicalQueryPlanNode} from '../lib/proc/lp/logical_query_plan_node';
+import {PhysicalQueryPlanNode} from '../lib/proc/pp/physical_query_plan_node';
+import {RewritePass} from '../lib/proc/rewrite_pass';
+import {Context} from '../lib/query/context';
+import {SelectContext} from '../lib/query/select_context';
+import {TreeHelper} from '../lib/structs/tree_helper';
+import {TreeNode} from '../lib/structs/tree_node';
 
 const assert = chai.assert;
 

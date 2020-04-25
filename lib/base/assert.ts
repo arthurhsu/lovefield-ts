@@ -15,9 +15,9 @@
  */
 
 // eslint-disable-next-line node/no-unpublished-import
-import { Flags } from '../gen/flags';
-import { ErrorCode } from './enum';
-import { Exception } from './exception';
+import {Flags} from '../gen/flags';
+import {ErrorCode} from './enum';
+import {Exception} from './exception';
 
 export function assert(condition: boolean, message = 'assertion failed'): void {
   if (Flags.DEBUG) {

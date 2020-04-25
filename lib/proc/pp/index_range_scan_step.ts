@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { ExecType } from '../../base/private_enum';
-import { Row } from '../../base/row';
-import { Service } from '../../base/service';
-import { Journal } from '../../cache/journal';
-import { IndexHelper } from '../../index/index_helper';
-import { IndexStore } from '../../index/index_store';
-import { Key, SingleKeyRange } from '../../index/key_range';
-import { RuntimeIndex } from '../../index/runtime_index';
-import { Context } from '../../query/context';
-import { SelectContext } from '../../query/select_context';
-import { IndexImpl } from '../../schema/index_impl';
-import { Relation } from '../relation';
+import {Global} from '../../base/global';
+import {ExecType} from '../../base/private_enum';
+import {Row} from '../../base/row';
+import {Service} from '../../base/service';
+import {Journal} from '../../cache/journal';
+import {IndexHelper} from '../../index/index_helper';
+import {IndexStore} from '../../index/index_store';
+import {Key, SingleKeyRange} from '../../index/key_range';
+import {RuntimeIndex} from '../../index/runtime_index';
+import {Context} from '../../query/context';
+import {SelectContext} from '../../query/select_context';
+import {IndexImpl} from '../../schema/index_impl';
+import {Relation} from '../relation';
 
-import { IndexKeyRangeCalculator } from './index_key_range_calculator';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {IndexKeyRangeCalculator} from './index_key_range_calculator';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class IndexRangeScanStep extends PhysicalQueryPlanNode {
   useLimit: boolean;

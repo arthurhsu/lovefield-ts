@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { ErrorCode } from '../base/enum';
+import {assert} from '../base/assert';
+import {ErrorCode} from '../base/enum';
 import {
   ComparisonFunction,
   EvalRegistry,
@@ -23,18 +23,18 @@ import {
   KeyOfIndexFunction,
   IndexableType,
 } from '../base/eval';
-import { Exception } from '../base/exception';
-import { PayloadType, Row } from '../base/row';
-import { Cache } from '../cache/cache';
-import { Key } from '../index/key_range';
-import { RuntimeIndex } from '../index/runtime_index';
-import { Relation } from '../proc/relation';
-import { RelationEntry } from '../proc/relation_entry';
-import { BaseTable } from '../schema/base_table';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
-import { MapSet } from '../structs/map_set';
-import { PredicateNode } from './predicate_node';
+import {Exception} from '../base/exception';
+import {PayloadType, Row} from '../base/row';
+import {Cache} from '../cache/cache';
+import {Key} from '../index/key_range';
+import {RuntimeIndex} from '../index/runtime_index';
+import {Relation} from '../proc/relation';
+import {RelationEntry} from '../proc/relation_entry';
+import {BaseTable} from '../schema/base_table';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
+import {MapSet} from '../structs/map_set';
+import {PredicateNode} from './predicate_node';
 
 export interface IndexJoinInfo {
   indexedColumn: Column;

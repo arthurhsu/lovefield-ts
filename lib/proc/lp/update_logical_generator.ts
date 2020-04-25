@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { UpdateContext } from '../../query/update_context';
-import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
-import { SelectNode } from './select_node';
-import { TableAccessNode } from './table_access_node';
-import { UpdateNode } from './update_node';
+import {UpdateContext} from '../../query/update_context';
+import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import {SelectNode} from './select_node';
+import {TableAccessNode} from './table_access_node';
+import {UpdateNode} from './update_node';
 
 export class UpdateLogicalPlanGenerator extends BaseLogicalPlanGenerator<
   UpdateContext

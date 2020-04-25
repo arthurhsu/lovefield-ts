@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { TableType } from '../base/private_enum';
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TransactionStats } from './transaction_stats';
+import {TableType} from '../base/private_enum';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TransactionStats} from './transaction_stats';
 
 // Tx objects are wrappers of backstore-provided transactions. The interface
 // defines common methods for these wrappers.
