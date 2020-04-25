@@ -42,7 +42,7 @@ export class RelationEntry {
         });
       } else {
         assert(
-          !result.hasOwnProperty(entryTables[0]),
+          !Object.prototype.hasOwnProperty.call(result, entryTables[0]),
           'Attempted to join table with itself, without using table alias, ' +
             'or same alias ' +
             entryTables[0] +
@@ -84,7 +84,8 @@ export class RelationEntry {
     // found then look for it in its normal location.
     const column = col as BaseColumn;
     const alias = column.getAlias();
-    if (alias !== null && this.row.payload().hasOwnProperty(alias)) {
+    if (alias !== null &&
+        Object.prototype.hasOwnProperty.call(this.row.payload(), alias)) {
       return this.row.payload()[alias];
     }
 

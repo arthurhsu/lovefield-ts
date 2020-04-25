@@ -61,7 +61,7 @@ export class TreeHelper {
     origTree.traverse(node => {
       const newNode = mapFn(node as T1);
 
-      if (node.getParent() == null) {
+      if (node.getParent() === null) {
         copyRoot = newNode;
       } else {
         nextParent.addChild(newNode);

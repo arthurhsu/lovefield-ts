@@ -30,7 +30,7 @@ import { DefaultCache } from '../../lib/cache/default_cache';
 import { MemoryIndexStore } from '../../lib/index/memory_index_store';
 import { Builder } from '../../lib/schema/builder';
 import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { NestedPayloadType } from '../../testing/test_util';
+import { NestedPayloadType, TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -232,9 +232,9 @@ describe('WebSqlRawBackStore', () => {
     await runTest(builder, onUpgrade, results => {
       assert.equal(2, results.length);
       const payload = results[0];
-      assert.isTrue(payload.hasOwnProperty('id'));
-      assert.isTrue(payload.hasOwnProperty('name'));
-      assert.isFalse(payload.hasOwnProperty('something'));
+      assert.isTrue(TestUtil.hasProperty(payload, 'id'));
+      assert.isTrue(TestUtil.hasProperty(payload, 'name'));
+      assert.isFalse(TestUtil.hasProperty(payload, 'something'));
     });
   });
 

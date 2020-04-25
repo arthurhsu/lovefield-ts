@@ -44,14 +44,12 @@ export class DepartmentDataGenerator {
 
     const departments = new Array(count);
     for (let i = 0; i < count; i++) {
-      // tslint:disable
       departments[i] = {
         id: 'departmentId' + i.toString(),
         name: this.names.shift(),
         managerId: 'managerId',
         locationId: 'locationId',
       };
-      // tslint:enable
     }
     return departments;
   }

@@ -17,7 +17,7 @@
 import { Builder } from './builder';
 
 // Keep lower case class name for compatibility with Lovefield API.
-// tslint:disable:class-name
+/* eslint-disable @typescript-eslint/class-name-casing */
 // TODO(arthurhsu): FIXME: Builder should be a public interface, not concrete
 // class. Currently Builder has no @export.
 // @export
@@ -31,4 +31,4 @@ export class schema {
     return new Builder(name, version);
   }
 }
-// tslint:enable:class-name
+/* eslint-disable @typescript-eslint/class-name-casing */

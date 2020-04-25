@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// tslint:disable:max-classes-per-file
 import { ErrorCode } from '../base/enum';
 import { Exception } from '../base/exception';
 import { Favor } from '../base/private_enum';
@@ -638,6 +637,7 @@ export class BTreeNode {
     this.delete(key, -1, value);
 
     if (this.isRoot()) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let root: BTreeNode | null = this;
       if (this.children.length === 1) {
         root = this.children[0];
@@ -1195,5 +1195,3 @@ export class BTreeNode {
     }
   }
 }
-
-// tslint:enable:max-classes-per-file

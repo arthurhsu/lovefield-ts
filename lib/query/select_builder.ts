@@ -74,7 +74,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
       this.query.from = [];
     }
 
-    this.query.from.push.apply(this.query.from, tables);
+    this.query.from.push(...tables);
     return this;
   }
 
@@ -199,7 +199,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
       this.query.groupBy = [];
     }
 
-    this.query.groupBy.push.apply(this.query.groupBy, columns);
+    this.query.groupBy.push(...columns);
     return this;
   }
 

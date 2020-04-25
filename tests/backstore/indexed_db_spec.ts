@@ -290,9 +290,8 @@ test('IndexedDB', () => {
 
   function filterTableA(): string[] {
     // Special hack to access private member
-    // tslint:disable:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const list = ((db as any).db as IDBDatabase).objectStoreNames;
-    // tslint:enable:no-any
     const results: string[] = [];
     for (let i = 0; i < list.length; ++i) {
       const name = list.item(i) as string;

@@ -226,7 +226,7 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
     let exp = false;
     let multiLineImports = false;
     contents.forEach(line => {
-      if (line.startsWith('// tslint:')) {
+      if (line.startsWith('// eslint:')) {
         // no-op
       } else if (line.startsWith('import ')) {
         if (line.indexOf(';') == -1) {
@@ -251,11 +251,7 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
     });
   });
   fs.writeFileSync(DIST_FILE, [
-    '// tslint:disable:class-name',
-    '// tslint:disable:max-classes-per-file',
-    '// tslint:disable:no-consecutive-blank-lines',
-    '// tslint:disable:no-shadowed-variable',
-    '',
+    '/* eslint-disable */',
   ].join('\n'), 'utf-8');
   fs.appendFileSync(DIST_FILE, finalResult.join('\n') + '\n\n', 'utf-8');
   compile();

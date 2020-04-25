@@ -29,9 +29,8 @@ import { PredicateNode } from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
   // ComparisonFunction is a special type that needs to allow any.
-  /* tslint:disable:no-any */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private evaluatorFn: (l: any, r: any) => boolean;
-  /* tslint:enable:no-any */
   private isComplement: boolean;
   private binder: unknown;
 

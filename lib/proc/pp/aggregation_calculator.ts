@@ -94,12 +94,13 @@ export class AggregationCalculator {
       case FnType.SUM:
         result = this.sum(relation, column);
         break;
-      case FnType.AVG:
+      case FnType.AVG: {
         const count = this.count(relation, column);
         if (count > 0) {
           result = (this.sum(relation, column) as number) / count;
         }
         break;
+      }
       case FnType.GEOMEAN:
         result = this.geomean(relation, column) as AggregationResult;
         break;

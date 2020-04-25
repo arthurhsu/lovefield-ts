@@ -91,4 +91,8 @@ export class TestUtil {
     );
     return table.get([]);
   }
+
+  static hasProperty(obj: object, name: string): boolean {
+    return Object.prototype.hasOwnProperty.call(obj, name);
+  }
 }

@@ -921,12 +921,11 @@ describe('EndToEndSelectTest', () => {
       .orderBy(aggregatedColumn, order)
       .groupBy(e.col('jobId'));
 
-    let expectedJobIdOrder: string[];
     // First executing the query with the aggregated column in the projected
     // list, to get the expected jobId ordering.
     let results = (await queryBuilder1.exec()) as PayloadType[];
     assertOrder(results, aggregatedColumn, order);
-    expectedJobIdOrder = results.map(
+    const expectedJobIdOrder = results.map(
       obj => obj[e.col('jobId').getName()] as string
     );
     // Then executing the same query without the aggregated column in the

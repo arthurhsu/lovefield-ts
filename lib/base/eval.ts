@@ -32,9 +32,8 @@ export enum EvalType {
 type ValueType = boolean | number | string;
 
 // ComparisonFunction is a special type that needs to allow any.
-/* tslint:disable:no-any */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ComparisonFunction = (l: any, r: any) => boolean;
-/* tslint:enable:no-any */
 export type IndexableType = ValueType | Date;
 export type KeyOfIndexFunction = (key: IndexableType) => ValueType;
 
@@ -161,33 +160,33 @@ function buildObjectEvaluatorMap(): Map<EvalType, ComparisonFunction> {
 function buildDateEvaluatorMap(): Map<EvalType, ComparisonFunction> {
   const map = new Map<EvalType, ComparisonFunction>();
   map.set(EvalType.BETWEEN, (a: Date, range: Date[]) => {
-    return a == null || range[0] == null || range[1] == null
+    return a === null || range[0] === null || range[1] === null
       ? false
       : a.getTime() >= range[0].getTime() && a.getTime() <= range[1].getTime();
   });
   map.set(EvalType.EQ, (a: Date, b: Date) => {
-    const aTime = a == null ? -1 : a.getTime();
-    const bTime = b == null ? -1 : b.getTime();
+    const aTime = a === null ? -1 : a.getTime();
+    const bTime = b === null ? -1 : b.getTime();
     return aTime === bTime;
   });
   map.set(EvalType.GTE, (a: Date, b: Date) => {
-    return a == null || b == null ? false : a.getTime() >= b.getTime();
+    return a === null || b === null ? false : a.getTime() >= b.getTime();
   });
   map.set(EvalType.GT, (a: Date, b: Date) => {
-    return a == null || b == null ? false : a.getTime() > b.getTime();
+    return a === null || b === null ? false : a.getTime() > b.getTime();
   });
   map.set(EvalType.IN, (targetValue: Date, values: Date[]) => {
     return values.some(value => value.getTime() === targetValue.getTime());
   });
   map.set(EvalType.LTE, (a: Date, b: Date) => {
-    return a == null || b == null ? false : a.getTime() <= b.getTime();
+    return a === null || b === null ? false : a.getTime() <= b.getTime();
   });
   map.set(EvalType.LT, (a: Date, b: Date) => {
-    return a == null || b == null ? false : a.getTime() < b.getTime();
+    return a === null || b === null ? false : a.getTime() < b.getTime();
   });
   map.set(EvalType.NEQ, (a: Date, b: Date) => {
-    const aTime = a == null ? -1 : a.getTime();
-    const bTime = b == null ? -1 : b.getTime();
+    const aTime = a === null ? -1 : a.getTime();
+    const bTime = b === null ? -1 : b.getTime();
     return aTime !== bTime;
   });
   return map;

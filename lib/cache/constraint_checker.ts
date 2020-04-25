@@ -206,10 +206,7 @@ export class ConstraintChecker {
         }, this);
         const referringRowIds = this.findReferringRowIds(tbl, modifications);
         if (referringRowIds !== null) {
-          result.tableOrder.unshift.apply(
-            result.tableOrder,
-            referringRowIds.keys()
-          );
+          result.tableOrder.unshift(...referringRowIds.keys());
           newRowIdsToDelete.merge(referringRowIds);
         }
       }, this);

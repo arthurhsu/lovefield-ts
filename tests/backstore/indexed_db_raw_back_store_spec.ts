@@ -25,6 +25,7 @@ import { Capability } from '../../lib/base/capability';
 import { Type } from '../../lib/base/enum';
 import { RawRow, Row, PayloadType } from '../../lib/base/row';
 import { Builder } from '../../lib/schema/builder';
+import { TestUtil } from '../../testing/test_util';
 
 const assert = chai.assert;
 const skip = !Capability.get().indexedDb;
@@ -253,8 +254,8 @@ test('IndexedDBRawBackStore', () => {
       })
       .then(results => {
         assert.equal(2, results.length);
-        assert.isFalse(results[0].payload().hasOwnProperty('name'));
-        assert.isFalse(results[1].payload().hasOwnProperty('name'));
+        assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
+        assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
       });
   });
 
@@ -285,8 +286,8 @@ test('IndexedDBRawBackStore', () => {
         const newRow2 = Row.deserialize(
           results[1].getPayload()[MAGIC] as RawRow
         );
-        assert.isFalse(newRow.hasOwnProperty('name'));
-        assert.isFalse(newRow2.hasOwnProperty('name'));
+        assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
+        assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
       });
   });
 
@@ -317,8 +318,8 @@ test('IndexedDBRawBackStore', () => {
       })
       .then(results => {
         assert.equal(2, results.length);
-        assert.isFalse(results[0].payload().hasOwnProperty('name'));
-        assert.isFalse(results[1].payload().hasOwnProperty('name'));
+        assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
+        assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
         assert.equal('world', results[0].payload()['username']);
         assert.equal('world2', results[1].payload()['username']);
       });
@@ -351,8 +352,8 @@ test('IndexedDBRawBackStore', () => {
         const newRow2 = Row.deserialize(
           results[1].getPayload()[MAGIC] as RawRow
         );
-        assert.isFalse(newRow.hasOwnProperty('name'));
-        assert.isFalse(newRow2.hasOwnProperty('name'));
+        assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
+        assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
         assert.equal('world', newRow.payload()['username']);
         assert.equal('world2', newRow2.payload()['username']);
       });

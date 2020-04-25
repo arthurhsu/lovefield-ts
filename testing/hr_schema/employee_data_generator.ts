@@ -75,7 +75,6 @@ export class EmployeeDataGenerator {
       );
       const commissionPercent = 0.15 + Math.random();
 
-      // tslint:disable
       employees[i] = {
         id: `employeeId${i}`,
         firstName: firstName,
@@ -95,7 +94,6 @@ export class EmployeeDataGenerator {
             : this.genDepartmentId(),
         photo: this.genPhoto(),
       };
-      // tslint:enable
     }
 
     return employees;

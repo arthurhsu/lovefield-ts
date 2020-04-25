@@ -29,7 +29,6 @@ export class HRSchemaSampleData {
       .getSchema()
       .table('Employee')
       .createRow({
-        // tslint:disable
         id: 'empId',
         firstName: 'John',
         lastName: 'Doe',
@@ -43,7 +42,6 @@ export class HRSchemaSampleData {
         managerId: 'managerId',
         departmentId: 'departmentId',
         photo: buffer,
-        // tslint:enable
       });
   }
 
@@ -52,12 +50,10 @@ export class HRSchemaSampleData {
       .getSchema()
       .table('Job')
       .createRow({
-        // tslint:disable
         id: 'jobId',
         title: 'Software Engineer',
         minSalary: 100000,
         maxSalary: 500000,
-        // tslint:enable
       });
   }
 
@@ -66,12 +62,10 @@ export class HRSchemaSampleData {
       .getSchema()
       .table('Department')
       .createRow({
-        // tslint:disable
         id: 'departmentId',
         name: 'departmentName',
         managerId: 'managerId',
         locationId: 'locationId',
-        // tslint:enable
       });
   }
 
@@ -80,7 +74,6 @@ export class HRSchemaSampleData {
       .getSchema()
       .table('JobHistory')
       .createRow({
-        // tslint:disable
         employeeId: 'employeeId',
         // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
         startDate: new Date(476144100000),
@@ -88,7 +81,6 @@ export class HRSchemaSampleData {
         endDate: new Date(507680100000),
         jobId: 'jobId',
         departmentId: 'departmentId',
-        // tslint:enable
       });
   }
 }

@@ -131,7 +131,6 @@ export class MockDataGenerator {
     const schema = getHrDbSchemaBuilder().getSchema();
     const location = schema.table('Location');
     this.sampleLocations = [
-      // tslint:disable
       location.createRow({
         id: 'locationId',
         streetAddress: 'dummyStreetAddress',
@@ -140,7 +139,6 @@ export class MockDataGenerator {
         stateProvince: 'dummyStateProvince',
         countryId: 1,
       }),
-      // tslint:enable
     ];
     const country = schema.table('Country');
     this.sampleCountries = [
@@ -196,7 +194,6 @@ export class MockDataGenerator {
     const maxSalary = (job: Row) => job.payload()['maxSalary'] as number;
 
     return {
-      // tslint:disable
       minMinSalary: this.findJobMin(minSalary),
       maxMinSalary: this.findJobMax(minSalary),
       distinctMinSalary: this.findJobDistinct(minSalary),
@@ -233,7 +230,6 @@ export class MockDataGenerator {
         this.findJobDistinct(maxSalary)
       ),
       selfJoinSalary: this.findSelfJoinSalary(),
-      // tslint:enable
     };
   }
 
@@ -241,7 +237,6 @@ export class MockDataGenerator {
     const salary = (employee: Row) => employee.payload()['salary'] as number;
     const hireDate = (employee: Row) => employee.payload()['hireDate'] as Date;
     return {
-      // tslint:disable
       employeesPerJob: this.findEmployeesPerJob(),
       minSalary: 0,
       maxSalary: 0,
@@ -258,7 +253,6 @@ export class MockDataGenerator {
       minHireDate: this.findEmployeeMinDate(),
       maxHireDate: this.findEmployeeMaxDate(),
       thetaJoinSalaryIds: this.findThetaJoinSalaryIds(),
-      // tslint:enable
     };
   }
 
