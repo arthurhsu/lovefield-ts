@@ -32,13 +32,14 @@ const DIST_DIR = path.join(__dirname, 'dist');
 const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
 const GEN_DIR = path.join(__dirname, 'lib/gen');
 const FLAGS_FILE = path.join(GEN_DIR, 'flags.ts');
+const TSCONFIG = 'tsconfig.json';
 
 let tsProject;
 let deps;
 
 function getProject() {
   if (!tsProject) {
-    tsProject = tsc.createProject('tsconfig.json');
+    tsProject = tsc.createProject(TSCONFIG);
   }
   return tsProject;
 }
@@ -251,10 +252,10 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
 }));
 
 gulp.task('dist', gulp.series(['genDist'], function actualBuildDist() {
-  getProject();
+  const project = tsc.createProject(TSCONFIG, {declaration: true});
   return gulp.src([DIST_FILE])
       .pipe(sourcemaps.init())
-      .pipe(tsProject())
+      .pipe(project())
       .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest(DIST_DIR));
 }));

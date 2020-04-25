@@ -165,7 +165,7 @@ function setupMap(): Map<ErrorCode, string> {
     ec.CANT_GET_WEBSQL_TABLE,
     'WebSQL tables needs to be acquired from transactions.'
   );
-  m.set(ec.UNKNOWN_QUERY_CONTEXT, 'Unknow query context.');
+  m.set(ec.UNKNOWN_QUERY_CONTEXT, 'Unknown query context.');
   m.set(ec.UNKNOWN_NODE_TYPE, 'Unknown node type.');
   m.set(ec.DUPLICATE_FROM, 'from() has already been called.');
   m.set(ec.DUPLICATE_WHERE, 'where() has already been called.');
