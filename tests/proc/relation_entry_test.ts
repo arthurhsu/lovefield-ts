@@ -38,7 +38,6 @@ describe('RelationEntry', () => {
       ['Table2']
     );
 
-    /* tslint:disable:no-string-literal */
     assert.equal(2, Object.keys(combinedEntry12.row.payload()).length);
     let table1Payload = combinedEntry12.row.payload()['Table1'];
     assert.deepEqual(row1.payload(), table1Payload);
@@ -60,6 +59,5 @@ describe('RelationEntry', () => {
     assert.deepEqual(row2.payload(), table2Payload);
     const table3Payload = combinedEntry123.row.payload()['Table3'];
     assert.deepEqual(row3.payload(), table3Payload);
-    /* tslint:enable:no-string-literal */
   });
 });

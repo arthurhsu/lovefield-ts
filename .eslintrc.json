@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "./node_modules/gts"
+  ],
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true
+  },
+  "rules": {
+    // Lovefield wants to preserve member signatures in its class hierarchy.
+    "no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "none",
+        "ignoreResetSiblings": false
+      }
+    ],
+    // TODO(arthurhsu): unset prettier override
+    "prettier/prettier": [1]
+  },
+  "ignorePatterns": [
+    "coverage/",
+    "dist/",
+    "lib/gen/",
+    "node_modules/",
+    "out/",
+    "*.js"
+  ]
+}

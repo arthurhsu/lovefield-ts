@@ -162,7 +162,7 @@ export class Builder {
       }
       const parentSchema = table.getSchema();
       const parentColName = specs.parentColumn;
-      if (!parentSchema.hasOwnProperty(parentColName)) {
+      if (!Object.prototype.hasOwnProperty.call(parentSchema, parentColName)) {
         // 537: Foreign key {0} refers to invalid column.
         throw new Exception(ErrorCode.INVALID_FK_COLUMN);
       }

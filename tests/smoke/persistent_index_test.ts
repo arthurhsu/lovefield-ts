@@ -43,7 +43,7 @@ describe('PersistentIndex', () => {
   let sampleRows2: Row[];
 
   // This is a hack to access private variables and change it.
-  // tslint:disable:no-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -60,7 +60,7 @@ describe('PersistentIndex', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
-  // tslint:enable:no-any
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   before(() => {
     stubBTreeParam();

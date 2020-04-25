@@ -83,6 +83,7 @@ export class AggregatedColumn extends NonPredicateProvider
   // are of type AggregatedColumn except for the last column.
   getColumnChain(): Column[] {
     const columnChain: Column[] = [this];
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let currentColumn: Column = this;
     while (currentColumn instanceof AggregatedColumn) {
       columnChain.push(currentColumn.child);

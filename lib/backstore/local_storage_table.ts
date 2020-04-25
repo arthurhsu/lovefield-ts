@@ -45,7 +45,7 @@ export class LocalStorageTable implements RuntimeTable {
     } else {
       results = [];
       ids.forEach(id => {
-        if (this.data.hasOwnProperty(id.toString())) {
+        if (Object.prototype.hasOwnProperty.call(this.data, id.toString())) {
           results.push(new Row(id, this.data[id.toString()] as PayloadType));
         }
       }, this);
@@ -89,7 +89,7 @@ export class LocalStorageTable implements RuntimeTable {
     const diff = new TableDiff(this.key);
     newIds.forEach(id => {
       const rowId = Number(id);
-      if (this.data.hasOwnProperty(id)) {
+      if (Object.prototype.hasOwnProperty.call(this.data, id)) {
         // A maybe update: the event simply pass back all values of table.
         if (JSON.stringify(this.data[id]) !== JSON.stringify(newData[id])) {
           diff.modify([
@@ -103,7 +103,7 @@ export class LocalStorageTable implements RuntimeTable {
       }
     }, this);
     oldIds
-      .filter(id => newData.hasOwnProperty(id))
+      .filter(id => Object.prototype.hasOwnProperty.call(newData, id))
       .forEach(id => {
         diff.delete(new Row(Number(id), this.data[id] as PayloadType));
       }, this);

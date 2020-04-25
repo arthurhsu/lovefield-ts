@@ -36,7 +36,7 @@ describe('BTree', () => {
   let c2: SimpleComparator;
 
   // Special hack to replace internal private variables.
-  // tslint:disable:no-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -53,7 +53,7 @@ describe('BTree', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
-  // tslint:enable:no-any
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   beforeEach(() => {
     c = new SimpleComparator(Order.ASC);
@@ -120,8 +120,7 @@ describe('BTree', () => {
   // clang-format on
 
   function insertToTree(index: number, duplicate?: boolean): BTree {
-    const unique: boolean = !duplicate;
-    const tree = new BTree('test', c, unique);
+    const tree = new BTree('test', c, !duplicate);
     let i = 0;
     while (i < index) {
       tree.add(SEQUENCE[i], SEQUENCE[i]);

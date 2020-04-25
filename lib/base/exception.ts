@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line node/no-unpublished-import
 import { Flags } from '../gen/flags';
 import { ErrorCode } from './enum';
 import { getErrorMessage } from './error_message';

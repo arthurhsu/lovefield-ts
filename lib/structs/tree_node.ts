@@ -36,6 +36,7 @@ export class TreeNode {
   }
 
   getRoot(): TreeNode {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let root: TreeNode = this;
     while (root.parent !== null) {
       root = root.parent;
@@ -45,6 +46,7 @@ export class TreeNode {
 
   getDepth(): number {
     let depth = 0;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let node: TreeNode = this;
     while (node.parent !== null) {
       depth++;

@@ -64,8 +64,6 @@ export class RowImpl extends Row {
         value = value ? (value as Date).getTime() : null;
       } else if (type === Type.OBJECT) {
         value = value || null;
-      } else {
-        value = value;
       }
       obj[key] = value;
     });
