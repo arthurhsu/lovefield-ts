@@ -28,9 +28,10 @@ const nopt = require('nopt');
 const path = require('path');
 const Toposort = require('toposort-class');
 
-const DIST_DIR = 'dist';
+const DIST_DIR = path.join(__dirname, 'dist');
 const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
-const SRC_PATTERN = ['**/*.ts', `${DIST_DIR}/**`];
+const GEN_DIR = path.join(__dirname, 'lib/gen');
+const FLAGS_FILE = path.join(GEN_DIR, 'flags.ts');
 
 let tsProject;
 let deps;
@@ -81,10 +82,10 @@ function genFlags() {
     contents += `  static ${key} = ${quote}${value}${quote};\n`;
   }
   contents += '}\n';
-  fs.ensureDirSync('lib/gen');
-  fs.writeFileSync('lib/gen/flags.ts', contents, {encoding: 'utf-8'});
-  gulp.src('lib/gen/flags.ts')
-      .pipe(gulp.dest('lib/gen'));
+  fs.ensureDirSync(GEN_DIR);
+  fs.writeFileSync(FLAGS_FILE, contents, {encoding: 'utf-8'});
+  gulp.src(FLAGS_FILE)
+      .pipe(gulp.dest(GEN_DIR));
 }
 
 gulp.task('default', (cb) => {
@@ -105,7 +106,8 @@ gulp.task('default', (cb) => {
 gulp.task('clean', (cb) => {
   fs.removeSync(getProject().options.outDir);
   fs.removeSync('coverage');
-  fs.removeSync('lib/gen');
+  fs.removeSync(GEN_DIR);
+  fs.removeSync(DIST_DIR);
   cb();
 });
 
@@ -142,7 +144,7 @@ gulp.task('build', gulp.series(['buildLib', 'buildTest']));
 
 gulp.task('deps', (cb) => {
   glob('lib/**/*.ts', (err, matches) => {
-    let files = ['lib/gen/flags.ts'].concat(matches);
+    let files = [FLAGS_FILE].concat(matches);
     let fileSet = new Set(files);
     const relativePath = (p) => {
       return path.relative(__dirname, p).replace(/\\/g, '/');
@@ -201,15 +203,6 @@ gulp.task('deps', (cb) => {
   });
 });
 
-function compile() {
-  let compilerOptions = Object.assign(tsProject.config.compilerOptions, {});
-
-  const tsp = tsc.createProject(compilerOptions);
-  gulp.src('dist/lf.ts')
-      .pipe(tsp())
-      .pipe(gulp.dest('out/dist'));
-}
-
 gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
   let copyRight = false;  // only need to include copy right header once.
   // Erase file first.
@@ -251,10 +244,9 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
     });
   });
   fs.writeFileSync(DIST_FILE, [
-    '/* eslint-disable */',
+    '/* eslint-disable */\n',
   ].join('\n'), 'utf-8');
   fs.appendFileSync(DIST_FILE, finalResult.join('\n') + '\n\n', 'utf-8');
-  compile();
   cb();
 }));
 
