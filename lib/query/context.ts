@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { UniqueId } from '../base/unique_id';
-import { Predicate } from '../pred/predicate';
-import { PredicateNode } from '../pred/predicate_node';
-import { ValuePredicate } from '../pred/value_predicate';
-import { Table } from '../schema/table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {assert} from '../base/assert';
+import {UniqueId} from '../base/unique_id';
+import {Predicate} from '../pred/predicate';
+import {PredicateNode} from '../pred/predicate_node';
+import {ValuePredicate} from '../pred/value_predicate';
+import {Table} from '../schema/table';
+import {DatabaseSchema} from '../schema/database_schema';
 
 // Base context for all query types.
 export abstract class Context extends UniqueId {

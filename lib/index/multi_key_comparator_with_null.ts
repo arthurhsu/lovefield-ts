@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Order } from '../base/enum';
-import { MultiKeyComparator } from './multi_key_comparator';
-import { SimpleComparatorWithNull } from './simple_comparator_with_null';
+import {Order} from '../base/enum';
+import {MultiKeyComparator} from './multi_key_comparator';
+import {SimpleComparatorWithNull} from './simple_comparator_with_null';
 
 export class MultiKeyComparatorWithNull extends MultiKeyComparator {
   constructor(orders: Order[]) {

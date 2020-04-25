@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { assert } from '../../base/assert';
-import { Operator } from '../../base/private_enum';
-import { CombinedPredicate } from '../../pred/combined_predicate';
-import { PredicateNode } from '../../pred/predicate_node';
-import { Context } from '../../query/context';
-import { ArrayHelper } from '../../structs/array_helper';
-import { TreeHelper } from '../../structs/tree_helper';
-import { RewritePass } from '../rewrite_pass';
+import {assert} from '../../base/assert';
+import {Operator} from '../../base/private_enum';
+import {CombinedPredicate} from '../../pred/combined_predicate';
+import {PredicateNode} from '../../pred/predicate_node';
+import {Context} from '../../query/context';
+import {ArrayHelper} from '../../structs/array_helper';
+import {TreeHelper} from '../../structs/tree_helper';
+import {RewritePass} from '../rewrite_pass';
 
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
-import { SelectNode } from './select_node';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import {SelectNode} from './select_node';
 
 export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
   constructor() {

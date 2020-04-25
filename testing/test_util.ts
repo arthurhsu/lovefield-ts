@@ -17,18 +17,18 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { TransactionType } from '../lib/base/enum';
-import { Exception } from '../lib/base/exception';
-import { Global } from '../lib/base/global';
-import { TableType } from '../lib/base/private_enum';
-import { PayloadType, Row } from '../lib/base/row';
-import { Service } from '../lib/base/service';
-import { IndexStats } from '../lib/index/index_stats';
-import { IndexStore } from '../lib/index/index_store';
-import { RuntimeIndex } from '../lib/index/runtime_index';
-import { BaseTable } from '../lib/schema/base_table';
-import { Index } from '../lib/schema/index';
-import { Table } from '../lib/schema/table';
+import {TransactionType} from '../lib/base/enum';
+import {Exception} from '../lib/base/exception';
+import {Global} from '../lib/base/global';
+import {TableType} from '../lib/base/private_enum';
+import {PayloadType, Row} from '../lib/base/row';
+import {Service} from '../lib/base/service';
+import {IndexStats} from '../lib/index/index_stats';
+import {IndexStore} from '../lib/index/index_store';
+import {RuntimeIndex} from '../lib/index/runtime_index';
+import {BaseTable} from '../lib/schema/base_table';
+import {Index} from '../lib/schema/index';
+import {Table} from '../lib/schema/table';
 
 export interface NestedPayloadType {
   [key: string]: PayloadType;

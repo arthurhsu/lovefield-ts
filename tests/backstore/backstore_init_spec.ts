@@ -16,15 +16,15 @@
 
 import * as chai from 'chai';
 
-import { IndexedDB } from '../../lib/backstore/indexed_db';
-import { Memory } from '../../lib/backstore/memory';
-import { Capability } from '../../lib/base/capability';
-import { Service } from '../../lib/base/service';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Builder } from '../../lib/schema/builder';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {IndexedDB} from '../../lib/backstore/indexed_db';
+import {Memory} from '../../lib/backstore/memory';
+import {Capability} from '../../lib/base/capability';
+import {Service} from '../../lib/base/service';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Builder} from '../../lib/schema/builder';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -40,7 +40,7 @@ describe('BackStoreInit', () => {
 
   it('init_IndexedDB_Bundled', () => {
     const builder = getHrDbSchemaBuilder();
-    builder.setPragma({ enableBundledMode: true });
+    builder.setPragma({enableBundledMode: true});
     const cache = new DefaultCache(builder.getSchema());
     builder.getGlobal().registerService(Service.CACHE, cache);
 

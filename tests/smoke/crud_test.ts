@@ -16,17 +16,17 @@
 
 import * as chai from 'chai';
 
-import { Page } from '../../lib/backstore/page';
-import { Capability } from '../../lib/base/capability';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, TransactionType } from '../../lib/base/enum';
-import { PayloadType, Row } from '../../lib/base/row';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Builder } from '../../lib/schema/builder';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { SmokeTester } from '../../testing/smoke_tester';
-import { TestUtil } from '../../testing/test_util';
+import {Page} from '../../lib/backstore/page';
+import {Capability} from '../../lib/base/capability';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, TransactionType} from '../../lib/base/enum';
+import {PayloadType, Row} from '../../lib/base/row';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Builder} from '../../lib/schema/builder';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {SmokeTester} from '../../testing/smoke_tester';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -54,12 +54,12 @@ describe('CRUD', () => {
   function getDynamicSchemaConnector(builder: Builder): Connector {
     const options = Capability.get().indexedDb
       ? undefined
-      : { storeType: DataStoreType.MEMORY };
+      : {storeType: DataStoreType.MEMORY};
     return builder.connect.bind(builder, options);
   }
 
   function getDynamicSchemaBundledConnector(builder: Builder): Connector {
-    builder.setPragma({ enableBundledMode: true });
+    builder.setPragma({enableBundledMode: true});
     return builder.connect.bind(builder, undefined);
   }
 
@@ -133,7 +133,7 @@ describe('CRUD', () => {
       }
 
       const table = db.getSchema().table('Region');
-      const originalRow = table.createRow({ id: '1', name: 'North America' });
+      const originalRow = table.createRow({id: '1', name: 'North America'});
       const replacementRow = table.createRow({
         id: '2',
         name: 'Central America',
@@ -141,10 +141,7 @@ describe('CRUD', () => {
 
       // First insert a single record into a table.
       let tx = db.createTransaction(TransactionType.READ_WRITE);
-      const insert = db
-        .insert()
-        .into(table)
-        .values([originalRow]);
+      const insert = db.insert().into(table).values([originalRow]);
       await tx.exec([insert]);
       // Read the entire table directly from IndexedDb and verify that the
       // original record is in place.
@@ -160,10 +157,7 @@ describe('CRUD', () => {
       tx = db.createTransaction(TransactionType.READ_WRITE);
       await tx.exec([
         db.delete().from(table),
-        db
-          .insert()
-          .into(table)
-          .values([replacementRow]),
+        db.insert().into(table).values([replacementRow]),
       ]);
 
       // Read the entire table, verify that we have a single row present (not

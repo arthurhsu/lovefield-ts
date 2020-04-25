@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { assert } from '../../base/assert';
-import { IndexStore } from '../../index/index_store';
-import { Range } from '../../index/key_range';
-import { RuntimeIndex } from '../../index/runtime_index';
-import { ValuePredicate } from '../../pred/value_predicate';
-import { Context } from '../../query/context';
-import { IndexImpl } from '../../schema/index_impl';
-import { MapSet } from '../../structs/map_set';
+import {assert} from '../../base/assert';
+import {IndexStore} from '../../index/index_store';
+import {Range} from '../../index/key_range';
+import {RuntimeIndex} from '../../index/runtime_index';
+import {ValuePredicate} from '../../pred/value_predicate';
+import {Context} from '../../query/context';
+import {IndexImpl} from '../../schema/index_impl';
+import {MapSet} from '../../structs/map_set';
 
-import { BoundedKeyRangeCalculator } from './bounded_key_range_calculator';
-import { IndexKeyRangeCalculator } from './index_key_range_calculator';
+import {BoundedKeyRangeCalculator} from './bounded_key_range_calculator';
+import {IndexKeyRangeCalculator} from './index_key_range_calculator';
 
 export class IndexRangeCandidate {
   // The names of all columns that are indexed by this index schema.

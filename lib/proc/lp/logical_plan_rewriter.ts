@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Context } from '../../query/context';
-import { RewritePass } from '../rewrite_pass';
+import {Context} from '../../query/context';
+import {RewritePass} from '../rewrite_pass';
 
-import { LogicalPlanGenerator } from './logical_plan_generator';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {LogicalPlanGenerator} from './logical_plan_generator';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 // Rewrites the logical query plan such that the resulting logical query plan is
 // faster to execute than the original "naive" plan.

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { ErrorCode, Order, Type } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { FnType } from '../base/private_enum';
-import { Service } from '../base/service';
-import { AggregatedColumn } from '../fn/aggregated_column';
-import { op } from '../fn/op';
-import { JoinPredicate } from '../pred/join_predicate';
-import { Predicate } from '../pred/predicate';
-import { BaseTable } from '../schema/base_table';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
+import {Binder} from '../base/bind';
+import {ErrorCode, Order, Type} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {FnType} from '../base/private_enum';
+import {Service} from '../base/service';
+import {AggregatedColumn} from '../fn/aggregated_column';
+import {op} from '../fn/op';
+import {JoinPredicate} from '../pred/join_predicate';
+import {Predicate} from '../pred/predicate';
+import {BaseTable} from '../schema/base_table';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
 
-import { BaseBuilder } from './base_builder';
-import { SelectContext } from './select_context';
+import {BaseBuilder} from './base_builder';
+import {SelectContext} from './select_context';
 
 export class SelectBuilder extends BaseBuilder<SelectContext> {
   private fromAlreadyCalled: boolean;

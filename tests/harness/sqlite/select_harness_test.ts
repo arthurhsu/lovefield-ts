@@ -16,11 +16,11 @@
 
 import * as chai from 'chai';
 
-import { DatabaseConnection } from '../../../lib/base/database_connection';
-import { DataStoreType, Type } from '../../../lib/base/enum';
-import { PayloadType } from '../../../lib/base/row';
-import { Builder } from '../../../lib/schema/builder';
-import { Table } from '../../../lib/schema/table';
+import {DatabaseConnection} from '../../../lib/base/database_connection';
+import {DataStoreType, Type} from '../../../lib/base/enum';
+import {PayloadType} from '../../../lib/base/row';
+import {Builder} from '../../../lib/schema/builder';
+import {Table} from '../../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -39,7 +39,7 @@ describe('DeleteHarness', () => {
       .createTable('t2')
       .addColumn('r1', Type.NUMBER)
       .addColumn('r2', Type.NUMBER);
-    db = await builder.connect({ storeType: DataStoreType.MEMORY });
+    db = await builder.connect({storeType: DataStoreType.MEMORY});
     t1 = db.getSchema().table('t1');
     t2 = db.getSchema().table('t2');
   });
@@ -67,19 +67,15 @@ describe('DeleteHarness', () => {
   }
 
   it('Select1_1', async () => {
-    const table1Row = t1.createRow({ f1: 11, f2: 22 });
-    const table2Row = t2.createRow({ r1: 1.1, r2: 2.2 });
+    const table1Row = t1.createRow({f1: 11, f2: 22});
+    const table2Row = t2.createRow({r1: 1.1, r2: 2.2});
 
-    await db.createTransaction().exec([
-      db
-        .insert()
-        .into(t1)
-        .values([table1Row]),
-      db
-        .insert()
-        .into(t2)
-        .values([table2Row]),
-    ]);
+    await db
+      .createTransaction()
+      .exec([
+        db.insert().into(t1).values([table1Row]),
+        db.insert().into(t2).values([table2Row]),
+      ]);
     // 1-1.1 not applicable
     // 1-1.2 not applicable
     // 1-1.3 not applicable
@@ -92,10 +88,7 @@ describe('DeleteHarness', () => {
     checkFlatten('11', results, ['f1']);
 
     // 1-1.5
-    results = (await db
-      .select(t1.col('f2'))
-      .from(t1)
-      .exec()) as PayloadType[];
+    results = (await db.select(t1.col('f2')).from(t1).exec()) as PayloadType[];
     checkFlatten('22', results, ['f2']);
 
     // 1-1.6, 1-1.7
@@ -106,10 +99,7 @@ describe('DeleteHarness', () => {
     checkFlatten('11 22', results, ['f1', 'f2']);
 
     // 1-1.8
-    results = (await db
-      .select()
-      .from(t1)
-      .exec()) as PayloadType[];
+    results = (await db.select().from(t1).exec()) as PayloadType[];
     checkFlatten('11 22', results, ['f1', 'f2']);
 
     // 1-1.8.1 not applicable
@@ -117,10 +107,7 @@ describe('DeleteHarness', () => {
     // 1-1.8.3 not applicable
 
     // 1-1.9
-    results = (await db
-      .select()
-      .from(t1, t2)
-      .exec()) as PayloadType[];
+    results = (await db.select().from(t1, t2).exec()) as PayloadType[];
     checkFlatten('11 22', results, ['f1', 'f2'], 't1');
     checkFlatten('1.1 2.2', results, ['r1', 'r2'], 't2');
 
@@ -144,10 +131,7 @@ describe('DeleteHarness', () => {
     checkFlatten('1.1', results, ['r1'], 't2');
 
     // 1-1.11.1
-    results = (await db
-      .select()
-      .from(t2, t1)
-      .exec()) as PayloadType[];
+    results = (await db.select().from(t2, t1).exec()) as PayloadType[];
     checkFlatten('11 22', results, ['f1', 'f2'], 't1');
     checkFlatten('1.1 2.2', results, ['r1', 'r2'], 't2');
 

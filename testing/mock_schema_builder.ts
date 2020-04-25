@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ConstraintTiming, Order, Type } from '../lib/base/enum';
-import { Builder } from '../lib/schema/builder';
+import {ConstraintTiming, Order, Type} from '../lib/base/enum';
+import {Builder} from '../lib/schema/builder';
 
 export function getMockSchemaBuilder(
   name?: string,
@@ -28,7 +28,7 @@ export function getMockSchemaBuilder(
     .addColumn('id', Type.STRING)
     .addColumn('name', Type.STRING)
     .addPrimaryKey(['id'])
-    .addIndex('idxName', [{ name: 'name', order: Order.DESC }])
+    .addIndex('idxName', [{name: 'name', order: Order.DESC}])
     .persistentIndex(persistentIndex || false);
 
   schemaBuilder
@@ -36,7 +36,7 @@ export function getMockSchemaBuilder(
     .addColumn('id', Type.STRING)
     .addColumn('name', Type.STRING)
     .addPrimaryKey(['id'])
-    .addIndex('idxName', [{ name: 'name', order: Order.DESC }]);
+    .addIndex('idxName', [{name: 'name', order: Order.DESC}]);
 
   schemaBuilder
     .createTable('tableC')
@@ -64,7 +64,7 @@ export function getMockSchemaBuilder(
     .addColumn('id', Type.STRING)
     .addColumn('name', Type.STRING)
     .addNullable(['name'])
-    .addIndex('idxName', [{ name: 'name', order: Order.ASC }]);
+    .addIndex('idxName', [{name: 'name', order: Order.ASC}]);
 
   schemaBuilder
     .createTable('tableG')
@@ -75,7 +75,7 @@ export function getMockSchemaBuilder(
       local: 'id',
       ref: 'tableI.id',
     })
-    .addIndex('idx_Id', [{ name: 'id', order: Order.ASC }]);
+    .addIndex('idx_Id', [{name: 'id', order: Order.ASC}]);
 
   schemaBuilder
     .createTable('tableH')
@@ -100,7 +100,7 @@ export function getMockSchemaBuilder(
     .addUnique('uq_id2', ['id2'])
     .addColumn('name', Type.STRING)
     .addNullable(['name'])
-    .addIndex('idxName', [{ name: 'name', order: Order.ASC }]);
+    .addIndex('idxName', [{name: 'name', order: Order.ASC}]);
 
   schemaBuilder
     .createTable('tableJ')

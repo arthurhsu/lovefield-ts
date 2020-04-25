@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { MapSet } from '../../lib/structs/map_set';
+import {MapSet} from '../../lib/structs/map_set';
 
 const assert = chai.assert;
 

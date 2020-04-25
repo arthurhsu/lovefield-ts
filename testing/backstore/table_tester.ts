@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import { Resolver } from '../../lib/base/resolver';
-import { Row } from '../../lib/base/row';
-import { RuntimeTable } from '../../lib/base/runtime_table';
+import {Resolver} from '../../lib/base/resolver';
+import {Row} from '../../lib/base/row';
+import {RuntimeTable} from '../../lib/base/runtime_table';
 
 const assert = chai.assert;
 

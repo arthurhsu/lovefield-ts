@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { EvalType } from '../base/eval';
-import { BaseColumn } from '../schema/base_column';
-import { Column } from '../schema/column';
-import { JoinPredicate } from './join_predicate';
-import { Predicate } from './predicate';
-import { ValuePredicate } from './value_predicate';
+import {EvalType} from '../base/eval';
+import {BaseColumn} from '../schema/base_column';
+import {Column} from '../schema/column';
+import {JoinPredicate} from './join_predicate';
+import {Predicate} from './predicate';
+import {ValuePredicate} from './value_predicate';
 
 export function createPredicate<T>(
   lhs: Column,

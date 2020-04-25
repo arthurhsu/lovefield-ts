@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Info } from '../schema/info';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Info} from '../schema/info';
 
-import { Context } from './context';
+import {Context} from './context';
 
 interface UpdateSetContext {
   binding?: number;
@@ -68,7 +68,7 @@ export class UpdateContext extends Context {
 
   private cloneSet(set: UpdateSetContext[]): UpdateSetContext[] {
     return set.map(src => {
-      const clone = { ...src };
+      const clone = {...src};
       return clone;
     });
   }

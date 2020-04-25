@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
 
 export class ObjectStore implements RuntimeTable {
   constructor(

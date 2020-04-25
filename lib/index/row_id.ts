@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { ErrorCode, Order } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Favor } from '../base/private_enum';
-import { Row } from '../base/row';
+import {ErrorCode, Order} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Favor} from '../base/private_enum';
+import {Row} from '../base/row';
 
-import { Comparator } from './comparator';
-import { IndexHelper } from './index_helper';
-import { IndexStats } from './index_stats';
-import { Key, KeyRange, SingleKey, SingleKeyRange } from './key_range';
-import { RuntimeIndex } from './runtime_index';
-import { SimpleComparator } from './simple_comparator';
+import {Comparator} from './comparator';
+import {IndexHelper} from './index_helper';
+import {IndexStats} from './index_stats';
+import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
+import {RuntimeIndex} from './runtime_index';
+import {SimpleComparator} from './simple_comparator';
 
 // This is actually the row id set for a given table, but in the form of
 // RuntimeIndex.
@@ -111,7 +111,7 @@ export class RowId implements RuntimeIndex {
   }
 
   serialize(): Row[] {
-    return [new Row(RowId.ROW_ID, { v: Array.from(this.rows.values()) })];
+    return [new Row(RowId.ROW_ID, {v: Array.from(this.rows.values())})];
   }
 
   comparator(): Comparator {

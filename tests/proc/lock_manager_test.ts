@@ -15,10 +15,10 @@
  */
 
 import * as chai from 'chai';
-import { LockType } from '../../lib/base/private_enum';
-import { LockManager } from '../../lib/proc/lock_manager';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {LockType} from '../../lib/base/private_enum';
+import {LockManager} from '../../lib/proc/lock_manager';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -28,11 +28,7 @@ describe('LockManager', () => {
 
   beforeEach(() => {
     j = new Set<Table>();
-    j.add(
-      getHrDbSchemaBuilder()
-        .getSchema()
-        .table('Job')
-    );
+    j.add(getHrDbSchemaBuilder().getSchema().table('Job'));
     lockManager = new LockManager();
   });
 

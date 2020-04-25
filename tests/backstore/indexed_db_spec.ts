@@ -17,24 +17,24 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { IndexedDB } from '../../lib/backstore/indexed_db';
-import { ObjectStore } from '../../lib/backstore/object_store';
-import { Tx } from '../../lib/backstore/tx';
-import { Capability } from '../../lib/base/capability';
-import { TransactionType } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { TableType } from '../../lib/base/private_enum';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { Cache } from '../../lib/cache/cache';
-import { DefaultCache } from '../../lib/cache/default_cache';
-import { Journal } from '../../lib/cache/journal';
-import { IndexStore } from '../../lib/index/index_store';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { BaseTable } from '../../lib/schema/base_table';
-import { MockSchema } from '../../testing/backstore/mock_schema';
-import { ScudTester } from '../../testing/backstore/scud_tester';
-import { TestUtil } from '../../testing/test_util';
+import {IndexedDB} from '../../lib/backstore/indexed_db';
+import {ObjectStore} from '../../lib/backstore/object_store';
+import {Tx} from '../../lib/backstore/tx';
+import {Capability} from '../../lib/base/capability';
+import {TransactionType} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {TableType} from '../../lib/base/private_enum';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {Cache} from '../../lib/cache/cache';
+import {DefaultCache} from '../../lib/cache/default_cache';
+import {Journal} from '../../lib/cache/journal';
+import {IndexStore} from '../../lib/index/index_store';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {BaseTable} from '../../lib/schema/base_table';
+import {MockSchema} from '../../testing/backstore/mock_schema';
+import {ScudTester} from '../../testing/backstore/scud_tester';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 const skip = !Capability.get().indexedDb;
@@ -115,8 +115,8 @@ test('IndexedDB', () => {
     db = new IndexedDB(global, schema);
     global.registerService(Service.BACK_STORE, db);
 
-    const CONTENTS = { id: 'hello', name: 'world' };
-    const CONTENTS2 = { id: 'hello2', name: 'world2' };
+    const CONTENTS = {id: 'hello', name: 'world'};
+    const CONTENTS2 = {id: 'hello2', name: 'world2'};
 
     const tableA = schema.table('tableA');
     const tableB = schema.table('tableB');
@@ -214,7 +214,7 @@ test('IndexedDB', () => {
     // to the row ID and with the larger rowID in position 0.
     const generateRows = (): Row[] => {
       const rowIds = [200, 9, 1, 3, 2, 20, 100];
-      const CONTENTS = { scan: 'rowid' };
+      const CONTENTS = {scan: 'rowid'};
       return rowIds.map(rowId => {
         return new Row(rowId, CONTENTS);
       });
@@ -256,7 +256,7 @@ test('IndexedDB', () => {
 
   it('scanRowId_BundledDB', async () => {
     const insertIntoTable = () => {
-      const CONTENTS = { scan: 'rowid' };
+      const CONTENTS = {scan: 'rowid'};
       const rows = [];
       for (let i = 0; i <= 2048; i += 256) {
         rows.push(new Row(i, CONTENTS));

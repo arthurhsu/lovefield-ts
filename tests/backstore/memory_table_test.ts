@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { MemoryTable } from '../../lib/backstore/memory_table';
-import { TableTester } from '../../testing/backstore/table_tester';
+import {MemoryTable} from '../../lib/backstore/memory_table';
+import {TableTester} from '../../testing/backstore/table_tester';
 
 describe('MemoryTable', () => {
   it('tableTester', () => {

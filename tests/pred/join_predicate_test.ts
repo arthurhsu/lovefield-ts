@@ -16,19 +16,19 @@
 
 import * as chai from 'chai';
 
-import { EvalType } from '../../lib/base/eval';
-import { Row, PayloadType } from '../../lib/base/row';
-import { JoinPredicate } from '../../lib/pred/join_predicate';
-import { Predicate } from '../../lib/pred/predicate';
-import { Relation } from '../../lib/proc/relation';
-import { RelationEntry } from '../../lib/proc/relation_entry';
-import { Column } from '../../lib/schema/column';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
-import { NullableDataGenerator } from '../../testing/nullable_data_generator';
+import {EvalType} from '../../lib/base/eval';
+import {Row, PayloadType} from '../../lib/base/row';
+import {JoinPredicate} from '../../lib/pred/join_predicate';
+import {Predicate} from '../../lib/pred/predicate';
+import {Relation} from '../../lib/proc/relation';
+import {RelationEntry} from '../../lib/proc/relation_entry';
+import {Column} from '../../lib/schema/column';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
+import {NullableDataGenerator} from '../../testing/nullable_data_generator';
 
 const assert = chai.assert;
 

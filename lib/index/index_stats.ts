@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Key } from './key_range';
+import {Key} from './key_range';
 
 export class IndexStats {
   totalRows: number;

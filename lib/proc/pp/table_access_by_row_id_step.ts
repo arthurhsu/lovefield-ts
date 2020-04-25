@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { ExecType } from '../../base/private_enum';
-import { Row } from '../../base/row';
-import { Service } from '../../base/service';
-import { Cache } from '../../cache/cache';
-import { Journal } from '../../cache/journal';
-import { Context } from '../../query/context';
-import { BaseTable } from '../../schema/base_table';
-import { Table } from '../../schema/table';
-import { Relation } from '../relation';
+import {Global} from '../../base/global';
+import {ExecType} from '../../base/private_enum';
+import {Row} from '../../base/row';
+import {Service} from '../../base/service';
+import {Cache} from '../../cache/cache';
+import {Journal} from '../../cache/journal';
+import {Context} from '../../query/context';
+import {BaseTable} from '../../schema/base_table';
+import {Table} from '../../schema/table';
+import {Relation} from '../relation';
 
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class TableAccessByRowIdStep extends PhysicalQueryPlanNode {
   private cache: Cache;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Row } from '../base/row';
-import { Column } from '../schema/column';
-import { setEquals } from '../structs/set_util';
+import {assert} from '../base/assert';
+import {Row} from '../base/row';
+import {Column} from '../schema/column';
+import {setEquals} from '../structs/set_util';
 
-import { RelationEntry } from './relation_entry';
+import {RelationEntry} from './relation_entry';
 
 export type AggregationResult = Relation | string | number;
 

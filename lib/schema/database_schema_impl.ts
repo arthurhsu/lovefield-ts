@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 
-import { Table } from './table';
-import { DatabaseSchema } from './database_schema';
-import { Info } from './info';
-import { Pragma } from './pragma';
+import {Table} from './table';
+import {DatabaseSchema} from './database_schema';
+import {Info} from './info';
+import {Pragma} from './pragma';
 
 export class DatabaseSchemaImpl implements DatabaseSchema {
   _pragma: Pragma;
@@ -29,7 +29,7 @@ export class DatabaseSchemaImpl implements DatabaseSchema {
 
   constructor(readonly _name: string, readonly _version: number) {
     this.tableMap = new Map<string, Table>();
-    this._pragma = { enableBundledMode: false };
+    this._pragma = {enableBundledMode: false};
     // Lazy initialization
     this._info = (undefined as unknown) as Info;
   }

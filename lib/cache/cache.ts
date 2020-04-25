@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Row } from '../base/row';
+import {Row} from '../base/row';
 
 export interface Cache {
   // Inserts/Updates contents in cache. This version takes single row.

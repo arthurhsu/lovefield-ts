@@ -15,9 +15,9 @@
  */
 
 // eslint-disable-next-line node/no-unpublished-import
-import { Flags } from '../gen/flags';
-import { ErrorCode } from './enum';
-import { getErrorMessage } from './error_message';
+import {Flags} from '../gen/flags';
+import {ErrorCode} from './enum';
+import {getErrorMessage} from './error_message';
 
 export class Exception {
   readonly message: string;

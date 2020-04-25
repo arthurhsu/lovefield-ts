@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ExecType } from '../../base/private_enum';
-import { Journal } from '../../cache/journal';
-import { Context } from '../../query/context';
-import { Relation } from '../relation';
-import { RelationEntry } from '../relation_entry';
+import {ExecType} from '../../base/private_enum';
+import {Journal} from '../../cache/journal';
+import {Context} from '../../query/context';
+import {Relation} from '../relation';
+import {RelationEntry} from '../relation_entry';
 
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class MultiIndexRangeScanStep extends PhysicalQueryPlanNode {
   constructor() {

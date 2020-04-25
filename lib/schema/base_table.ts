@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { RawRow, Row } from '../base/row';
+import {RawRow, Row} from '../base/row';
 
-import { Column } from './column';
-import { Constraint } from './constraint';
-import { Index } from './index';
-import { Table } from './table';
+import {Column} from './column';
+import {Constraint} from './constraint';
+import {Index} from './index';
+import {Table} from './table';
 
 export interface BaseTable extends Table {
   getColumns(): Column[];

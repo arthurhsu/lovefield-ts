@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import { DatabaseConnection } from '../../../lib/base/database_connection';
-import { DataStoreType, Type } from '../../../lib/base/enum';
-import { Global } from '../../../lib/base/global';
-import { op } from '../../../lib/fn/op';
-import { JoinPredicate } from '../../../lib/pred/join_predicate';
-import { IndexJoinPass } from '../../../lib/proc/pp/index_join_pass';
-import { JoinStep } from '../../../lib/proc/pp/join_step';
-import { ProjectStep } from '../../../lib/proc/pp/project_step';
-import { SelectStep } from '../../../lib/proc/pp/select_step';
-import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
-import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
-import { SelectContext } from '../../../lib/query/select_context';
-import { Builder } from '../../../lib/schema/builder';
-import { Column } from '../../../lib/schema/column';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { Table } from '../../../lib/schema/table';
-import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
+import {DatabaseConnection} from '../../../lib/base/database_connection';
+import {DataStoreType, Type} from '../../../lib/base/enum';
+import {Global} from '../../../lib/base/global';
+import {op} from '../../../lib/fn/op';
+import {JoinPredicate} from '../../../lib/pred/join_predicate';
+import {IndexJoinPass} from '../../../lib/proc/pp/index_join_pass';
+import {JoinStep} from '../../../lib/proc/pp/join_step';
+import {ProjectStep} from '../../../lib/proc/pp/project_step';
+import {SelectStep} from '../../../lib/proc/pp/select_step';
+import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
+import {SelectContext} from '../../../lib/query/select_context';
+import {Builder} from '../../../lib/schema/builder';
+import {Column} from '../../../lib/schema/column';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {Table} from '../../../lib/schema/table';
+import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('IndexJoinPass', () => {
   let conn: DatabaseConnection;
@@ -54,7 +54,7 @@ describe('IndexJoinPass', () => {
 
   beforeEach(() => {
     return getSchemaBuilder()
-      .connect({ storeType: DataStoreType.MEMORY })
+      .connect({storeType: DataStoreType.MEMORY})
       .then(db => {
         conn = db;
         schema = db.getSchema();

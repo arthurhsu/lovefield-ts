@@ -15,14 +15,14 @@
  */
 
 import * as chai from 'chai';
-import { bind } from '../../lib/base/bind';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { UpdateBuilder } from '../../lib/query/update_builder';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { TestUtil } from '../../testing/test_util';
+import {bind} from '../../lib/base/bind';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {UpdateBuilder} from '../../lib/query/update_builder';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -31,7 +31,7 @@ describe('UpdateTest', () => {
   let global: Global;
   before(() => {
     return getHrDbSchemaBuilder()
-      .connect({ storeType: DataStoreType.MEMORY })
+      .connect({storeType: DataStoreType.MEMORY})
       .then(conn => {
         db = conn;
         global = (db as RuntimeDatabase).getGlobal();

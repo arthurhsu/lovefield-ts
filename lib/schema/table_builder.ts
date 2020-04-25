@@ -21,14 +21,14 @@ import {
   Order,
   Type,
 } from '../base/enum';
-import { Exception } from '../base/exception';
+import {Exception} from '../base/exception';
 
-import { BaseTable } from './base_table';
-import { ColumnDef } from './column_def';
-import { ForeignKeySpec, RawForeignKeySpec } from './foreign_key_spec';
-import { IndexImpl } from './index_impl';
-import { IndexedColumnSpec } from './indexed_column';
-import { TableImpl } from './table_impl';
+import {BaseTable} from './base_table';
+import {ColumnDef} from './column_def';
+import {ForeignKeySpec, RawForeignKeySpec} from './foreign_key_spec';
+import {IndexImpl} from './index_impl';
+import {IndexedColumnSpec} from './indexed_column';
+import {TableImpl} from './table_impl';
 
 // Dynamic Table schema builder
 // TODO(arthurhsu): FIXME: use a public interface here.

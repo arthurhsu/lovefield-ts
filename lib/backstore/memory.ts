@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TableDiff } from '../cache/table_diff';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { BackStore } from './back_store';
-import { MemoryTable } from './memory_table';
-import { MemoryTx } from './memory_tx';
-import { RawBackStore } from './raw_back_store';
-import { Tx } from './tx';
+import {BackStore} from './back_store';
+import {MemoryTable} from './memory_table';
+import {MemoryTx} from './memory_tx';
+import {RawBackStore} from './raw_back_store';
+import {Tx} from './tx';
 
 export class Memory implements BackStore {
   private tables: Map<string, MemoryTable>;

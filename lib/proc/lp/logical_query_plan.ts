@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Table } from '../../schema/table';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
+import {Table} from '../../schema/table';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class LogicalQueryPlan {
   constructor(

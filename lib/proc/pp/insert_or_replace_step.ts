@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { ExecType } from '../../base/private_enum';
-import { Service } from '../../base/service';
-import { Journal } from '../../cache/journal';
-import { IndexStore } from '../../index/index_store';
-import { Context } from '../../query/context';
-import { InsertContext } from '../../query/insert_context';
-import { Table } from '../../schema/table';
-import { Relation } from '../relation';
+import {Global} from '../../base/global';
+import {ExecType} from '../../base/private_enum';
+import {Service} from '../../base/service';
+import {Journal} from '../../cache/journal';
+import {IndexStore} from '../../index/index_store';
+import {Context} from '../../query/context';
+import {InsertContext} from '../../query/insert_context';
+import {Table} from '../../schema/table';
+import {Relation} from '../relation';
 
-import { InsertStep } from './insert_step';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {InsertStep} from './insert_step';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class InsertOrReplaceStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;

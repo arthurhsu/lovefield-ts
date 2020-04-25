@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { LockType, TaskPriority } from '../base/private_enum';
-import { LockManager } from './lock_manager';
-import { Relation } from './relation';
-import { Task } from './task';
-import { TaskQueue } from './task_queue';
+import {TransactionType} from '../base/enum';
+import {LockType, TaskPriority} from '../base/private_enum';
+import {LockManager} from './lock_manager';
+import {Relation} from './relation';
+import {Task} from './task';
+import {TaskQueue} from './task_queue';
 
 // Query/Transaction runner which actually runs the query in a transaction
 // (either implicit or explicit) on the back store.

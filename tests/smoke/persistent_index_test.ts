@@ -16,21 +16,21 @@
 
 import * as chai from 'chai';
 
-import { BackStore } from '../../lib/backstore/back_store';
-import { DataStoreType, TransactionType } from '../../lib/base/enum';
-import { TableType } from '../../lib/base/private_enum';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { op } from '../../lib/fn/op';
-import { BTree, BTreeNode } from '../../lib/index/btree';
-import { ComparatorFactory } from '../../lib/index/comparator_factory';
-import { Key } from '../../lib/index/key_range';
-import { RowId } from '../../lib/index/row_id';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { Table } from '../../lib/schema/table';
-import { BaseTable } from '../../lib/schema/base_table';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {BackStore} from '../../lib/backstore/back_store';
+import {DataStoreType, TransactionType} from '../../lib/base/enum';
+import {TableType} from '../../lib/base/private_enum';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {op} from '../../lib/fn/op';
+import {BTree, BTreeNode} from '../../lib/index/btree';
+import {ComparatorFactory} from '../../lib/index/comparator_factory';
+import {Key} from '../../lib/index/key_range';
+import {RowId} from '../../lib/index/row_id';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {Table} from '../../lib/schema/table';
+import {BaseTable} from '../../lib/schema/base_table';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -87,11 +87,7 @@ describe('PersistentIndex', () => {
   // persisted indices are being updated appropriately on disk.
   it('PersistedIndices', async () => {
     // Inserts 5 records to the database.
-    await db
-      .insert()
-      .into(table)
-      .values(generateSampleRows())
-      .exec();
+    await db.insert().into(table).values(generateSampleRows()).exec();
     await assertAllIndicesPopulated(table, sampleRows);
 
     // Updates the 'name' field of rows 1 and 3.
@@ -159,10 +155,7 @@ describe('PersistentIndex', () => {
 
     sampleRows = [];
 
-    await db
-      .delete()
-      .from(table)
-      .exec();
+    await db.delete().from(table).exec();
     return assertAllIndicesPopulated(table, sampleRows);
   });
 
@@ -314,11 +307,7 @@ describe('PersistentIndex', () => {
   // Performs insert, update, replace, delete operations and verifies that
   // persisted indices are being updated appropriately on disk.
   it('PersistedIndices_CrossColumn', async () => {
-    await db
-      .insert()
-      .into(table2)
-      .values(generateSampleRows2())
-      .exec();
+    await db.insert().into(table2).values(generateSampleRows2()).exec();
     await assertAllIndicesPopulated(table2, sampleRows2);
 
     sampleRows2[2].payload()['integer2'] = 33;
@@ -365,10 +354,7 @@ describe('PersistentIndex', () => {
     // Deletes all remaining rows.
     sampleRows2 = [];
 
-    await db
-      .delete()
-      .from(table2)
-      .exec();
+    await db.delete().from(table2).exec();
     await assertAllIndicesPopulated(table2, sampleRows2);
   });
 });

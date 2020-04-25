@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { DEFAULT_VALUES } from '../../lib/base/enum';
+import {DEFAULT_VALUES} from '../../lib/base/enum';
 
 const assert = chai.assert;
 

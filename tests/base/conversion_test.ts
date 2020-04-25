@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import { DataStoreType, TransactionType } from '../../lib/base/enum';
-import { TableType } from '../../lib/base/private_enum';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { BaseTable } from '../../lib/schema/base_table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {DataStoreType, TransactionType} from '../../lib/base/enum';
+import {TableType} from '../../lib/base/private_enum';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {BaseTable} from '../../lib/schema/base_table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -47,11 +47,7 @@ describe('Conversion', () => {
       string2: 'dummy-string2',
     });
 
-    await db
-      .insert()
-      .into(tableSchema)
-      .values([row])
-      .exec();
+    await db.insert().into(tableSchema).values([row]).exec();
 
     // Selects the sample record from the database, skipping the cache, to
     // ensure that deserialization is working when reading a record from the

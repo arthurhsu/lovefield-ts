@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Order } from '../base/enum';
-import { Column } from '../schema/column';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Table } from '../schema/table';
+import {Binder} from '../base/bind';
+import {Order} from '../base/enum';
+import {Column} from '../schema/column';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Table} from '../schema/table';
 
-import { Context } from './context';
+import {Context} from './context';
 
 export interface SelectContextOrderBy {
   column: Column;

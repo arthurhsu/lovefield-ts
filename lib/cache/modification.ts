@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Row } from '../base/row';
+import {Row} from '../base/row';
 
 // An array of exactly 2 elements representing the modification of a single row.
 // Position 0 is the before value, position 1 is the after value. Null indicates

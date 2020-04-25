@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { ErrorCode, Order, Type } from '../base/enum';
-import { EvalType } from '../base/eval';
-import { Exception } from '../base/exception';
-import { Operator } from '../base/private_enum';
-import { Row } from '../base/row';
-import { CombinedPredicate } from '../pred/combined_predicate';
-import { JoinPredicate } from '../pred/join_predicate';
-import { Predicate } from '../pred/predicate';
-import { PredicateNode } from '../pred/predicate_node';
-import { ValuePredicate } from '../pred/value_predicate';
-import { BaseColumn } from '../schema/base_column';
-import { BaseTable } from '../schema/base_table';
-import { Table } from '../schema/table';
-import { TreeHelper } from '../structs/tree_helper';
-import { TreeNode } from '../structs/tree_node';
+import {Binder} from '../base/bind';
+import {ErrorCode, Order, Type} from '../base/enum';
+import {EvalType} from '../base/eval';
+import {Exception} from '../base/exception';
+import {Operator} from '../base/private_enum';
+import {Row} from '../base/row';
+import {CombinedPredicate} from '../pred/combined_predicate';
+import {JoinPredicate} from '../pred/join_predicate';
+import {Predicate} from '../pred/predicate';
+import {PredicateNode} from '../pred/predicate_node';
+import {ValuePredicate} from '../pred/value_predicate';
+import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
+import {Table} from '../schema/table';
+import {TreeHelper} from '../structs/tree_helper';
+import {TreeNode} from '../structs/tree_node';
 
-import { BaseBuilder } from './base_builder';
-import { Context } from './context';
-import { DeleteContext } from './delete_context';
-import { InsertContext } from './insert_context';
-import { SelectContext } from './select_context';
-import { UpdateContext } from './update_context';
+import {BaseBuilder} from './base_builder';
+import {Context} from './context';
+import {DeleteContext} from './delete_context';
+import {InsertContext} from './insert_context';
+import {SelectContext} from './select_context';
+import {UpdateContext} from './update_context';
 
 type V = boolean | number | string | Date | ArrayBuffer;
 

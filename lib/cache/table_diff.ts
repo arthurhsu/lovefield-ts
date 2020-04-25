@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Row } from '../base/row';
-import { Modification } from './modification';
+import {assert} from '../base/assert';
+import {Row} from '../base/row';
+import {Modification} from './modification';
 
 export class TableDiff {
   private added: Map<number, Row>;

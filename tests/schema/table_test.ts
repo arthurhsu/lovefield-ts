@@ -16,9 +16,9 @@
 
 import * as chai from 'chai';
 
-import { BaseTable } from '../../lib/schema/base_table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {BaseTable} from '../../lib/schema/base_table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 

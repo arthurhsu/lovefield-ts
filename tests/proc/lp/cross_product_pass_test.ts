@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { op } from '../../../lib/fn/op';
-import { CrossProductNode } from '../../../lib/proc/lp/cross_product_node';
-import { CrossProductPass } from '../../../lib/proc/lp/cross_product_pass';
-import { SelectNode } from '../../../lib/proc/lp/select_node';
-import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
-import { SelectContext } from '../../../lib/query/select_context';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
-import { TreeTestHelper } from '../../../testing/tree_test_helper';
+import {op} from '../../../lib/fn/op';
+import {CrossProductNode} from '../../../lib/proc/lp/cross_product_node';
+import {CrossProductPass} from '../../../lib/proc/lp/cross_product_pass';
+import {SelectNode} from '../../../lib/proc/lp/select_node';
+import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
+import {SelectContext} from '../../../lib/query/select_context';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('CrossProductPass', () => {
   let schema: DatabaseSchema;
@@ -84,7 +84,7 @@ describe('CrossProductPass', () => {
       const selectNode = new SelectNode(queryContext.where);
       selectNode.addChild(crossProductNode);
 
-      return { queryContext, root: selectNode };
+      return {queryContext, root: selectNode};
     };
 
     const pass = new CrossProductPass();

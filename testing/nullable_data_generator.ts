@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Type } from '../lib/base/enum';
-import { Row } from '../lib/base/row';
-import { DatabaseSchema } from '../lib/schema/database_schema';
-import { schema } from '../lib/schema/schema';
+import {Type} from '../lib/base/enum';
+import {Row} from '../lib/base/row';
+import {DatabaseSchema} from '../lib/schema/database_schema';
+import {schema} from '../lib/schema/schema';
 
 // A helper class for generating sample database rows for tables with
 // nullable columns and also ground truth data for the generated rows.
@@ -65,17 +65,17 @@ export class NullableDataGenerator {
     const tableA = this.schema.table('TableA');
     const nonNullCount = 5;
     for (let i = 0; i < nonNullCount; i++) {
-      this.sampleTableARows.push(tableA.createRow({ id: i + 1 }));
+      this.sampleTableARows.push(tableA.createRow({id: i + 1}));
     }
     for (let i = 0; i < this.tableAGroundTruth.numNullable; i++) {
-      this.sampleTableARows.push(tableA.createRow({ id: null }));
+      this.sampleTableARows.push(tableA.createRow({id: null}));
     }
   }
 
   private generateTableB(): void {
     const tableB = this.schema.table('TableB');
     for (let i = 0; i < 2; i++) {
-      this.sampleTableBRows.push(tableB.createRow({ id: null }));
+      this.sampleTableBRows.push(tableB.createRow({id: null}));
     }
   }
 
@@ -85,10 +85,10 @@ export class NullableDataGenerator {
     const tableC = this.schema.table('TableC');
     const nonNullCount = 5;
     for (let i = 0; i < nonNullCount; i++) {
-      this.sampleTableCRows.push(tableC.createRow({ id: i + 1 }));
+      this.sampleTableCRows.push(tableC.createRow({id: i + 1}));
     }
     for (let i = 0; i < this.tableAGroundTruth.numNullable; i++) {
-      this.sampleTableCRows.push(tableC.createRow({ id: null }));
+      this.sampleTableCRows.push(tableC.createRow({id: null}));
     }
   }
 }

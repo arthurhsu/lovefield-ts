@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { assert } from '../../lib/base/assert';
-import { Row } from '../../lib/base/row';
-import { getHrDbSchemaBuilder } from './hr_schema_builder';
-import { HRSchemaSamples } from './sample';
+import {assert} from '../../lib/base/assert';
+import {Row} from '../../lib/base/row';
+import {getHrDbSchemaBuilder} from './hr_schema_builder';
+import {HRSchemaSamples} from './sample';
 
 export class EmployeeDataGenerator {
   // A bag of salary values used to assign unique salaries to all generated
@@ -57,9 +57,7 @@ export class EmployeeDataGenerator {
     );
 
     const rawData = this.generateRaw(count);
-    const e = getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Employee');
+    const e = getHrDbSchemaBuilder().getSchema().table('Employee');
     return rawData.map(object => e.createRow(object));
   }
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { OperandType, ValueOperandType } from '../pred/operand_type';
-import { Predicate } from '../pred/predicate';
-import { PredicateProvider } from '../pred/predicate_provider';
+import {Binder} from '../base/bind';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {OperandType, ValueOperandType} from '../pred/operand_type';
+import {Predicate} from '../pred/predicate';
+import {PredicateProvider} from '../pred/predicate_provider';
 
 // Base class for AggregateColumn and StarColumn which does not support
 // PredicateProvider interface.

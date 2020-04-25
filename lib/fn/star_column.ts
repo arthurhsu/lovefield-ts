@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Type } from '../base/enum';
-import { BaseColumn } from '../schema/base_column';
-import { BaseTable } from '../schema/base_table';
-import { Index } from '../schema/index';
+import {Type} from '../base/enum';
+import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
+import {Index} from '../schema/index';
 
-import { NonPredicateProvider } from './non_predicate_provider';
-import { UnknownTable } from './unknown_table';
+import {NonPredicateProvider} from './non_predicate_provider';
+import {UnknownTable} from './unknown_table';
 
 //  A dummy Column implementation to be used as a substitute for '*',
 // for example in COUNT(*).

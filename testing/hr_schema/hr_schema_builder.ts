@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ConstraintAction, Order, Type } from '../../lib/base/enum';
-import { Builder } from '../../lib/schema/builder';
+import {ConstraintAction, Order, Type} from '../../lib/base/enum';
+import {Builder} from '../../lib/schema/builder';
 
 export function getHrDbSchemaBuilder(dbName?: string): Builder {
   const name = dbName || `hr${Date.now()}`;

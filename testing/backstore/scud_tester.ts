@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import { BackStore } from '../../lib/backstore/back_store';
-import { TransactionType } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { TableType } from '../../lib/base/private_enum';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { Cache } from '../../lib/cache/cache';
-import { Journal } from '../../lib/cache/journal';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Table } from '../../lib/schema/table';
+import {BackStore} from '../../lib/backstore/back_store';
+import {TransactionType} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {TableType} from '../../lib/base/private_enum';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {Cache} from '../../lib/cache/cache';
+import {Journal} from '../../lib/cache/journal';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Table} from '../../lib/schema/table';
 
 export class ScudTester {
   private tableSchema: Table;
@@ -45,8 +45,8 @@ export class ScudTester {
   }
 
   async run(): Promise<void> {
-    const CONTENTS = { id: 'hello', name: 'world' };
-    const CONTENTS2 = { id: 'hello2', name: 'world2' };
+    const CONTENTS = {id: 'hello', name: 'world'};
+    const CONTENTS2 = {id: 'hello2', name: 'world2'};
 
     const row1 = Row.create(CONTENTS);
     const row2 = Row.create(CONTENTS);

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Row } from '../../lib/base/row';
-import { getHrDbSchemaBuilder } from './hr_schema_builder';
+import {Row} from '../../lib/base/row';
+import {getHrDbSchemaBuilder} from './hr_schema_builder';
 
 export class HRSchemaSampleData {
   static generateSampleEmployeeData(): Row {
@@ -46,27 +46,21 @@ export class HRSchemaSampleData {
   }
 
   static generateSampleJobData(): Row {
-    return getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Job')
-      .createRow({
-        id: 'jobId',
-        title: 'Software Engineer',
-        minSalary: 100000,
-        maxSalary: 500000,
-      });
+    return getHrDbSchemaBuilder().getSchema().table('Job').createRow({
+      id: 'jobId',
+      title: 'Software Engineer',
+      minSalary: 100000,
+      maxSalary: 500000,
+    });
   }
 
   static generateSampleDepartmentData(): Row {
-    return getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Department')
-      .createRow({
-        id: 'departmentId',
-        name: 'departmentName',
-        managerId: 'managerId',
-        locationId: 'locationId',
-      });
+    return getHrDbSchemaBuilder().getSchema().table('Department').createRow({
+      id: 'departmentId',
+      name: 'departmentName',
+      managerId: 'managerId',
+      locationId: 'locationId',
+    });
   }
 
   static generateSampleJobHistoryData(): Row {

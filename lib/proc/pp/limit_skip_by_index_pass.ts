@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { SelectContext } from '../../query/select_context';
-import { TreeHelper } from '../../structs/tree_helper';
-import { TreeNode } from '../../structs/tree_node';
-import { RewritePass } from '../rewrite_pass';
+import {SelectContext} from '../../query/select_context';
+import {TreeHelper} from '../../structs/tree_helper';
+import {TreeNode} from '../../structs/tree_node';
+import {RewritePass} from '../rewrite_pass';
 
-import { IndexRangeScanStep } from './index_range_scan_step';
-import { LimitStep } from './limit_step';
-import { OrderByStep } from './order_by_step';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
-import { ProjectStep } from './project_step';
-import { SelectStep } from './select_step';
-import { SkipStep } from './skip_step';
+import {IndexRangeScanStep} from './index_range_scan_step';
+import {LimitStep} from './limit_step';
+import {OrderByStep} from './order_by_step';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import {ProjectStep} from './project_step';
+import {SelectStep} from './select_step';
+import {SkipStep} from './skip_step';
 
 export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
   constructor() {

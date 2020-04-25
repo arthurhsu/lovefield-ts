@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Row } from '../base/row';
-import { Service } from '../base/service';
-import { Table } from '../schema/table';
-import { BaseTable } from '../schema/base_table';
-import { BaseBuilder } from './base_builder';
-import { InsertContext } from './insert_context';
+import {Binder} from '../base/bind';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Row} from '../base/row';
+import {Service} from '../base/service';
+import {Table} from '../schema/table';
+import {BaseTable} from '../schema/base_table';
+import {BaseBuilder} from './base_builder';
+import {InsertContext} from './insert_context';
 
 export class InsertBuilder extends BaseBuilder<InsertContext> {
   constructor(global: Global, allowReplace = false) {

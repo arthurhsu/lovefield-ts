@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Favor } from '../base/private_enum';
-import { Key, Range } from './key_range';
+import {Favor} from '../base/private_enum';
+import {Key, Range} from './key_range';
 
 /**
  * Comparator used to provide necessary information for building an index tree.

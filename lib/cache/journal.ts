@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { ConstraintAction, ConstraintTiming, ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Row } from '../base/row';
-import { Service } from '../base/service';
-import { IndexStore } from '../index/index_store';
-import { RuntimeIndex } from '../index/runtime_index';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Info } from '../schema/info';
-import { Table } from '../schema/table';
+import {assert} from '../base/assert';
+import {ConstraintAction, ConstraintTiming, ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Row} from '../base/row';
+import {Service} from '../base/service';
+import {IndexStore} from '../index/index_store';
+import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Info} from '../schema/info';
+import {Table} from '../schema/table';
 
-import { Cache } from './cache';
-import { CascadeUpdateItem } from './cascade';
-import { ConstraintChecker } from './constraint_checker';
-import { InMemoryUpdater } from './in_memory_updater';
-import { Modification } from './modification';
-import { TableDiff } from './table_diff';
+import {Cache} from './cache';
+import {CascadeUpdateItem} from './cascade';
+import {ConstraintChecker} from './constraint_checker';
+import {InMemoryUpdater} from './in_memory_updater';
+import {Modification} from './modification';
+import {TableDiff} from './table_diff';
 
 // A transaction journal which is contained within Tx. The journal
 // stores rows changed by this transaction so that they can be merged into the

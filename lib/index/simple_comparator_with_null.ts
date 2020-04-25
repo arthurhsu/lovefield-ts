@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Order } from '../base/enum';
-import { Favor } from '../base/private_enum';
-import { SingleKey, SingleKeyRange } from './key_range';
-import { SimpleComparator } from './simple_comparator';
+import {Order} from '../base/enum';
+import {Favor} from '../base/private_enum';
+import {SingleKey, SingleKeyRange} from './key_range';
+import {SimpleComparator} from './simple_comparator';
 
 // This comparator is not used to replace existing NullableIndex wrapper
 // because of its compareAscending function requires extra null key

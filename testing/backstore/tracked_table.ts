@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../../lib/base/enum';
-import { Exception } from '../../lib/base/exception';
-import { Row } from '../../lib/base/row';
-import { RuntimeTable } from '../../lib/base/runtime_table';
-import { TableDiff } from '../../lib/cache/table_diff';
+import {ErrorCode} from '../../lib/base/enum';
+import {Exception} from '../../lib/base/exception';
+import {Row} from '../../lib/base/row';
+import {RuntimeTable} from '../../lib/base/runtime_table';
+import {TableDiff} from '../../lib/cache/table_diff';
 
 export class TrackedTable implements RuntimeTable {
   // The changes that have been applied on this table since the start of the

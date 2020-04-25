@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { ObserverRegistry } from '../base/observer_registry';
-import { TaskPriority } from '../base/private_enum';
-import { Service } from '../base/service';
-import { SelectContext } from '../query/select_context';
-import { ObserverQueryTask } from './observer_query_task';
-import { QueryTask } from './query_task';
-import { Relation } from './relation';
-import { Runner } from './runner';
-import { TaskItem } from './task_item';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {ObserverRegistry} from '../base/observer_registry';
+import {TaskPriority} from '../base/private_enum';
+import {Service} from '../base/service';
+import {SelectContext} from '../query/select_context';
+import {ObserverQueryTask} from './observer_query_task';
+import {QueryTask} from './query_task';
+import {Relation} from './relation';
+import {Runner} from './runner';
+import {TaskItem} from './task_item';
 
 export class UserQueryTask extends QueryTask {
   private runner: Runner;

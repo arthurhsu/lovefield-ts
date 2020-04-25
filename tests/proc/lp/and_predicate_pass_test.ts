@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import { op } from '../../../lib/fn/op';
-import { AndPredicatePass } from '../../../lib/proc/lp/and_predicate_pass';
-import { SelectNode } from '../../../lib/proc/lp/select_node';
-import { TableAccessNode } from '../../../lib/proc/lp/table_access_node';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { TreeHelper } from '../../../lib/structs/tree_helper';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
+import {op} from '../../../lib/fn/op';
+import {AndPredicatePass} from '../../../lib/proc/lp/and_predicate_pass';
+import {SelectNode} from '../../../lib/proc/lp/select_node';
+import {TableAccessNode} from '../../../lib/proc/lp/table_access_node';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {TreeHelper} from '../../../lib/structs/tree_helper';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 

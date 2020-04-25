@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Row } from '../base/row';
-import { Table } from '../schema/table';
-import { QueryBuilder } from './query_builder';
+import {Binder} from '../base/bind';
+import {Row} from '../base/row';
+import {Table} from '../schema/table';
+import {QueryBuilder} from './query_builder';
 
 // @export
 export interface InsertQuery extends QueryBuilder {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Relation } from '../proc/relation';
-import { Column } from '../schema/column';
-import { Table } from '../schema/table';
+import {Relation} from '../proc/relation';
+import {Column} from '../schema/column';
+import {Table} from '../schema/table';
 
 // @emptyExport
 export interface Predicate {

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { Relation } from '../proc/relation';
-import { RelationEntry } from '../proc/relation_entry';
-import { SelectContext } from '../query/select_context';
-import { Column } from '../schema/column';
-import { MathHelper } from '../structs/math_helper';
-import { ChangeRecord } from './change_record';
-import { Type } from './enum';
-import { EvalRegistry, EvalType } from './eval';
-import { BaseTable } from '../schema/base_table';
+import {Relation} from '../proc/relation';
+import {RelationEntry} from '../proc/relation_entry';
+import {SelectContext} from '../query/select_context';
+import {Column} from '../schema/column';
+import {MathHelper} from '../structs/math_helper';
+import {ChangeRecord} from './change_record';
+import {Type} from './enum';
+import {EvalRegistry, EvalType} from './eval';
+import {BaseTable} from '../schema/base_table';
 
 // A DiffCalculator is responsible for detecting and applying the difference
 // between old and new results for a given query.

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { FnType } from '../../base/private_enum';
-import { AggregatedColumn } from '../../fn/aggregated_column';
-import { StarColumn } from '../../fn/star_column';
-import { Column } from '../../schema/column';
-import { MathHelper } from '../../structs/math_helper';
-import { AggregationResult, Relation } from '../relation';
-import { RelationEntry } from '../relation_entry';
+import {FnType} from '../../base/private_enum';
+import {AggregatedColumn} from '../../fn/aggregated_column';
+import {StarColumn} from '../../fn/star_column';
+import {Column} from '../../schema/column';
+import {MathHelper} from '../../structs/math_helper';
+import {AggregationResult, Relation} from '../relation';
+import {RelationEntry} from '../relation_entry';
 
 type AggregatorValueType = number | string | Date | null;
 

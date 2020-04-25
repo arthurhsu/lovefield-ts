@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Predicate } from '../pred/predicate';
-import { Column } from '../schema/column';
-import { QueryBuilder } from './query_builder';
+import {Predicate} from '../pred/predicate';
+import {Column} from '../schema/column';
+import {QueryBuilder} from './query_builder';
 
 // @export
 export interface UpdateQuery extends QueryBuilder {

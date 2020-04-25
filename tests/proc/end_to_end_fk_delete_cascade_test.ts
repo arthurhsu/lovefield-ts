@@ -16,16 +16,16 @@
 
 import * as chai from 'chai';
 
-import { DatabaseConnection } from '../../lib/base/database_connection';
+import {DatabaseConnection} from '../../lib/base/database_connection';
 import {
   ConstraintAction,
   DataStoreType,
   ErrorCode,
   Type,
 } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { Builder } from '../../lib/schema/builder';
-import { Table } from '../../lib/schema/table';
+import {Row} from '../../lib/base/row';
+import {Builder} from '../../lib/schema/builder';
+import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
 
@@ -94,15 +94,15 @@ describe('EndToEndFKDeleteCascade', () => {
   // Generates one row for each table.
   function getSampleRows(): SampleRows {
     return {
-      tableA: [tA.createRow({ id: 'tableAId' })],
-      tableB: [tB.createRow({ id: 'tableBId', foreignId: 'tableAId' })],
-      tableB1: [tB1.createRow({ id: 'tableB1Id', foreignId: 'tableBId' })],
-      tableB2: [tB2.createRow({ id: 'tableB2Id', foreignId: 'tableBId' })],
+      tableA: [tA.createRow({id: 'tableAId'})],
+      tableB: [tB.createRow({id: 'tableBId', foreignId: 'tableAId'})],
+      tableB1: [tB1.createRow({id: 'tableB1Id', foreignId: 'tableBId'})],
+      tableB2: [tB2.createRow({id: 'tableB2Id', foreignId: 'tableBId'})],
     };
   }
 
   beforeEach(async () => {
-    db = await getSchemaBuilder().connect({ storeType: DataStoreType.MEMORY });
+    db = await getSchemaBuilder().connect({storeType: DataStoreType.MEMORY});
     const schema = db.getSchema();
     tA = schema.table('TableA');
     tB = schema.table('TableB');
@@ -118,24 +118,12 @@ describe('EndToEndFKDeleteCascade', () => {
   it('cascadeOnlySuccess', async () => {
     let tx = db.createTransaction();
     await tx.exec([
-      db
-        .insert()
-        .into(tA)
-        .values(sampleRows.tableA),
-      db
-        .insert()
-        .into(tB)
-        .values(sampleRows.tableB),
-      db
-        .insert()
-        .into(tB1)
-        .values(sampleRows.tableB1),
+      db.insert().into(tA).values(sampleRows.tableA),
+      db.insert().into(tB).values(sampleRows.tableB),
+      db.insert().into(tB1).values(sampleRows.tableB1),
     ]);
 
-    await db
-      .delete()
-      .from(tA)
-      .exec();
+    await db.delete().from(tA).exec();
 
     tx = db.createTransaction();
     const results = (await tx.exec([
@@ -155,30 +143,15 @@ describe('EndToEndFKDeleteCascade', () => {
   it('runCascadeRestrictFail', async () => {
     let tx = db.createTransaction();
     await tx.exec([
-      db
-        .insert()
-        .into(tA)
-        .values(sampleRows.tableA),
-      db
-        .insert()
-        .into(tB)
-        .values(sampleRows.tableB),
-      db
-        .insert()
-        .into(tB1)
-        .values(sampleRows.tableB1),
-      db
-        .insert()
-        .into(tB2)
-        .values(sampleRows.tableB2),
+      db.insert().into(tA).values(sampleRows.tableA),
+      db.insert().into(tB).values(sampleRows.tableB),
+      db.insert().into(tB1).values(sampleRows.tableB1),
+      db.insert().into(tB2).values(sampleRows.tableB2),
     ]);
 
     let failed = true;
     try {
-      await db
-        .delete()
-        .from(tA)
-        .exec();
+      await db.delete().from(tA).exec();
     } catch (e) {
       // 203: Foreign key constraint violation on constraint {0}.
       assert.equal(ErrorCode.FK_VIOLATION, e.code);

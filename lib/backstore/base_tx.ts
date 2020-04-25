@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { TableType } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { BaseTable } from '../schema/base_table';
-import { TransactionStatsImpl } from './transaction_stats_impl';
-import { Tx } from './tx';
+import {TransactionType} from '../base/enum';
+import {TableType} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {BaseTable} from '../schema/base_table';
+import {TransactionStatsImpl} from './transaction_stats_impl';
+import {Tx} from './tx';
 
 // A base class for all native DB transactions wrappers to subclass.
 export abstract class BaseTx implements Tx {

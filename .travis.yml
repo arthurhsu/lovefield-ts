@@ -20,5 +20,6 @@ before_script:
   - npm install
 
 script:
-  npx gulp ci
+  - npx gulp ci
+  - npx eslint --quiet **/*.ts
 

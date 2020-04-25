@@ -15,9 +15,9 @@
  */
 
 import * as chai from 'chai';
-import { SingleKeyRange } from '../../lib/index/key_range';
-import { RowId } from '../../lib/index/row_id';
-import { RuntimeIndex } from '../../lib/index/runtime_index';
+import {SingleKeyRange} from '../../lib/index/key_range';
+import {RowId} from '../../lib/index/row_id';
+import {RuntimeIndex} from '../../lib/index/runtime_index';
 
 const assert = chai.assert;
 

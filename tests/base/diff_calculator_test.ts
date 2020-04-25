@@ -16,19 +16,19 @@
 
 import * as chai from 'chai';
 
-import { DiffCalculator } from '../../lib/base/diff_calculator';
-import { Type } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { Resolver } from '../../lib/base/resolver';
-import { Row } from '../../lib/base/row';
-import { Relation } from '../../lib/proc/relation';
-import { SelectBuilder } from '../../lib/query/select_builder';
-import { SelectContext } from '../../lib/query/select_context';
-import { Builder } from '../../lib/schema/builder';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { MockEnv } from '../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
-import { ChangeRecord } from '../../lib/base/change_record';
+import {DiffCalculator} from '../../lib/base/diff_calculator';
+import {Type} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {Resolver} from '../../lib/base/resolver';
+import {Row} from '../../lib/base/row';
+import {Relation} from '../../lib/proc/relation';
+import {SelectBuilder} from '../../lib/query/select_builder';
+import {SelectContext} from '../../lib/query/select_context';
+import {Builder} from '../../lib/schema/builder';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {MockEnv} from '../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
+import {ChangeRecord} from '../../lib/base/change_record';
 
 const assert = chai.assert;
 
@@ -240,7 +240,7 @@ describe('DiffCalculator', () => {
     const rowBefore = myTable.createRow({
       arraybuffer: null,
       id: 'dummyId',
-      obj: { hello: 'world' },
+      obj: {hello: 'world'},
     });
 
     let oldResults = Relation.createEmpty();
@@ -256,7 +256,7 @@ describe('DiffCalculator', () => {
     const rowAfter = myTable.createRow({
       arraybuffer: null,
       id: 'dummyId',
-      obj: { hello: 'amigo' },
+      obj: {hello: 'amigo'},
     });
     rowAfter.assignRowId(rowBefore.id());
 

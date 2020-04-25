@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Row } from '../base/row';
-import { Comparator } from './comparator';
-import { IndexStats } from './index_stats';
-import { Key, KeyRange, SingleKey, SingleKeyRange } from './key_range';
+import {Row} from '../base/row';
+import {Comparator} from './comparator';
+import {IndexStats} from './index_stats';
+import {Key, KeyRange, SingleKey, SingleKeyRange} from './key_range';
 
 // Index used in runtime execution, lf.index.Index.
 export interface RuntimeIndex {

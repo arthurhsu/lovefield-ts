@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TreeNode } from '../../structs/tree_node';
+import {TreeNode} from '../../structs/tree_node';
 
 export class LogicalQueryPlanNode extends TreeNode {
   constructor() {

@@ -16,20 +16,20 @@
 
 import * as chai from 'chai';
 
-import { TransactionStats } from '../../lib/backstore/transaction_stats';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { ObserverCallback } from '../../lib/base/observer_registry_entry';
-import { Resolver } from '../../lib/base/resolver';
-import { PayloadType, Row } from '../../lib/base/row';
-import { Transaction } from '../../lib/base/transaction';
-import { fn } from '../../lib/fn/fn';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { JobDataGenerator } from '../../testing/hr_schema/job_data_generator';
-import { MockDataGenerator } from '../../testing/hr_schema/mock_data_generator';
-import { TestUtil } from '../../testing/test_util';
+import {TransactionStats} from '../../lib/backstore/transaction_stats';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {ObserverCallback} from '../../lib/base/observer_registry_entry';
+import {Resolver} from '../../lib/base/resolver';
+import {PayloadType, Row} from '../../lib/base/row';
+import {Transaction} from '../../lib/base/transaction';
+import {fn} from '../../lib/fn/fn';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
+import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -75,32 +75,16 @@ describe('EndToEndTransaction', () => {
     const l = db.getSchema().table('Location');
     const r = db.getSchema().table('Region');
 
-    return db.createTransaction().exec([
-      db
-        .insert()
-        .into(r)
-        .values(dataGenerator.sampleRegions),
-      db
-        .insert()
-        .into(c)
-        .values(dataGenerator.sampleCountries),
-      db
-        .insert()
-        .into(l)
-        .values(dataGenerator.sampleLocations),
-      db
-        .insert()
-        .into(d)
-        .values(sampleDepartments),
-      db
-        .insert()
-        .into(j)
-        .values(sampleJobs),
-      db
-        .insert()
-        .into(e)
-        .values(sampleEmployees),
-    ]);
+    return db
+      .createTransaction()
+      .exec([
+        db.insert().into(r).values(dataGenerator.sampleRegions),
+        db.insert().into(c).values(dataGenerator.sampleCountries),
+        db.insert().into(l).values(dataGenerator.sampleLocations),
+        db.insert().into(d).values(sampleDepartments),
+        db.insert().into(j).values(sampleJobs),
+        db.insert().into(e).values(sampleEmployees),
+      ]);
   }
 
   function commitFn(): Promise<unknown> {
@@ -224,10 +208,7 @@ describe('EndToEndTransaction', () => {
     assert.equal(sampleEmployees.length, results.length);
 
     const hireDate = dataGenerator.employeeGroundTruth.maxHireDate;
-    const q3 = db
-      .delete()
-      .from(e)
-      .where(e.col('hireDate').eq(hireDate));
+    const q3 = db.delete().from(e).where(e.col('hireDate').eq(hireDate));
     await tx.attach(q3);
     const q4 = db.select().from(e);
     results = (await tx.attach(q4)) as unknown[];
@@ -264,10 +245,7 @@ describe('EndToEndTransaction', () => {
 
     // Expecting all locks to have been released by previous transaction, which
     // should allow the following query to complete.
-    results = (await db
-      .select()
-      .from(e)
-      .exec()) as unknown[];
+    results = (await db.select().from(e).exec()) as unknown[];
     assert.isTrue(results.length < sampleEmployees.length);
   });
 
@@ -285,15 +263,9 @@ describe('EndToEndTransaction', () => {
     // Adding a new job row.
     const newJob = j.createRow();
     newJob.payload()['id'] = newJobId;
-    const q1 = db
-      .insert()
-      .into(j)
-      .values([newJob]);
+    const q1 = db.insert().into(j).values([newJob]);
     await tx.attach(q1);
-    const q2 = db
-      .select()
-      .from(j)
-      .where(j.col('id').eq(newJobId));
+    const q2 = db.select().from(j).where(j.col('id').eq(newJobId));
     results = (await tx.attach(q2)) as unknown[];
     assert.equal(1, results.length);
 
@@ -302,10 +274,7 @@ describe('EndToEndTransaction', () => {
     assert.equal(sampleJobs.length + 1, results.length);
 
     // Attempting to add an employee row that already exists.
-    const q4 = db
-      .insert()
-      .into(e)
-      .values([sampleEmployees[0]]);
+    const q4 = db.insert().into(e).values([sampleEmployees[0]]);
     let isThrown = false;
     try {
       await tx.attach(q4);
@@ -332,10 +301,7 @@ describe('EndToEndTransaction', () => {
 
     // Checking that all locks have been released, which will allow other
     // transactions referring to the same scope to execute successfully.
-    results = (await db
-      .select()
-      .from(j)
-      .exec()) as unknown[];
+    results = (await db.select().from(j).exec()) as unknown[];
     assert.equal(sampleJobs.length, results.length);
   });
 
@@ -349,15 +315,9 @@ describe('EndToEndTransaction', () => {
     // Adding a new job row.
     const newJob = j.createRow();
     newJob.payload()['id'] = newJobId;
-    const q1 = db
-      .insert()
-      .into(j)
-      .values([newJob]);
+    const q1 = db.insert().into(j).values([newJob]);
     await tx.attach(q1);
-    const q2 = db
-      .select()
-      .from(j)
-      .where(j.col('id').eq(newJobId));
+    const q2 = db.select().from(j).where(j.col('id').eq(newJobId));
     let results = (await tx.attach(q2)) as unknown[];
     assert.equal(1, results.length);
 
@@ -381,10 +341,7 @@ describe('EndToEndTransaction', () => {
 
     // Expecting all locks to have been released by previous transaction, which
     // should allow the following query to complete.
-    await db
-      .select()
-      .from(j)
-      .exec();
+    await db.select().from(j).exec();
     const stats = tx.stats() as TransactionStats;
     assert.isFalse(stats.success());
     assert.equal(0, stats.insertedRowCount());
@@ -423,15 +380,9 @@ describe('EndToEndTransaction', () => {
     try {
       await tx.begin(scope);
       // Adding a new job row.
-      const q1 = db
-        .insert()
-        .into(j)
-        .values([newJobs[0]]);
+      const q1 = db.insert().into(j).values([newJobs[0]]);
       await tx.attach(q1);
-      const q2 = db
-        .insert()
-        .into(j)
-        .values([newJobs[1]]);
+      const q2 = db.insert().into(j).values([newJobs[1]]);
       await tx.attach(q2);
       await tx.commit();
     } catch (ex) {

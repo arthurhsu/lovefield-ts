@@ -14,43 +14,43 @@
  * limitations under the License.
  */
 
-import { BackStore } from '../backstore/back_store';
-import { ExternalChangeObserver } from '../backstore/external_change_observer';
-import { IndexedDB } from '../backstore/indexed_db';
-import { Memory } from '../backstore/memory';
-import { ObservableStore } from '../backstore/observable_store';
-import { WebSql } from '../backstore/web_sql';
-import { Capability } from '../base/capability';
-import { DatabaseConnection } from '../base/database_connection';
-import { DataStoreType, ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Inspector } from '../base/inspect';
-import { ObserverRegistry } from '../base/observer_registry';
-import { ObserverCallback } from '../base/observer_registry_entry';
-import { PayloadType } from '../base/row';
-import { Service } from '../base/service';
-import { Transaction } from '../base/transaction';
-import { DefaultCache } from '../cache/default_cache';
-import { Prefetcher } from '../cache/prefetcher';
+import {BackStore} from '../backstore/back_store';
+import {ExternalChangeObserver} from '../backstore/external_change_observer';
+import {IndexedDB} from '../backstore/indexed_db';
+import {Memory} from '../backstore/memory';
+import {ObservableStore} from '../backstore/observable_store';
+import {WebSql} from '../backstore/web_sql';
+import {Capability} from '../base/capability';
+import {DatabaseConnection} from '../base/database_connection';
+import {DataStoreType, ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Inspector} from '../base/inspect';
+import {ObserverRegistry} from '../base/observer_registry';
+import {ObserverCallback} from '../base/observer_registry_entry';
+import {PayloadType} from '../base/row';
+import {Service} from '../base/service';
+import {Transaction} from '../base/transaction';
+import {DefaultCache} from '../cache/default_cache';
+import {Prefetcher} from '../cache/prefetcher';
 // eslint-disable-next-line node/no-unpublished-import
-import { Flags } from '../gen/flags';
-import { MemoryIndexStore } from '../index/memory_index_store';
-import { DeleteBuilder } from '../query/delete_builder';
-import { InsertBuilder } from '../query/insert_builder';
-import { SelectBuilder } from '../query/select_builder';
-import { SelectQuery } from '../query/select_query';
-import { UpdateBuilder } from '../query/update_builder';
-import { Table } from '../schema/table';
-import { Column } from '../schema/column';
-import { ConnectOptions } from '../schema/connect_options';
-import { DatabaseSchema } from '../schema/database_schema';
+import {Flags} from '../gen/flags';
+import {MemoryIndexStore} from '../index/memory_index_store';
+import {DeleteBuilder} from '../query/delete_builder';
+import {InsertBuilder} from '../query/insert_builder';
+import {SelectBuilder} from '../query/select_builder';
+import {SelectQuery} from '../query/select_query';
+import {UpdateBuilder} from '../query/update_builder';
+import {Table} from '../schema/table';
+import {Column} from '../schema/column';
+import {ConnectOptions} from '../schema/connect_options';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { DefaultQueryEngine } from './default_query_engine';
-import { ExportTask } from './export_task';
-import { ImportTask } from './import_task';
-import { Runner } from './runner';
-import { RuntimeTransaction } from './runtime_transaction';
+import {DefaultQueryEngine} from './default_query_engine';
+import {ExportTask} from './export_task';
+import {ImportTask} from './import_task';
+import {Runner} from './runner';
+import {RuntimeTransaction} from './runtime_transaction';
 
 declare global {
   interface Window {

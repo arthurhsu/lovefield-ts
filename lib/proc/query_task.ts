@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { BackStore } from '../backstore/back_store';
-import { TransactionStatsImpl } from '../backstore/transaction_stats_impl';
-import { Tx } from '../backstore/tx';
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { TaskPriority } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { Service } from '../base/service';
-import { UniqueId } from '../base/unique_id';
-import { Journal } from '../cache/journal';
-import { Context } from '../query/context';
-import { SelectContext } from '../query/select_context';
-import { BaseTable } from '../schema/base_table';
-import { Table } from '../schema/table';
-import { PhysicalQueryPlan } from './pp/physical_query_plan';
-import { Relation } from './relation';
-import { Task } from './task';
-import { TaskItem } from './task_item';
+import {BackStore} from '../backstore/back_store';
+import {TransactionStatsImpl} from '../backstore/transaction_stats_impl';
+import {Tx} from '../backstore/tx';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {TaskPriority} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {Service} from '../base/service';
+import {UniqueId} from '../base/unique_id';
+import {Journal} from '../cache/journal';
+import {Context} from '../query/context';
+import {SelectContext} from '../query/select_context';
+import {BaseTable} from '../schema/base_table';
+import {Table} from '../schema/table';
+import {PhysicalQueryPlan} from './pp/physical_query_plan';
+import {Relation} from './relation';
+import {Task} from './task';
+import {TaskItem} from './task_item';
 
 // A QueryTask represents a collection of queries that should be executed as
 // part of a single transaction.

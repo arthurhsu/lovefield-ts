@@ -16,19 +16,19 @@
 
 import * as chai from 'chai';
 
-import { bind, Binder } from '../../lib/base/bind';
-import { ErrorCode, Type } from '../../lib/base/enum';
-import { EvalType } from '../../lib/base/eval';
-import { PayloadType, Row } from '../../lib/base/row';
-import { JoinPredicate } from '../../lib/pred/join_predicate';
-import { ValuePredicate } from '../../lib/pred/value_predicate';
-import { Relation } from '../../lib/proc/relation';
-import { BaseTable } from '../../lib/schema/base_table';
-import { Column } from '../../lib/schema/column';
-import { Builder } from '../../lib/schema/builder';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { Table } from '../../lib/schema/table';
-import { TestUtil } from '../../testing/test_util';
+import {bind, Binder} from '../../lib/base/bind';
+import {ErrorCode, Type} from '../../lib/base/enum';
+import {EvalType} from '../../lib/base/eval';
+import {PayloadType, Row} from '../../lib/base/row';
+import {JoinPredicate} from '../../lib/pred/join_predicate';
+import {ValuePredicate} from '../../lib/pred/value_predicate';
+import {Relation} from '../../lib/proc/relation';
+import {BaseTable} from '../../lib/schema/base_table';
+import {Column} from '../../lib/schema/column';
+import {Builder} from '../../lib/schema/builder';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {Table} from '../../lib/schema/table';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 

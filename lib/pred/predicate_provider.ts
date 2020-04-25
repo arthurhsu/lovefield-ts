@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { OperandType, ValueOperandType } from './operand_type';
-import { Predicate } from './predicate';
+import {Binder} from '../base/bind';
+import {OperandType, ValueOperandType} from './operand_type';
+import {Predicate} from './predicate';
 
 // @export
 export interface PredicateProvider {

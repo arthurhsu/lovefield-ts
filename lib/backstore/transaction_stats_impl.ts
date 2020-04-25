@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TransactionStats } from './transaction_stats';
+import {TransactionStats} from './transaction_stats';
 
 export class TransactionStatsImpl implements TransactionStats {
   static getDefault(): TransactionStatsImpl {

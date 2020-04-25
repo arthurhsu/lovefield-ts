@@ -16,21 +16,21 @@
 
 import * as chai from 'chai';
 
-import { bind } from '../../lib/base/bind';
-import { ChangeRecord } from '../../lib/base/change_record';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { Global } from '../../lib/base/global';
-import { Resolver } from '../../lib/base/resolver';
-import { Row } from '../../lib/base/row';
-import { Service } from '../../lib/base/service';
-import { Cache } from '../../lib/cache/cache';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { TaskItem } from '../../lib/proc/task_item';
-import { UserQueryTask } from '../../lib/proc/user_query_task';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
-import { TestUtil } from '../../testing/test_util';
+import {bind} from '../../lib/base/bind';
+import {ChangeRecord} from '../../lib/base/change_record';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
+import {Resolver} from '../../lib/base/resolver';
+import {Row} from '../../lib/base/row';
+import {Service} from '../../lib/base/service';
+import {Cache} from '../../lib/cache/cache';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {TaskItem} from '../../lib/proc/task_item';
+import {UserQueryTask} from '../../lib/proc/user_query_task';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -52,10 +52,7 @@ describe('UserQueryTask', () => {
   });
 
   afterEach(async () => {
-    await db
-      .delete()
-      .from(j)
-      .exec();
+    await db.delete().from(j).exec();
     db.close();
   });
 
@@ -67,11 +64,7 @@ describe('UserQueryTask', () => {
       job.payload()['id'] = `jobId${i}`;
       rows.push(job);
     }
-    return db
-      .insert()
-      .into(j)
-      .values(rows)
-      .getTaskItem();
+    return db.insert().into(j).values(rows).getTaskItem();
   }
 
   // Tests that an INSERT query does indeed add a new record in the database,
@@ -99,10 +92,7 @@ describe('UserQueryTask', () => {
     const queryTask = new UserQueryTask(global, [getSampleQuery()]);
     await queryTask.exec();
     assert.equal(ROW_COUNT, cache.getCount());
-    const query = db
-      .update(j)
-      .set(j.col('title'), newTitle)
-      .getTaskItem();
+    const query = db.update(j).set(j.col('title'), newTitle).getTaskItem();
     const updateQueryTask = new UserQueryTask(global, [query]);
     await updateQueryTask.exec();
     const results = await TestUtil.selectAll(global, j);
@@ -126,10 +116,7 @@ describe('UserQueryTask', () => {
     const queryTask = new UserQueryTask(global, [getSampleQuery()]);
     await queryTask.exec();
     assert.equal(ROW_COUNT, cache.getCount());
-    const query = db
-      .delete()
-      .from(j)
-      .getTaskItem();
+    const query = db.delete().from(j).getTaskItem();
     const deleteQueryTask = new UserQueryTask(global, [query]);
     await deleteQueryTask.exec();
     const results = await TestUtil.selectAll(global, j);
@@ -152,11 +139,7 @@ describe('UserQueryTask', () => {
     const newTitle = 'Quantum Physicist';
     const deletedId = 'jobId2';
 
-    const insertQuery = db
-      .insert()
-      .into(j)
-      .values(rows)
-      .getTaskItem();
+    const insertQuery = db.insert().into(j).values(rows).getTaskItem();
     const updateQuery = db
       .update(j)
       .set(j.col('title'), newTitle)
@@ -195,16 +178,8 @@ describe('UserQueryTask', () => {
     // second query will fail because of a primary key constraint violation.
     // Expecting the entire transaction to be rolled back as if it never
     // happened.
-    const insertQuery = db
-      .insert()
-      .into(j)
-      .values([job])
-      .getTaskItem();
-    const insertAgainQuery = db
-      .insert()
-      .into(j)
-      .values([job])
-      .getTaskItem();
+    const insertQuery = db.insert().into(j).values([job]).getTaskItem();
+    const insertAgainQuery = db.insert().into(j).values([job]).getTaskItem();
 
     const queryTask = new UserQueryTask(global, [
       insertQuery,

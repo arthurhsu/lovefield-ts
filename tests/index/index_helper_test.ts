@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { IndexHelper } from '../../lib/index/index_helper';
+import {IndexHelper} from '../../lib/index/index_helper';
 
 const assert = chai.assert;
 

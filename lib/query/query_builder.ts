@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TaskItem } from '../proc/task_item';
+import {TaskItem} from '../proc/task_item';
 
 // @export
 export interface QueryBuilder {

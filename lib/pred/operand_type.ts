@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Column } from '../schema/column';
+import {Binder} from '../base/bind';
+import {Column} from '../schema/column';
 
 export type ValueOperandType = Binder | boolean | number | string | Date;
 // @export

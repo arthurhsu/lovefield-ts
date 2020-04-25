@@ -16,13 +16,13 @@
 
 import * as chai from 'chai';
 
-import { Row } from '../../../lib/base/row';
-import { CrossProductStep } from '../../../lib/proc/pp/cross_product_step';
-import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
-import { Relation } from '../../../lib/proc/relation';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { MockEnv } from '../../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import {Row} from '../../../lib/base/row';
+import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
+import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
+import {Relation} from '../../../lib/proc/relation';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {MockEnv} from '../../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -44,13 +44,13 @@ describe('CrossProductStep', () => {
     const leftRows: Row[] = new Array(leftRowCount);
     const leftTable = schema.table('tableA');
     for (let i = 0; i < leftRowCount; i++) {
-      leftRows[i] = leftTable.createRow({ id: `id${i}`, name: `name${i}` });
+      leftRows[i] = leftTable.createRow({id: `id${i}`, name: `name${i}`});
     }
 
     const rightRows: Row[] = new Array(rightRowCount);
     const rightTable = schema.table('tableE');
     for (let i = 0; i < rightRowCount; i++) {
-      rightRows[i] = rightTable.createRow({ id: `id${i}`, email: `email${i}` });
+      rightRows[i] = rightTable.createRow({id: `id${i}`, email: `email${i}`});
     }
 
     const leftChild = new NoOpStep([
@@ -84,21 +84,21 @@ describe('CrossProductStep', () => {
     const relation1Rows: Row[] = [];
     const table1 = schema.table('tableA');
     for (let i = 0; i < relation1Count; i++) {
-      const row = table1.createRow({ id: `id${i}`, name: `name${i}` });
+      const row = table1.createRow({id: `id${i}`, name: `name${i}`});
       relation1Rows.push(row);
     }
 
     const relation2Rows: Row[] = [];
     const table2 = schema.table('tableB');
     for (let i = 0; i < relation2Count; i++) {
-      const row = table2.createRow({ id: `id${i}`, name: `name${i}` });
+      const row = table2.createRow({id: `id${i}`, name: `name${i}`});
       relation2Rows.push(row);
     }
 
     const relation3Rows: Row[] = [];
     const table3 = schema.table('tableE');
     for (let i = 0; i < relation3Count; i++) {
-      const row = table3.createRow({ id: `id${i}`, email: `email${i}` });
+      const row = table3.createRow({id: `id${i}`, email: `email${i}`});
       relation3Rows.push(row);
     }
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { TreeNode } from './tree_node';
+import {assert} from '../base/assert';
+import {TreeNode} from './tree_node';
 
 interface RemoveResult {
   parent: TreeNode;

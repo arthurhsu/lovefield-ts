@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { ExecType } from '../../base/private_enum';
-import { Service } from '../../base/service';
-import { Journal } from '../../cache/journal';
-import { fn } from '../../fn/fn';
-import { IndexStore } from '../../index/index_store';
-import { RuntimeIndex } from '../../index/runtime_index';
-import { Context } from '../../query/context';
-import { BaseTable } from '../../schema/base_table';
-import { Table } from '../../schema/table';
-import { Relation } from '../relation';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {Global} from '../../base/global';
+import {ExecType} from '../../base/private_enum';
+import {Service} from '../../base/service';
+import {Journal} from '../../cache/journal';
+import {fn} from '../../fn/fn';
+import {IndexStore} from '../../index/index_store';
+import {RuntimeIndex} from '../../index/runtime_index';
+import {Context} from '../../query/context';
+import {BaseTable} from '../../schema/base_table';
+import {Table} from '../../schema/table';
+import {Relation} from '../relation';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class GetRowCountStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;

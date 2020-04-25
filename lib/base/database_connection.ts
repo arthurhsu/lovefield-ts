@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { DeleteQuery } from '../query/delete_query';
-import { InsertQuery } from '../query/insert_query';
-import { SelectQuery } from '../query/select_query';
-import { UpdateQuery } from '../query/update_query';
-import { Column } from '../schema/column';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Table } from '../schema/table';
+import {DeleteQuery} from '../query/delete_query';
+import {InsertQuery} from '../query/insert_query';
+import {SelectQuery} from '../query/select_query';
+import {UpdateQuery} from '../query/update_query';
+import {Column} from '../schema/column';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Table} from '../schema/table';
 
-import { TransactionType } from './enum';
-import { ObserverCallback } from './observer_registry_entry';
-import { Transaction } from './transaction';
+import {TransactionType} from './enum';
+import {ObserverCallback} from './observer_registry_entry';
+import {Transaction} from './transaction';
 
 // Defines the interface of a runtime database instance. This models the return
 // value of connect().

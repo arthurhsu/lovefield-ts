@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Order, Type } from '../../lib/base/enum';
-import { BaseTable } from '../../lib/schema/base_table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { Info } from '../../lib/schema/info';
-import { Pragma } from '../../lib/schema/pragma';
-import { TableBuilder } from '../../lib/schema/table_builder';
+import {Order, Type} from '../../lib/base/enum';
+import {BaseTable} from '../../lib/schema/base_table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {Info} from '../../lib/schema/info';
+import {Pragma} from '../../lib/schema/pragma';
+import {TableBuilder} from '../../lib/schema/table_builder';
 
 // Dummy schema implementation to be used in tests.
 export class MockSchema implements DatabaseSchema {
@@ -39,7 +39,7 @@ export class MockSchema implements DatabaseSchema {
     this.name_ = 'mock_schema';
     this.version_ = 1;
     this.simulateDropTableA = false;
-    this.pragma_ = { enableBundledMode: false };
+    this.pragma_ = {enableBundledMode: false};
   }
 
   name(): string {

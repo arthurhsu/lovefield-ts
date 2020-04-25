@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import { ErrorCode } from '../../base/enum';
-import { Exception } from '../../base/exception';
-import { Context } from '../../query/context';
-import { DeleteContext } from '../../query/delete_context';
-import { InsertContext } from '../../query/insert_context';
-import { SelectContext } from '../../query/select_context';
-import { UpdateContext } from '../../query/update_context';
-import { RewritePass } from '../rewrite_pass';
+import {ErrorCode} from '../../base/enum';
+import {Exception} from '../../base/exception';
+import {Context} from '../../query/context';
+import {DeleteContext} from '../../query/delete_context';
+import {InsertContext} from '../../query/insert_context';
+import {SelectContext} from '../../query/select_context';
+import {UpdateContext} from '../../query/update_context';
+import {RewritePass} from '../rewrite_pass';
 
-import { AndPredicatePass } from './and_predicate_pass';
-import { CrossProductPass } from './cross_product_pass';
-import { DeleteLogicalPlanGenerator } from './delete_logical_plan_generator';
-import { ImplicitJoinsPass } from './implicit_joins_pass';
-import { InsertLogicalPlanGenerator } from './insert_logical_plan_generator';
-import { LogicalPlanGenerator } from './logical_plan_generator';
-import { LogicalQueryPlan } from './logical_query_plan';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
-import { PushDownSelectionsPass } from './push_down_selections_pass';
-import { SelectLogicalPlanGenerator } from './select_logical_plan_generator';
-import { UpdateLogicalPlanGenerator } from './update_logical_generator';
+import {AndPredicatePass} from './and_predicate_pass';
+import {CrossProductPass} from './cross_product_pass';
+import {DeleteLogicalPlanGenerator} from './delete_logical_plan_generator';
+import {ImplicitJoinsPass} from './implicit_joins_pass';
+import {InsertLogicalPlanGenerator} from './insert_logical_plan_generator';
+import {LogicalPlanGenerator} from './logical_plan_generator';
+import {LogicalQueryPlan} from './logical_query_plan';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import {PushDownSelectionsPass} from './push_down_selections_pass';
+import {SelectLogicalPlanGenerator} from './select_logical_plan_generator';
+import {UpdateLogicalPlanGenerator} from './update_logical_generator';
 
 // A factory used to create a logical query plan corresponding to a given query.
 export class LogicalPlanFactory {

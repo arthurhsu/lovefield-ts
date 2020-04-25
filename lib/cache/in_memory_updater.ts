@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { Global } from '../base/global';
-import { Favor } from '../base/private_enum';
-import { Row } from '../base/row';
-import { Service } from '../base/service';
-import { IndexStore } from '../index/index_store';
-import { RuntimeIndex } from '../index/runtime_index';
-import { Table } from '../schema/table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {Global} from '../base/global';
+import {Favor} from '../base/private_enum';
+import {Row} from '../base/row';
+import {Service} from '../base/service';
+import {IndexStore} from '../index/index_store';
+import {RuntimeIndex} from '../index/runtime_index';
+import {Table} from '../schema/table';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { Cache } from './cache';
-import { Modification } from './modification';
-import { TableDiff } from './table_diff';
+import {Cache} from './cache';
+import {Modification} from './modification';
+import {TableDiff} from './table_diff';
 
 export class InMemoryUpdater {
   private readonly cache: Cache;

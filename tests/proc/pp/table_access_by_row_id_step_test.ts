@@ -16,14 +16,14 @@
 
 import * as chai from 'chai';
 
-import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
-import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
-import { Relation } from '../../../lib/proc/relation';
-import { BaseTable } from '../../../lib/schema/base_table';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { Table } from '../../../lib/schema/table';
-import { MockEnv } from '../../../testing/mock_env';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
+import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
+import {Relation} from '../../../lib/proc/relation';
+import {BaseTable} from '../../../lib/schema/base_table';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {Table} from '../../../lib/schema/table';
+import {MockEnv} from '../../../testing/mock_env';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -53,8 +53,8 @@ describe('TableAccessByRowId', () => {
 
     // Creating a "dummy" child step that will return only two row IDs.
     const rows = [
-      table.createRow({ id: 1, name: 'a' }),
-      table.createRow({ id: 2, name: 'b' }),
+      table.createRow({id: 1, name: 'a'}),
+      table.createRow({id: 2, name: 'b'}),
     ];
     rows[0].assignRowId(0);
     rows[1].assignRowId(1);

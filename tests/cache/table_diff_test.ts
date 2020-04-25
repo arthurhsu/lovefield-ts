@@ -15,11 +15,11 @@
  */
 
 import * as chai from 'chai';
-import { Row } from '../../lib/base/row';
-import { Modification } from '../../lib/cache/modification';
-import { TableDiff } from '../../lib/cache/table_diff';
-import { Table } from '../../lib/schema/table';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {Row} from '../../lib/base/row';
+import {Modification} from '../../lib/cache/modification';
+import {TableDiff} from '../../lib/cache/table_diff';
+import {Table} from '../../lib/schema/table';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
@@ -27,9 +27,7 @@ describe('TableDiff', () => {
   let table: Table;
 
   before(() => {
-    table = getMockSchemaBuilder()
-      .getSchema()
-      .table('tableA');
+    table = getMockSchemaBuilder().getSchema().table('tableA');
   });
 
   // Tests the behavior of the TableDiff class under multiple
@@ -39,24 +37,24 @@ describe('TableDiff', () => {
 
     // Assuming that 1 and 2 are the only row IDs that reside in the table prior
     // to this diff.
-    const row1Old = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const row1Old = table.createRow({id: 'pk1', name: 'DummyName'});
     row1Old.assignRowId(1);
-    const row1New = table.createRow({ id: 'pk1', name: 'UpdatedDummyName' });
+    const row1New = table.createRow({id: 'pk1', name: 'UpdatedDummyName'});
     row1New.assignRowId(1);
 
-    const row2Old = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row2Old = table.createRow({id: 'pk2', name: 'DummyName'});
     row2Old.assignRowId(2);
-    const row2New = table.createRow({ id: 'pk2', name: 'UpdatedDummyName' });
+    const row2New = table.createRow({id: 'pk2', name: 'UpdatedDummyName'});
     row2New.assignRowId(2);
 
-    const row3 = table.createRow({ id: 'pk3', name: 'DummyName' });
+    const row3 = table.createRow({id: 'pk3', name: 'DummyName'});
     row3.assignRowId(3);
-    const row4 = table.createRow({ id: 'pk4', name: 'DummyName' });
+    const row4 = table.createRow({id: 'pk4', name: 'DummyName'});
     row4.assignRowId(4);
 
-    const row5Old = table.createRow({ id: 'pk5', name: 'DummyName' });
+    const row5Old = table.createRow({id: 'pk5', name: 'DummyName'});
     row5Old.assignRowId(5);
-    const row5New = table.createRow({ id: 'pk5', name: 'UpdatedDummyName' });
+    const row5New = table.createRow({id: 'pk5', name: 'UpdatedDummyName'});
     row5New.assignRowId(5);
 
     // No changes have happened yet.
@@ -125,9 +123,9 @@ describe('TableDiff', () => {
   // Test reversing a diff with only additions.
   it('getReversed_Add', () => {
     const original = new TableDiff(table.getName());
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
     row1.assignRowId(1);
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
     row2.assignRowId(2);
     original.add(row1);
     original.add(row2);
@@ -150,9 +148,9 @@ describe('TableDiff', () => {
   // Test reversing a diff with only deletions.
   it('getReversed_Delete', () => {
     const original = new TableDiff(table.getName());
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
     row1.assignRowId(1);
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
     row2.assignRowId(2);
     original.delete(row1);
     original.delete(row2);
@@ -175,9 +173,9 @@ describe('TableDiff', () => {
   // Test reversing a diff with only modifications.
   it('getReversed_Modify', () => {
     const original = new TableDiff(table.getName());
-    const rowOld = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const rowOld = table.createRow({id: 'pk1', name: 'DummyName'});
     rowOld.assignRowId(1);
-    const rowNew = table.createRow({ id: 'pk2', name: 'OtherDummyName' });
+    const rowNew = table.createRow({id: 'pk2', name: 'OtherDummyName'});
     rowNew.assignRowId(1);
     original.modify([rowOld, rowNew]);
 
@@ -208,13 +206,13 @@ describe('TableDiff', () => {
   it('getAsModifications', () => {
     const diff = new TableDiff(table.getName());
 
-    const row1 = table.createRow({ id: 'pk1', name: 'DummyName' });
+    const row1 = table.createRow({id: 'pk1', name: 'DummyName'});
     row1.assignRowId(1);
-    const row2 = table.createRow({ id: 'pk2', name: 'DummyName' });
+    const row2 = table.createRow({id: 'pk2', name: 'DummyName'});
     row2.assignRowId(2);
-    const row3Before = table.createRow({ id: 'pk3', name: 'DummyName' });
+    const row3Before = table.createRow({id: 'pk3', name: 'DummyName'});
     row3Before.assignRowId(3);
-    const row3After = table.createRow({ id: 'pk3', name: 'OtherDummyName' });
+    const row3After = table.createRow({id: 'pk3', name: 'OtherDummyName'});
     row3After.assignRowId(3);
 
     diff.add(row1);

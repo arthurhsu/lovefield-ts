@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { BackStore } from '../backstore/back_store';
-import { TransactionStatsImpl } from '../backstore/transaction_stats_impl';
-import { Tx } from '../backstore/tx';
-import { TransactionType } from '../base/enum';
-import { Global } from '../base/global';
-import { ObserverRegistry } from '../base/observer_registry';
-import { TaskPriority } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { Service } from '../base/service';
-import { UniqueId } from '../base/unique_id';
-import { Journal } from '../cache/journal';
-import { QueryBuilder } from '../query/query_builder';
-import { Table } from '../schema/table';
+import {BackStore} from '../backstore/back_store';
+import {TransactionStatsImpl} from '../backstore/transaction_stats_impl';
+import {Tx} from '../backstore/tx';
+import {TransactionType} from '../base/enum';
+import {Global} from '../base/global';
+import {ObserverRegistry} from '../base/observer_registry';
+import {TaskPriority} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {Service} from '../base/service';
+import {UniqueId} from '../base/unique_id';
+import {Journal} from '../cache/journal';
+import {QueryBuilder} from '../query/query_builder';
+import {Table} from '../schema/table';
 
-import { ObserverQueryTask } from './observer_query_task';
-import { Relation } from './relation';
-import { Runner } from './runner';
-import { Task } from './task';
+import {ObserverQueryTask} from './observer_query_task';
+import {Relation} from './relation';
+import {Runner} from './runner';
+import {Task} from './task';
 
 // A TransactionTask is used when the user explicitly starts a transaction and
 // can execute queries within this transaction at will. A TransactionTask is

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Column } from './column';
-import { ForeignKeySpec } from './foreign_key_spec';
-import { IndexImpl } from './index_impl';
+import {Column} from './column';
+import {ForeignKeySpec} from './foreign_key_spec';
+import {IndexImpl} from './index_impl';
 
 export class Constraint {
   constructor(

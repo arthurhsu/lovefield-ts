@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { PayloadType, Row } from '../base/row';
-import { BaseColumn } from '../schema/base_column';
-import { BaseTable } from '../schema/base_table';
-import { Column } from '../schema/column';
+import {assert} from '../base/assert';
+import {PayloadType, Row} from '../base/row';
+import {BaseColumn} from '../schema/base_column';
+import {BaseTable} from '../schema/base_table';
+import {Column} from '../schema/column';
 
 /**
  * Each RelationEntry represents a row that is passed from one execution step
@@ -84,8 +84,10 @@ export class RelationEntry {
     // found then look for it in its normal location.
     const column = col as BaseColumn;
     const alias = column.getAlias();
-    if (alias !== null &&
-        Object.prototype.hasOwnProperty.call(this.row.payload(), alias)) {
+    if (
+      alias !== null &&
+      Object.prototype.hasOwnProperty.call(this.row.payload(), alias)
+    ) {
       return this.row.payload()[alias];
     }
 

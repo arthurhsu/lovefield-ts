@@ -15,19 +15,19 @@
  */
 
 import * as chai from 'chai';
-import { ErrorCode, Order } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { BTree, BTreeNode } from '../../lib/index/btree';
-import { Comparator } from '../../lib/index/comparator';
-import { Key, SingleKeyRange } from '../../lib/index/key_range';
-import { MultiKeyComparator } from '../../lib/index/multi_key_comparator';
-import { MultiKeyComparatorWithNull } from '../../lib/index/multi_key_comparator_with_null';
-import { SimpleComparator } from '../../lib/index/simple_comparator';
-import { TestMultiKeyIndex } from '../../testing/index/test_multi_key_index';
-import { TestMultiRowNumericalKey } from '../../testing/index/test_multi_row_numerical_key';
-import { TestSingleRowNumericalKey } from '../../testing/index/test_single_row_numerical_key';
-import { TestSingleRowStringKey } from '../../testing/index/test_single_row_string_key';
-import { TestUtil } from '../../testing/test_util';
+import {ErrorCode, Order} from '../../lib/base/enum';
+import {Row} from '../../lib/base/row';
+import {BTree, BTreeNode} from '../../lib/index/btree';
+import {Comparator} from '../../lib/index/comparator';
+import {Key, SingleKeyRange} from '../../lib/index/key_range';
+import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
+import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
+import {SimpleComparator} from '../../lib/index/simple_comparator';
+import {TestMultiKeyIndex} from '../../testing/index/test_multi_key_index';
+import {TestMultiRowNumericalKey} from '../../testing/index/test_multi_row_numerical_key';
+import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
+import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -444,7 +444,7 @@ describe('BTree', () => {
 
   it('ConstructFromData', () => {
     const key = SEQUENCE.slice(0, 23).sort((a, b) => a - b);
-    const data = key.map(i => ({ key: i, value: i }));
+    const data = key.map(i => ({key: i, value: i}));
     const tree = new BTree('test', c, true, data);
     const expected = [
       '6[21]\n',

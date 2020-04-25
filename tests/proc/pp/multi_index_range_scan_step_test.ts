@@ -15,15 +15,15 @@
  */
 
 import * as chai from 'chai';
-import { SingleKeyRange } from '../../../lib/index/key_range';
-import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
-import { MultiIndexRangeScanStep } from '../../../lib/proc/pp/multi_index_range_scan_step';
-import { BaseColumn } from '../../../lib/schema/base_column';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { IndexImpl } from '../../../lib/schema/index_impl';
-import { MockEnv } from '../../../testing/mock_env';
-import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
-import { getMockSchemaBuilder } from '../../../testing/mock_schema_builder';
+import {SingleKeyRange} from '../../../lib/index/key_range';
+import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
+import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
+import {BaseColumn} from '../../../lib/schema/base_column';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {IndexImpl} from '../../../lib/schema/index_impl';
+import {MockEnv} from '../../../testing/mock_env';
+import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
+import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TableDiff } from '../cache/table_diff';
-import { Table } from '../schema/table';
-import { RawBackStore } from './raw_back_store';
-import { Tx } from './tx';
+import {TransactionType} from '../base/enum';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TableDiff} from '../cache/table_diff';
+import {Table} from '../schema/table';
+import {RawBackStore} from './raw_back_store';
+import {Tx} from './tx';
 
 // Interface for all backing stores to implement (Indexed DB, filesystem,
 // memory etc).

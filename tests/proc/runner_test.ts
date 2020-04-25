@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import { TransactionType } from '../../lib/base/enum';
-import { TaskPriority } from '../../lib/base/private_enum';
-import { Resolver } from '../../lib/base/resolver';
-import { Runner } from '../../lib/proc/runner';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { MockTask } from '../../testing/mock_task';
+import {TransactionType} from '../../lib/base/enum';
+import {TaskPriority} from '../../lib/base/private_enum';
+import {Resolver} from '../../lib/base/resolver';
+import {Runner} from '../../lib/proc/runner';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {MockTask} from '../../testing/mock_task';
 
 const assert = chai.assert;
 
@@ -30,9 +30,7 @@ describe('Runner', () => {
   let j: Table;
 
   before(() => {
-    j = getHrDbSchemaBuilder()
-      .getSchema()
-      .table('Job');
+    j = getHrDbSchemaBuilder().getSchema().table('Job');
   });
 
   beforeEach(() => {

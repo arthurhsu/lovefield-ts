@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Global } from '../base/global';
-import { TableType } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Service } from '../base/service';
+import {assert} from '../base/assert';
+import {Global} from '../base/global';
+import {TableType} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Service} from '../base/service';
 
-import { Page } from './page';
+import {Page} from './page';
 
 // Table stream based on a given IndexedDB Object Store.
 export class BundledObjectStore implements RuntimeTable {

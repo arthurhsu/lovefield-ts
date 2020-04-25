@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Builder } from './builder';
+import {Builder} from './builder';
 
 // Keep lower case class name for compatibility with Lovefield API.
 /* eslint-disable @typescript-eslint/class-name-casing */

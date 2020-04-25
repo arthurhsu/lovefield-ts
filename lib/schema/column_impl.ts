@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Type } from '../base/enum';
-import { EvalType } from '../base/eval';
-import { OperandType, ValueOperandType } from '../pred/operand_type';
-import { createPredicate } from '../pred/pred';
-import { Predicate } from '../pred/predicate';
+import {Binder} from '../base/bind';
+import {Type} from '../base/enum';
+import {EvalType} from '../base/eval';
+import {OperandType, ValueOperandType} from '../pred/operand_type';
+import {createPredicate} from '../pred/pred';
+import {Predicate} from '../pred/predicate';
 
-import { BaseColumn } from './base_column';
-import { BaseTable } from './base_table';
-import { Column } from './column';
-import { IndexImpl } from './index_impl';
+import {BaseColumn} from './base_column';
+import {BaseTable} from './base_table';
+import {Column} from './column';
+import {IndexImpl} from './index_impl';
 
 export class ColumnImpl implements BaseColumn {
   readonly alias: string;

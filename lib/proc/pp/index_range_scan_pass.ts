@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { Global } from '../../base/global';
-import { Context } from '../../query/context';
-import { TreeHelper } from '../../structs/tree_helper';
-import { RewritePass } from '../rewrite_pass';
+import {Global} from '../../base/global';
+import {Context} from '../../query/context';
+import {TreeHelper} from '../../structs/tree_helper';
+import {RewritePass} from '../rewrite_pass';
 
-import { IndexCostEstimator } from './index_cost_estimator';
-import { IndexRangeCandidate } from './index_range_candidate';
-import { IndexRangeScanStep } from './index_range_scan_step';
-import { JoinStep } from './join_step';
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
-import { SelectStep } from './select_step';
-import { TableAccessByRowIdStep } from './table_access_by_row_id_step';
-import { TableAccessFullStep } from './table_access_full_step';
+import {IndexCostEstimator} from './index_cost_estimator';
+import {IndexRangeCandidate} from './index_range_candidate';
+import {IndexRangeScanStep} from './index_range_scan_step';
+import {JoinStep} from './join_step';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
+import {SelectStep} from './select_step';
+import {TableAccessByRowIdStep} from './table_access_by_row_id_step';
+import {TableAccessFullStep} from './table_access_full_step';
 
 //  An optimization pass that detects if there are any indices that can be used
 // in order to avoid full table scan.

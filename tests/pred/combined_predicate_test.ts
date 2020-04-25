@@ -15,19 +15,19 @@
  */
 
 import * as chai from 'chai';
-import { DatabaseConnection } from '../../lib/base/database_connection';
-import { DataStoreType } from '../../lib/base/enum';
-import { Row } from '../../lib/base/row';
-import { op } from '../../lib/fn/op';
-import { CombinedPredicate } from '../../lib/pred/combined_predicate';
-import { Predicate } from '../../lib/pred/predicate';
-import { PredicateNode } from '../../lib/pred/predicate_node';
-import { Relation } from '../../lib/proc/relation';
-import { Table } from '../../lib/schema/table';
-import { TreeHelper } from '../../lib/structs/tree_helper';
-import { TreeNode } from '../../lib/structs/tree_node';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { HRSchemaSampleData } from '../../testing/hr_schema/hr_schema_sample_data';
+import {DatabaseConnection} from '../../lib/base/database_connection';
+import {DataStoreType} from '../../lib/base/enum';
+import {Row} from '../../lib/base/row';
+import {op} from '../../lib/fn/op';
+import {CombinedPredicate} from '../../lib/pred/combined_predicate';
+import {Predicate} from '../../lib/pred/predicate';
+import {PredicateNode} from '../../lib/pred/predicate_node';
+import {Relation} from '../../lib/proc/relation';
+import {Table} from '../../lib/schema/table';
+import {TreeHelper} from '../../lib/structs/tree_helper';
+import {TreeNode} from '../../lib/structs/tree_node';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
 const assert = chai.assert;
 
@@ -39,7 +39,7 @@ describe('CombinedPredicate', () => {
 
   before(() => {
     return getHrDbSchemaBuilder()
-      .connect({ storeType: DataStoreType.MEMORY })
+      .connect({storeType: DataStoreType.MEMORY})
       .then(conn => {
         db = conn;
         d = db.getSchema().table('Department');

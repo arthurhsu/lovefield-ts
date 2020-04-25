@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { PayloadType, RawRow, Row } from '../base/row';
+import {PayloadType, RawRow, Row} from '../base/row';
 
-import { Page } from './page';
-import { RawBackStore } from './raw_back_store';
+import {Page} from './page';
+import {RawBackStore} from './raw_back_store';
 
 export class IndexedDBRawBackStore implements RawBackStore {
   static convert(value: unknown): string | number | boolean | null {

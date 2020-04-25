@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { DeleteContext } from '../../query/delete_context';
-import { RewritePass } from '../rewrite_pass';
+import {DeleteContext} from '../../query/delete_context';
+import {RewritePass} from '../rewrite_pass';
 
-import { BaseLogicalPlanGenerator } from './base_logical_plan_generator';
-import { DeleteNode } from './delete_node';
-import { LogicalPlanRewriter } from './logical_plan_rewriter';
-import { LogicalQueryPlanNode } from './logical_query_plan_node';
-import { SelectNode } from './select_node';
-import { TableAccessNode } from './table_access_node';
+import {BaseLogicalPlanGenerator} from './base_logical_plan_generator';
+import {DeleteNode} from './delete_node';
+import {LogicalPlanRewriter} from './logical_plan_rewriter';
+import {LogicalQueryPlanNode} from './logical_query_plan_node';
+import {SelectNode} from './select_node';
+import {TableAccessNode} from './table_access_node';
 
 export class DeleteLogicalPlanGenerator extends BaseLogicalPlanGenerator<
   DeleteContext

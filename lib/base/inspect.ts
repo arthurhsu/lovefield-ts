@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { RuntimeIndex } from '../index/runtime_index';
-import { BaseTable } from '../schema/base_table';
-import { Global } from './global';
-import { Row } from './row';
-import { Service } from './service';
-import { ServiceId } from './service_id';
+import {RuntimeIndex} from '../index/runtime_index';
+import {BaseTable} from '../schema/base_table';
+import {Global} from './global';
+import {Row} from './row';
+import {Service} from './service';
+import {ServiceId} from './service_id';
 
 export class Inspector {
   // Returns requested results as string for inspector to use.

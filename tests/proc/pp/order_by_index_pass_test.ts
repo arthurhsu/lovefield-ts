@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import { DataStoreType, Order, Type } from '../../../lib/base/enum';
-import { Global } from '../../../lib/base/global';
-import { op } from '../../../lib/fn/op';
-import { SingleKeyRange } from '../../../lib/index/key_range';
-import { ValuePredicate } from '../../../lib/pred/value_predicate';
-import { IndexRangeScanStep } from '../../../lib/proc/pp/index_range_scan_step';
-import { MultiIndexRangeScanStep } from '../../../lib/proc/pp/multi_index_range_scan_step';
-import { OrderByIndexPass } from '../../../lib/proc/pp/order_by_index_pass';
-import { OrderByStep } from '../../../lib/proc/pp/order_by_step';
-import { ProjectStep } from '../../../lib/proc/pp/project_step';
-import { SelectStep } from '../../../lib/proc/pp/select_step';
-import { TableAccessByRowIdStep } from '../../../lib/proc/pp/table_access_by_row_id_step';
-import { TableAccessFullStep } from '../../../lib/proc/pp/table_access_full_step';
-import { RuntimeDatabase } from '../../../lib/proc/runtime_database';
-import { SelectContext } from '../../../lib/query/select_context';
-import { BaseColumn } from '../../../lib/schema/base_column';
-import { BaseTable } from '../../../lib/schema/base_table';
-import { Builder } from '../../../lib/schema/builder';
-import { Column } from '../../../lib/schema/column';
-import { IndexImpl } from '../../../lib/schema/index_impl';
-import { Table } from '../../../lib/schema/table';
-import { MockKeyRangeCalculator } from '../../../testing/mock_key_range_calculator';
-import { TestTree, TreeTestHelper } from '../../../testing/tree_test_helper';
+import {DataStoreType, Order, Type} from '../../../lib/base/enum';
+import {Global} from '../../../lib/base/global';
+import {op} from '../../../lib/fn/op';
+import {SingleKeyRange} from '../../../lib/index/key_range';
+import {ValuePredicate} from '../../../lib/pred/value_predicate';
+import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
+import {MultiIndexRangeScanStep} from '../../../lib/proc/pp/multi_index_range_scan_step';
+import {OrderByIndexPass} from '../../../lib/proc/pp/order_by_index_pass';
+import {OrderByStep} from '../../../lib/proc/pp/order_by_step';
+import {ProjectStep} from '../../../lib/proc/pp/project_step';
+import {SelectStep} from '../../../lib/proc/pp/select_step';
+import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
+import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
+import {RuntimeDatabase} from '../../../lib/proc/runtime_database';
+import {SelectContext} from '../../../lib/query/select_context';
+import {BaseColumn} from '../../../lib/schema/base_column';
+import {BaseTable} from '../../../lib/schema/base_table';
+import {Builder} from '../../../lib/schema/builder';
+import {Column} from '../../../lib/schema/column';
+import {IndexImpl} from '../../../lib/schema/index_impl';
+import {Table} from '../../../lib/schema/table';
+import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
+import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('OrderByIndexPass', () => {
   let db: RuntimeDatabase;

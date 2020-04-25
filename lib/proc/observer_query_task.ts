@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Global } from '../base/global';
-import { ObserverRegistry } from '../base/observer_registry';
-import { TaskPriority } from '../base/private_enum';
-import { Service } from '../base/service';
-import { SelectContext } from '../query/select_context';
-import { QueryTask } from './query_task';
-import { Relation } from './relation';
-import { TaskItem } from './task_item';
+import {Global} from '../base/global';
+import {ObserverRegistry} from '../base/observer_registry';
+import {TaskPriority} from '../base/private_enum';
+import {Service} from '../base/service';
+import {SelectContext} from '../query/select_context';
+import {QueryTask} from './query_task';
+import {Relation} from './relation';
+import {TaskItem} from './task_item';
 
 export class ObserverQueryTask extends QueryTask {
   private observerRegistry: ObserverRegistry;

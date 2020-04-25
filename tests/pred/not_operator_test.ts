@@ -15,11 +15,11 @@
  */
 
 import * as chai from 'chai';
-import { DataStoreType } from '../../lib/base/enum';
-import { PayloadType, Row } from '../../lib/base/row';
-import { op } from '../../lib/fn/op';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
+import {DataStoreType} from '../../lib/base/enum';
+import {PayloadType, Row} from '../../lib/base/row';
+import {op} from '../../lib/fn/op';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
 const assert = chai.assert;
 
@@ -41,12 +41,7 @@ describe('NotOperator', () => {
   // Deletes the contents of all tables.
   async function clearDb(): Promise<void> {
     const tables = db.getSchema().tables();
-    const deletePromises = tables.map(table =>
-      db
-        .delete()
-        .from(table)
-        .exec()
-    );
+    const deletePromises = tables.map(table => db.delete().from(table).exec());
 
     return Promise.all(deletePromises).then(() => {
       return;
@@ -71,11 +66,7 @@ describe('NotOperator', () => {
   // Inserts sample records in the database.
   async function populateDatabase(): Promise<unknown> {
     const dummy = db.getSchema().table('DummyTable');
-    return db
-      .insert()
-      .into(dummy)
-      .values(generateSampleData(rowCount))
-      .exec();
+    return db.insert().into(dummy).values(generateSampleData(rowCount)).exec();
   }
 
   it('not_In', async () => {

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Binder } from '../base/bind';
-import { Row } from '../base/row';
-import { Table } from '../schema/table';
-import { DatabaseSchema } from '../schema/database_schema';
-import { Info } from '../schema/info';
+import {Binder} from '../base/bind';
+import {Row} from '../base/row';
+import {Table} from '../schema/table';
+import {DatabaseSchema} from '../schema/database_schema';
+import {Info} from '../schema/info';
 
-import { Context } from './context';
+import {Context} from './context';
 
 // Internal representation of INSERT and INSERT_OR_REPLACE queries.
 export class InsertContext extends Context {

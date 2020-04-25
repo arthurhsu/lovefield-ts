@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { TransactionStats } from '../backstore/transaction_stats';
-import { QueryBuilder } from '../query/query_builder';
-import { Table } from '../schema/table';
+import {TransactionStats} from '../backstore/transaction_stats';
+import {QueryBuilder} from '../query/query_builder';
+import {Table} from '../schema/table';
 
 // @export
 export interface Transaction {

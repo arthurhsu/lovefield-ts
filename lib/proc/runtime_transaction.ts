@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { TransactionStats } from '../backstore/transaction_stats';
-import { ErrorCode } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Service } from '../base/service';
-import { Transaction } from '../base/transaction';
-import { QueryBuilder } from '../query/query_builder';
-import { BaseTable } from '../schema/base_table';
+import {TransactionStats} from '../backstore/transaction_stats';
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Service} from '../base/service';
+import {Transaction} from '../base/transaction';
+import {QueryBuilder} from '../query/query_builder';
+import {BaseTable} from '../schema/base_table';
 
-import { Runner } from './runner';
-import { TaskItem } from './task_item';
-import { StateTransition, TransactionState } from './transaction_state';
-import { TransactionTask } from './transaction_task';
-import { UserQueryTask } from './user_query_task';
+import {Runner} from './runner';
+import {TaskItem} from './task_item';
+import {StateTransition, TransactionState} from './transaction_state';
+import {TransactionTask} from './transaction_task';
+import {UserQueryTask} from './user_query_task';
 
 export class RuntimeTransaction implements Transaction {
   private runner: Runner;

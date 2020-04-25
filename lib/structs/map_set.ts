@@ -96,9 +96,7 @@ export class MapSet<K, V> {
 
   values(): V[] {
     const results: V[] = [];
-    this.map.forEach((valueSet, key) =>
-      results.push(...Array.from(valueSet))
-    );
+    this.map.forEach((valueSet, key) => results.push(...Array.from(valueSet)));
     return results;
   }
 

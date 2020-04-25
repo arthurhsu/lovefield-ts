@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { assert } from '../base/assert';
-import { Binder } from '../base/bind';
-import { ErrorCode, Type } from '../base/enum';
-import { EvalRegistry, EvalType } from '../base/eval';
-import { Exception } from '../base/exception';
-import { SingleKey, SingleKeyRange } from '../index/key_range';
-import { SingleKeyRangeSet } from '../index/single_key_range_set';
-import { Relation } from '../proc/relation';
-import { Column } from '../schema/column';
-import { BaseTable } from '../schema/base_table';
-import { Predicate } from './predicate';
-import { PredicateNode } from './predicate_node';
+import {assert} from '../base/assert';
+import {Binder} from '../base/bind';
+import {ErrorCode, Type} from '../base/enum';
+import {EvalRegistry, EvalType} from '../base/eval';
+import {Exception} from '../base/exception';
+import {SingleKey, SingleKeyRange} from '../index/key_range';
+import {SingleKeyRangeSet} from '../index/single_key_range_set';
+import {Relation} from '../proc/relation';
+import {Column} from '../schema/column';
+import {BaseTable} from '../schema/base_table';
+import {Predicate} from './predicate';
+import {PredicateNode} from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
   // ComparisonFunction is a special type that needs to allow any.

@@ -15,8 +15,8 @@
  */
 
 // eslint-disable-next-line node/no-unpublished-import
-import { Flags } from '../gen/flags';
-import { ErrorCode } from './enum';
+import {Flags} from '../gen/flags';
+import {ErrorCode} from './enum';
 
 class ErrorMessages {
   static get(code: ErrorCode): string | undefined {

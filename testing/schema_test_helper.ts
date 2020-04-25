@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ConstraintAction, ConstraintTiming, Type } from '../lib/base/enum';
-import { DatabaseSchema } from '../lib/schema/database_schema';
-import { schema } from '../lib/schema/schema';
+import {ConstraintAction, ConstraintTiming, Type} from '../lib/base/enum';
+import {DatabaseSchema} from '../lib/schema/database_schema';
+import {schema} from '../lib/schema/schema';
 
 export class SchemaTestHelper {
   // Returns a schema where TableC refers to TableB, and TableB refers to

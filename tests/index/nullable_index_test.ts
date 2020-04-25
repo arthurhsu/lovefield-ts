@@ -15,13 +15,13 @@
  */
 
 import * as chai from 'chai';
-import { Order } from '../../lib/base/enum';
-import { BTree } from '../../lib/index/btree';
-import { Key, SingleKeyRange } from '../../lib/index/key_range';
-import { NullableIndex } from '../../lib/index/nullable_index';
-import { SimpleComparator } from '../../lib/index/simple_comparator';
-import { TestSingleRowNumericalKey } from '../../testing/index/test_single_row_numerical_key';
-import { TestSingleRowStringKey } from '../../testing/index/test_single_row_string_key';
+import {Order} from '../../lib/base/enum';
+import {BTree} from '../../lib/index/btree';
+import {Key, SingleKeyRange} from '../../lib/index/key_range';
+import {NullableIndex} from '../../lib/index/nullable_index';
+import {SimpleComparator} from '../../lib/index/simple_comparator';
+import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
+import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 
 const assert = chai.assert;
 

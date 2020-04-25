@@ -16,18 +16,18 @@
 
 import * as chai from 'chai';
 
-import { bind } from '../../lib/base/bind';
-import { DataStoreType, ErrorCode } from '../../lib/base/enum';
-import { EvalType } from '../../lib/base/eval';
-import { AggregatedColumn } from '../../lib/fn/aggregated_column';
-import { fn } from '../../lib/fn/fn';
-import { op } from '../../lib/fn/op';
-import { ValuePredicate } from '../../lib/pred/value_predicate';
-import { RuntimeDatabase } from '../../lib/proc/runtime_database';
-import { SelectBuilder } from '../../lib/query/select_builder';
-import { Table } from '../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../testing/hr_schema/hr_schema_builder';
-import { TestUtil } from '../../testing/test_util';
+import {bind} from '../../lib/base/bind';
+import {DataStoreType, ErrorCode} from '../../lib/base/enum';
+import {EvalType} from '../../lib/base/eval';
+import {AggregatedColumn} from '../../lib/fn/aggregated_column';
+import {fn} from '../../lib/fn/fn';
+import {op} from '../../lib/fn/op';
+import {ValuePredicate} from '../../lib/pred/value_predicate';
+import {RuntimeDatabase} from '../../lib/proc/runtime_database';
+import {SelectBuilder} from '../../lib/query/select_builder';
+import {Table} from '../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
@@ -82,10 +82,7 @@ describe('Select', () => {
     return TestUtil.assertPromiseReject(
       // 525: Invalid projection list or groupBy columns.
       ErrorCode.INVALID_GROUPBY,
-      query
-        .from(e)
-        .groupBy(e.col('photo'))
-        .exec()
+      query.from(e).groupBy(e.col('photo')).exec()
     );
   });
 
@@ -127,10 +124,7 @@ describe('Select', () => {
       e.col('jobId'),
       fn.avg(e.col('salary')),
     ]);
-    return query
-      .from(e)
-      .groupBy(e.col('jobId'), e.col('departmentId'))
-      .exec();
+    return query.from(e).groupBy(e.col('jobId'), e.col('departmentId')).exec();
   });
 
   /**
@@ -260,10 +254,7 @@ describe('Select', () => {
     const buildQuery = () => {
       const employeeTable = db.getSchema().table('Employee');
       const predicate = employeeTable.col('id').eq('testId');
-      query
-        .from(employeeTable)
-        .where(predicate)
-        .where(predicate);
+      query.from(employeeTable).where(predicate).where(predicate);
     };
 
     // 516: where() has already been called.
@@ -297,17 +288,11 @@ describe('Select', () => {
     const emp = db.getSchema().table('Employee');
 
     const buildQuery = () => {
-      query
-        .from(emp)
-        .limit(100)
-        .limit(100);
+      query.from(emp).limit(100).limit(100);
     };
 
     const buildQuery2 = () => {
-      query2
-        .from(emp)
-        .limit(bind(0))
-        .limit(bind(1));
+      query2.from(emp).limit(bind(0)).limit(bind(1));
     };
 
     // 528: limit() has already been called.
@@ -339,17 +324,11 @@ describe('Select', () => {
     const emp = db.getSchema().table('Employee');
 
     const buildQuery = () => {
-      query
-        .from(emp)
-        .skip(100)
-        .skip(100);
+      query.from(emp).skip(100).skip(100);
     };
 
     const buildQuery2 = () => {
-      query2
-        .from(emp)
-        .skip(bind(0))
-        .skip(bind(1));
+      query2.from(emp).skip(bind(0)).skip(bind(1));
     };
 
     // 529: skip() has already been called.
@@ -534,10 +513,7 @@ describe('Select', () => {
   }
 
   it('Explain', () => {
-    const query = db
-      .select()
-      .from(db.getSchema().table('Employee'))
-      .skip(1);
+    const query = db.select().from(db.getSchema().table('Employee')).skip(1);
     const expected = [
       'skip(1)',
       '-project()',
@@ -658,10 +634,7 @@ describe('Select', () => {
     const e = db.getSchema().table('Employee');
     const pred1 = e.col('jobId').lt(j.col('id'));
     const pred2 = j.col('id').gt(e.col('jobId'));
-    const builder = db
-      .select(j.col('title'))
-      .from(e)
-      .leftOuterJoin(j, pred1);
+    const builder = db.select(j.col('title')).from(e).leftOuterJoin(j, pred1);
     const builder2 = db
       .select(j.col('title'))
       .from(e)

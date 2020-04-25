@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Row } from '../base/row';
+import {Row} from '../base/row';
 
-import { Column } from './column';
+import {Column} from './column';
 
 // Public table interface.
 // @export

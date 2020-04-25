@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { TransactionType } from '../base/enum';
-import { TableType } from '../base/private_enum';
-import { Resolver } from '../base/resolver';
-import { PayloadType, RawRow, Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
+import {TransactionType} from '../base/enum';
+import {TableType} from '../base/private_enum';
+import {Resolver} from '../base/resolver';
+import {PayloadType, RawRow, Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
 
-import { BaseTx } from './base_tx';
-import { WebSqlTable } from './web_sql_table';
+import {BaseTx} from './base_tx';
+import {WebSqlTable} from './web_sql_table';
 
 interface WebSqlTxCommand {
   statement: string;

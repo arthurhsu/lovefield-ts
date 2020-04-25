@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { Row } from '../../lib/base/row';
+import {Row} from '../../lib/base/row';
 
 const assert = chai.assert;
 
@@ -33,7 +33,7 @@ describe('Row', () => {
   });
 
   it('getPayload', () => {
-    const payload = { fieldA: 'valueA' };
+    const payload = {fieldA: 'valueA'};
     const row = Row.create(payload);
 
     assert.deepEqual(payload, row.payload());

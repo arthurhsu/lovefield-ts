@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { ErrorCode, TransactionType } from '../base/enum';
-import { Exception } from '../base/exception';
-import { Global } from '../base/global';
-import { Row } from '../base/row';
-import { RuntimeTable } from '../base/runtime_table';
-import { Journal } from '../cache/journal';
-import { TableDiff } from '../cache/table_diff';
-import { BaseTable } from '../schema/base_table';
-import { DatabaseSchema } from '../schema/database_schema';
+import {ErrorCode, TransactionType} from '../base/enum';
+import {Exception} from '../base/exception';
+import {Global} from '../base/global';
+import {Row} from '../base/row';
+import {RuntimeTable} from '../base/runtime_table';
+import {Journal} from '../cache/journal';
+import {TableDiff} from '../cache/table_diff';
+import {BaseTable} from '../schema/base_table';
+import {DatabaseSchema} from '../schema/database_schema';
 
-import { BackStore } from './back_store';
-import { IndexedDBRawBackStore } from './indexed_db_raw_back_store';
-import { IndexedDBTx } from './indexed_db_tx';
-import { Page } from './page';
-import { RawBackStore } from './raw_back_store';
-import { Tx } from './tx';
+import {BackStore} from './back_store';
+import {IndexedDBRawBackStore} from './indexed_db_raw_back_store';
+import {IndexedDBTx} from './indexed_db_tx';
+import {Page} from './page';
+import {RawBackStore} from './raw_back_store';
+import {Tx} from './tx';
 
 // IndexedDB-backed back store.
 //
@@ -207,7 +207,7 @@ export class IndexedDB implements BackStore {
     tableSchema: BaseTable
   ): void {
     if (!db.objectStoreNames.contains(tableSchema.getName())) {
-      db.createObjectStore(tableSchema.getName(), { keyPath: 'id' });
+      db.createObjectStore(tableSchema.getName(), {keyPath: 'id'});
     }
 
     if (tableSchema.persistentIndex()) {
@@ -224,7 +224,7 @@ export class IndexedDB implements BackStore {
   // Creates a backing store corresponding to a persisted index.
   private createIndexTable(db: IDBDatabase, indexName: string): void {
     if (!db.objectStoreNames.contains(indexName)) {
-      db.createObjectStore(indexName, { keyPath: 'id' });
+      db.createObjectStore(indexName, {keyPath: 'id'});
     }
   }
 

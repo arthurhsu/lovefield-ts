@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Operator } from '../base/private_enum';
-import { CombinedPredicate } from '../pred/combined_predicate';
-import { Predicate } from '../pred/predicate';
-import { PredicateNode } from '../pred/predicate_node';
+import {Operator} from '../base/private_enum';
+import {CombinedPredicate} from '../pred/combined_predicate';
+import {Predicate} from '../pred/predicate';
+import {PredicateNode} from '../pred/predicate_node';
 
 // Keep lower case class name for compatibility with Lovefield API.
 /* eslint-disable @typescript-eslint/class-name-casing */

@@ -15,7 +15,7 @@
  */
 
 import * as chai from 'chai';
-import { isSubset, setEquals } from '../../lib/structs/set_util';
+import {isSubset, setEquals} from '../../lib/structs/set_util';
 
 const assert = chai.assert;
 

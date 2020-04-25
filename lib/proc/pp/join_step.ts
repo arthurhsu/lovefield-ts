@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { EvalType } from '../../base/eval';
-import { Global } from '../../base/global';
-import { ExecType } from '../../base/private_enum';
-import { Service } from '../../base/service';
-import { Cache } from '../../cache/cache';
-import { Journal } from '../../cache/journal';
-import { IndexStore } from '../../index/index_store';
-import { RuntimeIndex } from '../../index/runtime_index';
-import { IndexJoinInfo, JoinPredicate } from '../../pred/join_predicate';
-import { Context } from '../../query/context';
-import { BaseColumn } from '../../schema/base_column';
-import { Column } from '../../schema/column';
-import { Index } from '../../schema/index';
-import { Relation } from '../relation';
+import {EvalType} from '../../base/eval';
+import {Global} from '../../base/global';
+import {ExecType} from '../../base/private_enum';
+import {Service} from '../../base/service';
+import {Cache} from '../../cache/cache';
+import {Journal} from '../../cache/journal';
+import {IndexStore} from '../../index/index_store';
+import {RuntimeIndex} from '../../index/runtime_index';
+import {IndexJoinInfo, JoinPredicate} from '../../pred/join_predicate';
+import {Context} from '../../query/context';
+import {BaseColumn} from '../../schema/base_column';
+import {Column} from '../../schema/column';
+import {Index} from '../../schema/index';
+import {Relation} from '../relation';
 
-import { PhysicalQueryPlanNode } from './physical_query_plan_node';
+import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 enum JoinAlgorithm {
   HASH = 'hash',

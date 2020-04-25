@@ -16,20 +16,20 @@
 
 import * as chai from 'chai';
 
-import { EvalType, IndexableType } from '../../../lib/base/eval';
-import { Row } from '../../../lib/base/row';
-import { AggregatedColumn } from '../../../lib/fn/aggregated_column';
-import { fn } from '../../../lib/fn/fn';
-import { JoinPredicate } from '../../../lib/pred/join_predicate';
-import { AggregationStep } from '../../../lib/proc/pp/aggregation_step';
-import { NoOpStep } from '../../../lib/proc/pp/no_op_step';
-import { Relation } from '../../../lib/proc/relation';
-import { DatabaseSchema } from '../../../lib/schema/database_schema';
-import { Column } from '../../../lib/schema/column';
-import { Table } from '../../../lib/schema/table';
-import { getHrDbSchemaBuilder } from '../../../testing/hr_schema/hr_schema_builder';
-import { MockDataGenerator } from '../../../testing/hr_schema/mock_data_generator';
-import { NullableDataGenerator } from '../../../testing/nullable_data_generator';
+import {EvalType, IndexableType} from '../../../lib/base/eval';
+import {Row} from '../../../lib/base/row';
+import {AggregatedColumn} from '../../../lib/fn/aggregated_column';
+import {fn} from '../../../lib/fn/fn';
+import {JoinPredicate} from '../../../lib/pred/join_predicate';
+import {AggregationStep} from '../../../lib/proc/pp/aggregation_step';
+import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
+import {Relation} from '../../../lib/proc/relation';
+import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {Column} from '../../../lib/schema/column';
+import {Table} from '../../../lib/schema/table';
+import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
+import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
+import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
 
 const assert = chai.assert;
 

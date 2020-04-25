@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Relation } from '../proc/relation';
-import { TaskItem } from '../proc/task_item';
-import { SelectBuilder } from '../query/select_builder';
-import { SelectContext } from '../query/select_context';
-import { SelectQuery } from '../query/select_query';
-import { Table } from '../schema/table';
-import { assert } from './assert';
+import {Relation} from '../proc/relation';
+import {TaskItem} from '../proc/task_item';
+import {SelectBuilder} from '../query/select_builder';
+import {SelectContext} from '../query/select_context';
+import {SelectQuery} from '../query/select_query';
+import {Table} from '../schema/table';
+import {assert} from './assert';
 import {
   ObserverCallback,
   ObserverRegistryEntry,

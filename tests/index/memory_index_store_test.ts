@@ -17,16 +17,16 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 
-import { BTree } from '../../lib/index/btree';
-import { ComparatorFactory } from '../../lib/index/comparator_factory';
-import { IndexStore } from '../../lib/index/index_store';
-import { MemoryIndexStore } from '../../lib/index/memory_index_store';
-import { RowId } from '../../lib/index/row_id';
-import { RuntimeIndex } from '../../lib/index/runtime_index';
-import { BaseTable } from '../../lib/schema/base_table';
-import { DatabaseSchema } from '../../lib/schema/database_schema';
-import { IndexImpl } from '../../lib/schema/index_impl';
-import { getMockSchemaBuilder } from '../../testing/mock_schema_builder';
+import {BTree} from '../../lib/index/btree';
+import {ComparatorFactory} from '../../lib/index/comparator_factory';
+import {IndexStore} from '../../lib/index/index_store';
+import {MemoryIndexStore} from '../../lib/index/memory_index_store';
+import {RowId} from '../../lib/index/row_id';
+import {RuntimeIndex} from '../../lib/index/runtime_index';
+import {BaseTable} from '../../lib/schema/base_table';
+import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {IndexImpl} from '../../lib/schema/index_impl';
+import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
 const assert = chai.assert;
 
