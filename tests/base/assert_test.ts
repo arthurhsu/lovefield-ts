@@ -24,16 +24,19 @@ describe('assert', () => {
     const currentFlag = Flags.DEBUG;
 
     // Assert only works when Flags.DEBUG is true.
-    Flags.DEBUG = true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).DEBUG = true;
     TestUtil.assertThrowsError(ErrorCode.ASSERTION, () => assert(false));
     assert(true);
 
     // And no assert to be triggered if Flags.DEBUG is false.
-    Flags.DEBUG = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).DEBUG = false;
     assert(false);
     assert(true);
 
     // Reset the flag to its compiled state.
-    Flags.DEBUG = currentFlag;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).DEBUG = currentFlag;
   });
 });

@@ -36,6 +36,7 @@ const TSCONFIG = 'tsconfig.json';
 
 let tsProject;
 let deps;
+let debugBuild = true;
 
 function getProject() {
   if (!tsProject) {
@@ -67,11 +68,19 @@ function genFlags() {
       if (index != -1) {
         let key = line.substring(0, index);
         let value = line.substring(index + 1).trim();
+        if (value == 'true') {
+          value = true;
+        } else if (value == 'false') {
+          value = false;
+        } else if (!isNaN(value)) {
+          value = Number(value);
+        }
         flags.Flags[key] = value;
       }
     });
   }
 
+  debugBuild = flags.DEBUG;
   let contents = 'export class Flags {\n';
   for (let key in flags.Flags) {
     let value = flags.Flags[key];
@@ -80,7 +89,7 @@ function genFlags() {
       quote = '';
     }
     // We do not use readonly so that tests can modify them, esp. DEBUG.
-    contents += `  static ${key} = ${quote}${value}${quote};\n`;
+    contents += `  static readonly ${key} = ${quote}${value}${quote};\n`;
   }
   contents += '}\n';
   fs.ensureDirSync(GEN_DIR);
@@ -219,6 +228,7 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
 
     let exp = false;
     let multiLineImports = false;
+    let debugSkip = false;
     contents.forEach(line => {
       if (line.startsWith('// eslint:')) {
         // no-op
@@ -238,6 +248,12 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
           finalResult.push(line);
         } else {
           finalResult.push(line.substring(7));
+        }
+      } else if (line.trim().startsWith('/// #if DEBUG') && !debugBuild) {
+        debugSkip = true;
+      } else if (debugSkip) {
+        if (line.trim().startsWith('/// #endif')) {
+          debugSkip = false;
         }
       } else {
         finalResult.push(line);

@@ -79,7 +79,8 @@ describe('Exception', () => {
 
   it('baseUrlOverride', () => {
     const origUrl = Flags.EXCEPTION_URL;
-    Flags.EXCEPTION_URL = '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).EXCEPTION_URL = '';
     const e = new Exception(
       ErrorCode.SIMULATED_ERROR,
       'a',
@@ -91,14 +92,17 @@ describe('Exception', () => {
       'g'
     );
     assert.equal('999|a|b|c|d', e.message);
-    Flags.EXCEPTION_URL = origUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).EXCEPTION_URL = origUrl;
   });
 
   it('getMessage', () => {
     const debug = Flags.DEBUG;
-    Flags.DEBUG = true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).DEBUG = true;
     const e = new Exception(ErrorCode.SIMULATED_ERROR);
     assert.equal('Simulated error', e.toString());
-    Flags.DEBUG = debug;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (Flags as any).DEBUG = debug;
   });
 });

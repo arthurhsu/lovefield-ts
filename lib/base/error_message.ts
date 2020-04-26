@@ -32,7 +32,9 @@ class ErrorMessages {
   private messages: Map<ErrorCode, string>;
 
   constructor() {
-    this.messages = setupMap();
+    if (Flags.DEBUG) {
+      this.messages = setupMap();
+    }
   }
 
   private getMessage(code: ErrorCode): string | undefined {
