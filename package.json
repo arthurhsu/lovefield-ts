@@ -1,14 +1,23 @@
 {
   "name": "lovefield-ts",
   "version": "0.2.0",
-  "description": "TypeScript port of Lovefield",
+  "description": "Lovefield-TS: a relational database in TypeScript",
   "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx gulp test"
   },
+  "files": [
+    "dist/**"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthurhsu/lovefield-ts.git"
+  },
+  "keywords": [
+    "relational",
+    "database",
+    "RDBMS"
+  ],
   "author": "Arthur Hsu",
   "license": "Apache-2.0",
   "devDependencies": {
