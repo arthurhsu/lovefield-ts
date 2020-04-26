@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line node/no-unpublished-import
-import {Flags} from '../gen/flags';
 import {ErrorCode} from './enum';
-import {getErrorMessage} from './error_message';
+import {Global} from './global';
 
 export class Exception {
   readonly message: string;
@@ -25,13 +23,13 @@ export class Exception {
 
   constructor(readonly code: ErrorCode, ...args: string[]) {
     this.args = args;
-    this.message = Flags.EXCEPTION_URL + code.toString();
+    this.message = Global.get().getOptions().exceptionUrl + code.toString();
 
     if (args.length) {
       // Allow at most 4 parameters, each parameter at most 64 chars.
       for (let i = 0; i < Math.min(4, args.length); ++i) {
         const val = encodeURIComponent(String(args[i]).slice(0, 64));
-        if (Flags.EXCEPTION_URL.length) {
+        if (Global.get().getOptions().exceptionUrl.length) {
           this.message += `&p${i}=${val}`;
         } else {
           this.message += `|${val}`;
@@ -41,7 +39,10 @@ export class Exception {
   }
 
   toString(): string {
-    const template: string = getErrorMessage(this.code) || this.code.toString();
+    const template =
+      Global.get()
+        .getOptions()
+        .errorMessage(this.code as number) || this.code.toString();
     return template.replace(
       /{([^}]+)}/g,
       (match, pattern) => this.args[Number(pattern)]

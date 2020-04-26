@@ -22,7 +22,6 @@ const guppy = require('git-guppy')(gulp);
 const mocha = require('gulp-mocha');
 const sourcemaps = require('gulp-sourcemaps');
 const tsc = require('gulp-typescript');
-const yaml = require('js-yaml');
 const karma = require('karma');
 const nopt = require('nopt');
 const path = require('path');
@@ -30,8 +29,6 @@ const Toposort = require('toposort-class');
 
 const DIST_DIR = path.join(__dirname, 'dist');
 const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
-const GEN_DIR = path.join(__dirname, 'lib/gen');
-const FLAGS_FILE = path.join(GEN_DIR, 'flags.ts');
 const TSCONFIG = 'tsconfig.json';
 
 let tsProject;
@@ -57,47 +54,6 @@ function getGrepPattern() {
   return opts.grep;
 }
 
-function genFlags() {
-  let flags = yaml.safeLoad(fs.readFileSync('flags.yaml', 'utf8'));
-
-  let knownOpts = { 'flag': Array };
-  let opts = nopt(knownOpts, null, process.argv, 2);
-  if (opts.flag) {
-    opts.flag.forEach(line => {
-      let index = line.indexOf(':');
-      if (index != -1) {
-        let key = line.substring(0, index);
-        let value = line.substring(index + 1).trim();
-        if (value == 'true') {
-          value = true;
-        } else if (value == 'false') {
-          value = false;
-        } else if (!isNaN(value)) {
-          value = Number(value);
-        }
-        flags.Flags[key] = value;
-      }
-    });
-  }
-
-  debugBuild = flags.DEBUG;
-  let contents = 'export class Flags {\n';
-  for (let key in flags.Flags) {
-    let value = flags.Flags[key];
-    let quote = '\'';
-    if (typeof(value) == 'boolean') {
-      quote = '';
-    }
-    // We do not use readonly so that tests can modify them, esp. DEBUG.
-    contents += `  static readonly ${key} = ${quote}${value}${quote};\n`;
-  }
-  contents += '}\n';
-  fs.ensureDirSync(GEN_DIR);
-  fs.writeFileSync(FLAGS_FILE, contents, {encoding: 'utf-8'});
-  gulp.src(FLAGS_FILE)
-      .pipe(gulp.dest(GEN_DIR));
-}
-
 gulp.task('default', (cb) => {
   let log = console.log;
   log('gulp tasks:');
@@ -109,20 +65,17 @@ gulp.task('default', (cb) => {
   log('options:');
   log('  --quick, -q: Quick test only');
   log('  --grep, -g: Mocha grep pattern');
-  log('  --flag <KEY:VALUE>: Override flags');
   cb();
 });
 
 gulp.task('clean', (cb) => {
   fs.removeSync(getProject().options.outDir);
   fs.removeSync('coverage');
-  fs.removeSync(GEN_DIR);
   fs.removeSync(DIST_DIR);
   cb();
 });
 
 gulp.task('buildLib', gulp.series('clean', function actualBuildLib() {
-  genFlags();
   getProject();
   return gulp.src(['lib/**/*.ts'])
       .pipe(sourcemaps.init())
@@ -153,8 +106,7 @@ gulp.task('buildTest', gulp.series(['buildTesting', 'buildTests']));
 gulp.task('build', gulp.series(['buildLib', 'buildTest']));
 
 gulp.task('deps', (cb) => {
-  glob('lib/**/*.ts', (err, matches) => {
-    let files = [FLAGS_FILE].concat(matches);
+  glob('lib/**/*.ts', (err, files) => {
     let fileSet = new Set(files);
     const relativePath = (p) => {
       return path.relative(__dirname, p).replace(/\\/g, '/');
@@ -222,8 +174,6 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
     contents = fs.readFileSync(file, 'utf-8').split('\n');
     if (!copyRight) {
       copyRight = true;
-    } else if (file != 'lib/gen/flags.ts') {
-      contents.splice(0, 15);
     }
 
     let exp = false;

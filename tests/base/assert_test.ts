@@ -16,27 +16,25 @@
 
 import {assert} from '../../lib/base/assert';
 import {ErrorCode} from '../../lib/base/enum';
-import {Flags} from '../../lib/gen/flags';
+import {Global} from '../../lib/base/global';
 import {TestUtil} from '../../testing/test_util';
 
 describe('assert', () => {
-  it('assert', () => {
-    const currentFlag = Flags.DEBUG;
+  TestUtil.setDebug();
+  const options = Global.get().getOptions();
 
-    // Assert only works when Flags.DEBUG is true.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).DEBUG = true;
+  it('assert', () => {
+    // Assert only works when LovefieldOptions.debugMode() is true.
+    options.debugMode = true;
     TestUtil.assertThrowsError(ErrorCode.ASSERTION, () => assert(false));
     assert(true);
 
-    // And no assert to be triggered if Flags.DEBUG is false.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).DEBUG = false;
+    // And no assert to be triggered if debug mode is false.
+    options.debugMode = false;
     assert(false);
     assert(true);
 
-    // Reset the flag to its compiled state.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).DEBUG = currentFlag;
+    // Reset the flag to debug mode.
+    options.debugMode = true;
   });
 });

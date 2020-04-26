@@ -16,6 +16,7 @@
 
 import {ErrorCode} from './enum';
 import {Exception} from './exception';
+import {LovefieldOptions} from './lovefield_options';
 import {ServiceId} from './service_id';
 
 export class Global {
@@ -28,6 +29,7 @@ export class Global {
   private static instance: Global;
 
   private services: Map<string, object>;
+  private opt: LovefieldOptions;
 
   constructor() {
     this.services = new Map<string, object>();
@@ -57,5 +59,13 @@ export class Global {
 
   listServices(): string[] {
     return Array.from(this.services.keys());
+  }
+
+  getOptions(): LovefieldOptions {
+    return this.opt;
+  }
+
+  setOptions(options: LovefieldOptions) {
+    this.opt = options;
   }
 }

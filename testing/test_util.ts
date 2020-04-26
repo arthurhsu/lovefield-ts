@@ -20,6 +20,7 @@ import * as sinon from 'sinon';
 import {TransactionType} from '../lib/base/enum';
 import {Exception} from '../lib/base/exception';
 import {Global} from '../lib/base/global';
+import {options} from '../lib/base/options';
 import {TableType} from '../lib/base/private_enum';
 import {PayloadType, Row} from '../lib/base/row';
 import {Service} from '../lib/base/service';
@@ -29,6 +30,8 @@ import {RuntimeIndex} from '../lib/index/runtime_index';
 import {BaseTable} from '../lib/schema/base_table';
 import {Index} from '../lib/schema/index';
 import {Table} from '../lib/schema/table';
+
+import {DebugOptions} from './debug_options';
 
 export interface NestedPayloadType {
   [key: string]: PayloadType;
@@ -94,5 +97,9 @@ export class TestUtil {
 
   static hasProperty(obj: object, name: string): boolean {
     return Object.prototype.hasOwnProperty.call(obj, name);
+  }
+
+  static setDebug(): void {
+    options.set(DebugOptions.get());
   }
 }
