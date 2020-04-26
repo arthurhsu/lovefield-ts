@@ -16,13 +16,19 @@
 import * as chai from 'chai';
 import {ErrorCode} from '../../lib/base/enum';
 import {Exception} from '../../lib/base/exception';
-import {Flags} from '../../lib/gen/flags';
+import {Global} from '../../lib/base/global';
+import {LovefieldOptions} from '../../lib/base/lovefield_options';
+import {options} from '../../lib/base/options';
+import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('Exception', () => {
+  TestUtil.setDebug();
+
   const BASE_URL =
     'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=';
+  const opt = Global.get().getOptions();
 
   it('ctorSingleArg', () => {
     const e = new Exception(ErrorCode.SYSTEM_ERROR);
@@ -78,9 +84,8 @@ describe('Exception', () => {
   });
 
   it('baseUrlOverride', () => {
-    const origUrl = Flags.EXCEPTION_URL;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).EXCEPTION_URL = '';
+    const origUrl = opt.exceptionUrl;
+    opt.exceptionUrl = '';
     const e = new Exception(
       ErrorCode.SIMULATED_ERROR,
       'a',
@@ -92,17 +97,28 @@ describe('Exception', () => {
       'g'
     );
     assert.equal('999|a|b|c|d', e.message);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).EXCEPTION_URL = origUrl;
+    opt.exceptionUrl = origUrl;
   });
 
   it('getMessage', () => {
-    const debug = Flags.DEBUG;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).DEBUG = true;
     const e = new Exception(ErrorCode.SIMULATED_ERROR);
-    assert.equal('Simulated error', e.toString());
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (Flags as any).DEBUG = debug;
+    assert.equal(e.toString(), 'Simulated error');
+  });
+
+  it('surviveInvalidOptions', () => {
+    const invalidOptions = ({} as unknown) as LovefieldOptions;
+    options.set(invalidOptions);
+    const e = new Exception(
+      ErrorCode.SIMULATED_ERROR,
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g'
+    );
+    assert.equal(BASE_URL + '999&p0=a&p1=b&p2=c&p3=d', e.message);
+    TestUtil.setDebug();
   });
 });

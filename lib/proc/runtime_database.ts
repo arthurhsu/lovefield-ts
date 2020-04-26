@@ -33,8 +33,6 @@ import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {DefaultCache} from '../cache/default_cache';
 import {Prefetcher} from '../cache/prefetcher';
-// eslint-disable-next-line node/no-unpublished-import
-import {Flags} from '../gen/flags';
 import {MemoryIndexStore} from '../index/memory_index_store';
 import {DeleteBuilder} from '../query/delete_builder';
 import {InsertBuilder} from '../query/insert_builder';
@@ -214,7 +212,7 @@ export class RuntimeDatabase implements DatabaseConnection {
   ): BackStore {
     let backStore: BackStore;
 
-    if (Flags.MEMORY_ONLY) {
+    if (Global.get().getOptions().memoryOnly) {
       backStore = new Memory(schema);
       return backStore;
     }

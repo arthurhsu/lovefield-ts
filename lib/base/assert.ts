@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line node/no-unpublished-import
-import {Flags} from '../gen/flags';
 import {ErrorCode} from './enum';
 import {Exception} from './exception';
+import {Global} from './global';
 
 export function assert(condition: boolean, message = 'assertion failed'): void {
-  if (Flags.DEBUG) {
+  if (Global.get().getOptions().debugMode) {
     if (!condition) {
       throw new Exception(ErrorCode.ASSERTION, message);
     }
