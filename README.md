@@ -31,8 +31,8 @@ name must start with capital I).
 
 * Lovefield-ts no longer ships minified JavaScript file. Instead, it provides
   * A concatenated TypeScript file that you can directly include in your
-    TypeScript project.
-  * A compiled ES6 JavaScript file with source map and TypeScript declarations.
+    TypeScript project and compile to any module system you would like to use.
+  * Pre-compiled ES5/ES6 modules with source map and TypeScript declarations.
     Just import it and use your existing packing/minifying config.
 * Lovefield-ts no longer uses flags to do compile-time control. Instead, a
   runtime options object will be used. The interface is defined in
@@ -41,6 +41,27 @@ name must start with capital I).
   * By default, an options object not providing error message explanations is
     provided for better minify performance. If you wish to include detailed
     error message in your package, use or copy `testing/debug_options.ts`.
+
+### API changes
+
+* All namespaces are flattened. For example:
+  * `lf.Order` is flattened to `Order`
+  * `lf.schema.DataStoreType` is flattened to `DataStoreType`
+
+  Please note, in ES6 modules, we usually do
+  ```javascript
+  import * as lf from './node_modules/lovefield-ts/dist/es6/lf.js';
+  const order = lf.Order.DESC;  // still prefixed by lf, ES6 module syntax
+  ```
+
+* TypeScript users cannot refer column by name, use `.col()` API.
+  ```javascript
+  const item = db.getSchema().table('Item');
+  // Use .col() API to refer to column here.
+  // TypeScript indexed property forces everything to be typed the same.
+  // This is a language limit and not much Lovefield authors can do here.
+  return db.select().from(item).orderBy(item.col('orderDate')).exec();
+  ```
 
 ### Test changes
 

@@ -1,10 +1,10 @@
 {
-  "name": "lovefield-ts demo",
+  "name": "lovefield-ts-node-demo",
   "version": "1.0.0",
   "description": "Demonstrate how to use Lovefield-TS in node.js",
   "author": "Arthur Hsu",
   "license": "Apache-2.0",
   "devDependencies": {
-    "lovefield-ts": "^0.4.0"
+    "lovefield-ts": "^0.5.0"
   }
 }

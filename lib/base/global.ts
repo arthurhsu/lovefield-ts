@@ -17,12 +17,16 @@
 import {ErrorCode} from './enum';
 import {Exception} from './exception';
 import {LovefieldOptions} from './lovefield_options';
+import {DefaultOptions} from './options';
 import {ServiceId} from './service_id';
 
 export class Global {
   static get(): Global {
     if (!Global.instance) {
       Global.instance = new Global();
+    }
+    if (!Global.instance.opt) {
+      Global.instance.setOptions(new DefaultOptions());
     }
     return Global.instance;
   }
