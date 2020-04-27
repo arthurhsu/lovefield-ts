@@ -1,12 +1,13 @@
 {
   "name": "lovefield-ts",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Lovefield-TS: a relational database in TypeScript",
   "main": "index.js",
   "scripts": {
     "test": "npx gulp test"
   },
   "files": [
+    "index.js",
     "dist/**"
   ],
   "repository": {

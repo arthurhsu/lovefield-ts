@@ -11,6 +11,7 @@ module.exports = function(config) {
     ],
 
     exclude: [
+      'demo/**/*.ts',
       'dist/*.ts',
       'node_modules/**/*.ts',
     ],
@@ -33,6 +34,7 @@ module.exports = function(config) {
     karmaTypescriptConfig: {
       tsconfig: 'tsconfig.json',
       exclude: [
+        'demo',
         'node_modules'
       ]
     }

@@ -34,7 +34,6 @@ name must start with capital I).
     TypeScript project.
   * A compiled ES6 JavaScript file with source map and TypeScript declarations.
     Just import it and use your existing packing/minifying config.
-  * NPM package is not implemented yet.
 * Lovefield-ts no longer uses flags to do compile-time control. Instead, a
   runtime options object will be used. The interface is defined in
   `lib/base/lovefield_options.ts`. Users are supposed to define an object

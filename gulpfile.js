@@ -29,6 +29,8 @@ const Toposort = require('toposort-class');
 
 const DIST_DIR = path.join(__dirname, 'dist');
 const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
+const DIST_ES6_DIR = path.join(DIST_DIR, 'es6');
+const DIST_ES5_DIR = path.join(DIST_DIR, 'es5');
 const TSCONFIG = 'tsconfig.json';
 
 let tsProject;
@@ -84,7 +86,7 @@ gulp.task('buildLib', gulp.series('clean', function actualBuildLib() {
       .pipe(gulp.dest(path.join(tsProject.options.outDir, 'lib')));
 }));
 
-gulp.task('buildTesting', () => {
+gulp.task('buildTesting', function actualBuildTesting() {
   getProject();
   return gulp.src(['testing/**/*.ts'])
       .pipe(sourcemaps.init())
@@ -93,7 +95,7 @@ gulp.task('buildTesting', () => {
       .pipe(gulp.dest(path.join(tsProject.options.outDir, 'testing')));
 });
 
-gulp.task('buildTests', () => {
+gulp.task('buildTests', function actualBuildTests() {
   getProject();
   return gulp.src(['tests/**/*.ts'])
       .pipe(sourcemaps.init())
@@ -217,14 +219,57 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
   cb();
 }));
 
-gulp.task('dist', gulp.series(['genDist'], function actualBuildDist() {
-  const project = tsc.createProject(TSCONFIG, {declaration: true});
+gulp.task('buildES6', function buildES6Dist() {
+  const project = tsc.createProject(TSCONFIG, {
+    target: 'es6',
+    declaration: true
+  });
   return gulp.src([DIST_FILE])
       .pipe(sourcemaps.init())
       .pipe(project())
-      .pipe(sourcemaps.write('.'))
+      .pipe(sourcemaps.write('.', {includeContent: false}))
       .pipe(gulp.dest(DIST_DIR));
-}));
+});
+
+function moveToDir(source, target, except) {
+  fs.ensureDirSync(target);
+  fs.readdirSync(source, {withFileTypes: true})
+    .filter(entry => entry.isFile())
+    .map(entry => entry.name)
+    .forEach((f) => {
+      if (f != except) {
+        fs.moveSync(path.join(source, f), path.join(target, f));
+      }
+  });
+}
+
+gulp.task('packES6', function packES6Dist(cb) {
+  moveToDir(DIST_DIR, DIST_ES6_DIR, path.relative(DIST_DIR, DIST_FILE));
+  cb();
+});
+
+gulp.task('es6Dist', gulp.series(['buildES6', 'packES6']));
+
+gulp.task('buildES5', function buildES5Dist() {
+  const project = tsc.createProject(TSCONFIG, {
+    target: 'es5',
+    declaration: true
+  });
+  return gulp.src([DIST_FILE])
+      .pipe(sourcemaps.init())
+      .pipe(project())
+      .pipe(sourcemaps.write('.', {includeContent: false}))
+      .pipe(gulp.dest(DIST_DIR));
+});
+
+gulp.task('packES5', function packES5Dist(cb) {
+  moveToDir(DIST_DIR, DIST_ES5_DIR, path.relative(DIST_DIR, DIST_FILE));
+  cb();
+});
+
+gulp.task('es5Dist', gulp.series(['buildES5', 'packES5']));
+
+gulp.task('dist', gulp.series(['genDist', 'es6Dist', 'es5Dist']));
 
 function quickTest() {
   let mochaOptions = {
