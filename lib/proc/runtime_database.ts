@@ -39,10 +39,10 @@ import {InsertBuilder} from '../query/insert_builder';
 import {SelectBuilder} from '../query/select_builder';
 import {SelectQuery} from '../query/select_query';
 import {UpdateBuilder} from '../query/update_builder';
-import {Table} from '../schema/table';
 import {Column} from '../schema/column';
 import {ConnectOptions} from '../schema/connect_options';
 import {DatabaseSchema} from '../schema/database_schema';
+import {Table} from '../schema/table';
 
 import {DefaultQueryEngine} from './default_query_engine';
 import {ExportTask} from './export_task';

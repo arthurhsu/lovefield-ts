@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "description": "get some coffee",
+    "deadline": 1587947145675,
+    "done": false
+  },
+  {
+    "id": 2,
+    "description": "prepare demo",
+    "deadline": 1587948145675,
+    "done": false
+  },
+  {
+    "id": 3,
+    "description": "completed task",
+    "deadline": 1587847145675,
+    "done": true
+  },
+  {
+    "id": 4,
+    "description": "get enough sleep",
+    "deadline": 1587847045675,
+    "done": false
+  }
+]

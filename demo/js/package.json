@@ -1,0 +1,14 @@
+{
+  "name": "lovefield-ts-js-demo",
+  "version": "1.0.0",
+  "description": "Demonstrate how to use Lovefield-TS",
+  "author": "Arthur Hsu",
+  "license": "Apache-2.0",
+  "scripts": {
+    "run": "npx http-server"
+  },
+  "devDependencies": {
+    "http-server": "^0.12.1",
+    "lovefield-ts": "^0.5.0"
+  }
+}

@@ -221,6 +221,7 @@ gulp.task('genDist', gulp.series(['buildLib', 'deps'], function actualDist(cb) {
 
 gulp.task('buildES6', function buildES6Dist() {
   const project = tsc.createProject(TSCONFIG, {
+    module: 'es6',
     target: 'es6',
     declaration: true
   });

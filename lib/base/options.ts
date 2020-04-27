@@ -17,7 +17,7 @@
 import {Global} from './global';
 import {LovefieldOptions} from './lovefield_options';
 
-class DefaultOptions implements LovefieldOptions {
+export class DefaultOptions implements LovefieldOptions {
   readonly debugMode: boolean;
   readonly memoryOnly: boolean;
   readonly exceptionUrl: string;
