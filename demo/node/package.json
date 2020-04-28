@@ -5,6 +5,6 @@
   "author": "Arthur Hsu",
   "license": "Apache-2.0",
   "devDependencies": {
-    "lovefield-ts": "^0.5.0"
+    "lovefield-ts": "^0.6.0"
   }
 }

@@ -57,9 +57,13 @@ name must start with capital I).
 * TypeScript users cannot refer column by name, use `.col()` API.
   ```javascript
   const item = db.getSchema().table('Item');
+
   // Use .col() API to refer to column here.
   // TypeScript indexed property forces everything to be typed the same.
   // This is a language limit and not much Lovefield authors can do here.
+  //
+  // item['orderDate']  <== this will cause type errors
+  // item.col('orderDate')  <== this will give perfect type checking
   return db.select().from(item).orderBy(item.col('orderDate')).exec();
   ```
 

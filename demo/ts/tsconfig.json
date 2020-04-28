@@ -1,0 +1,27 @@
+{
+  "files": [
+    "ts_demo.ts"
+  ],
+  "compilerOptions": {
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "lib": [
+      "dom",
+      "es6"
+    ],
+    "module": "es6",
+    "newLine": "lf",
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "rootDir": ".",
+    "removeComments": true,
+    "sourceMap": false,
+    "target": "es6",
+    "types": [
+      "node",
+      "websql"
+    ]
+  }
+}

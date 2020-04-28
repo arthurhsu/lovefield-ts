@@ -78,7 +78,7 @@ export class Capability {
   }
 
   private detectNodeJS(): boolean {
-    if (typeof process !== undefined && process.version) {
+    if (typeof process !== typeof undefined && process.version) {
       // Assume this is NodeJS.
       this.convertVersion(process.version.slice(1));
       // Support only Node.js >= 7.0.

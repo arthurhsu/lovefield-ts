@@ -5,10 +5,10 @@
   "author": "Arthur Hsu",
   "license": "Apache-2.0",
   "scripts": {
-    "run": "npx http-server"
+    "server": "http-server"
   },
   "devDependencies": {
     "http-server": "^0.12.1",
-    "lovefield-ts": "^0.5.0"
+    "lovefield-ts": "^0.6.0"
   }
 }

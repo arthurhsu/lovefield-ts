@@ -1,0 +1,21 @@
+{
+  "name": "lovefield-ts-ts-demo",
+  "version": "1.0.0",
+  "description": "Demonstrate how to use Lovefield-TS",
+  "author": "Arthur Hsu",
+  "license": "Apache-2.0",
+  "scripts": {
+    "clean": "rimraf *.js",
+    "build": "tsc --project tsconfig.json && rollup ts_demo.js --file bundle.js",
+    "server": "http-server"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "@types/websql": "0.0.27",
+    "http-server": "^0.12.1",
+    "lovefield-ts": "^0.6.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.7.2",
+    "typescript": "^3.8.3"
+  }
+}
