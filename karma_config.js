@@ -35,6 +35,7 @@ module.exports = function(config) {
       tsconfig: 'tsconfig.json',
       exclude: [
         'demo',
+        'external',
         'node_modules'
       ]
     }

@@ -21,7 +21,7 @@
   "ignorePatterns": [
     "coverage/",
     "dist/",
-    "lib/gen/",
+    "external/",
     "node_modules/",
     "out/",
     "*.js"

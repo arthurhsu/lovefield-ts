@@ -22,6 +22,6 @@ export class CrossProductNode extends LogicalQueryPlanNode {
   }
 
   toString(): string {
-    return `cross_product`;
+    return 'cross_product';
   }
 }

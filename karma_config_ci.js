@@ -25,6 +25,7 @@ module.exports = function(config) {
     exclude: [
       'demo/**/*.ts',
       'dist/*.ts',
+      'external/**',
       'node_modules/**/*.ts'
     ],
 
@@ -42,6 +43,7 @@ module.exports = function(config) {
       tsconfig: 'tsconfig.json',
       exclude: [
         'demo',
+        'external',
         'node_modules'
       ]
     },
