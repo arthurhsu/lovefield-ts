@@ -53,12 +53,12 @@ describe('ExportTask', () => {
     const EXPECTED = {
       name: 'hr',
       tables: {
-        Country: [],
-        CrossColumnTable: [],
-        Department: [],
-        DummyTable: [],
-        Employee: [],
-        Holiday: [],
+        Country: [] as unknown[],
+        CrossColumnTable: [] as unknown[],
+        Department: [] as unknown[],
+        DummyTable: [] as unknown[],
+        Employee: [] as unknown[],
+        Holiday: [] as unknown[],
         Job: [
           {
             id: 'jobId0',
@@ -73,9 +73,9 @@ describe('ExportTask', () => {
             title: 'Software Engineer',
           },
         ],
-        JobHistory: [],
-        Location: [],
-        Region: [],
+        JobHistory: [] as unknown[],
+        Location: [] as unknown[],
+        Region: [] as unknown[],
       },
       version: 1,
     };

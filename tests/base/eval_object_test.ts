@@ -31,7 +31,7 @@ describe('EvalObject', () => {
   it('eq', () => {
     const evaluationFn = registry.getEvaluator(Type.OBJECT, EvalType.EQ);
 
-    const obj1 = null;
+    const obj1 = (null as unknown) as object;
     const obj2 = {};
     assert.isTrue(evaluationFn(obj1, null));
     assert.isFalse(evaluationFn(obj2, null));
@@ -45,7 +45,7 @@ describe('EvalObject', () => {
   it('neq', () => {
     const evaluationFn = registry.getEvaluator(Type.OBJECT, EvalType.NEQ);
 
-    const obj1 = null;
+    const obj1 = (null as unknown) as object;
     const obj2 = {};
     assert.isFalse(evaluationFn(obj1, null));
     assert.isTrue(evaluationFn(obj2, null));

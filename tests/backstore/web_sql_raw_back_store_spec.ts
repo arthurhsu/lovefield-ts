@@ -91,7 +91,7 @@ describe('WebSqlRawBackStore', () => {
   // instance.
   it('newDBInstance', () => {
     if (!capability.webSql) {
-      return;
+      return Promise.resolve();
     }
 
     const schema = getOldSchema();

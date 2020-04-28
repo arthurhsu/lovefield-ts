@@ -334,13 +334,13 @@ describe('TableBuilder', () => {
     assert.isTrue(row instanceof Row);
 
     const expectedPayload = {
-      arraybuffer: null,
-      boolean: null,
-      datetime: null,
-      integer: null,
-      number: null,
-      object: null,
-      string: null,
+      arraybuffer: (null as unknown) as ArrayBuffer,
+      boolean: (null as unknown) as boolean,
+      datetime: (null as unknown) as Date,
+      integer: (null as unknown) as number,
+      number: (null as unknown) as number,
+      object: (null as unknown) as object,
+      string: (null as unknown) as string,
     };
     const payload = row.payload();
     assert.deepEqual(expectedPayload, payload);
@@ -483,10 +483,10 @@ describe('TableBuilder', () => {
       arraybuffer: null,
     });
     const expected = {
-      arraybuffer: null,
-      datetime: null,
+      arraybuffer: (null as unknown) as ArrayBuffer,
+      datetime: (null as unknown) as Date,
       number: 1,
-      object: null,
+      object: (null as unknown) as object,
       string: 'bar',
     };
 

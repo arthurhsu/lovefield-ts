@@ -96,12 +96,12 @@ describe('CRUD', () => {
       });
 
       const expected = {
-        arraybuffer: null,
+        arraybuffer: (null as unknown) as ArrayBuffer,
         boolean: false,
-        datetime: null,
+        datetime: (null as unknown) as Date,
         integer: 1,
         number: 2,
-        proto: null,
+        proto: (null as unknown) as ArrayBuffer,
         string: 'A',
         string2: 'B',
       };

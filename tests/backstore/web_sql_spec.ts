@@ -58,7 +58,7 @@ describe('WebSql', () => {
 
   it('SCUD', () => {
     if (!capability.webSql) {
-      return;
+      return Promise.resolve();
     }
 
     // The schema name is on purpose padded with a timestamp to workaround the
@@ -115,7 +115,7 @@ describe('WebSql', () => {
 
   it('persistentIndex', () => {
     if (!capability.webSql) {
-      return;
+      return Promise.resolve();
     }
 
     const builder = getMockSchemaBuilder(`foo${Date.now()}`, true);

@@ -33,7 +33,7 @@ describe('Eval_string', () => {
     const string1 = 'a';
     const string2 = 'ab';
     const string3 = 'abc';
-    const string4 = null;
+    const string4 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string1, [string1, string3]));
     assert.isTrue(evaluationFn(string2, [string1, string3]));
@@ -66,7 +66,7 @@ describe('Eval_string', () => {
 
     const string1 = 'a';
     const string2 = 'ab';
-    const string3 = null;
+    const string3 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string2, string1));
     assert.isTrue(evaluationFn(string2, string2));
@@ -85,7 +85,7 @@ describe('Eval_string', () => {
 
     const string1 = 'a';
     const string2 = 'ab';
-    const string3 = null;
+    const string3 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string2, string1));
     assert.isFalse(evaluationFn(string2, string2));
@@ -122,7 +122,7 @@ describe('Eval_string', () => {
 
     const string1 = 'a';
     const string2 = 'ab';
-    const string3 = null;
+    const string3 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string1, string2));
     assert.isTrue(evaluationFn(string1, string1));
@@ -141,7 +141,7 @@ describe('Eval_string', () => {
 
     const string1 = 'a';
     const string2 = 'ab';
-    const string3 = null;
+    const string3 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string1, string2));
     assert.isFalse(evaluationFn(string1, string1));
@@ -170,12 +170,12 @@ describe('Eval_string', () => {
     const evaluationFn = registry.getEvaluator(Type.STRING, EvalType.MATCH);
 
     const string1 = 'sampleName';
-    const string2 = null;
+    const string2 = (null as unknown) as string;
 
     const pattern1 = /sampleName/;
     const pattern2 = /\bsample[A-Za-z]+\b/;
     const pattern3 = /SAMPLENAME/;
-    const pattern4 = null;
+    const pattern4 = (null as unknown) as string;
 
     assert.isTrue(evaluationFn(string1, pattern1));
     assert.isTrue(evaluationFn(string1, pattern2));
