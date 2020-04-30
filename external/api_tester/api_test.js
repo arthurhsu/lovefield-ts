@@ -39,6 +39,8 @@ function assertAttributes(obj, attributeNames, target) {
 describe('ApiTester', async () => {
   let builder;
   let tableBuilder;
+  let db;
+  let schema;
 
   before(() => {
     builder = lf.schema.create('apiCheck', 1);
@@ -50,6 +52,12 @@ describe('ApiTester', async () => {
         .addColumn('boolean', lf.Type.BOOLEAN)
         .addColumn('arrayBuffer', lf.Type.ARRAY_BUFFER)
         .addColumn('object', lf.Type.OBJECT);
+    return builder.connect({
+      DataStoreType: lf.DataStoreType.MEMORY
+    }).then(conn => {
+      db = conn;
+      schema = db.getSchema();
+    });
   });
 
   it('hasAttributes', () => {
@@ -169,6 +177,53 @@ describe('ApiTester', async () => {
         cap,
         ['supported', 'indexedDb', 'localStorage', 'webSql'],
         'Capability',
+    );
+  });
+
+  it('connection', () => {
+    assertMethods(
+        db,
+        [
+          'getSchema',
+          'select',
+          'insert',
+          'insertOrReplace',
+          'update',
+          'delete',
+          'observe',
+          'unobserve',
+          'createTransaction',
+          'close',
+          'export',
+          'import',
+          'isOpen',
+        ],
+        'db',
+    );
+  });
+
+  it('DBSchema', () => {
+    assertMethods(
+        schema,
+        [
+          'name',
+          'version',
+          'tables',
+          'info',
+          'table',
+          'pragma',
+        ],
+        'schema',
+    );
+  });
+
+  it('TableSchema', () => {
+    const table = schema.table('DummyTable');
+    assert.isNotNull(table);
+    assertMethods(
+        table,
+        ['as', 'createRow'],
+        'table',
     );
   });
 });
