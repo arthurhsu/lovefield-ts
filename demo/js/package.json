@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "http-server": "^0.12.1",
-    "lovefield-ts": "^0.6.0"
+    "lovefield-ts": "^0.7.0"
   }
 }

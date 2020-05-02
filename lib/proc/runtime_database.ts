@@ -28,7 +28,7 @@ import {Global} from '../base/global';
 import {Inspector} from '../base/inspect';
 import {ObserverRegistry} from '../base/observer_registry';
 import {ObserverCallback} from '../base/observer_registry_entry';
-import {PayloadType} from '../base/row';
+import {PayloadType, Row} from '../base/row';
 import {Service} from '../base/service';
 import {Transaction} from '../base/transaction';
 import {DefaultCache} from '../cache/default_cache';
@@ -53,6 +53,7 @@ import {RuntimeTransaction} from './runtime_transaction';
 declare global {
   interface Window {
     '#lfInspect': Function;
+    '#lfRowId': Function;
   }
 }
 
@@ -110,6 +111,9 @@ export class RuntimeDatabase implements DatabaseConnection {
           // Exposes a global '#lfExport' method, that can be used by the
           // Lovefield Inspector Devtools Chrome extension.
           window.top['#lfInspect'] = Inspector.inspect;
+
+          // TypeScript port specific: this is needed for perf benchmark.
+          window.top['#lfRowId'] = Row.getNextId;
         }
         const prefetcher = new Prefetcher(this.global);
         return prefetcher.init(this.schema);

@@ -1,0 +1,16 @@
+{
+  "name": "lovefield-ts-perf-test",
+  "version": "1.0.0",
+  "description": "Perf test for Lovefield-TS",
+  "author": "Arthur Hsu",
+  "license": "Apache-2.0",
+  "scripts": {
+    "server": "http-server"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "http-server": "^0.12.3",
+    "lovefield-ts": "^0.7.0"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "lovefield-ts",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Lovefield-TS: a relational database in TypeScript",
   "main": "index.js",
   "scripts": {
