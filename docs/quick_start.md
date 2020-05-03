@@ -206,8 +206,10 @@ don't worry about it. If you insist, you can call `db.close()` to close it.
 However, due to HTML5 spec limitations, the `close()` operation is best efforts,
 i.e. no guarantee to run.
 
-> Technical details: spec said it will be run if and only if all references to
-> the database are gone. BTW, there's no way for you to know that in JavaScript
+> Technical details: spec said `IDBDatabase.close()` will be run if and only if
+> all references to that database are gone. BTW, there's no way for you to know
+> that in JavaScript. Given Lovefield-TS still uses IndexedDB as a transactional
+> store, it is also suffering from that limitation.
 
 ## ES5 users
 

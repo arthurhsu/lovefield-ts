@@ -6,6 +6,8 @@ Lovefield Typescript port and modernization.
 
 The port attempts to maintain API compatibility with original Lovefield.
 
+## How to use this library?
+
 [Documentation of how to use this library can be found here](docs/index.md).
 
 ## Expectations
