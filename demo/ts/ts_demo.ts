@@ -20,14 +20,14 @@
 import * as lf from './node_modules/lovefield-ts/dist/es6/lf';
 
 interface RawDataType {
-  id: string;
+  id: number;
   description: string;
   deadline: number;
   done: boolean;
 }
 
 interface DataType {
-  id: string;
+  id: number;
   description: string;
   deadline: Date;
   done: boolean;

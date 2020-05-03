@@ -4,7 +4,7 @@
   "description": "Demonstrate how to use Lovefield-TS in node.js",
   "author": "Arthur Hsu",
   "license": "Apache-2.0",
-  "devDependencies": {
+  "dependencies": {
     "lovefield-ts": "^0.6.0"
   }
 }

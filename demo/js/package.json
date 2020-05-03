@@ -7,8 +7,10 @@
   "scripts": {
     "server": "http-server"
   },
-  "devDependencies": {
-    "http-server": "^0.12.1",
+  "dependencies": {
     "lovefield-ts": "^0.7.0"
+  },
+  "devDependencies": {
+    "http-server": "^0.12.1"
   }
 }
