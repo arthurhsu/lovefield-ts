@@ -53,7 +53,7 @@ describe('ApiTester', async () => {
         .addColumn('arrayBuffer', lf.Type.ARRAY_BUFFER)
         .addColumn('object', lf.Type.OBJECT);
     return builder.connect({
-      DataStoreType: lf.DataStoreType.MEMORY
+      storeType: lf.DataStoreType.MEMORY
     }).then(conn => {
       db = conn;
       schema = db.getSchema();

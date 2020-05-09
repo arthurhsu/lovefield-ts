@@ -4,7 +4,9 @@
 
 * [Quick start](quick_start.md)
 * [FAQ](faq.md)
-
+* [Lovefield 101: Fundamentals](lf101.md)
+* Lovefield 102: Advanced usage
+* Lovefield 145: Data-heavy web apps design
 
 ## How to contribute to this library?
 
