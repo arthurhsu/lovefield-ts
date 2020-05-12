@@ -1,10 +1,11 @@
-# lovefield-ts
+# Lovefield-TS
 [![Build Status](https://travis-ci.org/arthurhsu/lovefield-ts.svg?branch=master)](
 https://travis-ci.org/arthurhsu/lovefield-ts)
 
-Lovefield Typescript port and modernization.
+[Lovefield](https://github.com/google/lovefield) Typescript port and
+modernization.
 
-The port attempts to maintain API compatibility with original Lovefield.
+The port attempts to maintain API compatibility as much as possible.
 
 ## How to use this library?
 
@@ -31,12 +32,12 @@ The port attempts to maintain API compatibility with original Lovefield.
 
 ### Dist changes
 
-* Lovefield-ts no longer ships minified JavaScript file. Instead, it provides
+* Lovefield-TS no longer ships minified JavaScript file. Instead, it provides
   * A concatenated TypeScript file that you can directly include in your
     TypeScript project and compile to any module system you would like to use.
   * Pre-compiled ES5/ES6 modules with source map and TypeScript declarations.
     Just import it and use your existing packing/minifying config.
-* Lovefield-ts no longer uses flags to do compile-time control. Instead, a
+* Lovefield-TS no longer uses flags to do compile-time control. Instead, a
   runtime options object will be used. The interface is defined in
   `lib/base/lovefield_options.ts`. Users are supposed to define an object
   following that interface and set options via the new API `lf.options.set()`.
@@ -54,6 +55,12 @@ The port attempts to maintain API compatibility with original Lovefield.
   ```javascript
   import * as lf from './node_modules/lovefield-ts/dist/es6/lf.js';
   const order = lf.Order.DESC;  // still prefixed by lf, ES6 module syntax
+  ```
+
+  In CommonJS module system used by Node.js, we usually do
+  ```javascript
+  const lf = require('lovefield-ts');
+  const order = lf.Order.DESC;  // still prefixed by lf, CommonJS syntax.
   ```
 
 * TypeScript users cannot refer column by name, use `.col()` API.
