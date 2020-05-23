@@ -27,6 +27,12 @@ export interface LovefieldOptions {
   // Default is http://google.github.io/lovefield/error_lookup/src/error_lookup.html
   exceptionUrl: string;
 
+  // Use getAll() optimization.
+  // Chrome is not reliable for its IDBObjectStore.getAll() API, see
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=868177
+  // This option is defaulted to false.
+  useGetAll: boolean;
+
   // This translates error code into meaningful strings.
   // Default is to stringify the code itself.
   // See debug/debug_options.ts for in-program translation.

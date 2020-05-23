@@ -13,6 +13,7 @@ module.exports = function(config) {
     exclude: [
       'demo/**/*.ts',
       'dist/*.ts',
+      'external/**/*.ts',
       'node_modules/**/*.ts',
     ],
 

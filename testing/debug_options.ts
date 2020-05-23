@@ -21,6 +21,7 @@ export class DebugOptions implements LovefieldOptions {
   debugMode: boolean;
   memoryOnly: boolean;
   exceptionUrl: string;
+  useGetAll: boolean;
   private messages: Map<ErrorCode, string>;
   private static instance = (null as unknown) as DebugOptions;
 
@@ -35,6 +36,7 @@ export class DebugOptions implements LovefieldOptions {
     if (DebugOptions.instance !== undefined) {
       (this.debugMode = true),
         (this.memoryOnly = false),
+        (this.useGetAll = false),
         (this.exceptionUrl =
           'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=');
       this.setupMap();

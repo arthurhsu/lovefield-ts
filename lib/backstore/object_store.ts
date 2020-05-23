@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {Global} from '../base/global';
 import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
 
@@ -25,7 +26,8 @@ export class ObjectStore implements RuntimeTable {
 
   get(ids: number[]): Promise<Row[]> {
     if (ids.length === 0) {
-      return this.store['getAll'] ? this.getAllBulk() : this.getAllWithCursor();
+      const options = Global.get().getOptions();
+      return options.useGetAll ? this.getAllBulk() : this.getAllWithCursor();
     }
 
     // Chrome IndexedDB is slower when using a cursor to iterate through a big
@@ -137,7 +139,7 @@ export class ObjectStore implements RuntimeTable {
         // TODO(dpapad): getAll is still experimental (and hidden behind a flag)
         // on both Chrome and Firefox. Add it to the externs once a flag is no
         // longer required.
-        request = this.store['getAll']();
+        request = this.store.getAll();
       } catch (e) {
         reject(e);
         return;

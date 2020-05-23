@@ -21,6 +21,7 @@ export class DefaultOptions implements LovefieldOptions {
   readonly debugMode: boolean;
   readonly memoryOnly: boolean;
   readonly exceptionUrl: string;
+  readonly useGetAll: boolean;
   static url =
     'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=';
 
@@ -28,6 +29,7 @@ export class DefaultOptions implements LovefieldOptions {
     this.debugMode = false;
     this.memoryOnly = false;
     this.exceptionUrl = DefaultOptions.url;
+    this.useGetAll = false;
   }
 
   errorMessage(code: number): string {
