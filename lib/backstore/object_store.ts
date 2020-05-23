@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Global} from '../base/global';
 import {RawRow, Row} from '../base/row';
 import {RuntimeTable} from '../base/runtime_table';
@@ -147,10 +149,14 @@ export class ObjectStore implements RuntimeTable {
 
       request.onerror = reject;
       request.onsuccess = () => {
-        const rows = request.result.map((rawRow: RawRow) =>
-          this.deserializeFn(rawRow)
-        );
-        resolve(rows);
+        try {
+          const rows = request.result.map((rawRow: RawRow) =>
+            this.deserializeFn(rawRow)
+          );
+          resolve(rows);
+        } catch (e) {
+          reject(new Exception(ErrorCode.CANT_READ_IDB, e.name, e.message));
+        }
       };
     });
   }

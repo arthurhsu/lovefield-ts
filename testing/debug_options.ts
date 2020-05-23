@@ -141,6 +141,7 @@ export class DebugOptions implements LovefieldOptions {
         'https://github.com/google/lovefield/blob/master/docs/FAQ.md ' +
         'for possible explanation.'
     );
+    m.set(ec.CANT_READ_IDB, 'Error deserializing row from IndexedDB: {0}, {1}');
 
     m.set(ec.SYNTAX_ERROR, 'Syntax error');
     m.set(ec.UNBOUND_VALUE, 'Value is not bounded.');

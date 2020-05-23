@@ -116,6 +116,7 @@ export enum ErrorCode {
   LOCAL_STORAGE_NOT_PROVIDED = 359,
   NOT_IMPLEMENTED = 360,
   CANT_OPEN_IDB = 361,
+  CANT_READ_IDB = 362,
 
   // Syntax errors
   SYNTAX_ERROR = 500,
