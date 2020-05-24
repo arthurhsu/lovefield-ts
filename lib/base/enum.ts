@@ -117,6 +117,7 @@ export enum ErrorCode {
   NOT_IMPLEMENTED = 360,
   CANT_OPEN_IDB = 361,
   CANT_READ_IDB = 362,
+  CANT_LOAD_IDB = 363,
 
   // Syntax errors
   SYNTAX_ERROR = 500,

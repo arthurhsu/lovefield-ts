@@ -143,7 +143,7 @@ export class ObjectStore implements RuntimeTable {
         // longer required.
         request = this.store.getAll();
       } catch (e) {
-        reject(e);
+        reject(new Exception(ErrorCode.CANT_LOAD_IDB, e.name, e.message));
         return;
       }
 
