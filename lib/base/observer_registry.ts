@@ -75,7 +75,7 @@ export class ObserverRegistry {
     tables.forEach(table => tableSet.add(table.getName()));
 
     const items: TaskItem[] = [];
-    this.entries.forEach((entry, key) => {
+    this.entries.forEach(entry => {
       const item = entry.getTaskItem();
       const refersToTables = (item.context as SelectContext).from.some(table =>
         tableSet.has(table.getName())

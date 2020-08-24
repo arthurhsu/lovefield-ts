@@ -76,10 +76,10 @@ export class InMemoryUpdater {
     diff
       .getDeleted()
       .forEach((row, rowId) => this.cache.remove(tableName, rowId));
-    diff.getAdded().forEach((row, rowId) => this.cache.set(tableName, row));
+    diff.getAdded().forEach(row => this.cache.set(tableName, row));
     diff
       .getModified()
-      .forEach((modification, rowId) =>
+      .forEach(modification =>
         this.cache.set(tableName, modification[1] as Row)
       );
   }

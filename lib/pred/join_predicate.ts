@@ -362,6 +362,7 @@ export class JoinPredicate extends PredicateNode {
     return new Relation(combinedEntries, srcTables);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setComplement(isComplement: boolean): void {
     throw new Exception(
       ErrorCode.ASSERTION,

@@ -54,6 +54,7 @@ export class RowId implements RuntimeIndex {
     return this.name;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   add(key: Key, value: number): void {
     if (typeof key !== 'number') {
       // 103: Row id must be numbers.
@@ -66,6 +67,7 @@ export class RowId implements RuntimeIndex {
     this.add(key, value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   remove(key: Key, rowId?: number): void {
     this.rows.delete(key as SingleKey);
   }
@@ -82,6 +84,7 @@ export class RowId implements RuntimeIndex {
     return this.minMax(this.comparatorObj.max.bind(this.comparatorObj));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cost(keyRange?: SingleKeyRange | KeyRange): number {
     // Give the worst case so that this index is not used unless necessary.
     return this.rows.size;

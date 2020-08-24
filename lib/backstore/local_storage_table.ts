@@ -64,6 +64,7 @@ export class LocalStorageTable implements RuntimeTable {
 
   remove(
     ids: number[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     if (ids.length === 0 || ids.length === Object.keys(this.data).length) {

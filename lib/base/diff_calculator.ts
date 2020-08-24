@@ -54,6 +54,7 @@ export class DiffCalculator {
       oldEntries,
       newResults.entries,
       this.comparator.bind(this),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (indexLeft, indexRight) => oldEntries[indexLeft]
     );
 

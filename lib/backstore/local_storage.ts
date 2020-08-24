@@ -50,8 +50,9 @@ export class LocalStorage implements BackStore {
     this.listener = null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(resolve => {
       this.initSync();
       resolve();
     });
@@ -84,6 +85,7 @@ export class LocalStorage implements BackStore {
     window.addEventListener('storage', this.listener, false);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     if (this.listener) {
       window.removeEventListener('storage', this.listener, false);

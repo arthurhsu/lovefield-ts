@@ -24,38 +24,47 @@ import {PredicateProvider} from '../pred/predicate_provider';
 // Base class for AggregateColumn and StarColumn which does not support
 // PredicateProvider interface.
 export class NonPredicateProvider implements PredicateProvider {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   eq(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   neq(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lt(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lte(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   gt(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   gte(operand: OperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   match(operand: Binder | RegExp): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   between(from: ValueOperandType, to: ValueOperandType): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   in(values: Binder | ValueOperandType[]): Predicate {
     throw new Exception(ErrorCode.SYNTAX_ERROR);
   }

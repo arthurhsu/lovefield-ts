@@ -38,6 +38,7 @@ export class ObservableStore extends Memory {
   }
 
   // Unsubscribe current change handler.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     this.observer = null;
   }

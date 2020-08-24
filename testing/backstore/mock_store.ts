@@ -60,10 +60,12 @@ export class MockStore implements BackStore {
     return this.store.getTableInternal(tableName);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }

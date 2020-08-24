@@ -33,6 +33,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
 
   rewrite(
     rootNode: LogicalQueryPlanNode,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: Context
   ): LogicalQueryPlanNode {
     this.rootNode = rootNode;

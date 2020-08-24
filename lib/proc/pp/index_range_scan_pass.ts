@@ -75,8 +75,7 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
       this.rootNode = this.replaceWithIndexRangeScanStep(
         indexRangeCandidate,
         predicateToSelectStepMap,
-        tableAccessFullStep,
-        queryContext
+        tableAccessFullStep
       );
     }, this);
 
@@ -107,8 +106,7 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
   private replaceWithIndexRangeScanStep(
     indexRangeCandidate: IndexRangeCandidate,
     predicateToSelectStepMap: Map<number, SelectStep>,
-    tableAccessFullStep: TableAccessFullStep,
-    queryContext: Context
+    tableAccessFullStep: TableAccessFullStep
   ): PhysicalQueryPlanNode {
     const predicateIds = indexRangeCandidate.getPredicateIds();
     const selectSteps = predicateIds.map(predicateId => {

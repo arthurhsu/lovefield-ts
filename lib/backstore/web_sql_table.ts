@@ -68,6 +68,7 @@ export class WebSqlTable implements RuntimeTable {
 
   remove(
     ids: number[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     const where = ids.length === 0 ? '' : `WHERE id IN (${ids.join(',')})`;

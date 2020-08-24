@@ -78,7 +78,7 @@ export class TrackedTable implements RuntimeTable {
 
       // Then update the diff with the remaining items in the map, all of
       // which correspond to new rows.
-      rowMap.forEach((row, rowId) => this.tableDiff.add(row), this);
+      rowMap.forEach(row => this.tableDiff.add(row), this);
       return this.table.put(rows);
     });
 
@@ -88,6 +88,7 @@ export class TrackedTable implements RuntimeTable {
 
   remove(
     ids: number[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     try {

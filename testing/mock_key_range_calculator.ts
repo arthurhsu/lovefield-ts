@@ -21,6 +21,7 @@ import {Context} from '../lib/query/context';
 export class MockKeyRangeCalculator implements IndexKeyRangeCalculator {
   constructor(private keyRanges: KeyRange[] | SingleKeyRange[]) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getKeyRangeCombinations(context: Context): KeyRange[] | SingleKeyRange[] {
     return this.keyRanges;
   }

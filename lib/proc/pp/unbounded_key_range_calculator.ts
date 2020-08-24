@@ -23,6 +23,7 @@ export class UnboundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   constructor(private indexSchema: IndexImpl) {}
 
   getKeyRangeCombinations(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     queryContext: Context
   ): SingleKeyRange[] | KeyRange[] {
     return this.indexSchema.columns.length === 1

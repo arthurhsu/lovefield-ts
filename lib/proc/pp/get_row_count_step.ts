@@ -40,8 +40,11 @@ export class GetRowCountStep extends PhysicalQueryPlanNode {
   }
 
   execInternal(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     relations: Relation[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     journal?: Journal,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: Context
   ): Relation[] {
     const rowIdIndex = this.indexStore.get(

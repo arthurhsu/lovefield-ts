@@ -57,6 +57,7 @@ export abstract class PhysicalQueryPlanNode extends TreeNode {
 
   // Returns a string representation of this node taking into account the given
   // context.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toContextString(context: Context): string {
     return this.toString();
   }
@@ -72,7 +73,7 @@ export abstract class PhysicalQueryPlanNode extends TreeNode {
     journal?: Journal,
     context?: Context
   ): Promise<Relation[]> {
-    return new Promise<Relation[]>((resolve, reject) => {
+    return new Promise<Relation[]>(resolve => {
       resolve(this.execInternal([], journal, context));
     });
   }

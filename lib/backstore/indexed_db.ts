@@ -75,6 +75,7 @@ export class IndexedDB implements BackStore {
       throw new Exception(ErrorCode.IDB_NOT_PROVIDED);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onUpgrade = upgrade || ((rawDb: RawBackStore) => Promise.resolve());
 
     return new Promise((resolve, reject) => {
@@ -134,19 +135,23 @@ export class IndexedDB implements BackStore {
     this.db.close();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getTableInternal(tableName: string): RuntimeTable {
     // 511: IndexedDB tables needs to be acquired from transactions.
     throw new Exception(ErrorCode.CANT_GET_IDB_TABLE);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   notify(changes: TableDiff[]): void {
     // Not supported yet.
   }
@@ -300,7 +305,7 @@ export class IndexedDB implements BackStore {
       return scanTableRowId(tableName).then(execSequentially);
     };
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       execSequentially().then(() => resolve(maxRowId));
     });
   }

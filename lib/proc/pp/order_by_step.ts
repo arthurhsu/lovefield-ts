@@ -39,7 +39,9 @@ export class OrderByStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     journal?: Journal,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: Context
   ): Relation[] {
     if (relations.length === 1) {

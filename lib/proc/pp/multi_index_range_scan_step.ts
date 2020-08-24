@@ -33,7 +33,9 @@ export class MultiIndexRangeScanStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     journal?: Journal,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ctx?: Context
   ): Relation[] {
     // Calculate a new Relation that includes the union of the entries of all

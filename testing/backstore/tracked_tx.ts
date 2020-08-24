@@ -45,7 +45,9 @@ export class TrackedTx extends BaseTx {
 
   getTable(
     tableName: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deserializeFn: (value: RawRow) => Row,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tableType?: TableType
   ): RuntimeTable {
     let table = this.tables.get(tableName) || null;
@@ -66,7 +68,7 @@ export class TrackedTx extends BaseTx {
   commitInternal(): Promise<unknown> {
     const requests: Array<Promise<unknown>> = [];
     const tableDiffs: TableDiff[] = [];
-    this.tables.forEach((table, tableName) => {
+    this.tables.forEach(table => {
       requests.push(table.whenRequestsDone());
       tableDiffs.push(table.getDiff());
     });

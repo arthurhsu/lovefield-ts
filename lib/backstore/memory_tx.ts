@@ -32,7 +32,9 @@ export class MemoryTx extends BaseTx {
 
   getTable(
     tableName: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deserializeFn: (value: RawRow) => Row,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tableType?: TableType
   ): RuntimeTable {
     return this.store.getTableInternal(tableName);

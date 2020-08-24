@@ -387,6 +387,7 @@ export class SqlHelper {
 
   private static getFromListForInnerJoin(
     query: SelectContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     stripValueInfo: boolean
   ): string {
     return query.from.map(SqlHelper.getTableNameToSql).join(', ');

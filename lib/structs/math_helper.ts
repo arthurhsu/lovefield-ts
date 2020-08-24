@@ -23,6 +23,7 @@ export class MathHelper {
     collector?: (idx1: number, idx2: number) => T
   ): T[] {
     const defaultComparator = (a: T, b: T) => a === b;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const defaultCollector = (i1: number, i2: number) => array1[i1];
     const compare = comparator || defaultComparator;
     const collect = collector || defaultCollector;

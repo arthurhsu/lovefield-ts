@@ -58,6 +58,7 @@ export class WebSqlTx extends BaseTx {
   getTable(
     tableName: string,
     deserializeFn: (value: RawRow) => Row,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tableType?: TableType
   ): RuntimeTable {
     let table = this.tables.get(tableName) || null;

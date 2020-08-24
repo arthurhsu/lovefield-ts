@@ -131,7 +131,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
         reject(e);
         return;
       }
-      req.onsuccess = ev => {
+      req.onsuccess = () => {
         const cursor = req.result as IDBCursorWithValue;
         if (cursor) {
           loopFunc(cursor);
@@ -186,7 +186,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
         reject(e);
         return;
       }
-      req.onsuccess = (ev: Event) => {
+      req.onsuccess = () => {
         const cursor: IDBCursorWithValue = req.result;
         if (cursor) {
           if (this.bundleMode) {

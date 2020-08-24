@@ -58,6 +58,7 @@ export class WebSql implements BackStore {
       throw new Exception(ErrorCode.WEBSQL_NOT_PROVIDED);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const defaultUpgrade = (rawDb: RawBackStore) => Promise.resolve();
     const onUpgrade = upgrade || defaultUpgrade;
 
@@ -105,19 +106,23 @@ export class WebSql implements BackStore {
     // WebSQL does not support closing a database connection.
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getTableInternal(tableName: string): RuntimeTable {
     // 512: WebSQL tables needs to be acquired from transactions.
     throw new Exception(ErrorCode.CANT_GET_WEBSQL_TABLE);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     this.notSupported();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     this.notSupported();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   notify(changes: TableDiff[]): void {
     this.notSupported();
   }

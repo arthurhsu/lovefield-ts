@@ -49,6 +49,7 @@ describe('ObservableRegistry', () => {
     const builder = new SelectBuilder(env.global, []);
     builder.from(table);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const callback = (changes: ChangeRecord[]) => promiseResolver.resolve();
 
     registry.addObserver(builder, callback);

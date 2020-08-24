@@ -33,6 +33,7 @@ export class DeleteStep extends PhysicalQueryPlanNode {
   execInternal(
     relations: Relation[],
     journal?: Journal,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: Context
   ): Relation[] {
     const rows = relations[0].entries.map(entry => entry.row);

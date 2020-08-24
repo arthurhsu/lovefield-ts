@@ -32,7 +32,9 @@ export class CrossProductStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     journal?: Journal,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     context?: Context
   ): Relation[] {
     return this.crossProduct(relations[0], relations[1]);

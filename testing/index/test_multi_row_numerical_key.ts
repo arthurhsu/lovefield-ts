@@ -165,6 +165,7 @@ export class TestMultiRowNumericalKey extends TestIndex {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   testMultiRange(index: RuntimeIndex): void {
     // TODO(arthurhsu): implement, original code does not have it.
   }

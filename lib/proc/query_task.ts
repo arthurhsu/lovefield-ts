@@ -132,6 +132,7 @@ export abstract class QueryTask extends UniqueId implements Task {
   // Executes after all queries have finished successfully. Default
   // implementation is a no-op. Subclasses should override this method as
   // necessary.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onSuccess(results: Relation[]): void {
     // Default implementation is a no-op.
   }

@@ -60,6 +60,7 @@ export abstract class Context extends UniqueId {
     return predicate;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   bind(values: unknown[]): Context {
     assert(this.clonedFrom === null);
     return this;
