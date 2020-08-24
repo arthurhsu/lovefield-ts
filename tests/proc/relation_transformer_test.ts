@@ -197,7 +197,7 @@ describe('RelationTransformer', () => {
   // Asserts that all requested columns are populated in the given relation's
   // entries.
   function assertColumnsPopulated(columns: Column[], relation: Relation): void {
-    relation.entries.forEach((entry, index) => {
+    relation.entries.forEach(entry => {
       columns.forEach(column => {
         // Checking that all requested columns are populated.
         const field = entry.getField(column);

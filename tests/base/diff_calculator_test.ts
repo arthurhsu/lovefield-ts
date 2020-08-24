@@ -65,7 +65,7 @@ describe('DiffCalculator', () => {
     ]);
     builder.from(table);
     const query = builder.getQuery();
-    checkDiffCalculation(query, 'ExplicitColumns');
+    checkDiffCalculation(query);
   });
 
   // Tests the case where the observed query implicitly projects all columns.
@@ -74,15 +74,12 @@ describe('DiffCalculator', () => {
     const builder = new SelectBuilder(Global.get(), []);
     builder.from(table);
     const query = builder.getQuery();
-    checkDiffCalculation(query, 'ImplicitColumns');
+    checkDiffCalculation(query);
   });
 
   // Checks that change notifications are sent as expected when observed results
   // are mutated in continuous ways.
-  function checkDiffCalculation(
-    query: SelectContext,
-    description: string
-  ): void {
+  function checkDiffCalculation(query: SelectContext): void {
     const promiseResolver = new Resolver<void>();
 
     const callback = (currentVersion: number, changes: ChangeRecord[]) => {

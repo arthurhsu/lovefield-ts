@@ -524,7 +524,7 @@ describe('EndToEndSelectTest', () => {
 
     const results = (await queryBuilder.exec()) as PayloadType[];
     assert.isTrue(results.length >= 1);
-    results.forEach((obj, index) => {
+    results.forEach(obj => {
       assert.isTrue(
         obj[j.col('minSalary').getName()] ===
           dataGenerator.jobGroundTruth.minMinSalary ||
@@ -1244,7 +1244,7 @@ describe('EndToEndSelectTest', () => {
   });
 
   it('InvalidParamBindingThrows', () => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let q = db
         .select()
         .from(j)

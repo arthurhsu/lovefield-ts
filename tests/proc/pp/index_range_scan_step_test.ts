@@ -40,18 +40,15 @@ describe('IndexRangeScanStep', () => {
   });
 
   it('ascending', () => {
-    return checkIndexRangeScan(Order.ASC, 'ascending');
+    return checkIndexRangeScan(Order.ASC);
   });
 
   it('descending', () => {
-    return checkIndexRangeScan(Order.DESC, 'descending');
+    return checkIndexRangeScan(Order.DESC);
   });
 
   // Checks that an IndexRangeScanStep returns results in the expected order.
-  function checkIndexRangeScan(
-    order: Order,
-    description: string
-  ): Promise<void> {
+  function checkIndexRangeScan(order: Order): Promise<void> {
     const table = schema.table('tableA') as BaseTable;
     const index =
       order === Order.ASC ? table.getIndices()[0] : table.getIndices()[1];

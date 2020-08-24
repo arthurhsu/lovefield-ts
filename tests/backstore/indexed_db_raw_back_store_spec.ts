@@ -98,7 +98,7 @@ test('IndexedDBRawBackStore', () => {
       const results: T[] = [];
       const tx = db.transaction([tableName], 'readonly');
       const req = tx.objectStore(tableName).openCursor();
-      req.onsuccess = ev => {
+      req.onsuccess = () => {
         const cursor = req.result as IDBCursorWithValue;
         if (cursor) {
           results.push(fn(cursor.value));
@@ -139,7 +139,7 @@ test('IndexedDBRawBackStore', () => {
       const store = tx.objectStore('tableA_');
       store.put(row.serialize());
       store.put(row2.serialize());
-      tx.oncomplete = ev => {
+      tx.oncomplete = () => {
         resolve();
       };
       tx.onabort = reject;
@@ -159,7 +159,7 @@ test('IndexedDBRawBackStore', () => {
       const store = tx.objectStore('tableA_');
       store.put(page.serialize());
       store.put(page2.serialize());
-      tx.oncomplete = ev => {
+      tx.oncomplete = () => {
         resolve();
       };
       tx.onabort = reject;

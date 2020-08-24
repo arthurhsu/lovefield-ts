@@ -268,7 +268,7 @@ describe('WebSqlRawBackStore', () => {
         .then(results => (dumpResult = results as PayloadType));
     };
 
-    await runTest(builder, onUpgrade, results => {
+    await runTest(builder, onUpgrade, () => {
       const rowsA = dumpResult['A'] as NestedPayloadType[];
       assert.equal(2, rowsA.length);
       assert.deepEqual('world', rowsA[0]['value']['lastName']);
@@ -290,7 +290,7 @@ describe('WebSqlRawBackStore', () => {
       return store.dropTable('A');
     };
 
-    await runTest(builder, onUpgrade, results => {
+    await runTest(builder, onUpgrade, () => {
       const resolver = new Resolver();
       const reject = (tx: SQLTransaction, e: SQLError) => {
         resolver.reject(e);

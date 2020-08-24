@@ -59,7 +59,7 @@ export class MockTask extends UniqueId implements Task {
   }
 
   exec(): Promise<Relation[]> {
-    return new Promise<Relation[]>((resolve, reject) => {
+    return new Promise<Relation[]>(resolve => {
       return resolve(this.execFn() as Relation[]);
     });
   }
