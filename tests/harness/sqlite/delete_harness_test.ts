@@ -20,7 +20,7 @@ import {DatabaseConnection} from '../../../lib/base/database_connection';
 import {DataStoreType, Type} from '../../../lib/base/enum';
 import {PayloadType, Row} from '../../../lib/base/row';
 import {fn} from '../../../lib/fn/fn';
-import {Builder} from '../../../lib/schema/builder';
+import {schema} from '../../../lib/schema/schema';
 import {Table} from '../../../lib/schema/table';
 
 const assert = chai.assert;
@@ -30,7 +30,7 @@ describe('DeleteHarness', () => {
   let t1: Table;
 
   before(async () => {
-    const builder = new Builder('delete', 1);
+    const builder = schema.create('delete', 1);
     builder
       .createTable('t1')
       .addColumn('f1', Type.INTEGER)

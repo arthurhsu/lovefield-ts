@@ -25,6 +25,7 @@ import {Capability} from '../../lib/base/capability';
 import {Type} from '../../lib/base/enum';
 import {RawRow, Row, PayloadType} from '../../lib/base/row';
 import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -40,7 +41,7 @@ test('IndexedDBRawBackStore', () => {
 
   beforeEach(() => {
     const dbName = `schema${Date.now()}`;
-    builder1 = new Builder(dbName, 1);
+    builder1 = schema.create(dbName, 1);
     builder1
       .createTable('tableA_')
       .addColumn('id', Type.STRING)
@@ -49,7 +50,7 @@ test('IndexedDBRawBackStore', () => {
       .createTable('tableB_')
       .addColumn('id', Type.STRING)
       .addColumn('name', Type.STRING);
-    builder2 = new Builder(dbName, 2);
+    builder2 = schema.create(dbName, 2);
     builder2
       .createTable('tableA_')
       .addColumn('id', Type.STRING)

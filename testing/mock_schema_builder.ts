@@ -16,12 +16,13 @@
 
 import {ConstraintTiming, Order, Type} from '../lib/base/enum';
 import {Builder} from '../lib/schema/builder';
+import {SchemaBuilder} from '../lib/schema/schema_builder';
 
 export function getMockSchemaBuilder(
   name?: string,
   persistentIndex?: boolean
 ): Builder {
-  const schemaBuilder = new Builder(name || `ms${Date.now()}`, 1);
+  const schemaBuilder = new SchemaBuilder(name || `ms${Date.now()}`, 1);
 
   schemaBuilder
     .createTable('tableA')

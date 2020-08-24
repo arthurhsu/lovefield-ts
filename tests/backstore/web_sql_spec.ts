@@ -26,6 +26,7 @@ import {DefaultCache} from '../../lib/cache/default_cache';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
@@ -33,12 +34,12 @@ const assert = chai.assert;
 
 describe('WebSql', () => {
   let capability: Capability;
-  let schemaName: string;
-  let schema: DatabaseSchema;
+  let dbSchemaName: string;
+  let dbSchema: DatabaseSchema;
 
   before(() => {
     capability = Capability.get();
-    schemaName = `wsql${Date.now()}`;
+    dbSchemaName = `wsql${Date.now()}`;
   });
 
   beforeEach(() => {
@@ -46,14 +47,14 @@ describe('WebSql', () => {
       return;
     }
 
-    schema = getMockSchemaBuilder().getSchema();
+    dbSchema = getMockSchemaBuilder().getSchema();
     const global = Global.get();
     global.clear();
 
     Row.setNextId(0);
-    global.registerService(Service.CACHE, new DefaultCache(schema));
+    global.registerService(Service.CACHE, new DefaultCache(dbSchema));
     global.registerService(Service.INDEX_STORE, new MemoryIndexStore());
-    global.registerService(Service.SCHEMA, schema);
+    global.registerService(Service.SCHEMA, dbSchema);
   });
 
   it('SCUD', () => {
@@ -61,10 +62,10 @@ describe('WebSql', () => {
       return Promise.resolve();
     }
 
-    // The schema name is on purpose padded with a timestamp to workaround the
+    // The dbSchema name is on purpose padded with a timestamp to workaround the
     // issue that Chrome can't open the same WebSQL instance again if this test
     // has been run twice.
-    const db = new WebSql(Global.get(), schema);
+    const db = new WebSql(Global.get(), dbSchema);
     const scudTester = new ScudTester(db, Global.get());
 
     return scudTester.run();
@@ -76,14 +77,14 @@ describe('WebSql', () => {
       return Promise.resolve();
     }
 
-    await new Builder(`foo${Date.now()}`, 1).connect({
+    await schema.create(`foo${Date.now()}`, 1).connect({
       storeType: DataStoreType.WEB_SQL,
     });
     assert.equal(1, Row.getNextId());
   });
 
   function getSchemaBuilder(): Builder {
-    const builder = new Builder(schemaName, 1);
+    const builder = schema.create(dbSchemaName, 1);
     builder.createTable('foo').addColumn('id', Type.INTEGER);
     return builder;
   }
@@ -127,7 +128,7 @@ describe('WebSql', () => {
       return;
     }
 
-    const builder = new Builder(`foo${Date.now()}`, 1);
+    const builder = schema.create(`foo${Date.now()}`, 1);
     builder.createTable('Group').addColumn('id', Type.INTEGER);
     const db = await builder.connect({storeType: DataStoreType.WEB_SQL});
     const g = db.getSchema().table('Group');

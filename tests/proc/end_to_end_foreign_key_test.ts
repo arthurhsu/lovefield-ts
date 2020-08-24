@@ -26,6 +26,7 @@ import {Global} from '../../lib/base/global';
 import {Row} from '../../lib/base/row';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
@@ -52,7 +53,7 @@ describe('EndToEndForeignKey', () => {
   afterEach(() => db.close());
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('fk_schema', 1);
+    const schemaBuilder = schema.create('fk_schema', 1);
     schemaBuilder
       .createTable('Parent')
       .addColumn('id', Type.STRING)

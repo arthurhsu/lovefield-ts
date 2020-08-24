@@ -21,6 +21,7 @@ import {ConstraintAction, DataStoreType, Type} from '../../lib/base/enum';
 import {Row, PayloadType} from '../../lib/base/row';
 import {op} from '../../lib/fn/op';
 import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
@@ -67,7 +68,7 @@ describe('EndToEndFKUpdateCascade', () => {
   });
 
   function getSchemaBuilder1(): Builder {
-    const schemaBuilder = new Builder('fk_schema', 1);
+    const schemaBuilder = schema.create('fk_schema', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id', Type.STRING)
@@ -107,9 +108,9 @@ describe('EndToEndFKUpdateCascade', () => {
 
   it('update2FK', async () => {
     db = await getSchemaBuilder2().connect(options);
-    const schema = db.getSchema();
-    const tA = schema.table('TableA');
-    const tB = schema.table('TableB');
+    const dbSchema = db.getSchema();
+    const tA = dbSchema.table('TableA');
+    const tB = dbSchema.table('TableB');
     const sampleRows = getSampleRows2(tA, tB);
 
     const updatedId1 = 7;
@@ -152,7 +153,7 @@ describe('EndToEndFKUpdateCascade', () => {
   });
 
   function getSchemaBuilder2(): Builder {
-    const schemaBuilder = new Builder('fk_schema2', 1);
+    const schemaBuilder = schema.create('fk_schema2', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id1', Type.INTEGER)

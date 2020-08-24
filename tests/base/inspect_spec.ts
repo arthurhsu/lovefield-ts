@@ -20,6 +20,7 @@ import {DataStoreType, Type} from '../../lib/base/enum';
 import {Inspector} from '../../lib/base/inspect';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 
 const assert = chai.assert;
 
@@ -27,7 +28,7 @@ describe('Inspect', () => {
   let expectedDate: Date;
 
   function createSchemaBuilders(): Builder[] {
-    const dsHr = new Builder('hr', 2);
+    const dsHr = schema.create('hr', 2);
     dsHr
       .createTable('Region')
       .addColumn('id', Type.STRING)
@@ -38,7 +39,7 @@ describe('Inspect', () => {
       .addColumn('id', Type.STRING)
       .addColumn('bar', Type.INTEGER);
 
-    const dsOrder = new Builder('order', 7);
+    const dsOrder = schema.create('order', 7);
     dsOrder
       .createTable('Region')
       .addColumn('id', Type.INTEGER)

@@ -25,6 +25,7 @@ import {
 } from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 
 const assert = chai.assert;
@@ -53,7 +54,7 @@ describe('EndToEndFKDeleteCascade', () => {
   //        TableB1  TableB2
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('fk_schema', 1);
+    const schemaBuilder = schema.create('fk_schema', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id', Type.STRING)

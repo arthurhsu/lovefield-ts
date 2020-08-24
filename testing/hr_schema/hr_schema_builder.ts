@@ -16,10 +16,11 @@
 
 import {ConstraintAction, Order, Type} from '../../lib/base/enum';
 import {Builder} from '../../lib/schema/builder';
+import {SchemaBuilder} from '../../lib/schema/schema_builder';
 
 export function getHrDbSchemaBuilder(dbName?: string): Builder {
   const name = dbName || `hr${Date.now()}`;
-  const schemaBuilder = new Builder(name, 1);
+  const schemaBuilder = new SchemaBuilder(name, 1);
 
   schemaBuilder
     .createTable('Job')

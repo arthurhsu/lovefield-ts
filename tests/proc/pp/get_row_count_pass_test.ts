@@ -30,16 +30,17 @@ import {SelectContext} from '../../../lib/query/select_context';
 import {Builder} from '../../../lib/schema/builder';
 import {Column} from '../../../lib/schema/column';
 import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {schema} from '../../../lib/schema/schema';
 import {TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('GetRowCountPass', () => {
   let conn: DatabaseConnection;
-  let schema: DatabaseSchema;
+  let dbSchema: DatabaseSchema;
   let global: Global;
   let pass: GetRowCountPass;
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('testSchema', 1);
+    const schemaBuilder = schema.create('testSchema', 1);
     schemaBuilder
       .createTable('TableFoo')
       .addColumn('id1', Type.STRING)
@@ -53,7 +54,7 @@ describe('GetRowCountPass', () => {
       .connect(connectOptions)
       .then(db => {
         conn = db;
-        schema = db.getSchema();
+        dbSchema = db.getSchema();
         global = (db as RuntimeDatabase).getGlobal();
         pass = new GetRowCountPass(global);
       });
@@ -65,7 +66,7 @@ describe('GetRowCountPass', () => {
 
   // Tests a simple tree, where only one AND predicate exists.
   it('simpleTree', () => {
-    const tf = schema.table('TableFoo');
+    const tf = dbSchema.table('TableFoo');
 
     const treeBefore = [
       'project(COUNT(*))',
@@ -82,7 +83,7 @@ describe('GetRowCountPass', () => {
     ].join('\n');
 
     const constructTree = () => {
-      const queryContext = new SelectContext(schema);
+      const queryContext = new SelectContext(dbSchema);
       queryContext.from = [tf];
       queryContext.columns = [fn.count()];
 
@@ -116,7 +117,7 @@ describe('GetRowCountPass', () => {
 
   // Test that this optimization does not apply COUNT(column) is used.
   it('treeUnaffected1', () => {
-    const tf = schema.table('TableFoo');
+    const tf = dbSchema.table('TableFoo');
 
     const treeBefore = [
       'project(COUNT(TableFoo.id1))',
@@ -126,7 +127,7 @@ describe('GetRowCountPass', () => {
     ].join('\n');
 
     const constructTree = () => {
-      const queryContext = new SelectContext(schema);
+      const queryContext = new SelectContext(dbSchema);
       queryContext.from = [tf];
       queryContext.columns = [fn.count(tf.col('id1'))];
 
@@ -160,7 +161,7 @@ describe('GetRowCountPass', () => {
 
   // Test that this optimization does not apply if a WHERE clause exists.
   it('treeUnaffected2', () => {
-    const tf = schema.table('TableFoo');
+    const tf = dbSchema.table('TableFoo');
 
     const treeBefore = [
       'project(COUNT(*))',
@@ -171,7 +172,7 @@ describe('GetRowCountPass', () => {
     ].join('\n');
 
     const constructTree = () => {
-      const queryContext = new SelectContext(schema);
+      const queryContext = new SelectContext(dbSchema);
       queryContext.from = [tf];
       queryContext.columns = [fn.count()];
       queryContext.where = tf.col('id1').eq('someId');

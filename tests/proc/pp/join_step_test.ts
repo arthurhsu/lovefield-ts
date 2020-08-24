@@ -24,8 +24,8 @@ import {JoinStep} from '../../../lib/proc/pp/join_step';
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {Relation} from '../../../lib/proc/relation';
 import {Table} from '../../../lib/schema/table';
-import {Builder} from '../../../lib/schema/builder';
 import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {schema} from '../../../lib/schema/schema';
 import {MockEnv} from '../../../testing/mock_env';
 
 const assert = chai.assert;
@@ -47,7 +47,7 @@ describe('JoinStep', () => {
 
   // Returns the schema to be used for tests in this file.
   function getSchema(): DatabaseSchema {
-    const schemaBuilder = new Builder('testSchema', 1);
+    const schemaBuilder = schema.create('testSchema', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id', Type.NUMBER)

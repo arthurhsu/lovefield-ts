@@ -20,7 +20,7 @@ import {Capability} from '../../lib/base/capability';
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
-import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {SmokeTester} from '../../testing/smoke_tester';
 
@@ -40,7 +40,7 @@ describe('MultiDB', () => {
   beforeEach(async () => {
     // Setup two databases and connect.
     const hr = getHrDbSchemaBuilder();
-    const order = new Builder(`order${Date.now}`, 1);
+    const order = schema.create(`order${Date.now}`, 1);
     order
       .createTable('Region')
       .addColumn('id', Type.STRING)
@@ -80,10 +80,10 @@ describe('MultiDB', () => {
 
     Row.setNextId(0);
 
-    const schemaBuilder1 = new Builder('db1', 1);
+    const schemaBuilder1 = schema.create('db1', 1);
     schemaBuilder1.createTable('TableA').addColumn('name', Type.STRING);
 
-    const schemaBuilder2 = new Builder('db2', 1);
+    const schemaBuilder2 = schema.create('db2', 1);
     schemaBuilder2.createTable('TableB').addColumn('name', Type.STRING);
 
     const createNewTableARows = () => {

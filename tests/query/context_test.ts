@@ -19,9 +19,9 @@ import {ConstraintAction, ConstraintTiming, Type} from '../../lib/base/enum';
 import {DeleteContext} from '../../lib/query/delete_context';
 import {InsertContext} from '../../lib/query/insert_context';
 import {UpdateContext} from '../../lib/query/update_context';
-import {Builder} from '../../lib/schema/builder';
 import {Column} from '../../lib/schema/column';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 
 const assert = chai.assert;
@@ -29,19 +29,19 @@ const assert = chai.assert;
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.
   function getSchemaWithoutForeignKeys(): DatabaseSchema {
-    const schemaBuilder = new Builder('contextTest', 1);
+    const schemaBuilder = schema.create('contextTest', 1);
     schemaBuilder.createTable('TableA').addColumn('id', Type.STRING);
     schemaBuilder.createTable('TableB').addColumn('id', Type.STRING);
     return schemaBuilder.getSchema();
   }
 
   it('getScope_Insert', () => {
-    const schema = SchemaTestHelper.getOneForeignKey(
+    const dbSchema = SchemaTestHelper.getOneForeignKey(
       ConstraintTiming.IMMEDIATE
     );
-    const context = new InsertContext(schema);
-    const childTable = schema.table('Child');
-    const parentTable = schema.table('Parent');
+    const context = new InsertContext(dbSchema);
+    const childTable = dbSchema.table('Child');
+    const parentTable = dbSchema.table('Parent');
     const row = childTable.createRow();
     context.values = [row];
     context.into = childTable;
@@ -52,9 +52,9 @@ describe('Context', () => {
   });
 
   it('getScope_InsertNoExpansion', () => {
-    const schema = getSchemaWithoutForeignKeys();
-    const context = new InsertContext(schema);
-    const tableA = schema.table('TableA');
+    const dbSchema = getSchemaWithoutForeignKeys();
+    const context = new InsertContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
     const row = tableA.createRow();
     context.values = [row];
     context.into = tableA;
@@ -64,12 +64,12 @@ describe('Context', () => {
   });
 
   it('getScope_InsertOrReplace', () => {
-    const schema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
-    const context = new InsertContext(schema);
+    const dbSchema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
+    const context = new InsertContext(dbSchema);
     context.allowReplace = true;
-    const tableA = schema.table('TableA');
-    const tableB = schema.table('TableB');
-    const tableC = schema.table('TableC');
+    const tableA = dbSchema.table('TableA');
+    const tableB = dbSchema.table('TableB');
+    const tableC = dbSchema.table('TableC');
     const row = tableB.createRow();
     context.values = [row];
     context.into = tableB;
@@ -81,10 +81,10 @@ describe('Context', () => {
   });
 
   it('getScope_InsertOrReplaceNoExpansion', () => {
-    const schema = getSchemaWithoutForeignKeys();
-    const context = new InsertContext(schema);
+    const dbSchema = getSchemaWithoutForeignKeys();
+    const context = new InsertContext(dbSchema);
     context.allowReplace = true;
-    const tableA = schema.table('TableA');
+    const tableA = dbSchema.table('TableA');
     const row = tableA.createRow();
     context.values = [row];
     context.into = tableA;
@@ -94,10 +94,10 @@ describe('Context', () => {
   });
 
   it('getScope_Delete_Restrict', () => {
-    const schema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
-    const context = new DeleteContext(schema);
-    const tableA = schema.table('TableA');
-    const tableB = schema.table('TableB');
+    const dbSchema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
+    const context = new DeleteContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
+    const tableB = dbSchema.table('TableB');
     context.from = tableA;
     const scope = context.getScope();
     assert.equal(2, scope.size);
@@ -106,11 +106,11 @@ describe('Context', () => {
   });
 
   it('getScope_Delete_Cascade', () => {
-    const schema = SchemaTestHelper.getTableChain(ConstraintAction.CASCADE);
-    const context = new DeleteContext(schema);
-    const tableA = schema.table('TableA');
-    const tableB = schema.table('TableB');
-    const tableC = schema.table('TableC');
+    const dbSchema = SchemaTestHelper.getTableChain(ConstraintAction.CASCADE);
+    const context = new DeleteContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
+    const tableB = dbSchema.table('TableB');
+    const tableC = dbSchema.table('TableC');
     context.from = tableA;
     const scope = context.getScope();
     assert.equal(3, scope.size);
@@ -120,9 +120,9 @@ describe('Context', () => {
   });
 
   it('getScope_DeleteNoExpansion', () => {
-    const schema = getSchemaWithoutForeignKeys();
-    const context = new DeleteContext(schema);
-    const tableA = schema.table('TableA');
+    const dbSchema = getSchemaWithoutForeignKeys();
+    const context = new DeleteContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
     context.from = tableA;
     const scope = context.getScope();
     assert.equal(1, scope.size);
@@ -130,12 +130,12 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateOneColumn', () => {
-    const schema = SchemaTestHelper.getTwoForeignKeys(
+    const dbSchema = SchemaTestHelper.getTwoForeignKeys(
       ConstraintAction.RESTRICT
     );
-    const context = new UpdateContext(schema);
-    const tableA = schema.table('TableA');
-    const tableB1 = schema.table('TableB1');
+    const context = new UpdateContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
+    const tableB1 = dbSchema.table('TableB1');
     context.table = tableA;
     context.set = [{column: tableA['id1'] as Column, value: 'test1'}];
     const scope = context.getScope();
@@ -145,13 +145,13 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateTwoColumns', () => {
-    const schema = SchemaTestHelper.getTwoForeignKeys(
+    const dbSchema = SchemaTestHelper.getTwoForeignKeys(
       ConstraintAction.RESTRICT
     );
-    const context = new UpdateContext(schema);
-    const tableA = schema.table('TableA');
-    const tableB1 = schema.table('TableB1');
-    const tableB2 = schema.table('TableB2');
+    const context = new UpdateContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
+    const tableB1 = dbSchema.table('TableB1');
+    const tableB2 = dbSchema.table('TableB2');
     context.table = tableA;
     context.set = [
       {column: tableA['id1'] as Column, value: 'test1'},
@@ -165,10 +165,10 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateReferredColumn', () => {
-    const schema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
-    const context = new UpdateContext(schema);
-    const tableB = schema.table('TableB');
-    const tableC = schema.table('TableC');
+    const dbSchema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
+    const context = new UpdateContext(dbSchema);
+    const tableB = dbSchema.table('TableB');
+    const tableC = dbSchema.table('TableC');
     context.table = tableB;
     context.set = [{column: tableB['id'] as Column, value: 'test'}];
     const scope = context.getScope();
@@ -178,12 +178,12 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateReferredAndReferringColumn', () => {
-    const schema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
-    const context = new UpdateContext(schema);
+    const dbSchema = SchemaTestHelper.getTableChain(ConstraintAction.RESTRICT);
+    const context = new UpdateContext(dbSchema);
 
-    const tableA = schema.table('TableA');
-    const tableB = schema.table('TableB');
-    const tableC = schema.table('TableC');
+    const tableA = dbSchema.table('TableA');
+    const tableB = dbSchema.table('TableB');
+    const tableC = dbSchema.table('TableC');
     context.table = tableB;
     context.set = [
       {column: tableB['id'] as Column, value: 'test'},
@@ -197,9 +197,9 @@ describe('Context', () => {
   });
 
   it('getScope_UpdateNoExpansion', () => {
-    const schema = getSchemaWithoutForeignKeys();
-    const context = new UpdateContext(schema);
-    const tableA = schema.table('TableA');
+    const dbSchema = getSchemaWithoutForeignKeys();
+    const context = new UpdateContext(dbSchema);
+    const tableA = dbSchema.table('TableA');
     context.table = tableA;
     context.set = [{column: tableA['id'] as Column, value: 'test'}];
     const scope = context.getScope();

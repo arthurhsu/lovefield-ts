@@ -30,6 +30,7 @@ import {DefaultCache} from '../../lib/cache/default_cache';
 import {MemoryIndexStore} from '../../lib/index/memory_index_store';
 import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
 import {NestedPayloadType, TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
@@ -79,7 +80,7 @@ describe('WebSqlRawBackStore', () => {
   });
 
   function getOldSchema(name?: string): DatabaseSchema {
-    const builder = new Builder(name || `test${Date.now()}`, 1);
+    const builder = schema.create(name || `test${Date.now()}`, 1);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -113,7 +114,7 @@ describe('WebSqlRawBackStore', () => {
     const CONTENTS = {id: 'hello', name: 'world'};
     const CONTENTS2 = {id: 'hello2', name: 'world2'};
 
-    const builder = new Builder(upgradeDbName, 1);
+    const builder = schema.create(upgradeDbName, 1);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -184,7 +185,7 @@ describe('WebSqlRawBackStore', () => {
       return;
     }
 
-    const builder = new Builder(upgradeDbName, 2);
+    const builder = schema.create(upgradeDbName, 2);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -210,7 +211,7 @@ describe('WebSqlRawBackStore', () => {
       return;
     }
 
-    const builder = new Builder(upgradeDbName, 3);
+    const builder = schema.create(upgradeDbName, 3);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -233,7 +234,7 @@ describe('WebSqlRawBackStore', () => {
       return;
     }
 
-    const builder = new Builder(upgradeDbName, 4);
+    const builder = schema.create(upgradeDbName, 4);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -253,7 +254,7 @@ describe('WebSqlRawBackStore', () => {
       return;
     }
 
-    const builder = new Builder(upgradeDbName, 5);
+    const builder = schema.create(upgradeDbName, 5);
     builder
       .createTable('A')
       .addColumn('id', Type.STRING)
@@ -279,7 +280,7 @@ describe('WebSqlRawBackStore', () => {
       return;
     }
 
-    const builder = new Builder(upgradeDbName, 6);
+    const builder = schema.create(upgradeDbName, 6);
     builder
       .createTable('B')
       .addColumn('id', Type.STRING)

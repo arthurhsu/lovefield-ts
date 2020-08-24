@@ -29,17 +29,18 @@ import {SelectContext} from '../../../lib/query/select_context';
 import {Builder} from '../../../lib/schema/builder';
 import {Column} from '../../../lib/schema/column';
 import {DatabaseSchema} from '../../../lib/schema/database_schema';
+import {schema} from '../../../lib/schema/schema';
 import {Table} from '../../../lib/schema/table';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
 
 describe('IndexJoinPass', () => {
   let conn: DatabaseConnection;
-  let schema: DatabaseSchema;
+  let dbSchema: DatabaseSchema;
   let global: Global;
   let pass: IndexJoinPass;
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('testSchema', 1);
+    const schemaBuilder = schema.create('testSchema', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id', Type.NUMBER)
@@ -57,7 +58,7 @@ describe('IndexJoinPass', () => {
       .connect({storeType: DataStoreType.MEMORY})
       .then(db => {
         conn = db;
-        schema = db.getSchema();
+        dbSchema = db.getSchema();
         global = (db as RuntimeDatabase).getGlobal();
         pass = new IndexJoinPass();
       });
@@ -91,7 +92,7 @@ describe('IndexJoinPass', () => {
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-      constructTree1(schema.table('TableA'), schema.table('TableB'), false),
+      constructTree1(dbSchema.table('TableA'), dbSchema.table('TableB'), false),
       treeBefore,
       treeAfter,
       pass
@@ -124,7 +125,7 @@ describe('IndexJoinPass', () => {
     ].join('\n');
 
     TreeTestHelper.assertTreeTransformation(
-      constructTree1(schema.table('TableA'), schema.table('TableB'), true),
+      constructTree1(dbSchema.table('TableA'), dbSchema.table('TableB'), true),
       treeBefore,
       treeAfter,
       pass
@@ -216,8 +217,8 @@ describe('IndexJoinPass', () => {
 
     TreeTestHelper.assertTreeTransformation(
       constructTree1(
-        schema.table('TableA').as('t1'),
-        schema.table('TableA').as('t2'),
+        dbSchema.table('TableA').as('t1'),
+        dbSchema.table('TableA').as('t2'),
         false
       ),
       treeBefore,
@@ -260,7 +261,7 @@ describe('IndexJoinPass', () => {
   ): TestTree {
     const table1 = t1;
     const table2 = t2;
-    const queryContext = new SelectContext(schema);
+    const queryContext = new SelectContext(dbSchema);
     queryContext.from = [table1, table2];
     queryContext.columns = [];
     const joinPredicate = (predicateReverseOrder
@@ -292,12 +293,12 @@ describe('IndexJoinPass', () => {
   }
 
   function constructTree2(tableReverseOrder: boolean): TestTree {
-    const tableA = schema.table('TableA');
-    const tableC = schema.table('TableC');
+    const tableA = dbSchema.table('TableA');
+    const tableC = dbSchema.table('TableC');
     const t1 = tableReverseOrder ? tableC : tableA;
     const t2 = tableReverseOrder ? tableA : tableC;
 
-    const queryContext = new SelectContext(schema);
+    const queryContext = new SelectContext(dbSchema);
     queryContext.from = [t1, t2];
     queryContext.columns = [];
     const joinPredicate = tableA
@@ -329,10 +330,10 @@ describe('IndexJoinPass', () => {
   }
 
   function constructTree3(): TestTree {
-    const t1 = schema.table('TableC');
-    const t2 = schema.table('TableB');
+    const t1 = dbSchema.table('TableC');
+    const t2 = dbSchema.table('TableB');
 
-    const queryContext = new SelectContext(schema);
+    const queryContext = new SelectContext(dbSchema);
     queryContext.from = [t1, t2];
     const joinPredicate = t1.col('id').eq(t2.col('id')) as JoinPredicate;
     const valuePredicate = t2.col('id').gt(100);

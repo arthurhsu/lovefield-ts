@@ -18,13 +18,13 @@ import * as chai from 'chai';
 import {Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {DefaultCache} from '../../lib/cache/default_cache';
-import {Builder} from '../../lib/schema/builder';
+import {schema} from '../../lib/schema/schema';
 
 const assert = chai.assert;
 
 describe('DefaultCache', () => {
   it('implementsCache', () => {
-    const builder = new Builder('test', 1);
+    const builder = schema.create('test', 1);
     builder.createTable('Foo').addColumn('id', Type.STRING);
     builder.createTable('Bar').addColumn('id', Type.STRING);
 

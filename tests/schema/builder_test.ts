@@ -25,17 +25,17 @@ import {
 } from '../../lib/base/enum';
 import {BaseColumn} from '../../lib/schema/base_column';
 import {BaseTable} from '../../lib/schema/base_table';
-import {Builder} from '../../lib/schema/builder';
 import {ForeignKeySpec} from '../../lib/schema/foreign_key_spec';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {Info} from '../../lib/schema/info';
+import {SchemaBuilder} from '../../lib/schema/schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('Builder', () => {
   const createBuilder = () => {
-    const schemaBuilder = new Builder('hr', 1);
+    const schemaBuilder = new SchemaBuilder('hr', 1);
     schemaBuilder
       .createTable('Job')
       .addColumn('id', Type.STRING)
@@ -278,7 +278,7 @@ describe('Builder', () => {
   });
 
   it('checkForeignKeyChainOnSameColumn', () => {
-    const schemaBuilder = new Builder('hr', 1);
+    const schemaBuilder = new SchemaBuilder('hr', 1);
     schemaBuilder
       .createTable('FkTable1')
       .addColumn('employeeId', Type.INTEGER)
@@ -469,26 +469,26 @@ describe('Builder', () => {
   it('throws_IllegalName', () => {
     // 502: Naming rule violation: {0}.
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = new Builder('d1', 1);
+      const schemaBuilder = new SchemaBuilder('d1', 1);
       schemaBuilder.createTable('#NewTable');
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = new Builder('d2', 1);
+      const schemaBuilder = new SchemaBuilder('d2', 1);
       schemaBuilder
         .createTable('NameTable')
         .addColumn('22arraybuffer', Type.ARRAY_BUFFER);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = new Builder('d3', 1);
+      const schemaBuilder = new SchemaBuilder('d3', 1);
       schemaBuilder
         .createTable('NameTable')
         .addColumn('_obj_#ect', Type.OBJECT);
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = new Builder('d4', 1);
+      const schemaBuilder = new SchemaBuilder('d4', 1);
       schemaBuilder
         .createTable('NameTable')
         .addColumn('name', Type.STRING)
@@ -496,7 +496,7 @@ describe('Builder', () => {
     });
 
     TestUtil.assertThrowsError(ErrorCode.INVALID_NAME, () => {
-      const schemaBuilder = new Builder('d4', 1);
+      const schemaBuilder = new SchemaBuilder('d4', 1);
       schemaBuilder
         .createTable('NameTable')
         .addColumn('name', Type.STRING)

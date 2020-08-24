@@ -25,20 +25,20 @@ import {ValuePredicate} from '../../lib/pred/value_predicate';
 import {Relation} from '../../lib/proc/relation';
 import {BaseTable} from '../../lib/schema/base_table';
 import {Column} from '../../lib/schema/column';
-import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
 const assert = chai.assert;
 
 describe('ValuePredicate', () => {
-  let schema: DatabaseSchema;
+  let dbSchema: DatabaseSchema;
   let tableA: Table;
   let tableB: Table;
 
   function getSchema(): DatabaseSchema {
-    const schemaBuilder = new Builder('valuePredicate', 1);
+    const schemaBuilder = schema.create('valuePredicate', 1);
     schemaBuilder
       .createTable('TableA')
       .addColumn('id', Type.STRING)
@@ -52,9 +52,9 @@ describe('ValuePredicate', () => {
   }
 
   beforeEach(() => {
-    schema = getSchema();
-    tableA = schema.table('TableA');
-    tableB = schema.table('TableB');
+    dbSchema = getSchema();
+    tableA = dbSchema.table('TableA');
+    tableB = dbSchema.table('TableB');
   });
 
   it('copy', () => {
@@ -259,7 +259,7 @@ describe('ValuePredicate', () => {
   // Tests the conversion of a value predicate to a KeyRange for a column of
   // type DATE_TIME.
   it('toKeyRange_DateTime', () => {
-    const table = schema.table('TableC');
+    const table = dbSchema.table('TableC');
     const d1 = new Date(1443646468270);
 
     let p = new ValuePredicate(table.col('hireDate'), d1, EvalType.EQ);

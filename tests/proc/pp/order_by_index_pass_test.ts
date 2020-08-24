@@ -34,6 +34,7 @@ import {BaseTable} from '../../../lib/schema/base_table';
 import {Builder} from '../../../lib/schema/builder';
 import {Column} from '../../../lib/schema/column';
 import {IndexImpl} from '../../../lib/schema/index_impl';
+import {schema} from '../../../lib/schema/schema';
 import {Table} from '../../../lib/schema/table';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {TestTree, TreeTestHelper} from '../../../testing/tree_test_helper';
@@ -62,7 +63,7 @@ describe('OrderByIndexPass', () => {
   });
 
   function getSchemaBuilder(): Builder {
-    const schemaBuilder = new Builder('orderByIndexPass', 1);
+    const schemaBuilder = schema.create('orderByIndexPass', 1);
     schemaBuilder
       .createTable('SimpleTable')
       .addColumn('id', Type.INTEGER)

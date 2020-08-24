@@ -24,8 +24,8 @@ import {Row} from '../../lib/base/row';
 import {Relation} from '../../lib/proc/relation';
 import {SelectBuilder} from '../../lib/query/select_builder';
 import {SelectContext} from '../../lib/query/select_context';
-import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
+import {schema} from '../../lib/schema/schema';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {ChangeRecord} from '../../lib/base/change_record';
@@ -33,16 +33,16 @@ import {ChangeRecord} from '../../lib/base/change_record';
 const assert = chai.assert;
 
 describe('DiffCalculator', () => {
-  let schema: DatabaseSchema;
+  let dbSchema: DatabaseSchema;
 
   beforeEach(() => {
-    schema = getMockSchemaBuilder().getSchema();
-    const env = new MockEnv(schema);
+    dbSchema = getMockSchemaBuilder().getSchema();
+    const env = new MockEnv(dbSchema);
     return env.init();
   });
 
   function generateSampleRows(): Row[] {
-    const table = schema.table('tableA');
+    const table = dbSchema.table('tableA');
     const rowCount = 10;
     const rows = new Array(rowCount);
     for (let i = 0; i < rowCount; i++) {
@@ -58,7 +58,7 @@ describe('DiffCalculator', () => {
   // Tests the case where the observed query explicitly names the columns to be
   // projected.
   it('diffCalculation_ExplicitColumns', () => {
-    const table = schema.table('tableA');
+    const table = dbSchema.table('tableA');
     const builder = new SelectBuilder(Global.get(), [
       table.col('id'),
       table.col('name'),
@@ -70,7 +70,7 @@ describe('DiffCalculator', () => {
 
   // Tests the case where the observed query implicitly projects all columns.
   it('DiffCalculation_ImplicitColumns', () => {
-    const table = schema.table('tableA');
+    const table = dbSchema.table('tableA');
     const builder = new SelectBuilder(Global.get(), []);
     builder.from(table);
     const query = builder.getQuery();
@@ -203,7 +203,7 @@ describe('DiffCalculator', () => {
     // the observer callback.
     const updateResultsToNextVersion = () => {
       currentVersion++;
-      const table = schema.table('tableA');
+      const table = dbSchema.table('tableA');
       const newResults = Relation.fromRows(rowsPerVersion[currentVersion], [
         table.getName(),
       ]);
@@ -221,7 +221,7 @@ describe('DiffCalculator', () => {
 
   // Tests the case where the observed table has an Type.OBJECT column.
   it('DiffCalculation_ObjectColumn', () => {
-    const schemaBuilder = new Builder('object_diff', 1);
+    const schemaBuilder = schema.create('object_diff', 1);
     schemaBuilder
       .createTable('myTable')
       .addColumn('id', Type.STRING)
