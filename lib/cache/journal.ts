@@ -202,7 +202,7 @@ export class Journal {
   }
 
   checkDeferredConstraints(): void {
-    this.tableDiffs.forEach((tableDiff, tableName) => {
+    this.tableDiffs.forEach(tableDiff => {
       const table = this.scope.get(tableDiff.getName()) as BaseTable;
       this.constraintChecker.checkForeignKeysForInsert(
         table,

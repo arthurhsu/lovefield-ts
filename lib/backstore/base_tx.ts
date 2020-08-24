@@ -74,7 +74,7 @@ export abstract class BaseTx implements Tx {
         let deletedRows = 0;
         let updatedRows = 0;
         let tablesChanged = 0;
-        diff.forEach((tableDiff, tableName) => {
+        diff.forEach(tableDiff => {
           tablesChanged++;
           insertedRows += tableDiff.getAdded().size;
           updatedRows += tableDiff.getModified().size;

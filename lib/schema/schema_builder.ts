@@ -201,7 +201,7 @@ export class SchemaBuilder implements Builder {
 
   private finalize(): void {
     if (!this.finalized) {
-      this.tableBuilders.forEach((builder, name) => {
+      this.tableBuilders.forEach(builder => {
         this.checkForeignKeyValidity(builder);
         this.schema.setTable(builder.getSchema());
       });

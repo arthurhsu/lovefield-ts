@@ -148,7 +148,7 @@ export class BundledObjectStore implements RuntimeTable {
     // Chrome IndexedDB is slower when using a cursor to iterate through a big
     // table. A faster way is to just get everything individually within a
     // transaction.
-    const promises = pageIds.map((id, index) => {
+    const promises = pageIds.map(id => {
       return new Promise((resolve, reject) => {
         let request: IDBRequest;
         try {
@@ -208,7 +208,7 @@ export class BundledObjectStore implements RuntimeTable {
         reject(e);
         return;
       }
-      request.onsuccess = ev => resolve();
+      request.onsuccess = () => resolve();
       request.onerror = reject;
     });
   }
