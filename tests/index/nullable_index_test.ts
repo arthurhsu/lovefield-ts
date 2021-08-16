@@ -27,7 +27,7 @@ const assert = chai.assert;
 
 describe('NullableIndex', () => {
   let index: NullableIndex;
-  const NULL = (null as unknown) as Key;
+  const NULL = null as unknown as Key;
 
   beforeEach(() => {
     index = new NullableIndex(

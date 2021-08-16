@@ -315,9 +315,8 @@ export class Journal {
         const rowBefore = this.cache.get(rowId) as Row;
         // TODO(dpapad): Explore faster ways to clone an lf.Row.
         const rowAfter = tbl.deserializeRow(rowBefore.serialize());
-        rowAfter.payload()[
-          update.fkSpec.childColumn
-        ] = update.originalUpdatedRow.payload()[update.fkSpec.parentColumn];
+        rowAfter.payload()[update.fkSpec.childColumn] =
+          update.originalUpdatedRow.payload()[update.fkSpec.parentColumn];
         this.modifyRow(tbl, [rowBefore /* rowBefore */, rowAfter /* rowNow */]);
       }, this);
     }, this);

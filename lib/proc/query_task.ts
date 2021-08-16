@@ -83,7 +83,7 @@ export abstract class QueryTask extends UniqueId implements Task {
       .then(() => {
         this.tx = this.backStore.createTx(
           this.txType,
-          Array.from((this.combinedScope.values() as unknown) as BaseTable[]),
+          Array.from(this.combinedScope.values() as unknown as BaseTable[]),
           journal
         );
         return this.tx.commit();

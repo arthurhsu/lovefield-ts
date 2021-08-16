@@ -56,7 +56,7 @@ export class JoinPredicate extends PredicateNode {
     public evaluatorType: EvalType
   ) {
     super();
-    this.nullPayload = (null as unknown) as PayloadType;
+    this.nullPayload = null as unknown as PayloadType;
 
     const registry = EvalRegistry.get();
     this.evaluatorFn = registry.getEvaluator(
@@ -273,7 +273,7 @@ export class JoinPredicate extends PredicateNode {
       const value = entry.getField(maxColumn);
       const key = String(value);
       if (value !== null && map.has(key)) {
-        ((map.get(key) as unknown) as RelationEntry[]).forEach(innerEntry => {
+        (map.get(key) as unknown as RelationEntry[]).forEach(innerEntry => {
           const combinedEntry = RelationEntry.combineEntries(
             entry,
             maxRelationTableNames,
@@ -451,8 +451,8 @@ export class JoinPredicate extends PredicateNode {
     relation1: Relation,
     relation2: Relation
   ): [Relation, Relation] {
-    let left: Relation = (null as unknown) as Relation;
-    let right: Relation = (null as unknown) as Relation;
+    let left: Relation = null as unknown as Relation;
+    let right: Relation = null as unknown as Relation;
 
     if (this.appliesToLeft(relation1)) {
       this.assertRelationsApply(relation1, relation2);

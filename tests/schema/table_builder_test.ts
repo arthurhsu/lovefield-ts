@@ -241,9 +241,9 @@ describe('TableBuilder', () => {
         local: 'employeeId',
         ref: 'Employee.id',
       });
-    const fkIndexSchema1 = (tableBuilder1.getSchema()[
-      'employeeId'
-    ] as BaseTable).getIndices()[1] as IndexImpl;
+    const fkIndexSchema1 = (
+      tableBuilder1.getSchema()['employeeId'] as BaseTable
+    ).getIndices()[1] as IndexImpl;
     assert.equal('fkEmployeeId', fkIndexSchema1.name);
     assert.isTrue(fkIndexSchema1.isUnique);
 
@@ -256,9 +256,9 @@ describe('TableBuilder', () => {
         ref: 'Employee.id',
       })
       .addUnique('uq_employeeId', ['employeeId']);
-    const fkIndexSchema2 = (tableBuilder2.getSchema()[
-      'employeeId'
-    ] as BaseTable).getIndices()[0] as IndexImpl;
+    const fkIndexSchema2 = (
+      tableBuilder2.getSchema()['employeeId'] as BaseTable
+    ).getIndices()[0] as IndexImpl;
     assert.equal('fkEmployeeId', fkIndexSchema2.name);
     assert.isTrue(fkIndexSchema2.isUnique);
   });
@@ -334,13 +334,13 @@ describe('TableBuilder', () => {
     assert.isTrue(row instanceof Row);
 
     const expectedPayload = {
-      arraybuffer: (null as unknown) as ArrayBuffer,
-      boolean: (null as unknown) as boolean,
-      datetime: (null as unknown) as Date,
-      integer: (null as unknown) as number,
-      number: (null as unknown) as number,
-      object: (null as unknown) as object,
-      string: (null as unknown) as string,
+      arraybuffer: null as unknown as ArrayBuffer,
+      boolean: null as unknown as boolean,
+      datetime: null as unknown as Date,
+      integer: null as unknown as number,
+      number: null as unknown as number,
+      object: null as unknown as object,
+      string: null as unknown as string,
     };
     const payload = row.payload();
     assert.deepEqual(expectedPayload, payload);
@@ -483,10 +483,10 @@ describe('TableBuilder', () => {
       arraybuffer: null,
     });
     const expected = {
-      arraybuffer: (null as unknown) as ArrayBuffer,
-      datetime: (null as unknown) as Date,
+      arraybuffer: null as unknown as ArrayBuffer,
+      datetime: null as unknown as Date,
       number: 1,
-      object: (null as unknown) as object,
+      object: null as unknown as object,
       string: 'bar',
     };
 

@@ -38,9 +38,9 @@ describe('BaseColumn', () => {
       idIndices[0].columns[0].schema.getName()
     );
 
-    const nameIndices = (table[
-      'name'
-    ] as BaseColumn).getIndices() as IndexImpl[];
+    const nameIndices = (
+      table['name'] as BaseColumn
+    ).getIndices() as IndexImpl[];
     assert.equal(1, nameIndices.length);
     assert.equal(
       (table['name'] as BaseColumn).name,

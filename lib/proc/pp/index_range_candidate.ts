@@ -114,9 +114,8 @@ export class IndexRangeCandidate {
   }
 
   calculateCost(queryContext: Context): number {
-    const combinations: Range[] = this.getKeyRangeCalculator().getKeyRangeCombinations(
-      queryContext
-    );
+    const combinations: Range[] =
+      this.getKeyRangeCalculator().getKeyRangeCombinations(queryContext);
     const indexData = this.indexStore.get(
       this.indexSchema.getNormalizedName()
     ) as RuntimeIndex;

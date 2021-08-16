@@ -75,7 +75,9 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
     // Finds which of the two joined columns corresponds to the given table.
     const getColumnForTable = (table: BaseTable): Column => {
       return table.getEffectiveName() ===
-        (joinStep.predicate.rightColumn.getTable() as BaseTable).getEffectiveName()
+        (
+          joinStep.predicate.rightColumn.getTable() as BaseTable
+        ).getEffectiveName()
         ? joinStep.predicate.rightColumn
         : joinStep.predicate.leftColumn;
     };
@@ -85,13 +87,13 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
       // In order to use and index for implementing a join, the entire relation
       // must be fed to the JoinStep, otherwise the index can't be used.
       if (!(executionStep instanceof TableAccessFullStep)) {
-        return (null as unknown) as Column;
+        return null as unknown as Column;
       }
       const candidateColumn = getColumnForTable(
         executionStep.table as BaseTable
       );
       return (candidateColumn as BaseColumn).getIndex() === null
-        ? ((null as unknown) as Column)
+        ? (null as unknown as Column)
         : candidateColumn;
     };
 

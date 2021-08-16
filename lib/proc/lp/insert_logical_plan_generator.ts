@@ -20,9 +20,7 @@ import {InsertNode} from './insert_node';
 import {InsertOrReplaceNode} from './insert_or_replace_node';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
-export class InsertLogicalPlanGenerator extends BaseLogicalPlanGenerator<
-  InsertContext
-> {
+export class InsertLogicalPlanGenerator extends BaseLogicalPlanGenerator<InsertContext> {
   constructor(query: InsertContext) {
     super(query);
   }

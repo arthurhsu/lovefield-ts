@@ -270,7 +270,7 @@ describe('AggregationStep', () => {
     const data = getEmployeeDatasetWithNulls();
     const expectedHireDates =
       dataGenerator.employeeGroundTruth.distinctHireDates;
-    expectedHireDates.push((null as unknown) as Date);
+    expectedHireDates.push(null as unknown as Date);
     const inputRelation = Relation.fromRows(
       dataGenerator.sampleEmployees.concat(data),
       [e.getName()]

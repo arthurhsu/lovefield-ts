@@ -41,10 +41,10 @@ export class GetRowCountPass extends RewritePass<PhysicalQueryPlanNode> {
       return rootNode;
     }
 
-    const tableAccessFullStep: TableAccessFullStep = (TreeHelper.find(
+    const tableAccessFullStep: TableAccessFullStep = TreeHelper.find(
       rootNode,
       node => node instanceof TableAccessFullStep
-    )[0] as unknown) as TableAccessFullStep;
+    )[0] as unknown as TableAccessFullStep;
     const getRowCountStep = new GetRowCountStep(
       this.global,
       tableAccessFullStep.table

@@ -72,10 +72,7 @@ export class ScudTester {
     const tx = this.db.createTx(
       TransactionType.READ_WRITE,
       [this.tableSchema as BaseTable],
-      new Journal(
-        this.global,
-        new Set<Table>([this.tableSchema])
-      )
+      new Journal(this.global, new Set<Table>([this.tableSchema]))
     );
     const store = tx.getTable(
       this.tableSchema.getName(),
@@ -91,10 +88,7 @@ export class ScudTester {
     const tx = this.db.createTx(
       TransactionType.READ_WRITE,
       [this.tableSchema as BaseTable],
-      new Journal(
-        this.global,
-        new Set<Table>([this.tableSchema])
-      )
+      new Journal(this.global, new Set<Table>([this.tableSchema]))
     );
     const store = tx.getTable(
       this.tableSchema.getName(),

@@ -107,7 +107,7 @@ describe('IndexRangeScanPass', () => {
       queryContext.limit = 20;
 
       const limitNode = new LimitStep();
-      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+      const projectNode = new ProjectStep([], null as unknown as Column[]);
       limitNode.addChild(projectNode);
       const selectNode = new SelectStep(
         (queryContext.where as Predicate).getId()
@@ -370,7 +370,7 @@ describe('IndexRangeScanPass', () => {
         (queryContext.where as Predicate).getId()
       );
       selectStep.addChild(crossProductStep);
-      const rootNode = new ProjectStep([], (null as unknown) as Column[]);
+      const rootNode = new ProjectStep([], null as unknown as Column[]);
       rootNode.addChild(selectStep);
 
       return {
@@ -685,7 +685,7 @@ describe('IndexRangeScanPass', () => {
     selectNode4.addChild(tableAccessNode2);
 
     // Constructing the overall tree.
-    const rootNode = new ProjectStep([], (null as unknown) as Column[]);
+    const rootNode = new ProjectStep([], null as unknown as Column[]);
     const orderByNode3 = new OrderByStep([
       {column: e.col('salary'), order: Order.ASC},
     ]);
@@ -756,7 +756,7 @@ describe('IndexRangeScanPass', () => {
     queryContext.from = [e];
     queryContext.where = predicate;
 
-    const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+    const projectNode = new ProjectStep([], null as unknown as Column[]);
     const selectNode = new SelectStep(queryContext.where.getId());
     projectNode.addChild(selectNode);
     const tableAccessNode = new TableAccessFullStep(
@@ -776,9 +776,11 @@ describe('IndexRangeScanPass', () => {
     predicateIndex: number
   ): SelectStep {
     return new SelectStep(
-      ((queryContext.where as PredicateNode).getChildAt(
-        predicateIndex
-      ) as PredicateNode).getId()
+      (
+        (queryContext.where as PredicateNode).getChildAt(
+          predicateIndex
+        ) as PredicateNode
+      ).getId()
     );
   }
 });

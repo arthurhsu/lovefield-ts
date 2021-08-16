@@ -24,25 +24,7 @@ const assert = chai.assert;
 export class TestMultiRowNumericalKey extends TestIndex {
   // Values that are added in the index in populateIndex().
   private allValues = [
-    20,
-    30,
-    21,
-    31,
-    22,
-    32,
-    23,
-    33,
-    24,
-    34,
-    25,
-    35,
-    26,
-    36,
-    27,
-    37,
-    28,
-    38,
-    29,
+    20, 30, 21, 31, 22, 32, 23, 33, 24, 34, 25, 35, 26, 36, 27, 37, 28, 38, 29,
     39,
   ];
 

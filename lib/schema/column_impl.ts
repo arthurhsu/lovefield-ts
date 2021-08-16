@@ -41,9 +41,9 @@ export class ColumnImpl implements BaseColumn {
     readonly type: Type,
     alias?: string
   ) {
-    this.alias = alias || ((null as unknown) as string);
+    this.alias = alias || (null as unknown as string);
     this.indices = [];
-    this.index = (undefined as unknown) as IndexImpl;
+    this.index = undefined as unknown as IndexImpl;
   }
 
   getName(): string {
@@ -103,7 +103,7 @@ export class ColumnImpl implements BaseColumn {
       // Normally there should be only one dedicated index for this column,
       // but if there are more, just grab the first one.
       this.index =
-        indices.length > 0 ? indices[0] : ((null as unknown) as IndexImpl);
+        indices.length > 0 ? indices[0] : (null as unknown as IndexImpl);
     }
     return this.index;
   }
@@ -145,11 +145,11 @@ export class ColumnImpl implements BaseColumn {
   }
 
   isNull(): Predicate {
-    return this.eq((null as unknown) as OperandType);
+    return this.eq(null as unknown as OperandType);
   }
 
   isNotNull(): Predicate {
-    return this.neq((null as unknown) as OperandType);
+    return this.neq(null as unknown as OperandType);
   }
 
   as(name: string): Column {

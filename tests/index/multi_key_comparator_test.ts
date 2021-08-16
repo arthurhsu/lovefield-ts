@@ -174,7 +174,7 @@ describe('MultiKeyComparator', () => {
     // Null specific tests
     const all = SingleKeyRange.all();
     const lowerBound = SingleKeyRange.lowerBound(2);
-    const NULL: SingleKey = (null as unknown) as SingleKey;
+    const NULL: SingleKey = null as unknown as SingleKey;
     assert.isTrue(c.isInRange([2, NULL], [all, all]));
     assert.isTrue(c.isInRange([NULL, 2], [all, all]));
     assert.isTrue(c.isInRange([2, NULL], [lowerBound, all]));
@@ -314,12 +314,12 @@ describe('MultiKeyComparator', () => {
     const all = SingleKeyRange.all();
     const only1 = SingleKeyRange.only(1);
     const only2 = SingleKeyRange.only(2);
-    const NULL: SingleKey = (null as unknown) as SingleKey;
+    const NULL: SingleKey = null as unknown as SingleKey;
 
     assert.isTrue(c.isFirstKeyInRange([1, 2], [only1, only1]));
     assert.isTrue(c.isFirstKeyInRange([1, 2], [all, only1]));
     assert.isTrue(
-      c.isFirstKeyInRange([1, 2], [only1, (null as unknown) as SingleKeyRange])
+      c.isFirstKeyInRange([1, 2], [only1, null as unknown as SingleKeyRange])
     );
     assert.isTrue(c.isFirstKeyInRange([NULL, 2], [all, only1]));
     assert.isFalse(c.isFirstKeyInRange([1, 2], [only2, all]));

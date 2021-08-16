@@ -30,7 +30,7 @@ export class UnknownTable implements BaseTable {
   private _alias: string;
 
   constructor() {
-    this._alias = (null as unknown) as string;
+    this._alias = null as unknown as string;
   }
 
   getName(): string {
@@ -72,7 +72,7 @@ export class UnknownTable implements BaseTable {
   }
 
   getConstraint(): Constraint {
-    return (null as unknown) as Constraint;
+    return null as unknown as Constraint;
   }
 
   as(alias: string): BaseTable {
@@ -82,6 +82,6 @@ export class UnknownTable implements BaseTable {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   col(name: string): Column {
-    return (null as unknown) as Column;
+    return null as unknown as Column;
   }
 }

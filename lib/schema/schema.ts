@@ -29,7 +29,7 @@ export class schema {
   // or dropped, the builder cannot be used to reconnect. Instead, the caller
   // needs to construct a new builder for doing so.
   static create(name: string, version: number): Builder {
-    return (new SchemaBuilder(name, version) as unknown) as Builder;
+    return new SchemaBuilder(name, version) as unknown as Builder;
   }
 }
 /* eslint-disable @typescript-eslint/class-name-casing */

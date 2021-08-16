@@ -133,7 +133,7 @@ describe('Prefetcher', () => {
     indices.forEach(index => {
       assert.isTrue(index instanceof NullableIndex);
       assert.equal(rows.length, index.getRange().length);
-      assert.equal(nullKeyRows, index.get((null as unknown) as Key).length);
+      assert.equal(nullKeyRows, index.get(null as unknown as Key).length);
     });
   });
 

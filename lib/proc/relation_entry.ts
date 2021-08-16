@@ -92,9 +92,11 @@ export class RelationEntry {
     }
 
     if (this.isPrefixApplied) {
-      return (this.row.payload()[
-        (column.getTable() as BaseTable).getEffectiveName()
-      ] as PayloadType)[column.getName()];
+      return (
+        this.row.payload()[
+          (column.getTable() as BaseTable).getEffectiveName()
+        ] as PayloadType
+      )[column.getName()];
     } else {
       return this.row.payload()[column.getName()];
     }

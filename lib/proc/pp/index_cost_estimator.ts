@@ -95,8 +95,9 @@ export class IndexCostEstimator {
   private generateIndexRangeCandidates(
     predicates: ValuePredicate[]
   ): IndexRangeCandidate[] {
-    const indexSchemas = (this
-      .tableSchema as BaseTable).getIndices() as IndexImpl[];
+    const indexSchemas = (
+      this.tableSchema as BaseTable
+    ).getIndices() as IndexImpl[];
     return indexSchemas
       .map(indexSchema => {
         const indexRangeCandidate = new IndexRangeCandidate(

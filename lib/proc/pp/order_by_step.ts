@@ -127,18 +127,18 @@ export class OrderByStep extends PhysicalQueryPlanNode {
         // If relations are sorted based on a non-aggregated column, choose
         // the last entry of each relation as a representative row (same as
         // SQLite).
-        return (column instanceof AggregatedColumn
-          ? lhs.getAggregationResult(column)
-          : lhs.entries[lhs.entries.length - 1].getField(
-              column
-            )) as IndexableType;
+        return (
+          column instanceof AggregatedColumn
+            ? lhs.getAggregationResult(column)
+            : lhs.entries[lhs.entries.length - 1].getField(column)
+        ) as IndexableType;
       },
       column => {
-        return (column instanceof AggregatedColumn
-          ? rhs.getAggregationResult(column)
-          : rhs.entries[rhs.entries.length - 1].getField(
-              column
-            )) as IndexableType;
+        return (
+          column instanceof AggregatedColumn
+            ? rhs.getAggregationResult(column)
+            : rhs.entries[rhs.entries.length - 1].getField(column)
+        ) as IndexableType;
       }
     );
   }

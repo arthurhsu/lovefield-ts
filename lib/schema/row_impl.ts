@@ -40,7 +40,7 @@ export class RowImpl extends Row {
   defaultPayload(): PayloadType {
     if (this.columns === undefined) {
       // Called from base ctor, ignore for now.
-      return (null as unknown) as PayloadType;
+      return null as unknown as PayloadType;
     }
 
     const obj: PayloadType = {};

@@ -44,7 +44,7 @@ export class Global {
   }
 
   registerService<T>(serviceId: ServiceId<T>, service: T): T {
-    this.services.set(serviceId.toString(), (service as unknown) as object);
+    this.services.set(serviceId.toString(), service as unknown as object);
     return service;
   }
 
@@ -54,7 +54,7 @@ export class Global {
       // 7: Service {0} not registered.
       throw new Exception(ErrorCode.SERVICE_NOT_FOUND, serviceId.toString());
     }
-    return (service as unknown) as T;
+    return service as unknown as T;
   }
 
   isRegistered<T>(serviceId: ServiceId<T>): boolean {

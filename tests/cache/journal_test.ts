@@ -30,7 +30,7 @@ import {TestUtil} from '../../testing/test_util';
 const assert = chai.assert;
 
 describe('Journal', () => {
-  const NULL = (null as unknown) as Key;
+  const NULL = null as unknown as Key;
   let env: MockEnv;
 
   beforeEach(() => {
@@ -931,9 +931,9 @@ describe('Journal', () => {
   // Returns the rows that exist in the given table according to the indexStore
   // and the cache.
   function getTableRows(table: BaseTable): Row[] {
-    const rowIds = (env.indexStore.get(
-      table.getRowIdIndexName()
-    ) as RuntimeIndex).getRange();
+    const rowIds = (
+      env.indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
+    ).getRange();
     return env.cache.getMany(rowIds) as Row[];
   }
 });

@@ -128,9 +128,9 @@ export abstract class BaseTx implements Tx {
         tableSchema.deserializeRow.bind(tableSchema),
         TableType.DATA
       );
-      const toDeleteRowIds = Array.from(
-        tableDiff.getDeleted().values()
-      ).map(row => row.id());
+      const toDeleteRowIds = Array.from(tableDiff.getDeleted().values()).map(
+        row => row.id()
+      );
       const toPut = Array.from(tableDiff.getModified().values())
         .map(modification => modification[1] as Row)
         .concat(Array.from(tableDiff.getAdded().values()));

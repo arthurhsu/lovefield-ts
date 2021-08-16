@@ -31,7 +31,7 @@ export class DatabaseSchemaImpl implements DatabaseSchema {
     this.tableMap = new Map<string, Table>();
     this._pragma = {enableBundledMode: false};
     // Lazy initialization
-    this._info = (undefined as unknown) as Info;
+    this._info = undefined as unknown as Info;
   }
 
   name(): string {

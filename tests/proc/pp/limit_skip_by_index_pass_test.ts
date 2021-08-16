@@ -104,7 +104,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+      const projectNode = new ProjectStep([], null as unknown as Column[]);
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(
         global,
@@ -159,7 +159,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+      const projectNode = new ProjectStep([], null as unknown as Column[]);
       skipNode.addChild(projectNode);
       const selectNode = new SelectStep(
         (queryContext.where as Predicate).getId()
@@ -258,7 +258,7 @@ describe('LimitSkipByIndexPass', () => {
       limitNode.addChild(skipNode);
       const projectNode = new ProjectStep(
         [fn.max(e.col('salary')), fn.min(e.col('salary'))],
-        (null as unknown) as Column[]
+        null as unknown as Column[]
       );
       skipNode.addChild(projectNode);
       const tableAccessByRowIdNode = new TableAccessByRowIdStep(global, e);
@@ -304,7 +304,7 @@ describe('LimitSkipByIndexPass', () => {
       const limitNode = new LimitStep();
       const skipNode = new SkipStep();
       limitNode.addChild(skipNode);
-      const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+      const projectNode = new ProjectStep([], null as unknown as Column[]);
       skipNode.addChild(projectNode);
       const orderByNode = new OrderByStep([
         {

@@ -38,7 +38,7 @@ describe('Info', () => {
   ): string[] {
     const refs = info.getReferencingForeignKeys(tableName, constraintAction);
     return refs === null
-      ? ((null as unknown) as string[])
+      ? (null as unknown as string[])
       : refs.map(ref => ref.name);
   }
 

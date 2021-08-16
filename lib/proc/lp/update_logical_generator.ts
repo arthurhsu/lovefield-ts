@@ -21,9 +21,7 @@ import {SelectNode} from './select_node';
 import {TableAccessNode} from './table_access_node';
 import {UpdateNode} from './update_node';
 
-export class UpdateLogicalPlanGenerator extends BaseLogicalPlanGenerator<
-  UpdateContext
-> {
+export class UpdateLogicalPlanGenerator extends BaseLogicalPlanGenerator<UpdateContext> {
   constructor(query: UpdateContext) {
     super(query);
   }

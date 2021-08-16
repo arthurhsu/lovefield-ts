@@ -106,8 +106,8 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
     }, this);
 
     return [
-      (parentNode as unknown) as LogicalQueryPlanNode,
-      (lastNode as unknown) as LogicalQueryPlanNode,
+      parentNode as unknown as LogicalQueryPlanNode,
+      lastNode as unknown as LogicalQueryPlanNode,
     ];
   }
 }

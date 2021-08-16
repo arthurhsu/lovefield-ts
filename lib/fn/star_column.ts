@@ -33,7 +33,7 @@ export class StarColumn extends NonPredicateProvider implements BaseColumn {
 
   constructor(alias?: string) {
     super();
-    this.alias = alias || ((null as unknown) as string);
+    this.alias = alias || (null as unknown as string);
     this.table = new UnknownTable();
   }
 

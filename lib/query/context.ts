@@ -30,7 +30,7 @@ export abstract class Context extends UniqueId {
   ): Map<number, Predicate> {
     const predicateMap = new Map<number, Predicate>();
     rootPredicate.traverse(n => {
-      const node = (n as PredicateNode) as Predicate;
+      const node = n as PredicateNode as Predicate;
       predicateMap.set(node.getId(), node);
     });
     return predicateMap;
@@ -46,7 +46,7 @@ export abstract class Context extends UniqueId {
     super();
     this.clonedFrom = null;
     this.where = null;
-    this.predicateMap = (null as unknown) as Map<number, Predicate>;
+    this.predicateMap = null as unknown as Map<number, Predicate>;
   }
 
   getPredicate(id: number): Predicate {

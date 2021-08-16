@@ -159,7 +159,7 @@ export class ArrayHelper {
     let right = arr.length;
     const comp: (l: T, r: T) => number =
       comparator ||
-      ((ArrayHelper.defaultComparator as unknown) as (l: T, r: T) => number);
+      (ArrayHelper.defaultComparator as unknown as (l: T, r: T) => number);
     while (left < right) {
       const middle = (left + right) >> 1;
       if (comp(arr[middle], value) < 0) {

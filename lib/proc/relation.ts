@@ -99,7 +99,7 @@ export class Relation {
     return new Relation(entries, tables);
   }
 
-  private static emptyRelation: Relation = (null as unknown) as Relation;
+  private static emptyRelation: Relation = null as unknown as Relation;
 
   // Asserts that two relations are compatible with regards to
   // union/intersection operations.
@@ -120,10 +120,7 @@ export class Relation {
 
   constructor(readonly entries: RelationEntry[], tables: string[]) {
     this.tables = new Set(tables);
-    this.aggregationResults = (null as unknown) as Map<
-      string,
-      AggregationResult
-    >;
+    this.aggregationResults = null as unknown as Map<string, AggregationResult>;
   }
 
   // Whether this is compatible with given relation in terms of calculating

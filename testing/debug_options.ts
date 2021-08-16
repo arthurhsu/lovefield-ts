@@ -23,7 +23,7 @@ export class DebugOptions implements LovefieldOptions {
   exceptionUrl: string;
   useGetAll: boolean;
   private messages: Map<ErrorCode, string>;
-  private static instance = (null as unknown) as DebugOptions;
+  private static instance = null as unknown as DebugOptions;
 
   static get(): DebugOptions {
     if (DebugOptions.instance === null) {

@@ -105,7 +105,7 @@ describe('MathHelper', () => {
       'sum() must handle real numbers'
     );
     assert.isTrue(
-      isNaN(MathHelper.sum(1, 2, ('foo' as unknown) as number, 3)),
+      isNaN(MathHelper.sum(1, 2, 'foo' as unknown as number, 3)),
       "sum() must return NaN if one of the arguments isn't numeric"
     );
   });
@@ -131,7 +131,7 @@ describe('MathHelper', () => {
       'average() must handle real numbers'
     );
     assert.isTrue(
-      isNaN(MathHelper.average(1, 2, ('foo' as unknown) as number, 3)),
+      isNaN(MathHelper.average(1, 2, 'foo' as unknown as number, 3)),
       "average() must return NaN if one of the arguments isn't numeric"
     );
   });

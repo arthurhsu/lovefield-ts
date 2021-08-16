@@ -183,10 +183,7 @@ describe('ExternalChangeObserver', () => {
     const tx = mockStore.createTx(
       TransactionType.READ_WRITE,
       [tableSchema],
-      new Journal(
-        db.getGlobal(),
-        new Set<Table>([tableSchema])
-      )
+      new Journal(db.getGlobal(), new Set<Table>([tableSchema]))
     );
     const table = tx.getTable(
       tableSchema.getName(),
@@ -202,10 +199,7 @@ describe('ExternalChangeObserver', () => {
     const tx = mockStore.createTx(
       TransactionType.READ_WRITE,
       [tableSchema],
-      new Journal(
-        db.getGlobal(),
-        new Set<Table>([tableSchema])
-      )
+      new Journal(db.getGlobal(), new Set<Table>([tableSchema]))
     );
     const table = tx.getTable(
       tableSchema.getName(),

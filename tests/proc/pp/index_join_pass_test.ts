@@ -264,9 +264,11 @@ describe('IndexJoinPass', () => {
     const queryContext = new SelectContext(dbSchema);
     queryContext.from = [table1, table2];
     queryContext.columns = [];
-    const joinPredicate = (predicateReverseOrder
-      ? table2.col('id').eq(table1.col('id'))
-      : table1.col('id').eq(table2.col('id'))) as JoinPredicate;
+    const joinPredicate = (
+      predicateReverseOrder
+        ? table2.col('id').eq(table1.col('id'))
+        : table1.col('id').eq(table2.col('id'))
+    ) as JoinPredicate;
     queryContext.where = joinPredicate;
 
     const tableAccessStep1 = new TableAccessFullStep(
@@ -280,7 +282,7 @@ describe('IndexJoinPass', () => {
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
     const projectStep = new ProjectStep(
       queryContext.columns,
-      (null as unknown) as Column[]
+      null as unknown as Column[]
     );
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
@@ -317,7 +319,7 @@ describe('IndexJoinPass', () => {
     const joinStep = new JoinStep(global, joinPredicate, false /* outerJoin*/);
     const projectStep = new ProjectStep(
       queryContext.columns,
-      (null as unknown) as Column[]
+      null as unknown as Column[]
     );
     projectStep.addChild(joinStep);
     joinStep.addChild(tableAccessStep1);
@@ -356,7 +358,7 @@ describe('IndexJoinPass', () => {
     );
     const projectStep = new ProjectStep(
       queryContext.columns,
-      (null as unknown) as Column[]
+      null as unknown as Column[]
     );
 
     joinStep.addChild(tableAccessStep1);

@@ -36,7 +36,7 @@ describe('Eval_date', () => {
     const date1 = new Date();
     const date2 = new Date(date1.getTime() + 10);
     const date3 = new Date(date1.getTime() + 20);
-    const date4: Date = (null as unknown) as Date;
+    const date4: Date = null as unknown as Date;
 
     assert.isTrue(evaluationFn(date2, [date1, date3]));
     assert.isFalse(evaluationFn(date1, [date2, date3]));
@@ -67,7 +67,7 @@ describe('Eval_date', () => {
 
     const date1 = new Date();
     const date2 = new Date(date1.getTime() + 10);
-    const date3: Date = (null as unknown) as Date;
+    const date3: Date = null as unknown as Date;
 
     assert.isTrue(evaluationFn(date2, date1));
     assert.isTrue(evaluationFn(date2, date2));
@@ -86,7 +86,7 @@ describe('Eval_date', () => {
 
     const date1 = new Date();
     const date2 = new Date(date1.getTime() + 10);
-    const date3 = (null as unknown) as Date;
+    const date3 = null as unknown as Date;
 
     assert.isTrue(evaluationFn(date2, date1));
     assert.isFalse(evaluationFn(date2, date2));
@@ -122,7 +122,7 @@ describe('Eval_date', () => {
 
     const date1 = new Date();
     const date2 = new Date(date1.getTime() + 10);
-    const date3 = (null as unknown) as Date;
+    const date3 = null as unknown as Date;
 
     assert.isTrue(evaluationFn(date1, date2));
     assert.isTrue(evaluationFn(date1, date1));
@@ -141,7 +141,7 @@ describe('Eval_date', () => {
 
     const date1 = new Date();
     const date2 = new Date(date1.getTime() + 10);
-    const date3 = (null as unknown) as Date;
+    const date3 = null as unknown as Date;
 
     assert.isTrue(evaluationFn(date1, date2));
     assert.isFalse(evaluationFn(date1, date1));

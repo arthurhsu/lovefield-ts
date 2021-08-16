@@ -52,7 +52,8 @@ export class LogicalPlanFactory {
   }
 
   create(query: Context): LogicalQueryPlan {
-    let generator: LogicalPlanGenerator = (null as unknown) as LogicalPlanGenerator;
+    let generator: LogicalPlanGenerator =
+      null as unknown as LogicalPlanGenerator;
     if (query instanceof InsertContext) {
       generator = new InsertLogicalPlanGenerator(query);
     } else if (query instanceof DeleteContext) {

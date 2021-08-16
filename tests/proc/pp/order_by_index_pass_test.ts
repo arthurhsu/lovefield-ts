@@ -45,7 +45,7 @@ describe('OrderByIndexPass', () => {
   let simpleTable: Table;
   let crossColumnTable: Table;
   let pass: OrderByIndexPass;
-  const NULL = (null as unknown) as Column[];
+  const NULL = null as unknown as Column[];
 
   beforeEach(async () => {
     const schemaBuilder = getSchemaBuilder();

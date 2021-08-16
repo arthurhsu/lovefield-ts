@@ -22,8 +22,10 @@ import {Column} from '../schema/column';
 import {Index} from '../schema/index';
 import {NonPredicateProvider} from './non_predicate_provider';
 
-export class AggregatedColumn extends NonPredicateProvider
-  implements BaseColumn {
+export class AggregatedColumn
+  extends NonPredicateProvider
+  implements BaseColumn
+{
   alias: string | null;
 
   // Make TypeScript happy.

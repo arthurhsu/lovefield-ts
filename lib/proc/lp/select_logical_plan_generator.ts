@@ -31,9 +31,7 @@ import {SelectNode} from './select_node';
 import {SkipNode} from './skip_node';
 import {TableAccessNode} from './table_access_node';
 
-export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<
-  SelectContext
-> {
+export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<SelectContext> {
   private tableAccessNodes: LogicalQueryPlanNode[];
   private crossProductNode: LogicalQueryPlanNode;
   private selectNode: LogicalQueryPlanNode;
@@ -49,15 +47,15 @@ export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<
     private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>
   ) {
     super(query);
-    this.tableAccessNodes = (null as unknown) as LogicalQueryPlanNode[];
-    this.crossProductNode = (null as unknown) as LogicalQueryPlanNode;
-    this.selectNode = (null as unknown) as LogicalQueryPlanNode;
-    this.groupByNode = (null as unknown) as LogicalQueryPlanNode;
-    this.aggregationNode = (null as unknown) as LogicalQueryPlanNode;
-    this.orderByNode = (null as unknown) as LogicalQueryPlanNode;
-    this.skipNode = (null as unknown) as LogicalQueryPlanNode;
-    this.limitNode = (null as unknown) as LogicalQueryPlanNode;
-    this.projectNode = (null as unknown) as LogicalQueryPlanNode;
+    this.tableAccessNodes = null as unknown as LogicalQueryPlanNode[];
+    this.crossProductNode = null as unknown as LogicalQueryPlanNode;
+    this.selectNode = null as unknown as LogicalQueryPlanNode;
+    this.groupByNode = null as unknown as LogicalQueryPlanNode;
+    this.aggregationNode = null as unknown as LogicalQueryPlanNode;
+    this.orderByNode = null as unknown as LogicalQueryPlanNode;
+    this.skipNode = null as unknown as LogicalQueryPlanNode;
+    this.limitNode = null as unknown as LogicalQueryPlanNode;
+    this.projectNode = null as unknown as LogicalQueryPlanNode;
   }
 
   generateInternal(): LogicalQueryPlanNode {
@@ -102,7 +100,8 @@ export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<
     ];
 
     let lastExistingParentIndex = -1;
-    let rootNode: LogicalQueryPlanNode = (null as unknown) as LogicalQueryPlanNode;
+    let rootNode: LogicalQueryPlanNode =
+      null as unknown as LogicalQueryPlanNode;
     for (let i = 0; i < parentOrder.length; i++) {
       const node = parentOrder[i];
       if (node !== null) {

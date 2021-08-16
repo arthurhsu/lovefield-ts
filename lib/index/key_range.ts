@@ -135,7 +135,7 @@ export class SingleKeyRange {
   // Returns null if intersection is empty.
   static and(r1: SingleKeyRange, r2: SingleKeyRange): SingleKeyRange {
     if (!r1.overlaps(r2)) {
-      return (null as unknown) as SingleKeyRange;
+      return null as unknown as SingleKeyRange;
     }
 
     let favor = SingleKeyRange.compareKey(r1.from, r2.from, true);
@@ -279,8 +279,8 @@ export class SingleKeyRange {
       return SingleKeyRange.EMPTY_RANGE;
     }
 
-    let keyRangeLow: SingleKeyRange = (null as unknown) as SingleKeyRange;
-    let keyRangeHigh: SingleKeyRange = (null as unknown) as SingleKeyRange;
+    let keyRangeLow: SingleKeyRange = null as unknown as SingleKeyRange;
+    let keyRangeHigh: SingleKeyRange = null as unknown as SingleKeyRange;
 
     if (!SingleKeyRange.isUnbound(this.from)) {
       keyRangeLow = new SingleKeyRange(
@@ -375,7 +375,7 @@ export class SingleKeyRange {
       (SingleKeyRange.isUnbound(this.from) && !this.contains(min)) ||
       (SingleKeyRange.isUnbound(this.to) && !this.contains(max))
     ) {
-      return (null as unknown) as SingleKeyRange;
+      return null as unknown as SingleKeyRange;
     }
 
     let from = min;
@@ -392,7 +392,7 @@ export class SingleKeyRange {
     }
 
     if (from > to || (from === to && (excludeUpper || excludeLower))) {
-      return (null as unknown) as SingleKeyRange;
+      return null as unknown as SingleKeyRange;
     }
     return new SingleKeyRange(from, to, excludeLower, excludeUpper);
   }

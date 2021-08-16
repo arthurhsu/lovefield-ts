@@ -32,15 +32,15 @@ describe('IndexHelper', () => {
 
   it('hashArray', () => {
     assert.equal('', IndexHelper.hashArray([]));
-    assert.equal('', IndexHelper.hashArray([(null as unknown) as object]));
+    assert.equal('', IndexHelper.hashArray([null as unknown as object]));
     assert.equal(
       '0_',
-      IndexHelper.hashArray((['', null] as unknown) as object[])
+      IndexHelper.hashArray(['', null] as unknown as object[])
     );
-    assert.equal('10', IndexHelper.hashArray([(' ' as unknown) as object]));
+    assert.equal('10', IndexHelper.hashArray([' ' as unknown as object]));
     assert.equal(
       '10_10',
-      IndexHelper.hashArray(([' ', ' '] as unknown) as object[])
+      IndexHelper.hashArray([' ', ' '] as unknown as object[])
     );
   });
 

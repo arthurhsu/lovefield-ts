@@ -60,7 +60,7 @@ export class TableBuilder {
     this.uniqueColumns = new Set<string>();
     this.uniqueIndices = new Set<string>();
     this.nullable = new Set<string>();
-    this.pkName = (null as unknown) as string;
+    this.pkName = null as unknown as string;
     this.indices = new Map<string, IndexedColumnSpec[]>();
     this.persistIndex = false;
     this.fkSpecs = [];
@@ -195,7 +195,7 @@ export class TableBuilder {
         return {
           name: colName,
           nullable: this.nullable.has(colName) || false,
-          type: (this.columns.get(colName) as unknown) as Type,
+          type: this.columns.get(colName) as unknown as Type,
           unique: this.uniqueColumns.has(colName) || false,
         };
       }
@@ -205,7 +205,7 @@ export class TableBuilder {
     const table = new TableImpl(
       this.name,
       columns,
-      (null as unknown) as IndexImpl[],
+      null as unknown as IndexImpl[],
       this.persistIndex
     );
 
@@ -253,7 +253,7 @@ export class TableBuilder {
     columns.forEach(column => {
       const columnType = this.columns.get(column.name);
       hasAutoIncrement =
-        hasAutoIncrement || ((column.autoIncrement as unknown) as boolean);
+        hasAutoIncrement || (column.autoIncrement as unknown as boolean);
       if (column.autoIncrement && columnType !== Type.INTEGER) {
         // 504: Can not use autoIncrement with a non-integer primary key.
         throw new Exception(ErrorCode.INVALID_AUTO_KEY_TYPE);
@@ -351,7 +351,8 @@ export class TableBuilder {
     sortOrder = Order.ASC,
     autoInc = false
   ): IndexedColumnSpec[] {
-    let normalized: IndexedColumnSpec[] = (null as unknown) as IndexedColumnSpec[];
+    let normalized: IndexedColumnSpec[] =
+      null as unknown as IndexedColumnSpec[];
     if (typeof columns[0] === 'string') {
       const array = columns as string[];
       normalized = array.map(col => {

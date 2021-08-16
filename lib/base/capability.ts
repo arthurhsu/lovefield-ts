@@ -114,9 +114,9 @@ export class Capability {
       // Key. Note that a key may have a space.
       // (i.e. 'Mobile Safari' in 'Mobile Safari/5.0')
       '(\\w[\\w ]+)' +
-      '/' + // slash
-      '([^\\s]+)' + // version (i.e. '5.0b')
-      '\\s*' + // whitespace
+        '/' + // slash
+        '([^\\s]+)' + // version (i.e. '5.0b')
+        '\\s*' + // whitespace
         '(?:\\((.*?)\\))?', // parenthetical info. parentheses not matched.
       'g'
     );

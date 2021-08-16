@@ -155,7 +155,7 @@ describe('MultiColumnOrPass', () => {
     const selectNodes = predicates.map(
       predicate => new SelectStep(predicate.getId())
     );
-    const projectNode = new ProjectStep([], (null as unknown) as Column[]);
+    const projectNode = new ProjectStep([], null as unknown as Column[]);
     let lastSelectNode = selectNodes[0];
     projectNode.addChild(lastSelectNode);
     for (let i = 1; i < selectNodes.length; i++) {
@@ -193,7 +193,7 @@ describe('MultiColumnOrPass', () => {
       );
       queryContext.where = op.and(orPredicate, joinPredicate);
 
-      const projectStep = new ProjectStep([], (null as unknown) as Column[]);
+      const projectStep = new ProjectStep([], null as unknown as Column[]);
       const selectStep = new SelectStep(orPredicate.getId());
       const joinStep = new JoinStep(
         global,
@@ -250,7 +250,7 @@ describe('MultiColumnOrPass', () => {
       );
       queryContext.where = op.and(simplePredicate, orPredicate);
 
-      const projectStep = new ProjectStep([], (null as unknown) as Column[]);
+      const projectStep = new ProjectStep([], null as unknown as Column[]);
       const selectStep = new SelectStep(orPredicate.getId());
       const tableAccessByRowIdStep = new TableAccessByRowIdStep(
         global,

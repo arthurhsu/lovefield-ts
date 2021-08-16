@@ -23,6 +23,6 @@ export class ServiceId<T> {
 
   // Dummy method to please the compiler (need to use <T> somewhere).
   getAsType(): T {
-    return ({} as unknown) as T;
+    return {} as unknown as T;
   }
 }

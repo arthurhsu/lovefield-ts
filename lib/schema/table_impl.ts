@@ -63,14 +63,14 @@ export class TableImpl implements BaseTable {
       this[col.name] = colSchema;
       this._columns.push(colSchema);
     }, this);
-    this._referencingFK = (null as unknown) as ForeignKeySpec[];
-    this._functionMap = (null as unknown) as Map<
+    this._referencingFK = null as unknown as ForeignKeySpec[];
+    this._functionMap = null as unknown as Map<
       string,
       (payload: PayloadType) => Key
     >;
-    this._constraint = (null as unknown) as Constraint;
+    this._constraint = null as unknown as Constraint;
     this._evalRegistry = EvalRegistry.get();
-    this._alias = alias ? alias : ((null as unknown) as string);
+    this._alias = alias ? alias : (null as unknown as string);
   }
 
   getName(): string {
@@ -171,7 +171,7 @@ export class TableImpl implements BaseTable {
     fkSpecs: ForeignKeySpec[]
   ): void {
     if (indices.size === 0) {
-      this._constraint = new Constraint((null as unknown) as IndexImpl, [], []);
+      this._constraint = new Constraint(null as unknown as IndexImpl, [], []);
       return;
     }
 
@@ -197,7 +197,7 @@ export class TableImpl implements BaseTable {
 
     const pk: IndexImpl =
       pkName === null
-        ? ((null as unknown) as IndexImpl)
+        ? (null as unknown as IndexImpl)
         : new IndexImpl(
             this._name,
             pkName,
@@ -219,9 +219,9 @@ export class TableImpl implements BaseTable {
     if (index) {
       return index.map(indexedColumn => {
         return {
-          autoIncrement: (indexedColumn.autoIncrement as unknown) as boolean,
-          order: (indexedColumn.order as unknown) as Order,
-          schema: (columnMap.get(indexedColumn.name) as unknown) as Column,
+          autoIncrement: indexedColumn.autoIncrement as unknown as boolean,
+          order: indexedColumn.order as unknown as Order,
+          schema: columnMap.get(indexedColumn.name) as unknown as Column,
         };
       });
     }
@@ -250,7 +250,7 @@ export class TableImpl implements BaseTable {
       this.getSingleKeyFn(columnMap, col.schema)
     );
     return (payload: PayloadType) =>
-      (getSingleKeyFunctions.map(fn => fn(payload)) as SingleKey[]) as Key;
+      getSingleKeyFunctions.map(fn => fn(payload)) as SingleKey[] as Key;
   }
 
   private getKeyOfIndexFn(

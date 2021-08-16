@@ -112,10 +112,7 @@ describe('MockStore', () => {
     const tx = mockStore.createTx(
       TransactionType.READ_WRITE,
       [tableSchema],
-      new Journal(
-        Global.get(),
-        new Set<Table>([tableSchema])
-      )
+      new Journal(Global.get(), new Set<Table>([tableSchema]))
     );
     const table = tx.getTable(
       tableSchema.getName(),

@@ -94,9 +94,9 @@ export class Inspector {
         .tables()
         .forEach(t => {
           const table = t as BaseTable;
-          tables[table.getName()] = (indexStore.get(
-            table.getRowIdIndexName()
-          ) as RuntimeIndex).stats().totalRows;
+          tables[table.getName()] = (
+            indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
+          ).stats().totalRows;
         });
     }
 
@@ -122,9 +122,9 @@ export class Inspector {
       if (table !== undefined && table !== null) {
         const indexStore = global.getService(Service.INDEX_STORE);
         const cache = global.getService(Service.CACHE);
-        const rowIds = (indexStore.get(
-          table.getRowIdIndexName()
-        ) as RuntimeIndex).getRange(undefined, false, limit, skip);
+        const rowIds = (
+          indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
+        ).getRange(undefined, false, limit, skip);
         if (rowIds.length) {
           contents = (cache.getMany(rowIds) as Row[]).map(row => row.payload());
         }

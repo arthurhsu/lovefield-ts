@@ -24,7 +24,7 @@ import {SimpleComparatorWithNull} from '../../lib/index/simple_comparator_with_n
 const assert = chai.assert;
 
 describe('SimpleComparator', () => {
-  const NULL: SingleKey = (null as unknown) as SingleKey;
+  const NULL: SingleKey = null as unknown as SingleKey;
 
   function checkOrderAsc(comparator: SimpleComparator): void {
     const c = comparator.compare.bind(comparator);
@@ -53,7 +53,7 @@ describe('SimpleComparator', () => {
 
     // Null-specific tests
     const c = c2.compare.bind(c2);
-    const n = (null as unknown) as SingleKey;
+    const n = null as unknown as SingleKey;
     assert.equal(Favor.TIE, c(n, n));
     assert.equal(Favor.LHS, c(0, n));
     assert.equal(Favor.RHS, c(n, 0));
@@ -86,7 +86,7 @@ describe('SimpleComparator', () => {
 
     // Null-specific tests
     const c = c2.compare.bind(c2);
-    const n = (null as unknown) as SingleKey;
+    const n = null as unknown as SingleKey;
     assert.equal(Favor.TIE, c(n, n));
     assert.equal(Favor.RHS, c(0, n));
     assert.equal(Favor.LHS, c(n, 0));

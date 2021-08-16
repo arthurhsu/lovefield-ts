@@ -49,9 +49,9 @@ export class ExportTask extends UniqueId implements Task {
 
     const tables: PayloadType = {};
     (this.schema.tables() as BaseTable[]).forEach(table => {
-      const rowIds = (indexStore.get(
-        table.getRowIdIndexName()
-      ) as RuntimeIndex).getRange();
+      const rowIds = (
+        indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
+      ).getRange();
       const payloads = cache.getMany(rowIds).map(row => (row as Row).payload());
       tables[table.getName()] = payloads;
     });

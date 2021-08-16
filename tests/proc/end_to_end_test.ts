@@ -231,12 +231,10 @@ describe('EndToEndTest', () => {
       const jobHistory = db.getSchema().table('JobHistory') as BaseTable;
       assert.isNull(jobHistory.getConstraint().getPrimaryKey());
       const row = jobHistory.createRow();
-      row.payload()['employeeId'] = dataGenerator.sampleEmployees[0].payload()[
-        'id'
-      ];
-      row.payload()[
-        'departmentId'
-      ] = dataGenerator.sampleDepartments[0].payload()['id'];
+      row.payload()['employeeId'] =
+        dataGenerator.sampleEmployees[0].payload()['id'];
+      row.payload()['departmentId'] =
+        dataGenerator.sampleDepartments[0].payload()['id'];
 
       const queryBuilder = db.insert().into(jobHistory).values([row]);
       const tx = db.createTransaction();

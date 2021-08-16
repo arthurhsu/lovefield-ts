@@ -55,8 +55,8 @@ export class TreeHelper {
     };
 
     // The node that should become the parent of the next traversed node.
-    let nextParent: TreeNode = (null as unknown) as TreeNode;
-    let copyRoot: T2 = (null as unknown) as T2;
+    let nextParent: TreeNode = null as unknown as TreeNode;
+    let copyRoot: T2 = null as unknown as T2;
 
     origTree.traverse(node => {
       const newNode = mapFn(node as T1);

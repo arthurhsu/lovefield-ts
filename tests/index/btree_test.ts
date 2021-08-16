@@ -67,29 +67,8 @@ describe('BTree', () => {
 
   // clang-format off
   const SEQUENCE = [
-    13,
-    9,
-    21,
-    17,
-    5,
-    11,
-    3,
-    25,
-    27,
-    14,
-    15,
-    31,
-    29,
-    22,
-    23,
-    38,
-    45,
-    47,
-    49,
-    1,
-    10,
-    12,
-    16,
+    13, 9, 21, 17, 5, 11, 3, 25, 27, 14, 15, 31, 29, 22, 23, 38, 45, 47, 49, 1,
+    10, 12, 16,
   ];
 
   const SEQUENCE2: Array<[number, string]> = [
@@ -1473,10 +1452,10 @@ describe('BTree', () => {
       (tree.max() as unknown[])[0] as unknown[]
     );
 
-    tree.set(([-1, null] as unknown) as Key, 9996);
-    tree.set(([null, '33'] as unknown) as Key, 9997);
-    tree.set(([777, null] as unknown) as Key, 9998);
-    tree.set(([null, null] as unknown) as Key, 9999);
+    tree.set([-1, null] as unknown as Key, 9996);
+    tree.set([null, '33'] as unknown as Key, 9997);
+    tree.set([777, null] as unknown as Key, 9998);
+    tree.set([null, null] as unknown as Key, 9999);
     assert.equal(SEQUENCE2.length + 4, tree.getRange().length);
 
     assert.sameOrderedMembers(
@@ -1521,7 +1500,7 @@ describe('BTree', () => {
     ];
     // clang-format on
     for (let i = 0; i < data.length; ++i) {
-      tree.add((data[i] as unknown) as Key, i);
+      tree.add(data[i] as unknown as Key, i);
     }
     const keyRange = [[SingleKeyRange.only('G'), SingleKeyRange.only('X')]];
     assert.sameOrderedMembers([6], tree.getRange(keyRange));

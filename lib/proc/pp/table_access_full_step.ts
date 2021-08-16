@@ -56,9 +56,9 @@ export class TableAccessFullStep extends PhysicalQueryPlanNode {
     context?: Context
   ): Relation[] {
     const table = this.table as BaseTable;
-    const rowIds = (this.indexStore.get(
-      table.getRowIdIndexName()
-    ) as RuntimeIndex).getRange();
+    const rowIds = (
+      this.indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
+    ).getRange();
 
     return [
       Relation.fromRows(this.cache.getMany(rowIds) as Row[], [

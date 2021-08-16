@@ -78,7 +78,7 @@ describe('Exception', () => {
     const e = new Exception(
       ErrorCode.SIMULATED_ERROR,
       '3',
-      (undefined as unknown) as string
+      undefined as unknown as string
     );
     assert.equal(BASE_URL + '999&p0=3&p1=undefined', e.message);
   });
@@ -106,7 +106,7 @@ describe('Exception', () => {
   });
 
   it('surviveInvalidOptions', () => {
-    const invalidOptions = ({} as unknown) as LovefieldOptions;
+    const invalidOptions = {} as unknown as LovefieldOptions;
     options.set(invalidOptions);
     const e = new Exception(
       ErrorCode.SIMULATED_ERROR,

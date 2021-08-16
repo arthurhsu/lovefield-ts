@@ -51,7 +51,7 @@ export class BTree implements RuntimeIndex {
     private uniqueKeyOnly: boolean,
     data?: BTreeNodePayload[]
   ) {
-    this.root = (undefined as unknown) as BTreeNode;
+    this.root = undefined as unknown as BTreeNode;
     this.statsObj = new IndexStats();
     if (data) {
       this.root = BTreeNode.fromData(this, data);

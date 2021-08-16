@@ -143,6 +143,6 @@ export class Row {
 
     // Remaining indices keys are implemented by overriding keyOfIndex in
     // subclasses.
-    return (null as unknown) as Key;
+    return null as unknown as Key;
   }
 }

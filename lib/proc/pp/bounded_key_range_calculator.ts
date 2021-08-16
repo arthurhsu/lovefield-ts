@@ -42,8 +42,8 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
     private indexSchema: IndexImpl,
     private predicateMap: MapSet<string, number>
   ) {
-    this.lastQueryContext = (null as unknown) as Context;
-    this.combinations = (null as unknown) as KeyRange[] | SingleKeyRange[];
+    this.lastQueryContext = null as unknown as Context;
+    this.combinations = null as unknown as KeyRange[] | SingleKeyRange[];
   }
 
   getKeyRangeCombinations(

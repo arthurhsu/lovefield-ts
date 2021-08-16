@@ -127,12 +127,12 @@ export class WebSqlTx extends BaseTx {
 
     if (this.txType === TransactionType.READ_ONLY) {
       this.db.readTransaction(
-        (callback as unknown) as SQLTransactionCallback,
+        callback as unknown as SQLTransactionCallback,
         onTxError
       );
     } else {
       this.db.transaction(
-        (callback as unknown) as SQLTransactionCallback,
+        callback as unknown as SQLTransactionCallback,
         onTxError
       );
     }

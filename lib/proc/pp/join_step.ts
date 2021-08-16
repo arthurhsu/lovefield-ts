@@ -56,7 +56,7 @@ export class JoinStep extends PhysicalQueryPlanNode {
       this.predicate.evaluatorType === EvalType.EQ
         ? JoinAlgorithm.HASH
         : JoinAlgorithm.NESTED_LOOP;
-    this.indexJoinInfo = (null as unknown) as IndexJoinInfo;
+    this.indexJoinInfo = null as unknown as IndexJoinInfo;
   }
 
   toString(): string {

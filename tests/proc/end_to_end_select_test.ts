@@ -989,9 +989,11 @@ describe('EndToEndSelectTest', () => {
 
       // Verifying that each group has the correct count of employees.
       const employeesPerJobCount = obj[fn.count(e.col('id')).getName()];
-      const expectedEmployeesPerJobCount = (dataGenerator.employeeGroundTruth.employeesPerJob.get(
-        obj[e.col('jobId').getName()] as string
-      ) as string[]).length;
+      const expectedEmployeesPerJobCount = (
+        dataGenerator.employeeGroundTruth.employeesPerJob.get(
+          obj[e.col('jobId').getName()] as string
+        ) as string[]
+      ).length;
       assert.equal(expectedEmployeesPerJobCount, employeesPerJobCount);
     });
   }
@@ -1006,9 +1008,11 @@ describe('EndToEndSelectTest', () => {
 
       // Verifying that each group has the correct count of employees.
       const employeesPerJobCount = obj['idc'] as number;
-      const expectedEmployeesPerJobCount = (dataGenerator.employeeGroundTruth.employeesPerJob.get(
-        obj['jid'] as string
-      ) as string[]).length;
+      const expectedEmployeesPerJobCount = (
+        dataGenerator.employeeGroundTruth.employeesPerJob.get(
+          obj['jid'] as string
+        ) as string[]
+      ).length;
       assert.equal(expectedEmployeesPerJobCount, employeesPerJobCount);
     });
   }
@@ -1169,7 +1173,7 @@ describe('EndToEndSelectTest', () => {
     column: Column,
     order: Order
   ): void {
-    let soFar: ValueOperandType = (null as unknown) as ValueOperandType;
+    let soFar: ValueOperandType = null as unknown as ValueOperandType;
     results.forEach((result, index) => {
       const value = result[column.getName()] as ValueOperandType;
       if (index > 0) {
@@ -1185,9 +1189,8 @@ describe('EndToEndSelectTest', () => {
     actualEmployees: PayloadType[]
   ): void {
     const employeeSchema = schema as BaseTable;
-    const expectedEmployeeIds = dataGenerator.employeeGroundTruth.employeesPerJob.get(
-      jobId
-    ) as string[];
+    const expectedEmployeeIds =
+      dataGenerator.employeeGroundTruth.employeesPerJob.get(jobId) as string[];
     const actualEmployeeIds = actualEmployees.map(res => {
       const result = res as NestedPayloadType;
       return result[employeeSchema.getEffectiveName()]['id'] as string;

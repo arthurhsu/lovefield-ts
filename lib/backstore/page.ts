@@ -26,7 +26,7 @@ export class Page {
   static deserialize(data: RawRow): Page {
     return new Page(
       data.id,
-      (JSON.parse((data.value as unknown) as string) as unknown) as PayloadType
+      JSON.parse(data.value as unknown as string) as unknown as PayloadType
     );
   }
 
@@ -70,7 +70,7 @@ export class Page {
   serialize(): RawRow {
     return {
       id: this.id,
-      value: (JSON.stringify(this.payload) as unknown) as PayloadType,
+      value: JSON.stringify(this.payload) as unknown as PayloadType,
     };
   }
 }

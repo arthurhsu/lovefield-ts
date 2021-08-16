@@ -65,7 +65,7 @@ export class DefaultCache implements Cache {
         if (key >= min && key <= max) {
           const value = this.map.get(key);
           assert(value !== null && value !== undefined, 'Inconsistent cache 1');
-          data.push((value as unknown) as Row);
+          data.push(value as unknown as Row);
         }
       }, this);
     } else {
@@ -75,7 +75,7 @@ export class DefaultCache implements Cache {
         }
         const value = this.map.get(i);
         assert(value !== null && value !== undefined, 'Inconsistent cache 2');
-        data.push((value as unknown) as Row);
+        data.push(value as unknown as Row);
       }
     }
     return data;
@@ -105,6 +105,6 @@ export class DefaultCache implements Cache {
 
   private getTableRowSet(tableName: string): Set<number> {
     const ret = this.tableRows.get(tableName);
-    return (ret as unknown) as Set<number>;
+    return ret as unknown as Set<number>;
   }
 }

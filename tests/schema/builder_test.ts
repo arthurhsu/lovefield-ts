@@ -182,9 +182,8 @@ describe('Builder', () => {
 
   it('getParentForeignKeys', () => {
     const schema = createBuilder().getSchema();
-    const parentForeignKeys = Info.from(schema).getReferencingForeignKeys(
-      'Job'
-    );
+    const parentForeignKeys =
+      Info.from(schema).getReferencingForeignKeys('Job');
     const spec = new ForeignKeySpec(
       {
         action: ConstraintAction.CASCADE,
@@ -211,9 +210,9 @@ describe('Builder', () => {
     const employee = schema.table('Employee');
     assert.equal(
       'Employee.fk_JobId',
-      ((employee[
-        'jobId'
-      ] as BaseColumn).getIndex() as IndexImpl).getNormalizedName()
+      (
+        (employee['jobId'] as BaseColumn).getIndex() as IndexImpl
+      ).getNormalizedName()
     );
   });
 

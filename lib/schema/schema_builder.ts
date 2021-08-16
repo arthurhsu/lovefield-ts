@@ -42,7 +42,7 @@ export class SchemaBuilder implements Builder {
     this.schema = new DatabaseSchemaImpl(dbName, dbVersion);
     this.tableBuilders = new Map<string, TableBuilder>();
     this.finalized = false;
-    this.db = (null as unknown) as RuntimeDatabase;
+    this.db = null as unknown as RuntimeDatabase;
     this.connectInProgress = false;
   }
 

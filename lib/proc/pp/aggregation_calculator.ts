@@ -68,7 +68,7 @@ export class AggregationCalculator {
     relation: Relation,
     column: Column
   ): AggregationResult {
-    let result: AggregationResult = (null as unknown) as AggregationResult;
+    let result: AggregationResult = null as unknown as AggregationResult;
 
     switch (aggregatorType) {
       case FnType.MIN:

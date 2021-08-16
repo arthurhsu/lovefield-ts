@@ -96,7 +96,7 @@ describe('GetRowCountPass', () => {
       );
       const projectStep = new ProjectStep(
         queryContext.columns,
-        (null as unknown) as Column[]
+        null as unknown as Column[]
       );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
@@ -140,7 +140,7 @@ describe('GetRowCountPass', () => {
       );
       const projectStep = new ProjectStep(
         queryContext.columns,
-        (null as unknown) as Column[]
+        null as unknown as Column[]
       );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(tableAccessStep);
@@ -189,7 +189,7 @@ describe('GetRowCountPass', () => {
       );
       const projectStep = new ProjectStep(
         queryContext.columns,
-        (null as unknown) as Column[]
+        null as unknown as Column[]
       );
       projectStep.addChild(aggregationStep);
       aggregationStep.addChild(selectStep);

@@ -48,7 +48,7 @@ export class TableDiff {
   add(row: Row): void {
     if (this.deleted.has(row.id())) {
       const modification: Modification = [
-        (this.deleted.get(row.id()) as unknown) as Row,
+        this.deleted.get(row.id()) as unknown as Row,
         row,
       ];
       this.modified.set(row.id(), modification);
@@ -59,8 +59,8 @@ export class TableDiff {
   }
 
   modify(modification: Modification): void {
-    const oldValue = (modification[0] as unknown) as Row;
-    const newValue = (modification[1] as unknown) as Row;
+    const oldValue = modification[0] as unknown as Row;
+    const newValue = modification[1] as unknown as Row;
     assert(
       oldValue.id() === newValue.id(),
       'Row ID mismatch between old/new values.'
@@ -71,7 +71,7 @@ export class TableDiff {
       this.added.set(id, newValue);
     } else if (this.modified.has(id)) {
       const overallModification: Modification = [
-        ((this.modified.get(id) as unknown) as Modification)[0],
+        (this.modified.get(id) as unknown as Modification)[0],
         newValue,
       ];
       this.modified.set(id, overallModification);
@@ -84,9 +84,9 @@ export class TableDiff {
     if (this.added.has(row.id())) {
       this.added.delete(row.id());
     } else if (this.modified.has(row.id())) {
-      const originalRow = (((this.modified.get(
-        row.id()
-      ) as unknown) as Modification)[0] as unknown) as Row;
+      const originalRow = (
+        this.modified.get(row.id()) as unknown as Modification
+      )[0] as unknown as Row;
       this.modified.delete(row.id());
       this.deleted.set(row.id(), originalRow);
     } else {

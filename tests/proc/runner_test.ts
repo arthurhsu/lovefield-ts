@@ -115,7 +115,7 @@ describe('Runner', () => {
     return runner
       .scheduleTask(queryTask)
       .then(result =>
-        assert.equal(expectedResult, (result as unknown) as string)
+        assert.equal(expectedResult, result as unknown as string)
       );
   });
 

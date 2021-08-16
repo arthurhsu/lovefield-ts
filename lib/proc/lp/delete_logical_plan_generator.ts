@@ -24,9 +24,7 @@ import {LogicalQueryPlanNode} from './logical_query_plan_node';
 import {SelectNode} from './select_node';
 import {TableAccessNode} from './table_access_node';
 
-export class DeleteLogicalPlanGenerator extends BaseLogicalPlanGenerator<
-  DeleteContext
-> {
+export class DeleteLogicalPlanGenerator extends BaseLogicalPlanGenerator<DeleteContext> {
   constructor(
     query: DeleteContext,
     private rewritePasses: Array<RewritePass<LogicalQueryPlanNode>>
