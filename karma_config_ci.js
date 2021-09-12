@@ -1,15 +1,10 @@
 module.exports = function(config) {
-  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-    console.error('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.');
-    process.exit(1);
-  }
-
   var customLaunchers = {
     sl_chrome_mac: {
       base: 'SauceLabs',
       browserName: 'chrome',
       platform: 'macOS 10.15',
-      version: '81.0'
+      version: '91.0'
     }
   };
 
