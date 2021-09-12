@@ -1,5 +1,5 @@
 # Lovefield-TS
-[![Build Status](https://github.com/arthurhsu/lovefield-ts/actions/workflows/ga.yaml/badge.svg)
+![Build Status](https://github.com/arthurhsu/lovefield-ts/actions/workflows/ga.yaml/badge.svg)
 
 [Lovefield](https://github.com/google/lovefield) Typescript port and
 modernization.
