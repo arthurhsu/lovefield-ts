@@ -1,0 +1,20 @@
+name: Lovefield-TS
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '10'
+      - uses: saucelabs/sauce-connect-action@v1
+        with:
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_ACCESSKEY }}
+          tunnelIdentifier: github-action-tunnel
+          scVersion: 4.6.4
+      - run: npm install
+      - run: npx gulp ci
+      - run: npx eslint --quiet **/*.ts
