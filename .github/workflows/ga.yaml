@@ -12,7 +12,7 @@ jobs:
       - uses: saucelabs/sauce-connect-action@v1
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
-          accessKey: ${{ secrets.SAUCE_ACCESSKEY }}
+          accesskey: ${{ secrets.SAUCE_ACCESSKEY }}
           tunnelIdentifier: github-action-tunnel
           scVersion: 4.6.4
       - run: npm install
