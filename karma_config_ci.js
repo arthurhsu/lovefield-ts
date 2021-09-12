@@ -52,7 +52,7 @@ module.exports = function(config) {
 
     sauceLabs: {
       testName: 'Lovefield TypeScript Port',
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      tunnelIdentifier: 'github-action-tunnel',
       startConnect: false,
       recordScreenshots: false,
       public: 'public'
