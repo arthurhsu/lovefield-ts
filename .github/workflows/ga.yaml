@@ -4,6 +4,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
