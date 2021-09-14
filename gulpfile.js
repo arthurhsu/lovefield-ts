@@ -368,13 +368,7 @@ gulp.task('fix', function gtsFix(cb) {
   return cmd;
 });
 
-gulp.task('pre-commit', function dis(cb) {
-  cb();
-});
-
-/*
 gulp.task('pre-commit', gulp.parallel(['build', 'check'],
     function preCommitCheck(cb) {
       cb();
     }));
-*/
