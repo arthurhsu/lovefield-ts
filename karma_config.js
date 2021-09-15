@@ -38,7 +38,11 @@ module.exports = function(config) {
         'demo',
         'external',
         'node_modules'
-      ]
+      ],
+      reports: {
+        'html': 'coverage',
+        'lcovonly': 'coverage'
+      }
     }
   })
 }  // end of module

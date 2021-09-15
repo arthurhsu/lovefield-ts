@@ -45,7 +45,11 @@ module.exports = function(config) {
         'demo',
         'external',
         'node_modules'
-      ]
+      ],
+      reports: {
+        'html': 'coverage',
+        'lcovonly': 'coverage'
+      }
     },
 
     concurrency: 1,

@@ -30,6 +30,7 @@
     "@types/websql": "0.0.27",
     "chai": "^4.2.0",
     "chalk": "^3.0.0",
+    "codecov": "^3.8.3",
     "diff": "^4.0.2",
     "eslint": "^6.8.0",
     "fs-extra": "^8.1.0",
@@ -57,6 +58,5 @@
     "through2": "^3.0.2",
     "toposort-class": "^1.0.1",
     "typescript": "^3.9.7"
-  },
-  "dependencies": {}
+  }
 }
