@@ -37,7 +37,6 @@ export class DefaultOptions implements LovefieldOptions {
   }
 }
 
-/* eslint-disable @typescript-eslint/class-name-casing */
 // @export
 export class options {
   static set(opt?: LovefieldOptions): void {
@@ -53,4 +52,3 @@ export class options {
     Global.get().setOptions(options);
   }
 }
-/* eslint-enable @typescript-eslint/class-name-casing */

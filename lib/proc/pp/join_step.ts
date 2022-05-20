@@ -31,11 +31,14 @@ import {Relation} from '../relation';
 
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
+/* eslint-disable no-unused-vars */
+// The enum is used but eslint will still complain, so just disable it.
 enum JoinAlgorithm {
   HASH = 'hash',
   INDEX_NESTED_LOOP = 'index_nested_loop',
   NESTED_LOOP = 'nested_loop',
 }
+/* eslint-enable */
 
 export class JoinStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;

@@ -28,6 +28,6 @@ export class UnboundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   ): SingleKeyRange[] | KeyRange[] {
     return this.indexSchema.columns.length === 1
       ? [SingleKeyRange.all()]
-      : [this.indexSchema.columns.map(col => SingleKeyRange.all())];
+      : [this.indexSchema.columns.map(() => SingleKeyRange.all())];
   }
 }

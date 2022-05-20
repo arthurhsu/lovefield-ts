@@ -20,7 +20,6 @@ import {Column} from '../schema/column';
 import {StarColumn} from './star_column';
 
 // Keep lower case class name for compatibility with Lovefield API.
-/* eslint-disable @typescript-eslint/class-name-casing */
 // @export
 export class fn {
   static avg(col: Column): Column {
@@ -56,4 +55,3 @@ export class fn {
     return new AggregatedColumn(col, FnType.GEOMEAN);
   }
 }
-/* eslint-enable @typescript-eslint/class-name-casing */

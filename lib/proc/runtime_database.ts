@@ -169,6 +169,7 @@ export class RuntimeDatabase implements DatabaseConnection {
     observerRegistry.removeObserver(builder, callback);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createTransaction(type?: TransactionType): Transaction {
     this.checkActive();
     return new RuntimeTransaction(this.global);

@@ -17,6 +17,7 @@
 import {ErrorCode, Type} from './enum';
 import {Exception} from './exception';
 
+/* eslint-disable no-unused-vars */
 export enum EvalType {
   BETWEEN = 'between',
   EQ = 'eq',
@@ -28,6 +29,7 @@ export enum EvalType {
   MATCH = 'match',
   NEQ = 'neq',
 }
+/* eslint-enable */
 
 type ValueType = boolean | number | string;
 

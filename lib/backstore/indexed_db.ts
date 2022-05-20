@@ -176,13 +176,13 @@ export class IndexedDB implements BackStore {
       tx,
       this.bundledMode
     );
-    this.removeIndexTables(db, tx);
+    this.removeIndexTables(db);
     this.createTables(db);
     return onUpgrade(rawDb);
   }
 
   // Removes Lovefield-created index tables.
-  private removeIndexTables(db: IDBDatabase, tx: IDBTransaction): void {
+  private removeIndexTables(db: IDBDatabase): void {
     const storeNames = [] as string[];
     for (let i = 0; i < db.objectStoreNames.length; ++i) {
       const name = db.objectStoreNames.item(i) as string;

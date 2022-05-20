@@ -17,6 +17,7 @@ import {MapSet} from '../structs/map_set';
 
 // The following states represent the life cycle of a transaction. These states
 // are exclusive meaning that a tx can be only on one state at a given time.
+/* eslint-disable no-unused-vars */
 export enum TransactionState {
   CREATED = 0,
   ACQUIRING_SCOPE = 1,
@@ -27,6 +28,7 @@ export enum TransactionState {
   ROLLING_BACK = 6,
   FINALIZED = 7,
 }
+/* eslint-enable */
 
 export class StateTransition {
   static get(): StateTransition {

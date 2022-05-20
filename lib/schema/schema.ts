@@ -18,7 +18,6 @@ import {Builder} from './builder';
 import {SchemaBuilder} from './schema_builder';
 
 // Keep lower case class name for compatibility with Lovefield API.
-/* eslint-disable @typescript-eslint/class-name-casing */
 // TODO(arthurhsu): FIXME: Builder should be a public interface, not concrete
 // class. Currently Builder has no @export.
 // @export
@@ -32,4 +31,3 @@ export class schema {
     return new SchemaBuilder(name, version) as unknown as Builder;
   }
 }
-/* eslint-disable @typescript-eslint/class-name-casing */
