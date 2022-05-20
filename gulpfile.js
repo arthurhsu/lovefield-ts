@@ -18,7 +18,6 @@ const fs = require('fs-extra');
 const glob = require('glob');
 const gulp = require('gulp');
 const debug = require('gulp-debug');
-const guppy = require('git-guppy')(gulp);
 const mocha = require('gulp-mocha');
 const sourcemaps = require('gulp-sourcemaps');
 const tsc = require('gulp-typescript');

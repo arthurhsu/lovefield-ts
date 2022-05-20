@@ -10,7 +10,6 @@ process).
 * Install Chrome
 * Install Node 12+
 * `npm install`
-* `node node_modules/guppy-cli/bin/index.js pre-commit`
 
 Lovefield-ts uses gulp 4, which is incompatible with gulp 3 that original
 Lovefield uses. If you had installed gulp globally as suggested in README of
