@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '10'
+          node-version: '16'
       - uses: saucelabs/sauce-connect-action@v1
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
@@ -23,4 +23,7 @@ jobs:
       - run: npm install
       - run: npx gulp ci
       - run: npx eslint --quiet **/*.ts
-      - run: npx codecov
+      - uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
