@@ -136,8 +136,14 @@ export class DiffCalculator {
         return left.getField(column) === right.getField(column);
       }
 
+      let columnType = column.getType()
+      if (columnType === Type.DATE_TIME) {
+        // the type is string in payload
+        columnType = Type.STRING
+      }
+
       const evalFn = this.evalRegistry.getEvaluator(
-        column.getType(),
+        columnType,
         EvalType.EQ
       );
       return evalFn(left.getField(column), right.getField(column));
