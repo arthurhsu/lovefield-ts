@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - uses: saucelabs/sauce-connect-action@v2
+      - uses: saucelabs/sauce-connect-action@v3
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accesskey: ${{ secrets.SAUCE_ACCESS_KEY }}
