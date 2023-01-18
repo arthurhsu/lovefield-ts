@@ -162,7 +162,7 @@ export class BundledObjectStore implements RuntimeTable {
         request.onsuccess = ev => {
           const page = Page.deserialize((ev.target as IDBRequest).result);
           results.set(page.getId(), page);
-          resolve();
+          resolve(undefined);
         };
       });
     }, this);

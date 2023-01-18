@@ -1275,7 +1275,7 @@ describe('EndToEndSelectTest', () => {
         assert.equal(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, e.code);
       }
       assert.isTrue(thrown);
-      resolve();
+      resolve(undefined);
     });
   });
 });
