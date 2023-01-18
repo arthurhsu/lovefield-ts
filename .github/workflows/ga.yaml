@@ -10,20 +10,19 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - uses: saucelabs/sauce-connect-action@v1
+      - uses: saucelabs/sauce-connect-action@v2
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accesskey: ${{ secrets.SAUCE_ACCESS_KEY }}
           tunnelIdentifier: github-action-tunnel
-          scVersion: 4.6.4
       - run: npm install
       - run: npx gulp ci
       - run: npx eslint --quiet **/*.ts
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
