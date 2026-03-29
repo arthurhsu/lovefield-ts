@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Row} from '../../lib/base/row';
 
-const assert = chai.assert;
 
 describe('Row', () => {
   it('create', () => {

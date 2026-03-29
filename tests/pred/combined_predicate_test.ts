@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
@@ -29,7 +29,6 @@ import {TreeNode} from '../../lib/structs/tree_node';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-const assert = chai.assert;
 
 describe('CombinedPredicate', () => {
   let db: DatabaseConnection;

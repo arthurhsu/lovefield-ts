@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Type} from '../../lib/base/enum';
 import {EvalRegistry, EvalType} from '../../lib/base/eval';
 
-const assert = chai.assert;
 
 describe('Eval_number', () => {
   let registry: EvalRegistry;

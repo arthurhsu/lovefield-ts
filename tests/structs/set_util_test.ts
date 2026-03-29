@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {isSubset, setEquals} from '../../lib/structs/set_util';
 
-const assert = chai.assert;
 
 describe('SetUtil', () => {
   it('isSubSet', () => {

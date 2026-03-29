@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {Row} from '../../lib/base/row';
@@ -30,7 +30,6 @@ import {Table} from '../../lib/schema/table';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('Prefetcher', () => {
   let env: MockEnv;

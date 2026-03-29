@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DiffCalculator} from '../../lib/base/diff_calculator';
 import {Type} from '../../lib/base/enum';
@@ -30,7 +30,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {ChangeRecord} from '../../lib/base/change_record';
 
-const assert = chai.assert;
 
 describe('DiffCalculator', () => {
   let dbSchema: DatabaseSchema;

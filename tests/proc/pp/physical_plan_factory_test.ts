@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {op} from '../../../lib/fn/op';
@@ -34,7 +34,6 @@ import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 import {TestUtil} from '../../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('PhysicalPlanFactory', () => {
   let sandbox: sinon.SinonSandbox;

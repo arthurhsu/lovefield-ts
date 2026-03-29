@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {
   ConstraintAction,
@@ -31,7 +31,6 @@ import {Info} from '../../lib/schema/info';
 import {SchemaBuilder} from '../../lib/schema/schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('Builder', () => {
   const createBuilder = () => {

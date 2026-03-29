@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {SingleKeyRange} from '../../lib/index/key_range';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 
-const assert = chai.assert;
 
 describe('RowId', () => {
   function getSampleIndex(rowCount: number): RuntimeIndex {

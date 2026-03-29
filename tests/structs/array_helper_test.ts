@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {ArrayHelper} from '../../lib/structs/array_helper';
 
-const assert = chai.assert;
 
 describe('ArrayHelper', () => {
   it('binaryInsertRemove_DefaultComparator', () => {

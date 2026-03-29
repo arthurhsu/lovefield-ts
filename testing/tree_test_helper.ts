@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {LogicalQueryPlanNode} from '../lib/proc/lp/logical_query_plan_node';
 import {PhysicalQueryPlanNode} from '../lib/proc/pp/physical_query_plan_node';
@@ -24,7 +24,6 @@ import {SelectContext} from '../lib/query/select_context';
 import {TreeHelper} from '../lib/structs/tree_helper';
 import {TreeNode} from '../lib/structs/tree_node';
 
-const assert = chai.assert;
 
 export interface TestTree {
   queryContext: SelectContext;

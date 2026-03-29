@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {RawBackStore} from '../../lib/backstore/raw_back_store';
@@ -33,7 +33,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {schema} from '../../lib/schema/schema';
 import {NestedPayloadType, TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('WebSqlRawBackStore', () => {
   let capability: Capability;

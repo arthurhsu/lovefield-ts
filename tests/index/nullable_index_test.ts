@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Order} from '../../lib/base/enum';
 import {BTree} from '../../lib/index/btree';
 import {Key, SingleKeyRange} from '../../lib/index/key_range';
@@ -23,7 +23,6 @@ import {SimpleComparator} from '../../lib/index/simple_comparator';
 import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
 import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 
-const assert = chai.assert;
 
 describe('NullableIndex', () => {
   let index: NullableIndex;

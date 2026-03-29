@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {
   ConstraintAction,
@@ -34,7 +34,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('ConstraintChecker', () => {
   let env: MockEnv;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DataStoreType} from '../../lib/base/enum';
 import {Row, PayloadType} from '../../lib/base/row';
@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {BaseColumn} from '../../lib/schema/base_column';
 
-const assert = chai.assert;
 
 describe('NullPredicate', () => {
   let db: RuntimeDatabase;

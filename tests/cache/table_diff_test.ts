@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Row} from '../../lib/base/row';
 import {Modification} from '../../lib/cache/modification';
 import {TableDiff} from '../../lib/cache/table_diff';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('TableDiff', () => {
   let table: Table;

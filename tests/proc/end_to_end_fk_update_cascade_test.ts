@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {ConstraintAction, DataStoreType, Type} from '../../lib/base/enum';
@@ -24,7 +24,6 @@ import {Builder} from '../../lib/schema/builder';
 import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 
-const assert = chai.assert;
 
 interface SampleRows {
   tableA: Row[];

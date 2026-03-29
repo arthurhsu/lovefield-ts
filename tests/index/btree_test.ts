@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {ErrorCode, Order} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {BTree, BTreeNode} from '../../lib/index/btree';
@@ -29,7 +29,6 @@ import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_num
 import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('BTree', () => {
   let c: SimpleComparator;

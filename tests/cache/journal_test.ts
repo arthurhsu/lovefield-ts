@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ErrorCode} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
@@ -27,7 +27,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('Journal', () => {
   const NULL = null as unknown as Key;

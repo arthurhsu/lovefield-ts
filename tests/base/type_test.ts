@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {DEFAULT_VALUES} from '../../lib/base/enum';
 
-const assert = chai.assert;
 
 describe('Type', () => {
   // This test is used to test that default values set in the code will

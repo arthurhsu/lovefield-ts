@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {Capability} from '../../lib/base/capability';
 import {DatabaseConnection} from '../../lib/base/database_connection';
@@ -24,7 +24,6 @@ import {schema} from '../../lib/schema/schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {SmokeTester} from '../../testing/smoke_tester';
 
-const assert = chai.assert;
 
 describe('MultiDB', () => {
   let capability: Capability;

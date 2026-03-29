@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Favor} from '../../lib/base/private_enum';
 import {SingleKeyRange} from '../../lib/index/key_range';
 
-const assert = chai.assert;
 
 describe('KeyRange', () => {
   it('complement_WithBounds', () => {

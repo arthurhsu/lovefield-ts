@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {schema} from '../../lib/schema/schema';
 
-const assert = chai.assert;
 
 describe('DefaultCache', () => {
   it('implementsCache', () => {

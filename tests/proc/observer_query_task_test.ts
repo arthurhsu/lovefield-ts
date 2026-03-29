@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ChangeRecord} from '../../lib/base/change_record';
 import {DataStoreType} from '../../lib/base/enum';
@@ -26,7 +26,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-const assert = chai.assert;
 
 describe('ObserverQueryTask', () => {
   let db: RuntimeDatabase;

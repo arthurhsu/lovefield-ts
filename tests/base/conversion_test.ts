@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DataStoreType, TransactionType} from '../../lib/base/enum';
 import {TableType} from '../../lib/base/private_enum';
@@ -24,7 +24,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('Conversion', () => {
   let db: RuntimeDatabase;

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {LockType} from '../../lib/base/private_enum';
 import {LockManager} from '../../lib/proc/lock_manager';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('LockManager', () => {
   let j: Set<Table>;

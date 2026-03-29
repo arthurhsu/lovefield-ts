@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {KeyRange, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 
-const assert = chai.assert;
 
 export abstract class TestIndex {
   constructor(protected constructorFn: () => RuntimeIndex) {}

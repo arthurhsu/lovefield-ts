@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {BaseColumn} from '../../lib/schema/base_column';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('BaseColumn', () => {
   let schema: DatabaseSchema;

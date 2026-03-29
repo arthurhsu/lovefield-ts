@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ExternalChangeObserver} from '../../lib/backstore/external_change_observer';
 import {ObservableStore} from '../../lib/backstore/observable_store';
@@ -32,7 +32,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('ExternalChangeObserver', () => {
   let db: RuntimeDatabase;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {Row} from '../../../lib/base/row';
 import {CrossProductStep} from '../../../lib/proc/pp/cross_product_step';
@@ -24,7 +24,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('CrossProductStep', () => {
   let schema: DatabaseSchema;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {BTree} from '../../lib/index/btree';
@@ -28,7 +28,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('MemoryIndexStore', () => {
   let indexStore: IndexStore;

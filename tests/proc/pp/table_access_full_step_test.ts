@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {TableAccessFullStep} from '../../../lib/proc/pp/table_access_full_step';
 import {BaseTable} from '../../../lib/schema/base_table';
@@ -23,7 +23,6 @@ import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('TableAccessFullStep', () => {
   let schema: DatabaseSchema;

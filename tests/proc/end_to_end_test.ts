@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {bind} from '../../lib/base/bind';
 import {Capability} from '../../lib/base/capability';
@@ -33,7 +33,6 @@ import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 type Connector = () => Promise<DatabaseConnection>;
 

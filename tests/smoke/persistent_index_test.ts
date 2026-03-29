@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {BackStore} from '../../lib/backstore/back_store';
 import {DataStoreType, TransactionType} from '../../lib/base/enum';
@@ -32,7 +32,6 @@ import {BaseTable} from '../../lib/schema/base_table';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('PersistentIndex', () => {
   let db: RuntimeDatabase;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Order} from '../../../lib/base/enum';
 import {SingleKeyRange} from '../../../lib/index/key_range';
 import {IndexRangeScanStep} from '../../../lib/proc/pp/index_range_scan_step';
@@ -25,7 +25,6 @@ import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('IndexRangeScanStep', () => {
   let env: MockEnv;

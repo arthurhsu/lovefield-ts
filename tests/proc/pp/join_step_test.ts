@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {Type} from '../../../lib/base/enum';
 import {Row} from '../../../lib/base/row';
@@ -28,7 +28,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {schema} from '../../../lib/schema/schema';
 import {MockEnv} from '../../../testing/mock_env';
 
-const assert = chai.assert;
 
 describe('JoinStep', () => {
   let env: MockEnv;

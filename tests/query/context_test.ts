@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {ConstraintAction, ConstraintTiming, Type} from '../../lib/base/enum';
 import {DeleteContext} from '../../lib/query/delete_context';
 import {InsertContext} from '../../lib/query/insert_context';
@@ -24,7 +24,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {schema} from '../../lib/schema/schema';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 
-const assert = chai.assert;
 
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.

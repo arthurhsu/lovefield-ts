@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {EvalType, IndexableType} from '../../../lib/base/eval';
 import {Row} from '../../../lib/base/row';
@@ -31,7 +31,6 @@ import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder
 import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
 
-const assert = chai.assert;
 
 describe('AggregationStep', () => {
   let e: Table;
@@ -57,7 +56,7 @@ describe('AggregationStep', () => {
     // The precision to use when comparing floating point numbers.
     const epsilon = Math.pow(10, -9);
     try {
-      chai.assert.approximately(expected, value, epsilon);
+      assert.approximately(expected, value, epsilon);
     } catch (e) {
       return false;
     }

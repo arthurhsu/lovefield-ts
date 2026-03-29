@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {TransactionType} from '../../lib/base/enum';
 import {TaskPriority} from '../../lib/base/private_enum';
 import {Resolver} from '../../lib/base/resolver';
@@ -23,7 +23,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockTask} from '../../testing/mock_task';
 
-const assert = chai.assert;
 
 describe('Runner', () => {
   let runner: Runner;

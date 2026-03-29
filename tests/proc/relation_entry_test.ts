@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Row} from '../../lib/base/row';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 
-const assert = chai.assert;
 
 describe('RelationEntry', () => {
   it('combineEntries', () => {

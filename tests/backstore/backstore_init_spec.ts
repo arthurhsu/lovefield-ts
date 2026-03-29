@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {IndexedDB} from '../../lib/backstore/indexed_db';
 import {Memory} from '../../lib/backstore/memory';
@@ -26,7 +26,6 @@ import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('BackStoreInit', () => {
   if (!Capability.get().indexedDb) {

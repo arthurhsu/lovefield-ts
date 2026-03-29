@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {ErrorCode} from '../../lib/base/enum';
 import {Exception} from '../../lib/base/exception';
 import {Global} from '../../lib/base/global';
@@ -21,7 +21,6 @@ import {LovefieldOptions} from '../../lib/base/lovefield_options';
 import {options} from '../../lib/base/options';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('Exception', () => {
   TestUtil.setDebug();

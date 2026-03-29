@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ObservableStore} from '../../lib/backstore/observable_store';
 import {TransactionType} from '../../lib/base/enum';
@@ -34,7 +34,6 @@ import {MockStore} from '../../testing/backstore/mock_store';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('MockStore', () => {
   let actualStore: ObservableStore;

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Order} from '../../lib/base/enum';
 import {Favor} from '../../lib/base/private_enum';
 import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
 
-const assert = chai.assert;
 
 describe('MultiKeyComparator', () => {
   function shuffleAndTest(testFn: (c: MultiKeyComparator) => void): void {

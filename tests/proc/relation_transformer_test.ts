@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {EvalType} from '../../lib/base/eval';
 import {Row} from '../../lib/base/row';
 import {fn} from '../../lib/fn/fn';
@@ -28,7 +28,6 @@ import {EmployeeDataGenerator} from '../../testing/hr_schema/employee_data_gener
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 
-const assert = chai.assert;
 
 describe('RelationTransformer', () => {
   let j: Table;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DataStoreType, Order} from '../../lib/base/enum';
 import {PayloadType, Row} from '../../lib/base/row';
@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('DateIndex', () => {
   let db: RuntimeDatabase;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {TransactionType} from '../lib/base/enum';
@@ -44,10 +44,10 @@ export class TestUtil {
       fn();
     } catch (e) {
       thrown = true;
-      chai.assert.isTrue(e instanceof Exception);
-      chai.assert.equal(exceptionCode, e.code);
+      assert.isTrue(e instanceof Exception);
+      assert.equal(exceptionCode, e.code);
     }
-    chai.assert.isTrue(thrown);
+    assert.isTrue(thrown);
   }
 
   static assertPromiseReject(
@@ -55,9 +55,9 @@ export class TestUtil {
     promise: Promise<unknown>
   ): Promise<unknown> {
     return promise.then(
-      () => chai.assert.fail(),
+      () => assert.fail(),
       (e: Exception) => {
-        chai.assert.equal(exceptionCode, e.code);
+        assert.equal(exceptionCode, e.code);
       }
     );
   }

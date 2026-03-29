@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {DataStoreType, ErrorCode} from '../../lib/base/enum';
@@ -24,7 +24,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('SimulateError', () => {
   let sandbox: sinon.SinonSandbox;

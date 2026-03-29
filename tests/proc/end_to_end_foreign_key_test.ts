@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {
   ConstraintTiming,
@@ -30,7 +30,6 @@ import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('EndToEndForeignKey', () => {
   let db: RuntimeDatabase;

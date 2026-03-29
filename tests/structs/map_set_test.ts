@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {MapSet} from '../../lib/structs/map_set';
 
-const assert = chai.assert;
 
 describe('MapSet', () => {
   function getSampleMapSet(): MapSet<number, number> {

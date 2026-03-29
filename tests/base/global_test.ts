@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {ErrorCode} from '../../lib/base/enum';
 import {Global} from '../../lib/base/global';
 import {ServiceId} from '../../lib/base/service_id';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('Global', () => {
   let global: Global;

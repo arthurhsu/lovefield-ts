@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ErrorCode, Order, Type} from '../../lib/base/enum';
 import {Row} from '../../lib/base/row';
@@ -24,7 +24,6 @@ import {IndexImpl} from '../../lib/schema/index_impl';
 import {TableBuilder} from '../../lib/schema/table_builder';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('TableBuilder', () => {
   it('throws_DuplicateColumn', () => {

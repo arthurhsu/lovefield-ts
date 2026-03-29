@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {MathHelper} from '../../lib/structs/math_helper';
 
-const assert = chai.assert;
 
 describe('MathHelper', () => {
   it('longestCommonSequence', () => {

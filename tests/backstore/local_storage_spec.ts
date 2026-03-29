@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {LocalStorage} from '../../lib/backstore/local_storage';
 import {Capability} from '../../lib/base/capability';
@@ -27,7 +27,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('LocalStorage', () => {
   let db: LocalStorage;

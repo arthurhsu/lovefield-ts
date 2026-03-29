@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {Capability} from '../../lib/base/capability';
 import {DataStoreType} from '../../lib/base/enum';
@@ -23,7 +23,6 @@ import {ConnectOptions} from '../../lib/schema/connect_options';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 
-const assert = chai.assert;
 
 describe('ImportTask', () => {
   let capability: Capability;

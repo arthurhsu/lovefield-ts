@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {ConstraintAction} from '../../lib/base/enum';
 import {Info} from '../../lib/schema/info';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 // TODO(arthurhsu): add static builders when available.
 describe('Info', () => {

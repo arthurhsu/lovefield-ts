@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {bind} from '../../lib/base/bind';
 import {DataStoreType, ErrorCode, Order} from '../../lib/base/enum';
@@ -33,7 +33,6 @@ import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {NestedPayloadType} from '../../testing/test_util';
 import {ValueOperandType} from '../../lib/pred/operand_type';
 
-const assert = chai.assert;
 
 describe('EndToEndSelectTest', () => {
   let db: RuntimeDatabase;

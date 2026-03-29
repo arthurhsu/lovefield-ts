@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {bind} from '../../lib/base/bind';
 import {DataStoreType, Order} from '../../lib/base/enum';
@@ -27,7 +27,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-const assert = chai.assert;
 
 describe('toSql', () => {
   let db: RuntimeDatabase;

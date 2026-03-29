@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {TreeNode} from '../../lib/structs/tree_node';
 
-const assert = chai.assert;
 
 describe('TreeNode', () => {
   it('ctor', () => {

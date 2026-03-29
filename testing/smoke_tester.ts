@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {BackStore} from '../lib/backstore/back_store';
 import {TransactionStats} from '../lib/backstore/transaction_stats';
@@ -26,7 +26,6 @@ import {Row} from '../lib/base/row';
 import {Service} from '../lib/base/service';
 import {BaseTable} from '../lib/schema/base_table';
 
-const assert = chai.assert;
 
 // Smoke test for the most basic DB operations, Create, Read, Update, Delete.
 export class SmokeTester {

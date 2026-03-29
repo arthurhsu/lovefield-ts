@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {DataStoreType, Type} from '../../lib/base/enum';
 import {Inspector} from '../../lib/base/inspect';
@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Builder} from '../../lib/schema/builder';
 import {schema} from '../../lib/schema/schema';
 
-const assert = chai.assert;
 
 describe('Inspect', () => {
   let expectedDate: Date;

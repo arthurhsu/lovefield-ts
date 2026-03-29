@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {bind} from '../../lib/base/bind';
 import {DatabaseConnection} from '../../lib/base/database_connection';
 import {DataStoreType, ErrorCode} from '../../lib/base/enum';
@@ -24,7 +24,6 @@ import {UpdateBuilder} from '../../lib/query/update_builder';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 
 describe('UpdateTest', () => {
   let db: DatabaseConnection;

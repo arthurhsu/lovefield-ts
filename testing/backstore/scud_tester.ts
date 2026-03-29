@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {BackStore} from '../../lib/backstore/back_store';
 import {TransactionType} from '../../lib/base/enum';
@@ -129,11 +129,11 @@ export class ScudTester {
       this.db = this.reload();
     }
     return this.selectAll().then(results => {
-      chai.assert.equal(rows.length, results.length);
+      assert.equal(rows.length, results.length);
       rows.forEach((row, index) => {
         const retrievedRow = results[index];
-        chai.assert.equal(row.id(), retrievedRow.id());
-        chai.assert.deepEqual(row.payload(), retrievedRow.payload());
+        assert.equal(row.id(), retrievedRow.id());
+        assert.deepEqual(row.payload(), retrievedRow.payload());
       });
     });
   }

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {DataStoreType} from '../../lib/base/enum';
 import {PayloadType, Row} from '../../lib/base/row';
 import {op} from '../../lib/fn/op';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-const assert = chai.assert;
 
 describe('NotOperator', () => {
   let db: RuntimeDatabase;

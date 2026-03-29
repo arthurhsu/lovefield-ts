@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {NoOpStep} from '../../../lib/proc/pp/no_op_step';
 import {TableAccessByRowIdStep} from '../../../lib/proc/pp/table_access_by_row_id_step';
@@ -25,7 +25,6 @@ import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('TableAccessByRowId', () => {
   let schema: DatabaseSchema;

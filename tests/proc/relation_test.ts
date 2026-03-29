@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {Row, PayloadType} from '../../lib/base/row';
 import {Relation} from '../../lib/proc/relation';
@@ -26,7 +26,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('Relation', () => {
   let schema: DatabaseSchema;

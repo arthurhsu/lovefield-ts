@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {TreeHelper} from '../../lib/structs/tree_helper';
 import {TreeNode} from '../../lib/structs/tree_node';
 
-const assert = chai.assert;
 
 class TreeNode2 extends TreeNode {
   constructor(readonly id: number) {

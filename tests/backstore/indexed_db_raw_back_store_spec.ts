@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import {IndexedDB} from '../../lib/backstore/indexed_db';
@@ -28,7 +28,6 @@ import {Builder} from '../../lib/schema/builder';
 import {schema} from '../../lib/schema/schema';
 import {TestUtil} from '../../testing/test_util';
 
-const assert = chai.assert;
 const skip = !Capability.get().indexedDb;
 const test = skip ? describe.skip : describe;
 

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {IndexHelper} from '../../lib/index/index_helper';
 
-const assert = chai.assert;
 
 describe('IndexHelper', () => {
   it('hashCode', () => {

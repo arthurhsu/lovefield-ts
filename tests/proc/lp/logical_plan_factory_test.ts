@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {bind} from '../../../lib/base/bind';
 import {op} from '../../../lib/fn/op';
 import {PredicateNode} from '../../../lib/pred/predicate_node';
@@ -26,7 +26,6 @@ import {TreeHelper} from '../../../lib/structs/tree_helper';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-const assert = chai.assert;
 
 describe('LogicalPlanFactory', () => {
   let logicalPlanFactory: LogicalPlanFactory;

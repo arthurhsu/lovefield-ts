@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 
 import {EvalType} from '../../lib/base/eval';
 import {Row, PayloadType} from '../../lib/base/row';
@@ -30,7 +30,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {NullableDataGenerator} from '../../testing/nullable_data_generator';
 
-const assert = chai.assert;
 
 interface SampleDataType {
   departments: Row[];

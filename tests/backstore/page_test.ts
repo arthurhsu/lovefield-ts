@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Page} from '../../lib/backstore/page';
 import {Row} from '../../lib/base/row';
 
-const assert = chai.assert;
 
 describe('Page', () => {
   const MAGIC = Math.pow(2, Page.BUNDLE_EXPONENT);

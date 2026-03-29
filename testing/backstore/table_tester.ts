@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {Resolver} from '../../lib/base/resolver';
 import {Row} from '../../lib/base/row';
 import {RuntimeTable} from '../../lib/base/runtime_table';
-
-const assert = chai.assert;
 
 export class TableTester {
   constructor(readonly creator: () => RuntimeTable) {}

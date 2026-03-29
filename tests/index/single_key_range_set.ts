@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as chai from 'chai';
+import {assert} from 'chai';
 import {SingleKeyRange} from '../../lib/index/key_range';
 import {SingleKeyRangeSet} from '../../lib/index/single_key_range_set';
 
-const assert = chai.assert;
 
 describe('SingleKeyRangeSet', () => {
   function generateTestRanges(): {[key: string]: SingleKeyRange} {
