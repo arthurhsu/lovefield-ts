@@ -7,6 +7,7 @@
       "es6"
     ],
     "module": "commonjs",
+    "moduleResolution": "node",
     "newLine": "lf",
     "noImplicitAny": true,
     "noImplicitReturns": true,
