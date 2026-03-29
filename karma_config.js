@@ -39,6 +39,12 @@ module.exports = function(config) {
         'external',
         'node_modules'
       ],
+      bundlerOptions: {
+        validateSyntax: false,
+        acornOptions: {
+          ecmaVersion: 2020
+        }
+      },
       reports: {
         'html': 'coverage',
         'lcovonly': 'coverage'
