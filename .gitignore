@@ -5,3 +5,6 @@ node_modules/
 out/
 package-lock.json
 settings.json
+tests/all_tests.ts
+tests/harness/test_bundle.js
+tests/harness/test_bundle.js.map
