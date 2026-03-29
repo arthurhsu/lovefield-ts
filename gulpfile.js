@@ -21,10 +21,10 @@ const debug = require('gulp-debug');
 const mocha = require('gulp-mocha');
 const sourcemaps = require('gulp-sourcemaps');
 const tsc = require('gulp-typescript');
+const karma = require('karma');
 const nopt = require('nopt');
 const path = require('path');
 const Toposort = require('toposort-class');
-const webpack = require('webpack-stream');
 
 const DIST_DIR = path.join(__dirname, 'dist');
 const DIST_FILE = path.join(DIST_DIR, 'lf.ts');
@@ -93,46 +93,6 @@ gulp.task('buildTesting', function actualBuildTesting() {
       .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest(path.join(tsProject.options.outDir, 'testing')));
 });
-
-gulp.task('genAllTests', (cb) => {
-  glob('tests/**/*_test.ts', (err, files) => {
-    if (err) {
-      cb(err);
-      return;
-    }
-    const content = files.map(f => {
-      // Use relative path for imports
-      const relativePath = path.relative('tests', f).replace(/\\/g, '/');
-      return `import './${relativePath.replace('.ts', '')}';`;
-    }).join('\n');
-    fs.writeFileSync('tests/all_tests.ts', content, 'utf-8');
-    cb();
-  });
-});
-
-gulp.task('bundleTests', gulp.series('genAllTests', function actualBundleTests() {
-  return gulp.src('tests/all_tests.ts')
-    .pipe(webpack({
-      mode: 'development',
-      devtool: 'source-map',
-      module: {
-        rules: [
-          {
-            test: /\.ts$/,
-            use: 'ts-loader',
-            exclude: /node_modules/,
-          },
-        ],
-      },
-      resolve: {
-        extensions: ['.ts', '.js'],
-      },
-      output: {
-        filename: 'test_bundle.js',
-      },
-    }))
-    .pipe(gulp.dest('tests/harness'));
-}));
 
 gulp.task('buildTests', function actualBuildTests() {
   getProject();
@@ -323,20 +283,26 @@ function quickTest() {
       .pipe(mocha(mochaOptions));
 }
 
-gulp.task('test', gulp.series(['dist', 'bundleTests'], function actualTest(cb) {
+gulp.task('test', gulp.series(['dist', 'buildTest'], function actualTest(cb) {
+  if (!fs.existsSync(getProject().options.outDir)) {
+    cb('Compile Error!');
+    return;
+  }
+
   if (isQuickMode()) {
     return quickTest();
   } else {
-    const runner = exec('npx ts-node tests/selenium_runner.ts');
-    runner.stdout.on('data', data => { console.log(data); });
-    runner.stderr.on('data', data => { console.error(data); });
-    runner.on('close', code => {
-      if (code !== 0) {
-        cb('Tests failed!');
-      } else {
-        cb();
-      }
+    let server = new karma.Server({
+      configFile: path.join(__dirname, 'karma_config.js'),
+      singleRun: true,
+      client: { mocha: { grep: getGrepPattern() } }
     });
+
+    server.on('run_complete', () => {
+      karma.stopper.stop();
+      cb();
+    });
+    server.start();
   }
 }));
 

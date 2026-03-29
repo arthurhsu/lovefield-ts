@@ -26,10 +26,6 @@
     ]
   },
   "exclude": [
-    "node_modules",
-    "demo",
-    "external",
-    "dist",
-    "tests/harness"
+    "node_modules"
   ]
 }
