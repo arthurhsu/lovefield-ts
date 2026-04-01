@@ -161,13 +161,19 @@ export class TestMultiRowNumericalKey extends TestIndex {
 
       // Detecting min key and corresponding value to be used later in
       // assertions.
-      if (this.minKeyValuePair === null || key < this.minKeyValuePair[0]) {
+      if (
+        this.minKeyValuePair === null ||
+        key < (this.minKeyValuePair[0] as number)
+      ) {
         this.minKeyValuePair = [key, [value1, value2]];
       }
 
       // Detecting max key and corresponding value to be used later in
       // assertions.
-      if (this.maxKeyValuePair === null || key > this.maxKeyValuePair[0]) {
+      if (
+        this.maxKeyValuePair === null ||
+        key > (this.maxKeyValuePair[0] as number)
+      ) {
         this.maxKeyValuePair = [key, [value1, value2]];
       }
     }

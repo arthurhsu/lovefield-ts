@@ -33,7 +33,7 @@ export class Global {
   private static instance: Global;
 
   private services: Map<string, object>;
-  private opt: LovefieldOptions;
+  private opt!: LovefieldOptions;
 
   constructor() {
     this.services = new Map<string, object>();

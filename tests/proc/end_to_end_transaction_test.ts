@@ -281,7 +281,7 @@ describe('EndToEndTransaction', () => {
       isThrown = true;
 
       // 201: Duplicate keys are not allowed.
-      assert.equal(ErrorCode.DUPLICATE_KEYS, ex.code);
+      assert.equal(ErrorCode.DUPLICATE_KEYS, (ex as any).code);
 
       // Checking that the transaction has been finalized.
       // 107: Invalid transaction state transition: {0} -> {1}.

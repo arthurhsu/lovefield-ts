@@ -143,7 +143,8 @@ export class ObjectStore implements RuntimeTable {
         // longer required.
         request = this.store.getAll();
       } catch (e) {
-        reject(new Exception(ErrorCode.CANT_LOAD_IDB, e.name, e.message));
+        const err = e as Error;
+        reject(new Exception(ErrorCode.CANT_LOAD_IDB, err.name, err.message));
         return;
       }
 
@@ -155,7 +156,8 @@ export class ObjectStore implements RuntimeTable {
           );
           resolve(rows);
         } catch (e) {
-          reject(new Exception(ErrorCode.CANT_READ_IDB, e.name, e.message));
+          const err = e as Error;
+          reject(new Exception(ErrorCode.CANT_READ_IDB, err.name, err.message));
         }
       };
     });

@@ -187,7 +187,7 @@ export class SmokeTester {
     } catch (e) {
       thrown = true;
       // 107: Invalid transaction state transition.
-      assert.equal(ErrorCode.INVALID_TX_STATE, e.code);
+      assert.equal(ErrorCode.INVALID_TX_STATE, (e as any).code);
     }
     assert.isTrue(thrown);
 
@@ -199,7 +199,7 @@ export class SmokeTester {
       await tx2.exec([select2]);
     } catch (e) {
       thrown = true;
-      assert.equal(ErrorCode.INVALID_SELECT, e.code);
+      assert.equal(ErrorCode.INVALID_SELECT, (e as any).code);
     }
     assert.isTrue(thrown);
   }

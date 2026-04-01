@@ -260,7 +260,7 @@ describe('EndToEndTest', () => {
         await q2.exec();
       } catch (ex) {
         // 201: Duplicate keys are not allowed.
-        assert.equal(ErrorCode.DUPLICATE_KEYS, ex.code);
+        assert.equal(ErrorCode.DUPLICATE_KEYS, (ex as any).code);
         failed = false;
       }
 
@@ -295,7 +295,7 @@ describe('EndToEndTest', () => {
       try {
         await q2.exec();
       } catch (ex) {
-        assert.equal(ErrorCode.DUPLICATE_KEYS, ex.code);
+        assert.equal(ErrorCode.DUPLICATE_KEYS, (ex as any).code);
         failed = false;
       }
       assert.isFalse(failed);
@@ -651,7 +651,7 @@ describe('EndToEndTest', () => {
         await queryBuilder.exec();
       } catch (ex) {
         // 501: Value is not bounded.
-        assert.equal(ErrorCode.UNBOUND_VALUE, ex.code);
+        assert.equal(ErrorCode.UNBOUND_VALUE, (ex as any).code);
         failed = false;
       }
       assert.isFalse(failed);

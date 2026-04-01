@@ -16,21 +16,21 @@
 
 export class Resolver<T> {
   readonly promise: Promise<T>;
-  private resolveFn!: (value?: T | PromiseLike<T> | undefined) => void;
-  private rejectFn!: (reason?: object) => void;
+  private resolveFn!: (value: T | PromiseLike<T>) => void;
+  private rejectFn!: (reason?: any) => void;
 
   constructor() {
     this.promise = new Promise<T>((resolve, reject) => {
-      this.resolveFn = resolve;
+      this.resolveFn = resolve as any;
       this.rejectFn = reject;
     });
   }
 
   resolve(value?: T | PromiseLike<T>): void {
-    this.resolveFn(value);
+    this.resolveFn(value as any);
   }
 
-  reject(reason?: object): void {
+  reject(reason?: any): void {
     this.rejectFn(reason);
   }
 }

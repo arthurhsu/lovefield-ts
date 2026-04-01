@@ -18,11 +18,11 @@ import {ErrorCode} from '../lib/base/enum';
 import {LovefieldOptions} from '../lib/base/lovefield_options';
 
 export class DebugOptions implements LovefieldOptions {
-  debugMode: boolean;
-  memoryOnly: boolean;
-  exceptionUrl: string;
-  useGetAll: boolean;
-  private messages: Map<ErrorCode, string>;
+  debugMode!: boolean;
+  memoryOnly!: boolean;
+  exceptionUrl!: string;
+  useGetAll!: boolean;
+  private messages!: Map<ErrorCode, string>;
   private static instance = null as unknown as DebugOptions;
 
   static get(): DebugOptions {

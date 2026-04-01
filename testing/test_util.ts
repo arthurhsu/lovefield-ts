@@ -45,7 +45,7 @@ export class TestUtil {
     } catch (e) {
       thrown = true;
       assert.isTrue(e instanceof Exception);
-      assert.equal(exceptionCode, e.code);
+      assert.equal(exceptionCode, (e as any).code);
     }
     assert.isTrue(thrown);
   }

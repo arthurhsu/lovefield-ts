@@ -180,12 +180,18 @@ export class TestSingleRowNumericalKey extends TestIndex {
       index.add(key, value);
 
       // Detecting min key and corresponding value to be used in assertions.
-      if (this.minKeyValuePair === null || key < this.minKeyValuePair[0]) {
+      if (
+        this.minKeyValuePair === null ||
+        key < (this.minKeyValuePair[0] as number)
+      ) {
         this.minKeyValuePair = [key, [value]];
       }
 
       // Detecting max key and corresponding value to be used in assertions.
-      if (this.maxKeyValuePair === null || key > this.maxKeyValuePair[0]) {
+      if (
+        this.maxKeyValuePair === null ||
+        key > (this.maxKeyValuePair[0] as number)
+      ) {
         this.maxKeyValuePair = [key, [value]];
       }
     }

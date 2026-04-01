@@ -8,6 +8,8 @@
     ],
     "module": "commonjs",
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
+    "useUnknownInCatchVariables": true,
     "newLine": "lf",
     "noImplicitAny": true,
     "noImplicitReturns": true,

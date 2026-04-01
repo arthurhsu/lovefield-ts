@@ -107,13 +107,13 @@ export class RuntimeDatabase implements DatabaseConnection {
           );
           externalChangeObserver.startObserving();
         }
-        if (options && options['enableInspector'] && window) {
+        if (options && options['enableInspector'] && window && window.top) {
           // Exposes a global '#lfExport' method, that can be used by the
           // Lovefield Inspector Devtools Chrome extension.
-          window.top['#lfInspect'] = Inspector.inspect;
+          (window.top as any)['#lfInspect'] = Inspector.inspect;
 
           // TypeScript port specific: this is needed for perf benchmark.
-          window.top['#lfRowId'] = Row.getNextId;
+          (window.top as any)['#lfRowId'] = Row.getNextId;
         }
         const prefetcher = new Prefetcher(this.global);
         return prefetcher.init(this.schema);

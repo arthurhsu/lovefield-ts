@@ -32,7 +32,7 @@ export function createPredicate<T>(
   }
 
   const r = rhs as BaseColumn;
-  if (r.getIndex && r.getIndices) {
+  if (typeof r.getIndex === 'function' && typeof r.getIndices === 'function') {
     return new JoinPredicate(lhs, r, type);
   }
 

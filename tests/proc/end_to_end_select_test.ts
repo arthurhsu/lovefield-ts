@@ -1239,7 +1239,7 @@ describe('EndToEndSelectTest', () => {
       await q.exec();
     } catch (ex) {
       // 501: Value is not bounded.
-      assert.equal(ErrorCode.UNBOUND_VALUE, ex.code);
+      assert.equal(ErrorCode.UNBOUND_VALUE, (ex as any).code);
       failed = false;
     }
     assert.isFalse(failed);
@@ -1257,7 +1257,7 @@ describe('EndToEndSelectTest', () => {
       } catch (e) {
         thrown = true;
         // 510: Cannot bind to given array: out of range..
-        assert.equal(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, e.code);
+        assert.equal(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, (e as any).code);
       }
       assert.isTrue(thrown);
 
@@ -1271,7 +1271,7 @@ describe('EndToEndSelectTest', () => {
       } catch (e) {
         thrown = true;
         // 510: Cannot bind to given array: out of range.
-        assert.equal(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, e.code);
+        assert.equal(ErrorCode.BIND_ARRAY_OUT_OF_RANGE, (e as any).code);
       }
       assert.isTrue(thrown);
       resolve(undefined);

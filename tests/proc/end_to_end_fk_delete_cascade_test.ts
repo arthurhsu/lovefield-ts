@@ -154,7 +154,7 @@ describe('EndToEndFKDeleteCascade', () => {
       await db.delete().from(tA).exec();
     } catch (e) {
       // 203: Foreign key constraint violation on constraint {0}.
-      assert.equal(ErrorCode.FK_VIOLATION, e.code);
+      assert.equal(ErrorCode.FK_VIOLATION, (e as any).code);
 
       tx = db.createTransaction();
       const res = (await tx.exec([
