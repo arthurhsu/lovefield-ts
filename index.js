@@ -15,7 +15,7 @@
  */
 'use strict';
 
-const lf = require('./dist/es5/lf.js');
+const lf = require('./dist/lovefield.js');
 
 const options = {
   debugMode: false,

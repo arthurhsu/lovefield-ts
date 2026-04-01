@@ -32,11 +32,9 @@ The port attempts to maintain API compatibility as much as possible.
 
 ### Dist changes
 
-* Lovefield-TS no longer ships minified JavaScript file. Instead, it provides
-  * A concatenated TypeScript file that you can directly include in your
-    TypeScript project and compile to any module system you would like to use.
-  * Pre-compiled ES5/ES6 modules with source map and TypeScript declarations.
-    Just import it and use your existing packing/minifying config.
+* Lovefield-TS no longer ships minified JavaScript file. Instead, it provides:
+  * Clean **CommonJS** (`dist/lovefield.js`), **ES Module** (`dist/lovefield.esm.js`), and **UMD** (`dist/lovefield.umd.js`) bundles.
+  * TypeScript declaration files in `dist/`.
 * Lovefield-TS no longer uses flags to do compile-time control. Instead, a
   runtime options object will be used. The interface is defined in
   `lib/base/lovefield_options.ts`. Users are supposed to define an object
@@ -53,14 +51,14 @@ The port attempts to maintain API compatibility as much as possible.
 
   Please note, in ES6 modules, we usually do
   ```javascript
-  import * as lf from './node_modules/lovefield-ts/dist/es6/lf.js';
-  const order = lf.Order.DESC;  // still prefixed by lf, ES6 module syntax
+  import * as lf from 'lovefield-ts';
+  const order = lf.Order.DESC;
   ```
 
   In CommonJS module system used by Node.js, we usually do
   ```javascript
   const lf = require('lovefield-ts');
-  const order = lf.Order.DESC;  // still prefixed by lf, CommonJS syntax.
+  const order = lf.Order.DESC;
   ```
 
 * TypeScript users cannot refer column by name, use `.col()` API.

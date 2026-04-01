@@ -1,27 +1,34 @@
 # Building and development instructions
 
-The project is set to use modern Typescript (3.8+) and Mocha/Chai/Sinon/Karma as
-its test framework. Compilation/test speed has improved significantly (we are
-talking about less than 10 minutes full CI time compared to original hour+ long
-process).
+The project is set to use modern Typescript (6.0+) and Mocha/Chai/Sinon as
+its test framework. We use **Rollup** for library bundling and **Webpack** for 
+browser test bundling.
 
 ## Development set up
 
 * Install Chrome
-* Install Node 12+
+* Install Node 18+
 * `npm install`
-
-Lovefield-ts uses gulp 4, which is incompatible with gulp 3 that original
-Lovefield uses. If you had installed gulp globally as suggested in README of
-Lovefield, please run:
-
-```
-npm uninstall -g gulp
-```
 
 ## Development flow
 
-Run `gulp` to see the commands.
+Use `npm run` to see available commands or refer to the list below:
 
-Please note that certain tests are only runnable in Karma (e.g. IndexedDB
-related tests), and these tests will be named *_spec.ts.
+### Build Tasks
+* `npm run build`: Compiles the source code and tests using `tsc`. Output is in `out/`.
+* `npm run build:dist`: Generates the library bundles in `dist/` (CJS, ESM, and UMD formats) using Rollup.
+* `npm run clean`: Removes all intermediate files, build outputs, and coverage reports.
+
+### Testing Tasks
+* `npm run test`: Runs the full test suite in a headless Chrome browser via Selenium.
+* `npm run test:node`: Runs the subset of tests that are compatible with Node.js via Mocha.
+* `npm run test:prepare`: Generates the test bundle (`tests/harness/test_bundle.js`) required for browser testing.
+
+### Code Quality
+* `npm run lint`: Runs `gts check` to verify code style and linting rules.
+* `npm run fix`: Runs `gts fix` to automatically resolve linting and formatting issues.
+
+## Testing Details
+
+* **Node.js Tests**: These are unit tests that do not depend on browser-specific APIs (like IndexedDB or WebSQL).
+* **Browser Tests**: Full end-to-end tests that run in a real browser environment. These are essential for verifying backstore implementations.

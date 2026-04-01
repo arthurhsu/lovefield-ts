@@ -32,6 +32,7 @@
     "demo",
     "external",
     "dist",
-    "tests/harness"
+    "tests/harness",
+    "scripts"
   ]
 }
