@@ -18,7 +18,7 @@ jobs:
       - run: npm run test:node
       - run: npm run test
       - run: npm run lint
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
