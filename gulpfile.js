@@ -94,17 +94,18 @@ gulp.task('buildTesting', function actualBuildTesting() {
 });
 
 gulp.task('genAllTests', (cb) => {
-  // TODO: change to tests/**/*.ts to include *spec
-  glob('tests/**/*_test.ts', (err, files) => {
+  glob('tests/**/*.ts', (err, files) => {
     if (err) {
       cb(err);
       return;
     }
-    const content = files.map(f => {
-      // Use relative path for imports
-      const relativePath = path.relative('tests', f).replace(/\\/g, '/');
-      return `import './${relativePath.replace('.ts', '')}';`;
-    }).join('\n');
+    const content = files
+      .filter(f => !f.endsWith('selenium_runner.ts') && !f.includes('tests/harness/'))
+      .map(f => {
+        // Use relative path for imports
+        const relativePath = path.relative('tests', f).replace(/\\/g, '/');
+        return `import './${relativePath.replace('.ts', '')}';`;
+      }).join('\n');
     fs.writeFileSync('tests/all_tests.ts', content, 'utf-8');
     cb();
   });
