@@ -84,7 +84,7 @@ describe('OrderByIndexPass', () => {
 
   function getIndexByName(table: BaseTable, indexName: string): IndexImpl {
     return (table.getIndices() as IndexImpl[]).filter(
-      index => index.name === indexName
+      (index) => index.name === indexName
     )[0];
   }
 

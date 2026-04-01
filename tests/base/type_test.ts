@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {DEFAULT_VALUES} from '../../lib/base/enum';
 
-
 describe('Type', () => {
   // This test is used to test that default values set in the code will
   // not cause browser crash due to standards non-compliance.

@@ -39,9 +39,9 @@ export class OrderByStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     if (relations.length === 1) {
@@ -68,7 +68,7 @@ export class OrderByStep extends PhysicalQueryPlanNode {
   private findDistinctColumn(relation: Relation): Column | null {
     let distinctColumn: Column | null = null;
 
-    this.orderBy.every(entry => {
+    this.orderBy.every((entry) => {
       const tempDistinctColumn = fn.distinct(entry.column);
       if (relation.hasAggregationResult(tempDistinctColumn)) {
         distinctColumn = tempDistinctColumn;
@@ -113,8 +113,8 @@ export class OrderByStep extends PhysicalQueryPlanNode {
     // that Function.bind() is significantly hurting performance (measured on
     // Chrome 40).
     return this.comparator(
-      column => lhs.getField(column) as IndexableType,
-      column => rhs.getField(column) as IndexableType
+      (column) => lhs.getField(column) as IndexableType,
+      (column) => rhs.getField(column) as IndexableType
     );
   }
 
@@ -123,7 +123,7 @@ export class OrderByStep extends PhysicalQueryPlanNode {
     // passed in this.comparator_ instead of using one method and binding to lhs
     // and to rhs respectively.
     return this.comparator(
-      column => {
+      (column) => {
         // If relations are sorted based on a non-aggregated column, choose
         // the last entry of each relation as a representative row (same as
         // SQLite).
@@ -133,7 +133,7 @@ export class OrderByStep extends PhysicalQueryPlanNode {
             : lhs.entries[lhs.entries.length - 1].getField(column)
         ) as IndexableType;
       },
-      column => {
+      (column) => {
         return (
           column instanceof AggregatedColumn
             ? rhs.getAggregationResult(column)

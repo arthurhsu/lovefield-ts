@@ -31,20 +31,17 @@ export class EmployeeDataGenerator {
   // Sets the number of departments that will be used for all generated
   // employees.
   setDepartmentCount(count) {
-    this.departmentCount = Math.min(
-        count,
-        Sample.DEPARTMENT_NAMES.length,
-    );
+    this.departmentCount = Math.min(count, Sample.DEPARTMENT_NAMES.length);
   }
 
   generate(count) {
     assert(
-        count >= this.jobCount,
-        'employee count must be greater or equal to job count',
+      count >= this.jobCount,
+      'employee count must be greater or equal to job count'
     );
     assert(
-        count >= this.departmentCount,
-        'employee count must be greater or equal to department count',
+      count >= this.departmentCount,
+      'employee count must be greater or equal to department count'
     );
 
     const rawData = this.generateRaw(count);
@@ -60,7 +57,7 @@ export class EmployeeDataGenerator {
       const email =
         firstName.toLowerCase() + '.' + lastName.toLowerCase() + '@theweb.com';
       const phoneNumber = String(
-          1000000000 + Math.floor(Math.random() * 999999999),
+        1000000000 + Math.floor(Math.random() * 999999999)
       );
       const commissionPercent = 0.15 + Math.random();
 
@@ -78,9 +75,9 @@ export class EmployeeDataGenerator {
         managerId: 'managerId',
         // Ensuring that each department is assigned at least one employee.
         departmentId:
-          i < this.departmentCount ?
-            `departmentId${i}` :
-            this.genDepartmentId(),
+          i < this.departmentCount
+            ? `departmentId${i}`
+            : this.genDepartmentId(),
         photo: this.genPhoto(),
       };
     }

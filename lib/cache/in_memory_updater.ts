@@ -41,7 +41,7 @@ export class InMemoryUpdater {
   // Updates all indices and the cache to reflect the changes that are described
   // in the given diffs.
   update(tableDiffs: TableDiff[]): void {
-    tableDiffs.forEach(tableDiff => {
+    tableDiffs.forEach((tableDiff) => {
       this.updateIndicesForDiff(tableDiff);
       this.updateCacheForDiff(tableDiff);
     }, this);
@@ -53,14 +53,14 @@ export class InMemoryUpdater {
   updateTableIndicesForRow(table: Table, modification: Modification): void {
     const indices = this.indexStore.getTableIndices(table.getName());
     let updatedIndices = 0;
-    indices.forEach(index => {
+    indices.forEach((index) => {
       try {
         this.updateTableIndexForRow(index, modification);
         updatedIndices++;
       } catch (e) {
         // Rolling back any indices that were successfully updated, since
         // updateTableIndicesForRow must be atomic.
-        indices.slice(0, updatedIndices).forEach(idx => {
+        indices.slice(0, updatedIndices).forEach((idx) => {
           this.updateTableIndexForRow(idx, [modification[1], modification[0]]);
         }, this);
 
@@ -76,10 +76,10 @@ export class InMemoryUpdater {
     diff
       .getDeleted()
       .forEach((row, rowId) => this.cache.remove(tableName, rowId));
-    diff.getAdded().forEach(row => this.cache.set(tableName, row));
+    diff.getAdded().forEach((row) => this.cache.set(tableName, row));
     diff
       .getModified()
-      .forEach(modification =>
+      .forEach((modification) =>
         this.cache.set(tableName, modification[1] as Row)
       );
   }
@@ -88,7 +88,7 @@ export class InMemoryUpdater {
   private updateIndicesForDiff(diff: TableDiff): void {
     const table = this.schema.table(diff.getName());
     const modifications = diff.getAsModifications();
-    modifications.forEach(modification => {
+    modifications.forEach((modification) => {
       this.updateTableIndicesForRow(table, modification);
     }, this);
   }

@@ -22,7 +22,7 @@ export class MultiKeyComparatorWithNull extends MultiKeyComparator {
   constructor(orders: Order[]) {
     super(orders);
 
-    this.comparators = orders.map(order => {
+    this.comparators = orders.map((order) => {
       return new SimpleComparatorWithNull(order);
     });
   }

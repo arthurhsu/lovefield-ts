@@ -32,7 +32,7 @@ export class MultiKeyComparator implements Comparator {
   protected comparators: SimpleComparator[];
 
   constructor(orders: Order[]) {
-    this.comparators = orders.map(order => new SimpleComparator(order));
+    this.comparators = orders.map((order) => new SimpleComparator(order));
   }
 
   compare(lk: Key, rk: Key): Favor {
@@ -91,12 +91,12 @@ export class MultiKeyComparator implements Comparator {
   }
 
   getAllRange(): KeyRange {
-    return this.comparators.map(c => c.getAllRange());
+    return this.comparators.map((c) => c.getAllRange());
   }
 
   sortKeyRanges(keyRanges: KeyRange[]): KeyRange[] {
-    const outputKeyRanges = keyRanges.filter(range => {
-      return range.every(r => r !== undefined && r !== null);
+    const outputKeyRanges = keyRanges.filter((range) => {
+      return range.every((r) => r !== undefined && r !== null);
     });
 
     // Ranges are in the format of
@@ -107,7 +107,7 @@ export class MultiKeyComparator implements Comparator {
       this.comparators.length
     );
     for (let i = 0; i < keysPerDimensions.length; i++) {
-      keysPerDimensions[i] = outputKeyRanges.map(range => range[i]);
+      keysPerDimensions[i] = outputKeyRanges.map((range) => range[i]);
     }
     // Sort ranges per dimension.
     keysPerDimensions.forEach((keys, i) => {
@@ -122,7 +122,7 @@ export class MultiKeyComparator implements Comparator {
       outputKeyRanges.length
     );
     for (let i = 0; i < finalKeyRanges.length; i++) {
-      finalKeyRanges[i] = keysPerDimensions.map(keys => keys[i]);
+      finalKeyRanges[i] = keysPerDimensions.map((keys) => keys[i]);
     }
 
     // Perform another sorting to properly arrange order of ranges with either

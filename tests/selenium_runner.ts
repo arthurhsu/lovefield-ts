@@ -16,8 +16,8 @@
 
 import 'chromedriver';
 import * as path from 'path';
-import { Builder, WebDriver } from 'selenium-webdriver';
-import { Options } from 'selenium-webdriver/chrome';
+import {Builder, WebDriver} from 'selenium-webdriver';
+import {Options} from 'selenium-webdriver/chrome';
 
 // A simple Selenium runner that opens the test harness HTML and waits for Mocha results.
 async function runTests() {
@@ -33,7 +33,8 @@ async function runTests() {
     .build();
 
   try {
-    const harnessPath = 'file://' + path.resolve(__dirname, 'harness/test_harness.html');
+    const harnessPath =
+      'file://' + path.resolve(__dirname, 'harness/test_harness.html');
     console.log('Opening test harness:', harnessPath);
     await driver.get(harnessPath);
 
@@ -47,7 +48,7 @@ async function runTests() {
       return false;
     }, 60000); // 60 seconds timeout
 
-    const { failures, passes } = results as any;
+    const {failures, passes} = results as any;
     console.log(`Tests finished: ${passes} passed, ${failures} failed.`);
 
     if (failures > 0) {

@@ -28,7 +28,6 @@ import {Builder} from '../../lib/schema/builder';
 import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 
-
 interface SampleRows {
   tableA: Row[];
   tableB: Row[];

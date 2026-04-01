@@ -217,7 +217,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // other column.
   private checkDistinctColumn(): void {
     const distinctColumns = this.query.columns.filter(
-      column =>
+      (column) =>
         column instanceof AggregatedColumn &&
         column.aggregatorType === FnType.DISTINCT
     );
@@ -245,7 +245,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
 
   // Checks that grouped columns are indexable.
   private checkGroupByColumns(): void {
-    const isInvalid = this.query.groupBy.some(column => {
+    const isInvalid = this.query.groupBy.some((column) => {
       const type = column.getType();
       return type === Type.OBJECT || type === Type.ARRAY_BUFFER;
     });
@@ -260,11 +260,11 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // columns, or only aggregated columns. See checkProjectionList_ for details.
   private checkProjectionListNotMixed(): void {
     const aggregatedColumnsExist = this.query.columns.some(
-      column => column instanceof AggregatedColumn
+      (column) => column instanceof AggregatedColumn
     );
     const nonAggregatedColumnsExist =
       this.query.columns.some(
-        column => !(column instanceof AggregatedColumn)
+        (column) => !(column instanceof AggregatedColumn)
       ) || this.query.columns.length === 0;
 
     if (aggregatedColumnsExist && nonAggregatedColumnsExist) {
@@ -276,7 +276,7 @@ export class SelectBuilder extends BaseBuilder<SelectContext> {
   // Checks that the specified aggregations are valid, in terms of aggregation
   // type and column type.
   private checkAggregations(): void {
-    this.query.columns.forEach(column => {
+    this.query.columns.forEach((column) => {
       const isValidAggregation =
         !(column instanceof AggregatedColumn) ||
         this.isAggregationValid(column.aggregatorType, column.getType());

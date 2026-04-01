@@ -19,7 +19,10 @@ import {Table} from '../../schema/table';
 import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 export class InsertOrReplaceNode extends LogicalQueryPlanNode {
-  constructor(readonly table: Table, readonly values: Row[]) {
+  constructor(
+    readonly table: Table,
+    readonly values: Row[]
+  ) {
     super();
   }
 

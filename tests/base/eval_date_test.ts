@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {Type} from '../../lib/base/enum';
 import {EvalRegistry, EvalType} from '../../lib/base/eval';
 
-
 describe('Eval_date', () => {
   let registry: EvalRegistry;
 

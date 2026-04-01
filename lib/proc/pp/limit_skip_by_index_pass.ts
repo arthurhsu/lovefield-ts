@@ -49,10 +49,10 @@ export class LimitSkipByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
 
     const nodes: Array<SkipStep | LimitStep> = TreeHelper.find(
       rootNode,
-      node => node instanceof LimitStep || node instanceof SkipStep
+      (node) => node instanceof LimitStep || node instanceof SkipStep
     ) as Array<SkipStep | LimitStep>;
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       this.mergeToIndexRangeScanStep(node, indexRangeScanStep);
     }, this);
 

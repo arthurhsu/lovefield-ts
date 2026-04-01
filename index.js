@@ -19,7 +19,7 @@ const lf = require('./dist/lovefield.js');
 
 const options = {
   debugMode: false,
-  memoryOnly: true
+  memoryOnly: true,
 };
 lf.options.set(options);
 

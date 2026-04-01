@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {KeyRange, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 
-
 export abstract class TestIndex {
   constructor(protected constructorFn: () => RuntimeIndex) {}
 
@@ -39,7 +38,7 @@ export abstract class TestIndex {
       this.testMultiRange,
     ];
 
-    testCases.forEach(tc => {
+    testCases.forEach((tc) => {
       const index = this.constructorFn();
       tc.call(this, index);
     }, this);

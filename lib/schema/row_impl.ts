@@ -44,7 +44,7 @@ export class RowImpl extends Row {
     }
 
     const obj: PayloadType = {};
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       obj[col.getName()] = col.isNullable()
         ? null
         : DEFAULT_VALUES.get(col.getType());
@@ -54,7 +54,7 @@ export class RowImpl extends Row {
 
   toDbPayload(): PayloadType {
     const obj: PayloadType = {};
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       const key = col.getName();
       const type = col.getType();
       let value = (this.payload() as PayloadType)[key];

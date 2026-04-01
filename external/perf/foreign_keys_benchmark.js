@@ -71,82 +71,67 @@ export class ForeignKeysBenchmark {
   }
 
   async insertParent() {
-    return this.db
-        .insert()
-        .into(this.parent)
-        .values(this.parents)
-        .exec();
+    return this.db.insert().into(this.parent).values(this.parents).exec();
   }
 
   async validateInsertParent() {
-    const results = await this.db
-        .select()
-        .from(this.parent)
-        .exec();
+    const results = await this.db.select().from(this.parent).exec();
     return Promise.resolve(results.length == this.parents.length);
   }
 
   async insertChild() {
-    return this.db
-        .insert()
-        .into(this.child)
-        .values(this.children)
-        .exec();
+    return this.db.insert().into(this.child).values(this.children).exec();
   }
 
   async validateInsertChild() {
-    const results = await this.db
-        .select()
-        .from(this.child)
-        .exec();
+    const results = await this.db.select().from(this.child).exec();
     return Promise.resolve(results.length == this.children.length);
   }
 
   async updateParent() {
     return this.db
-        .insertOrReplace()
-        .into(this.parent)
-        .values(this.updatedParents)
-        .exec();
+      .insertOrReplace()
+      .into(this.parent)
+      .values(this.updatedParents)
+      .exec();
   }
 
   async validateUpdateParent() {
-    const results = await this.db
-        .select()
-        .from(this.parent)
-        .exec();
-    const validated = results.length == this.parents.length &&
-        results.every((obj) => obj['name'].indexOf('updatedName') != -1);
+    const results = await this.db.select().from(this.parent).exec();
+    const validated =
+      results.length == this.parents.length &&
+      results.every((obj) => obj['name'].indexOf('updatedName') != -1);
     return Promise.resolve(validated);
   }
 
   async updateChild() {
     const targetIndex = Math.floor(this.parentsWithChildren.length / 2);
     const targetParentId =
-        this.parentsWithChildren[targetIndex].payload()['id'];
+      this.parentsWithChildren[targetIndex].payload()['id'];
     const targetChildId = Math.floor(this.children.length / 2);
 
     // Updating all children that have parentId greater than a given id.
     return this.db
-        .update(this.child)
-        .set(this.child['parentId'], targetParentId)
-        .where(this.child['id'].gt(targetChildId))
-        .exec();
+      .update(this.child)
+      .set(this.child['parentId'], targetParentId)
+      .where(this.child['id'].gt(targetChildId))
+      .exec();
   }
 
   async validateUpdateChild() {
     const targetIndex = Math.floor(this.parentsWithChildren.length / 2);
     const targetParentId =
-        this.parentsWithChildren[targetIndex].payload()['id'];
+      this.parentsWithChildren[targetIndex].payload()['id'];
 
     const results = await this.db
-        .select()
-        .from(this.child)
-        .where(this.child['parentId'].gt(targetParentId))
-        .exec();
+      .select()
+      .from(this.child)
+      .where(this.child['parentId'].gt(targetParentId))
+      .exec();
 
-    const validated = results.length > 0 &&
-        results.every((obj) => obj['parentId'] > targetParentId);
+    const validated =
+      results.length > 0 &&
+      results.every((obj) => obj['parentId'] > targetParentId);
     return Promise.resolve(validated);
   }
 
@@ -155,20 +140,20 @@ export class ForeignKeysBenchmark {
     const targetId = this.parentsWithoutChildren[0].payload()['id'];
 
     return this.db
-        .delete()
-        .from(this.parent)
-        .where(this.parent['id'].gte(targetId))
-        .exec();
+      .delete()
+      .from(this.parent)
+      .where(this.parent['id'].gte(targetId))
+      .exec();
   }
 
   async validateDeleteParent() {
     const targetId = this.parentsWithoutChildren[0].payload()['id'];
 
     const results = await this.db
-        .select()
-        .from(this.parent)
-        .where(this.parent['id'].gte(targetId))
-        .exec();
+      .select()
+      .from(this.parent)
+      .where(this.parent['id'].gte(targetId))
+      .exec();
     return Promise.resolve(results.length == 0);
   }
 
@@ -190,32 +175,41 @@ export class ForeignKeysBenchmark {
     const suffix = ForeignKeysBenchmark.getSuffix(this.constraintTiming);
     return [
       new TestCase(
-          'InsertParent_' + this.parent.length + suffix,
-          this.insertParent.bind(this),
-          this.validateInsertParent.bind(this)),
+        'InsertParent_' + this.parent.length + suffix,
+        this.insertParent.bind(this),
+        this.validateInsertParent.bind(this)
+      ),
       new TestCase(
-          'InsertChild_' + this.children.length + suffix,
-          this.insertChild.bind(this),
-          this.validateInsertChild.bind(this)),
+        'InsertChild_' + this.children.length + suffix,
+        this.insertChild.bind(this),
+        this.validateInsertChild.bind(this)
+      ),
       new TestCase(
-          'UpdateParent_' + this.parent.length + suffix,
-          this.updateParent.bind(this),
-          this.validateUpdateParent.bind(this)),
+        'UpdateParent_' + this.parent.length + suffix,
+        this.updateParent.bind(this),
+        this.validateUpdateParent.bind(this)
+      ),
       new TestCase(
-          'UpdateChild_' + this.children.length + suffix,
-          this.updateChild.bind(this),
-          this.validateUpdateChild.bind(this)),
+        'UpdateChild_' + this.children.length + suffix,
+        this.updateChild.bind(this),
+        this.validateUpdateChild.bind(this)
+      ),
       new TestCase(
-          'DeleteParent_' + this.parentsWithoutChildren.length + suffix,
-          this.deleteParent.bind(this),
-          this.validateDeleteParent.bind(this)),
+        'DeleteParent_' + this.parentsWithoutChildren.length + suffix,
+        this.deleteParent.bind(this),
+        this.validateDeleteParent.bind(this)
+      ),
       new TestCase(
-          'DeleteChild_' + this.children.length + suffix,
-          this.deleteChild.bind(this),
-          this.validateDeleteChild.bind(this)),
+        'DeleteChild_' + this.children.length + suffix,
+        this.deleteChild.bind(this),
+        this.validateDeleteChild.bind(this)
+      ),
       new TestCase(
-          'TearDown' + suffix,
-          this.tearDown.bind(this), undefined, true),
+        'TearDown' + suffix,
+        this.tearDown.bind(this),
+        undefined,
+        true
+      ),
     ];
   }
 
@@ -234,17 +228,17 @@ export class ForeignKeysBenchmark {
 
     const schemaBuilder = lf.schema.create(`fk_bench${suffix}`, 1);
     schemaBuilder
-        .createTable('Parent')
-        .addColumn('id', lf.Type.INTEGER)
-        .addColumn('name', lf.Type.STRING)
-        .addPrimaryKey(['id']);
+      .createTable('Parent')
+      .addColumn('id', lf.Type.INTEGER)
+      .addColumn('name', lf.Type.STRING)
+      .addPrimaryKey(['id']);
 
     const childBuilder = schemaBuilder
-        .createTable('Child')
-        .addColumn('id', lf.Type.INTEGER)
-        .addColumn('parentId', lf.Type.INTEGER)
-        .addColumn('name', lf.Type.STRING)
-        .addPrimaryKey(['id']);
+      .createTable('Child')
+      .addColumn('id', lf.Type.INTEGER)
+      .addColumn('parentId', lf.Type.INTEGER)
+      .addColumn('name', lf.Type.STRING)
+      .addPrimaryKey(['id']);
 
     if (constraintTiming !== null) {
       childBuilder.addForeignKey('fk_parentId', {
@@ -259,11 +253,11 @@ export class ForeignKeysBenchmark {
 
   static async create(constraintTiming) {
     const schemaBuilder =
-        ForeignKeysBenchmark.getSchemaBuilder(constraintTiming);
-    const db = await(schemaBuilder.connect({
+      ForeignKeysBenchmark.getSchemaBuilder(constraintTiming);
+    const db = await schemaBuilder.connect({
       storeType: lf.DataStoreType.MEMORY,
       enableInspector: true,
-    }));
+    });
     return Promise.resolve(new ForeignKeysBenchmark(db, constraintTiming));
   }
 }

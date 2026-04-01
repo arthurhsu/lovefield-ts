@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {ArrayHelper} from '../../lib/structs/array_helper';
 
-
 describe('ArrayHelper', () => {
   it('binaryInsertRemove_DefaultComparator', () => {
     function makeChecker(
@@ -185,7 +184,7 @@ describe('ArrayHelper', () => {
   it('bucket', () => {
     assert.deepEqual(
       {1: [1, 3], 0: [2, 4]},
-      ArrayHelper.bucket([1, 2, 3, 4], v => v % 2)
+      ArrayHelper.bucket([1, 2, 3, 4], (v) => v % 2)
     );
   });
 });

@@ -30,7 +30,6 @@ import {schema} from '../../lib/schema/schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('WebSql', () => {
   let capability: Capability;
   let dbSchemaName: string;

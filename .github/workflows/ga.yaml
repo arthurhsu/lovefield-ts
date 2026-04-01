@@ -15,8 +15,9 @@ jobs:
         with:
           node-version: '25'
       - run: npm install
-      - run: npx gulp ci
-      - run: npx eslint --quiet **/*.ts
+      - run: npm run test:node
+      - run: npm run test
+      - run: npm run lint
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

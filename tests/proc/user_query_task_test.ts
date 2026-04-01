@@ -32,7 +32,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('UserQueryTask', () => {
   let db: RuntimeDatabase;
   let global: Global;
@@ -160,7 +159,7 @@ describe('UserQueryTask', () => {
 
     const results = await TestUtil.selectAll(global, j);
     assert.equal(ROW_COUNT - 1, results.length);
-    results.forEach(row => {
+    results.forEach((row) => {
       assert.equal(newTitle, row.payload()[j.col('title').getName()]);
       assert.notEqual(deletedId, row.payload()[j.col('id').getName()]);
     });
@@ -209,7 +208,7 @@ describe('UserQueryTask', () => {
       // Expecting one "change" record for each of rows with IDs jobId2, jobId3,
       // jobId4.
       assert.equal(3, changes.length);
-      changes.forEach(change => {
+      changes.forEach((change) => {
         assert.equal(1, change['addedCount']);
       });
 
@@ -232,7 +231,7 @@ describe('UserQueryTask', () => {
         ]);
         return selectQueryTask.exec();
       },
-      e => {
+      (e) => {
         promiseResolver.reject(e);
       }
     );

@@ -31,7 +31,6 @@ import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('EndToEndTransaction', () => {
   let db: RuntimeDatabase;
   let e: Table;
@@ -364,7 +363,7 @@ describe('EndToEndTransaction', () => {
       job.payload()['id'] = `SomeUniqueId${index}`;
     });
 
-    const observeCallback: ObserverCallback = changeEvents => {
+    const observeCallback: ObserverCallback = (changeEvents) => {
       assert.equal(initialJobCount + additionalJobCount, changeEvents.length);
       assert.equal(
         initialJobCount + additionalJobCount,

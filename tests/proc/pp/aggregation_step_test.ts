@@ -31,7 +31,6 @@ import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder
 import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 import {NullableDataGenerator} from '../../../testing/nullable_data_generator';
 
-
 describe('AggregationStep', () => {
   let e: Table;
   let j: Table;
@@ -146,7 +145,7 @@ describe('AggregationStep', () => {
     ]);
     aggregationStep.addChild(childStep);
 
-    return aggregationStep.exec().then(relations => {
+    return aggregationStep.exec().then((relations) => {
       const relation = relations[0];
       if (expectedValue instanceof Array) {
         assert.equal(
@@ -543,7 +542,7 @@ describe('AggregationStep', () => {
     ]);
     aggregationStep.addChild(childStep);
 
-    return aggregationStep.exec().then(relations => {
+    return aggregationStep.exec().then((relations) => {
       assert.equal(
         aggregationResult,
         relations[0].getAggregationResult(aggregatedColumn)

@@ -21,7 +21,7 @@ export class PhysicalQueryPlan {
   // Calculates the combined scope of the given list of physical query plans.
   static getCombinedScope(plans: PhysicalQueryPlan[]): Set<Table> {
     const tableSet = new Set<Table>();
-    plans.forEach(plan => {
+    plans.forEach((plan) => {
       plan.getScope().forEach(tableSet.add.bind(tableSet));
     });
     return tableSet;

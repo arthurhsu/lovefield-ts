@@ -66,7 +66,7 @@ test('IndexedDB', () => {
     sandbox.restore();
     if (db) {
       // Clearing all tables.
-      const promises = schema.tables().map(table => {
+      const promises = schema.tables().map((table) => {
         const tx = db.createTx(
           TransactionType.READ_WRITE,
           [table],
@@ -214,7 +214,7 @@ test('IndexedDB', () => {
     const generateRows = (): Row[] => {
       const rowIds = [200, 9, 1, 3, 2, 20, 100];
       const CONTENTS = {scan: 'rowid'};
-      return rowIds.map(rowId => {
+      return rowIds.map((rowId) => {
         return new Row(rowId, CONTENTS);
       });
     };
@@ -289,7 +289,7 @@ test('IndexedDB', () => {
 
   function filterTableA(): string[] {
     // Special hack to access private member
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const list = ((db as any).db as IDBDatabase).objectStoreNames;
     const results: string[] = [];
     for (let i = 0; i < list.length; ++i) {

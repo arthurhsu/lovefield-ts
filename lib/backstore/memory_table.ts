@@ -31,7 +31,7 @@ export class MemoryTable implements RuntimeTable {
     }
 
     const results: Row[] = [];
-    ids.forEach(id => {
+    ids.forEach((id) => {
       const row = this.data.get(id) || null;
       if (row !== null) {
         results.push(row);
@@ -50,7 +50,7 @@ export class MemoryTable implements RuntimeTable {
   }
 
   putSync(rows: Row[]): void {
-    rows.forEach(row => this.data.set(row.id(), row));
+    rows.forEach((row) => this.data.set(row.id(), row));
   }
 
   put(rows: Row[]): Promise<void> {
@@ -63,7 +63,7 @@ export class MemoryTable implements RuntimeTable {
       // Remove all.
       this.data.clear();
     } else {
-      ids.forEach(id => this.data.delete(id));
+      ids.forEach((id) => this.data.delete(id));
     }
   }
 

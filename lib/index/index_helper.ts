@@ -31,7 +31,7 @@ export class IndexHelper {
 
   // Compute hash key for an array.
   static hashArray(values: object[]): string {
-    const keys = values.map(value => {
+    const keys = values.map((value) => {
       return value !== undefined && value !== null
         ? IndexHelper.hashCode(value.toString()).toString(32)
         : '';

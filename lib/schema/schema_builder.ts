@@ -85,11 +85,11 @@ export class SchemaBuilder implements Builder {
     }
 
     return this.db.init(options).then(
-      db => {
+      (db) => {
         this.connectInProgress = false;
         return db;
       },
-      e => {
+      (e) => {
         this.connectInProgress = false;
         // TODO(arthurhsu): Add a new test case to verify that failed init
         // call allows the database to be deleted since we close it properly
@@ -131,11 +131,11 @@ export class SchemaBuilder implements Builder {
   private checkFkCycle(): void {
     // Builds graph.
     const nodeMap = new Map<string, GraphNode>();
-    this.schema.tables().forEach(table => {
+    this.schema.tables().forEach((table) => {
       nodeMap.set(table.getName(), new GraphNode(table.getName()));
     }, this);
     this.tableBuilders.forEach((builder, tableName) => {
-      builder.getFkSpecs().forEach(spec => {
+      builder.getFkSpecs().forEach((spec) => {
         const parentNode = nodeMap.get(spec.parentTable);
         if (parentNode) {
           parentNode.edges.add(tableName);
@@ -143,7 +143,7 @@ export class SchemaBuilder implements Builder {
       });
     });
     // Checks for cycle.
-    Array.from(nodeMap.values()).forEach(graphNode =>
+    Array.from(nodeMap.values()).forEach((graphNode) =>
       this.checkCycleUtil(graphNode, nodeMap)
     );
   }
@@ -152,7 +152,7 @@ export class SchemaBuilder implements Builder {
   // child columns, matching of types and uniqueness of referred column
   // in the parent.
   private checkForeignKeyValidity(builder: TableBuilder): void {
-    builder.getFkSpecs().forEach(specs => {
+    builder.getFkSpecs().forEach((specs) => {
       const parentTableName = specs.parentTable;
       const table = this.tableBuilders.get(parentTableName);
       if (!table) {
@@ -185,10 +185,10 @@ export class SchemaBuilder implements Builder {
   // Performs checks to avoid chains of foreign keys on same column.
   private checkForeignKeyChain(builder: TableBuilder): void {
     const fkSpecArray = builder.getFkSpecs();
-    fkSpecArray.forEach(specs => {
+    fkSpecArray.forEach((specs) => {
       const parentBuilder = this.tableBuilders.get(specs.parentTable);
       if (parentBuilder) {
-        parentBuilder.getFkSpecs().forEach(parentSpecs => {
+        parentBuilder.getFkSpecs().forEach((parentSpecs) => {
           if (parentSpecs.childColumn === specs.parentColumn) {
             // 534: Foreign key {0} refers to source column of another
             // foreign key.
@@ -201,7 +201,7 @@ export class SchemaBuilder implements Builder {
 
   private finalize(): void {
     if (!this.finalized) {
-      this.tableBuilders.forEach(builder => {
+      this.tableBuilders.forEach((builder) => {
         this.checkForeignKeyValidity(builder);
         this.schema.setTable(builder.getSchema());
       });
@@ -227,7 +227,7 @@ export class SchemaBuilder implements Builder {
     if (!graphNode.visited) {
       graphNode.visited = true;
       graphNode.onStack = true;
-      graphNode.edges.forEach(edge => {
+      graphNode.edges.forEach((edge) => {
         const childNode = nodeMap.get(edge);
         if (childNode) {
           if (!childNode.visited) {

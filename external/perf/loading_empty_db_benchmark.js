@@ -25,9 +25,9 @@ export class LoadingEmptyDBBenchmark extends DefaultBenchmark {
   getTestCases() {
     return [
       new TestCase(
-          'Init empty DB',
-          this.init.bind(this),
-          this.validateEmpty.bind(this),
+        'Init empty DB',
+        this.init.bind(this),
+        this.validateEmpty.bind(this)
       ),
     ];
   }

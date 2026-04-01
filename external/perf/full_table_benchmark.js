@@ -25,32 +25,42 @@ export class FullTableBenchmark extends DefaultBenchmark {
   getTestCases() {
     const testCases = [
       new TestCase(
-          'Init empty DB',
-          this.init.bind(this),
-          this.validateEmpty.bind(this),
-          true),
+        'Init empty DB',
+        this.init.bind(this),
+        this.validateEmpty.bind(this),
+        true
+      ),
       new TestCase(
-          'Load test data',
-          this.loadTestData.bind(
-              this, 'default_benchmark_mock_data_50k.json'), undefined, true),
+        'Load test data',
+        this.loadTestData.bind(this, 'default_benchmark_mock_data_50k.json'),
+        undefined,
+        true
+      ),
     ];
 
     for (let i = 10000; i <= 50000; i += 10000) {
-      testCases.push(new TestCase(
+      testCases.push(
+        new TestCase(
           'Insert ' + i,
           this.insert.bind(this, i),
-          this.validateInsert.bind(this, i)));
-      testCases.push(new TestCase(
-          'Select ' + i,
-          this.select.bind(this)));
-      testCases.push(new TestCase(
+          this.validateInsert.bind(this, i)
+        )
+      );
+      testCases.push(new TestCase('Select ' + i, this.select.bind(this)));
+      testCases.push(
+        new TestCase(
           'Update ' + i,
           this.updateAll.bind(this, i),
-          this.validateUpdateAll.bind(this, i)));
-      testCases.push(new TestCase(
+          this.validateUpdateAll.bind(this, i)
+        )
+      );
+      testCases.push(
+        new TestCase(
           'Delete ' + i,
           this.deleteAll.bind(this),
-          this.validateEmpty.bind(this)));
+          this.validateEmpty.bind(this)
+        )
+      );
     }
 
     return testCases;

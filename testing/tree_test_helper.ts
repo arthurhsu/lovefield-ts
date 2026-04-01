@@ -24,7 +24,6 @@ import {SelectContext} from '../lib/query/select_context';
 import {TreeHelper} from '../lib/structs/tree_helper';
 import {TreeNode} from '../lib/structs/tree_node';
 
-
 export interface TestTree {
   queryContext: SelectContext;
   root: PhysicalQueryPlanNode | LogicalQueryPlanNode;

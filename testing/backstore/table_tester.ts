@@ -36,7 +36,7 @@ export class TableTester {
     const table = this.creator();
     const nonExistingRowId = 10;
     table.get([nonExistingRowId]).then(
-      results => {
+      (results) => {
         assert.sameMembers([], results);
         resolver.resolve();
       },
@@ -61,7 +61,7 @@ export class TableTester {
       .put(rows)
       .then(() => table.get([]))
       .then(
-        results => {
+        (results) => {
           assert.equal(rowCount, results.length);
           resolver.resolve();
         },
@@ -90,8 +90,8 @@ export class TableTester {
       .put(rows)
       .then(() => table.get(rowIds))
       .then(
-        results => {
-          const resultRowIds = results.map(row => row.id());
+        (results) => {
+          const resultRowIds = results.map((row) => row.id());
           assert.sameOrderedMembers(rowIds, resultRowIds);
           resolver.resolve();
         },
@@ -124,15 +124,15 @@ export class TableTester {
     table
       .put(rows)
       .then(() => table.get([]))
-      .then(results => {
+      .then((results) => {
         assert.equal(rows.length, results.length);
         return table.remove(rowIdsToDelete);
       })
       .then(() => table.get([]))
       .then(
-        results => {
+        (results) => {
           assert.equal(rows.length - rowIdsToDelete.length, results.length);
-          results.forEach(row => {
+          results.forEach((row) => {
             assert.isTrue(rowIdsToDelete.indexOf(row.id()) === -1);
           });
           resolver.resolve();

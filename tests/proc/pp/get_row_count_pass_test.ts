@@ -52,7 +52,7 @@ describe('GetRowCountPass', () => {
     const connectOptions = {storeType: DataStoreType.MEMORY};
     return getSchemaBuilder()
       .connect(connectOptions)
-      .then(db => {
+      .then((db) => {
         conn = db;
         dbSchema = db.getSchema();
         global = (db as RuntimeDatabase).getGlobal();

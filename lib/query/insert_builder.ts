@@ -66,7 +66,7 @@ export class InsertBuilder extends BaseBuilder<InsertContext> {
     this.assertValuesPreconditions();
     if (
       rows instanceof Binder ||
-      (rows as unknown[]).some(r => r instanceof Binder)
+      (rows as unknown[]).some((r) => r instanceof Binder)
     ) {
       this.query.binder = rows;
     } else {

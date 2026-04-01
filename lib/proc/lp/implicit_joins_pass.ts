@@ -72,6 +72,8 @@ export class ImplicitJoinsPass extends RewritePass<LogicalQueryPlanNode> {
         rootNode = joinNode;
       }
     }
-    rootNode.getChildren().forEach(child => this.traverse(child, queryContext));
+    rootNode
+      .getChildren()
+      .forEach((child) => this.traverse(child, queryContext));
   }
 }

@@ -32,7 +32,10 @@ export class TableAccessFullStep extends PhysicalQueryPlanNode {
   private cache: Cache;
   private indexStore: IndexStore;
 
-  constructor(global: Global, readonly table: Table) {
+  constructor(
+    global: Global,
+    readonly table: Table
+  ) {
     super(0, ExecType.NO_CHILD);
     this.cache = global.getService(Service.CACHE);
     this.indexStore = global.getService(Service.INDEX_STORE);
@@ -48,11 +51,10 @@ export class TableAccessFullStep extends PhysicalQueryPlanNode {
   }
 
   execInternal(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     const table = this.table as BaseTable;

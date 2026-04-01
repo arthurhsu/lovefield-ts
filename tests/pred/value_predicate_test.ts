@@ -30,7 +30,6 @@ import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('ValuePredicate', () => {
   let dbSchema: DatabaseSchema;
   let tableA: Table;
@@ -331,7 +330,7 @@ describe('ValuePredicate', () => {
 
   it('unboundPredicate_Array', () => {
     const sampleRows = getTableARows(3);
-    const ids = sampleRows.map(row => (row.payload() as PayloadType)['id']);
+    const ids = sampleRows.map((row) => (row.payload() as PayloadType)['id']);
     const relation = Relation.fromRows(sampleRows, [tableA.getName()]);
 
     const binder = [bind(0), bind(1), bind(2)];
@@ -366,7 +365,7 @@ describe('ValuePredicate', () => {
 
   it('copy_UnboundPredicate_Array', () => {
     const sampleRows = getTableARows(6);
-    const ids = sampleRows.map(row => (row.payload() as PayloadType)['id']);
+    const ids = sampleRows.map((row) => (row.payload() as PayloadType)['id']);
 
     const binder = [bind(0), bind(1), bind(2)];
     const p = new ValuePredicate(tableA.col('id'), binder, EvalType.IN);

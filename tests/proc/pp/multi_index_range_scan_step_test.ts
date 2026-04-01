@@ -25,7 +25,6 @@ import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('MultiIndexRangeScanStep', () => {
   let env: MockEnv;
   let schema: DatabaseSchema;
@@ -96,10 +95,10 @@ describe('MultiIndexRangeScanStep', () => {
     step.addChild(idRangeScanStep);
     step.addChild(nameRangeScanStep);
 
-    return step.exec().then(relations => {
+    return step.exec().then((relations) => {
       assert.equal(1, relations.length);
       const relation = relations[0];
-      const actualRowIds = relation.entries.map(entry => entry.row.id());
+      const actualRowIds = relation.entries.map((entry) => entry.row.id());
       assert.sameMembers(expectedRowIds, actualRowIds);
     });
   }

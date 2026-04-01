@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {TreeHelper} from '../../lib/structs/tree_helper';
 import {TreeNode} from '../../lib/structs/tree_node';
 
-
 class TreeNode2 extends TreeNode {
   constructor(readonly id: number) {
     super();
@@ -375,7 +374,7 @@ describe('TreeHelper', () => {
   it('GetLeafNodes', () => {
     const nodes = createTestTree1();
     const leafNodes = TreeHelper.getLeafNodes(nodes[0]);
-    const leafNodeKeys = leafNodes.map(node => (node as TreeNode2).id);
+    const leafNodeKeys = leafNodes.map((node) => (node as TreeNode2).id);
     assert.sameOrderedMembers([2, 3, 4, 8, 9, 10], leafNodeKeys);
   });
 
@@ -384,9 +383,9 @@ describe('TreeHelper', () => {
     const minId = 6;
     const retrievedNodes = TreeHelper.find(
       nodes[0],
-      node => (node as TreeNode2).id >= minId
+      (node) => (node as TreeNode2).id >= minId
     );
-    retrievedNodes.forEach(node => {
+    retrievedNodes.forEach((node) => {
       assert.isTrue((node as TreeNode2).id >= minId);
     });
   });
@@ -396,12 +395,12 @@ describe('TreeHelper', () => {
     const minId = 4;
     const retrievedNodes = TreeHelper.find(
       nodes[0],
-      node => (node as TreeNode2).id >= minId,
-      node => (node as TreeNode2).id === 7
+      (node) => (node as TreeNode2).id >= minId,
+      (node) => (node as TreeNode2).id === 7
     );
     assert.sameOrderedMembers(
       [4, 5, 6, 7, 10],
-      retrievedNodes.map(node => (node as TreeNode2).id)
+      retrievedNodes.map((node) => (node as TreeNode2).id)
     );
   });
 });

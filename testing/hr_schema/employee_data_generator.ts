@@ -58,7 +58,7 @@ export class EmployeeDataGenerator {
 
     const rawData = this.generateRaw(count);
     const e = getHrDbSchemaBuilder().getSchema().table('Employee');
-    return rawData.map(object => e.createRow(object));
+    return rawData.map((object) => e.createRow(object));
   }
 
   private generateRaw(count: number): object[] {

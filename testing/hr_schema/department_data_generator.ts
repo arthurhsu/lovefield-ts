@@ -31,7 +31,7 @@ export class DepartmentDataGenerator {
   generate(count: number): Row[] {
     const rawData = this.generateRaw(count);
     const d = getHrDbSchemaBuilder().getSchema().table('Department');
-    return rawData.map(object => d.createRow(object));
+    return rawData.map((object) => d.createRow(object));
   }
 
   private generateRaw(count: number): object[] {

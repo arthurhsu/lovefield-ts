@@ -27,7 +27,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-
 describe('toSql', () => {
   let db: RuntimeDatabase;
   let j: Table;

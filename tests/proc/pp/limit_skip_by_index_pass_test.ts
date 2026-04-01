@@ -54,7 +54,7 @@ describe('LimitSkipByIndexPass', () => {
     schema = builder.getSchema();
     e = schema.table('Employee');
     pass = new LimitSkipByIndexPass();
-    return builder.connect({storeType: DataStoreType.MEMORY}).then(conn => {
+    return builder.connect({storeType: DataStoreType.MEMORY}).then((conn) => {
       db = conn;
       global = (db as RuntimeDatabase).getGlobal();
     });
@@ -66,7 +66,7 @@ describe('LimitSkipByIndexPass', () => {
 
   function getIndexByName(table: Table, indexName: string): IndexImpl {
     return ((table as BaseTable).getIndices() as IndexImpl[]).filter(
-      index => index.name === indexName
+      (index) => index.name === indexName
     )[0];
   }
 

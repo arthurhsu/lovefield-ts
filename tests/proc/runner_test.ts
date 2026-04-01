@@ -23,7 +23,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockTask} from '../../testing/mock_task';
 
-
 describe('Runner', () => {
   let runner: Runner;
   let j: Table;
@@ -63,7 +62,7 @@ describe('Runner', () => {
       TaskPriority.USER_QUERY_TASK
     );
 
-    const promises = [queryTask1, queryTask2].map(queryTask =>
+    const promises = [queryTask1, queryTask2].map((queryTask) =>
       runner.scheduleTask(queryTask)
     );
     return Promise.all(promises).then(() => {
@@ -80,7 +79,7 @@ describe('Runner', () => {
     const expectedExecutionOrder: string[] = [];
 
     const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const queryTasks = ids.map(id => {
+    const queryTasks = ids.map((id) => {
       const name = `query${id}`;
       const queryTask = new MockTask(
         TransactionType.READ_WRITE,
@@ -95,7 +94,7 @@ describe('Runner', () => {
       return queryTask;
     });
 
-    const promises = queryTasks.map(task => runner.scheduleTask(task));
+    const promises = queryTasks.map((task) => runner.scheduleTask(task));
     return Promise.all(promises).then(() => {
       assert.sameOrderedMembers(expectedExecutionOrder, actualExecutionOrder);
     });
@@ -113,7 +112,7 @@ describe('Runner', () => {
 
     return runner
       .scheduleTask(queryTask)
-      .then(result =>
+      .then((result) =>
         assert.equal(expectedResult, result as unknown as string)
       );
   });
@@ -132,7 +131,7 @@ describe('Runner', () => {
 
     return runner.scheduleTask(queryTask).then(
       () => assert.fail,
-      error => assert.deepEqual(expectedError, error)
+      (error) => assert.deepEqual(expectedError, error)
     );
   });
 
@@ -212,7 +211,7 @@ describe('Runner', () => {
       TaskPriority.USER_QUERY_TASK
     );
 
-    const promises = [queryTask1, queryTask2].map(queryTask =>
+    const promises = [queryTask1, queryTask2].map((queryTask) =>
       runner.scheduleTask(queryTask)
     );
 

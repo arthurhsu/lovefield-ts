@@ -54,7 +54,7 @@ export class DiffCalculator {
       oldEntries,
       newResults.entries,
       this.comparator.bind(this),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       (indexLeft, indexRight) => oldEntries[indexLeft]
     );
 
@@ -113,9 +113,9 @@ export class DiffCalculator {
     } else {
       // Handle the case where all columns are being projected.
       const columns: Column[] = [];
-      this.query.from.forEach(t => {
+      this.query.from.forEach((t) => {
         const table = t as BaseTable;
-        table.getColumns().forEach(column => columns.push(column));
+        table.getColumns().forEach((column) => columns.push(column));
       });
       return columns;
     }
@@ -125,7 +125,7 @@ export class DiffCalculator {
   // same. Returns whether the two entries are identical, taking only into
   // account the columns that are being projected.
   private comparator(left: RelationEntry, right: RelationEntry): boolean {
-    return this.columns.every(column => {
+    return this.columns.every((column) => {
       // For OBJECT and ARRAY_BUFFER columns, don't bother detecting changes
       // within the object. Trigger observers only if the object reference
       // changed.

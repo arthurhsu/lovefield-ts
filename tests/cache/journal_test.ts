@@ -27,7 +27,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Journal', () => {
   const NULL = null as unknown as Key;
   let env: MockEnv;
@@ -515,11 +514,11 @@ describe('Journal', () => {
     journal.insert(table, rows);
     journal.commit();
     assert.equal(rows.length, env.cache.getCount());
-    rows.forEach(row =>
+    rows.forEach((row) =>
       assert.isTrue(pkIndex.containsKey(row.payload()['id'] as Key))
     );
 
-    const rowsUpdated = rows.map(row => {
+    const rowsUpdated = rows.map((row) => {
       const updatedRow = table.createRow({id: 'somePk', name: 'DummyName'});
       updatedRow.assignRowId(row.id());
       return updatedRow;

@@ -48,11 +48,13 @@ export class ExportTask extends UniqueId implements Task {
     const cache = this.global.getService(Service.CACHE);
 
     const tables: PayloadType = {};
-    (this.schema.tables() as BaseTable[]).forEach(table => {
+    (this.schema.tables() as BaseTable[]).forEach((table) => {
       const rowIds = (
         indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
       ).getRange();
-      const payloads = cache.getMany(rowIds).map(row => (row as Row).payload());
+      const payloads = cache
+        .getMany(rowIds)
+        .map((row) => (row as Row).payload());
       tables[table.getName()] = payloads;
     });
 

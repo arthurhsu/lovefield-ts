@@ -61,12 +61,10 @@ export class UnknownTable implements BaseTable {
     return '#UnknownTable.#';
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createRow(value?: object): Row {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   deserializeRow(dbRecord: RawRow): Row {
     throw new Exception(ErrorCode.NOT_SUPPORTED);
   }
@@ -80,7 +78,6 @@ export class UnknownTable implements BaseTable {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   col(name: string): Column {
     return null as unknown as Column;
   }

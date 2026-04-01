@@ -20,7 +20,6 @@ import {Row} from '../../lib/base/row';
 import {DefaultCache} from '../../lib/cache/default_cache';
 import {schema} from '../../lib/schema/schema';
 
-
 describe('DefaultCache', () => {
   it('implementsCache', () => {
     const builder = schema.create('test', 1);

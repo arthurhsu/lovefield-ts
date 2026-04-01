@@ -26,7 +26,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-
 describe('ObserverQueryTask', () => {
   let db: RuntimeDatabase;
   let j: Table;
@@ -59,7 +58,7 @@ describe('ObserverQueryTask', () => {
     const observerCallback = (changes: ChangeRecord[]) => {
       // Expecting one "change" record for each insertion.
       assert.equal(ROW_COUNT, changes.length);
-      changes.forEach(change => {
+      changes.forEach((change) => {
         assert.equal(1, change['addedCount']);
       });
 
@@ -76,7 +75,7 @@ describe('ObserverQueryTask', () => {
         ]);
         return observerTask.exec();
       },
-      e => {
+      (e) => {
         promiseResolver.reject(e);
       }
     );

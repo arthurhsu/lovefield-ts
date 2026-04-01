@@ -21,7 +21,6 @@ import {LovefieldOptions} from '../../lib/base/lovefield_options';
 import {options} from '../../lib/base/options';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Exception', () => {
   TestUtil.setDebug();
 

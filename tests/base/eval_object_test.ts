@@ -19,7 +19,6 @@ import {ErrorCode, Type} from '../../lib/base/enum';
 import {EvalRegistry, EvalType} from '../../lib/base/eval';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('EvalObject', () => {
   let registry: EvalRegistry;
 

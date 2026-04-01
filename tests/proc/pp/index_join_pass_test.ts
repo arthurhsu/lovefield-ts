@@ -56,7 +56,7 @@ describe('IndexJoinPass', () => {
   beforeEach(() => {
     return getSchemaBuilder()
       .connect({storeType: DataStoreType.MEMORY})
-      .then(db => {
+      .then((db) => {
         conn = db;
         dbSchema = db.getSchema();
         global = (db as RuntimeDatabase).getGlobal();

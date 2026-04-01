@@ -19,7 +19,6 @@ import {SingleKeyRange} from '../../lib/index/key_range';
 import {RowId} from '../../lib/index/row_id';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 
-
 describe('RowId', () => {
   function getSampleIndex(rowCount: number): RuntimeIndex {
     const index = new RowId('dummyName');

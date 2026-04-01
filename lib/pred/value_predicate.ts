@@ -29,7 +29,7 @@ import {PredicateNode} from './predicate_node';
 
 export class ValuePredicate extends PredicateNode {
   // ComparisonFunction is a special type that needs to allow any.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   private evaluatorFn: (l: any, r: any) => boolean;
   private isComplement: boolean;
   private binder: unknown;
@@ -57,7 +57,7 @@ export class ValuePredicate extends PredicateNode {
       return this.evalAsIn(relation);
     }
 
-    const entries = relation.entries.filter(entry => {
+    const entries = relation.entries.filter((entry) => {
       return (
         this.evaluatorFn(entry.getField(this.column), this.value) !==
         this.isComplement
@@ -114,7 +114,7 @@ export class ValuePredicate extends PredicateNode {
       this.value = values[index];
     } else if (Array.isArray(this.binder)) {
       const array = this.binder as unknown[];
-      this.value = array.map(val => {
+      this.value = array.map((val) => {
         if (val instanceof Binder) {
           checkIndexWithinRange(val.index);
           return values[val.index];
@@ -178,7 +178,7 @@ export class ValuePredicate extends PredicateNode {
       );
     } else if (this.evaluatorType === EvalType.IN) {
       const val = this.value as unknown[];
-      const keyRanges = val.map(v => SingleKeyRange.only(v as SingleKey));
+      const keyRanges = val.map((v) => SingleKeyRange.only(v as SingleKey));
       return new SingleKeyRangeSet(
         this.isComplement ? SingleKeyRange.complement(keyRanges) : keyRanges
       );
@@ -208,7 +208,7 @@ export class ValuePredicate extends PredicateNode {
     if (!(this.value instanceof Binder)) {
       if (Array.isArray(this.value)) {
         const array = this.value as unknown[];
-        bound = !array.some(val => val instanceof Binder);
+        bound = !array.some((val) => val instanceof Binder);
       } else {
         bound = true;
       }
@@ -231,7 +231,7 @@ export class ValuePredicate extends PredicateNode {
         ? false
         : valueSet.has(rowValue) !== this.isComplement;
     };
-    const entries = relation.entries.filter(entry =>
+    const entries = relation.entries.filter((entry) =>
       evaluatorFn(entry.getField(this.column))
     );
     return new Relation(entries, relation.getTables());

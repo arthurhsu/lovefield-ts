@@ -117,7 +117,7 @@ export class MultiColumnOrPass extends RewritePass<PhysicalQueryPlanNode> {
     return (
       (TreeHelper.find(
         this.rootNode,
-        node =>
+        (node) =>
           node instanceof TableAccessFullStep &&
           node.table.getName() === tableName
       )[0] as TableAccessFullStep) || null
@@ -146,7 +146,7 @@ export class MultiColumnOrPass extends RewritePass<PhysicalQueryPlanNode> {
     const indexCostEstimator = new IndexCostEstimator(this.global, tableSchema);
 
     let indexRangeCandidates: IndexRangeCandidate[] | null = null;
-    const allIndexed = predicate.getChildren().every(childPredicate => {
+    const allIndexed = predicate.getChildren().every((childPredicate) => {
       const indexRangeCandidate = indexCostEstimator.chooseIndexFor(
         queryContext,
         [childPredicate as PredicateNode]
@@ -177,7 +177,7 @@ export class MultiColumnOrPass extends RewritePass<PhysicalQueryPlanNode> {
     const multiIndexRangeScanStep = new MultiIndexRangeScanStep();
     tableAccessByRowIdStep.addChild(multiIndexRangeScanStep);
 
-    indexRangeCandidates.forEach(candidate => {
+    indexRangeCandidates.forEach((candidate) => {
       const indexRangeScanStep = new IndexRangeScanStep(
         this.global,
         candidate.indexSchema,

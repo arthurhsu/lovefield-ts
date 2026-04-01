@@ -25,23 +25,23 @@ export class SampleData {
     }
 
     return getHrDbSchemaBuilder()
-        .getSchema()
-        .table('Employee')
-        .createRow({
-          id: 'empId',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@neverland.com',
-          phoneNumber: '123456',
-          // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
-          hireDate: new Date(476144100000),
-          jobId: 'jobId',
-          salary: 100,
-          commissionPercent: 0.15,
-          managerId: 'managerId',
-          departmentId: 'departmentId',
-          photo: buffer,
-        });
+      .getSchema()
+      .table('Employee')
+      .createRow({
+        id: 'empId',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@neverland.com',
+        phoneNumber: '123456',
+        // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
+        hireDate: new Date(476144100000),
+        jobId: 'jobId',
+        salary: 100,
+        commissionPercent: 0.15,
+        managerId: 'managerId',
+        departmentId: 'departmentId',
+        photo: buffer,
+      });
   }
 
   generateSampleJobData() {
@@ -64,16 +64,16 @@ export class SampleData {
 
   generateSampleJobHistoryData() {
     return getHrDbSchemaBuilder()
-        .getSchema()
-        .table('JobHistory')
-        .createRow({
-          employeeId: 'employeeId',
-          // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
-          startDate: new Date(476144100000),
-          // 'Fri Feb 01 1986 14:15:00 GMT-0800 (PST)'
-          endDate: new Date(507680100000),
-          jobId: 'jobId',
-          departmentId: 'departmentId',
-        });
+      .getSchema()
+      .table('JobHistory')
+      .createRow({
+        employeeId: 'employeeId',
+        // 'Fri Feb 01 1985 14:15:00 GMT-0800 (PST)'
+        startDate: new Date(476144100000),
+        // 'Fri Feb 01 1986 14:15:00 GMT-0800 (PST)'
+        endDate: new Date(507680100000),
+        jobId: 'jobId',
+        departmentId: 'departmentId',
+      });
   }
 }

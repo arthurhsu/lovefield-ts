@@ -34,11 +34,11 @@ export class DebugOptions implements LovefieldOptions {
 
   constructor() {
     if (DebugOptions.instance !== undefined) {
-      (this.debugMode = true),
+      ((this.debugMode = true),
         (this.memoryOnly = false),
         (this.useGetAll = false),
         (this.exceptionUrl =
-          'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c=');
+          'http://google.github.io/lovefield/error_lookup/src/error_lookup.html?c='));
       this.setupMap();
     }
   }

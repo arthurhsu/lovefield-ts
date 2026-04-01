@@ -28,7 +28,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {schema} from '../../../lib/schema/schema';
 import {MockEnv} from '../../../testing/mock_env';
 
-
 describe('JoinStep', () => {
   let env: MockEnv;
   let ta: Table;
@@ -107,12 +106,12 @@ describe('JoinStep', () => {
     // Detecting the expected IDs that should appear in the result.
     const tableAIds = new Set<number>(
       tableARelation.entries.map(
-        entry => entry.getField(ta.col('id')) as number
+        (entry) => entry.getField(ta.col('id')) as number
       )
     );
     const tableBIds = new Set<number>(
       tableARelation.entries.map(
-        entry => entry.getField(tb.col('id')) as number
+        (entry) => entry.getField(tb.col('id')) as number
       )
     );
     const expectedIds = Array.from(
@@ -122,7 +121,7 @@ describe('JoinStep', () => {
     // Choosing the left predicate column as the indexed column.
     joinStep.markAsIndexJoin(joinPredicate.leftColumn);
     assert.notEqual(-1, joinStep.toString().indexOf('index_nested_loop'));
-    return joinStep.exec().then(relations => {
+    return joinStep.exec().then((relations) => {
       assert.equal(1, relations.length);
       assertTableATableBJoin(relations[0], expectedIds);
     });
@@ -130,7 +129,7 @@ describe('JoinStep', () => {
 
   function setIntersection(set1: Set<number>, set2: Set<number>): Set<number> {
     const intersection = new Set<number>();
-    set1.forEach(value => {
+    set1.forEach((value) => {
       if (set2.has(value)) {
         intersection.add(value);
       }

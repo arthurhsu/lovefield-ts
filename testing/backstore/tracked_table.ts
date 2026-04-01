@@ -29,7 +29,10 @@ export class TrackedTable implements RuntimeTable {
   private requests: Array<Promise<unknown>>;
   private acceptingRequests: boolean;
 
-  constructor(private table: RuntimeTable, tableName: string) {
+  constructor(
+    private table: RuntimeTable,
+    tableName: string
+  ) {
     this.tableDiff = new TableDiff(tableName);
     this.requests = [];
     this.acceptingRequests = true;
@@ -64,11 +67,11 @@ export class TrackedTable implements RuntimeTable {
     }
 
     const rowMap = new Map<number, Row>();
-    rows.forEach(row => rowMap.set(row.id(), row));
+    rows.forEach((row) => rowMap.set(row.id(), row));
 
-    const promise = this.get(Array.from(rowMap.keys())).then(existingRows => {
+    const promise = this.get(Array.from(rowMap.keys())).then((existingRows) => {
       // First update the diff with the existing rows that are modified.
-      existingRows.forEach(existingRow => {
+      existingRows.forEach((existingRow) => {
         this.tableDiff.modify([
           existingRow,
           rowMap.get(existingRow.id()) as Row,
@@ -78,7 +81,7 @@ export class TrackedTable implements RuntimeTable {
 
       // Then update the diff with the remaining items in the map, all of
       // which correspond to new rows.
-      rowMap.forEach(row => this.tableDiff.add(row), this);
+      rowMap.forEach((row) => this.tableDiff.add(row), this);
       return this.table.put(rows);
     });
 
@@ -88,7 +91,7 @@ export class TrackedTable implements RuntimeTable {
 
   remove(
     ids: number[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     try {
@@ -97,8 +100,8 @@ export class TrackedTable implements RuntimeTable {
       return Promise.reject(e);
     }
 
-    const promise = this.table.get(ids).then(rows => {
-      rows.forEach(row => this.tableDiff.delete(row));
+    const promise = this.table.get(ids).then((rows) => {
+      rows.forEach((row) => this.tableDiff.delete(row));
       return this.table.remove(ids);
     });
 

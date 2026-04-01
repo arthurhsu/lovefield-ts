@@ -24,7 +24,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('SimulateError', () => {
   let sandbox: sinon.SinonSandbox;
   let db: RuntimeDatabase;

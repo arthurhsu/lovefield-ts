@@ -153,7 +153,7 @@ describe('MultiColumnOrPass', () => {
       queryContext.from[0]
     );
     const selectNodes = predicates.map(
-      predicate => new SelectStep(predicate.getId())
+      (predicate) => new SelectStep(predicate.getId())
     );
     const projectNode = new ProjectStep([], null as unknown as Column[]);
     let lastSelectNode = selectNodes[0];

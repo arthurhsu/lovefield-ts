@@ -59,7 +59,9 @@ export class LockManager {
   }
 
   releaseLock(taskId: number, dataItems: Set<Table>): void {
-    dataItems.forEach(dataItem => this.getEntry(dataItem).releaseLock(taskId));
+    dataItems.forEach((dataItem) =>
+      this.getEntry(dataItem).releaseLock(taskId)
+    );
   }
 
   // Removes any reserved locks for the given data items. This is needed in
@@ -67,7 +69,7 @@ export class LockManager {
   // reserved lock.
   clearReservedLocks(dataItems: Set<Table>): void {
     dataItems.forEach(
-      dataItem => (this.getEntry(dataItem).reservedReadWriteLock = null)
+      (dataItem) => (this.getEntry(dataItem).reservedReadWriteLock = null)
     );
   }
 
@@ -85,7 +87,7 @@ export class LockManager {
     dataItems: Set<Table>,
     lockType: LockType
   ): void {
-    dataItems.forEach(dataItem =>
+    dataItems.forEach((dataItem) =>
       this.getEntry(dataItem).grantLock(taskId, lockType)
     );
   }
@@ -96,7 +98,7 @@ export class LockManager {
     lockType: LockType
   ): boolean {
     let canAcquireLock = true;
-    dataItems.forEach(dataItem => {
+    dataItems.forEach((dataItem) => {
       if (canAcquireLock) {
         const lockTableEntry = this.getEntry(dataItem);
         canAcquireLock = lockTableEntry.canAcquireLock(taskId, lockType);

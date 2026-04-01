@@ -33,7 +33,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
 
   rewrite(
     rootNode: LogicalQueryPlanNode,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): LogicalQueryPlanNode {
     this.rootNode = rootNode;
@@ -62,7 +62,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
       rootNode = newNodes[0];
     }
 
-    rootNode.getChildren().forEach(child => this.traverse(child));
+    rootNode.getChildren().forEach((child) => this.traverse(child));
   }
 
   // Recursively breaks down an AND predicate to its components.
@@ -83,7 +83,7 @@ export class AndPredicatePass extends RewritePass<LogicalQueryPlanNode> {
     const predicates = combinedPredicate
       .getChildren()
       .slice()
-      .map(childPredicate => {
+      .map((childPredicate) => {
         combinedPredicate.removeChild(childPredicate);
         return this.breakAndPredicate(childPredicate as PredicateNode);
       });

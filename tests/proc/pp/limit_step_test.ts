@@ -25,7 +25,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('LimitStep', () => {
   let env: MockEnv;
   let schema: DatabaseSchema;
@@ -64,7 +63,7 @@ describe('LimitStep', () => {
     const step = new LimitStep();
     step.addChild(childStep);
 
-    return step.exec(undefined, queryContext).then(relations => {
+    return step.exec(undefined, queryContext).then((relations) => {
       assert.equal(
         Math.min(limit, sampleDataCount),
         relations[0].entries.length

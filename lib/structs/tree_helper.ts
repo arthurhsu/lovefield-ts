@@ -58,7 +58,7 @@ export class TreeHelper {
     let nextParent: TreeNode = null as unknown as TreeNode;
     let copyRoot: T2 = null as unknown as T2;
 
-    origTree.traverse(node => {
+    origTree.traverse((node) => {
       const newNode = mapFn(node as T1);
 
       if (node.getParent() === null) {
@@ -81,7 +81,7 @@ export class TreeHelper {
 
   // Finds all leafs node existing in the subtree that starts at the given node.
   static getLeafNodes(node: TreeNode): TreeNode[] {
-    return TreeHelper.find(node, n => n.isLeaf());
+    return TreeHelper.find(node, (n) => n.isLeaf());
   }
 
   // Removes a node from a tree. It takes care of re-parenting the children of
@@ -124,7 +124,7 @@ export class TreeHelper {
   //                  n3  n4
   static insertNodeAt(existingNode: TreeNode, newNode: TreeNode): void {
     const children = existingNode.getChildren().slice();
-    children.forEach(child => {
+    children.forEach((child) => {
       existingNode.removeChild(child);
       newNode.addChild(child);
     });
@@ -193,7 +193,7 @@ export class TreeHelper {
     assert(child.getChildCount() > 1);
 
     const grandChildren = child.getChildren().slice();
-    const canPushDown = grandChildren.some(grandChild =>
+    const canPushDown = grandChildren.some((grandChild) =>
       shouldPushDownFn(grandChild)
     );
 
@@ -244,7 +244,7 @@ export class TreeHelper {
     oldTail
       .getChildren()
       .slice()
-      .forEach(child => {
+      .forEach((child) => {
         oldTail.removeChild(child);
         newTail.addChild(child);
       });
@@ -337,7 +337,7 @@ export class TreeHelper {
     };
     const stringFn: NodeStringFn = stringFunc || defaultStringFn;
     let out = '';
-    rootNode.traverse(node => {
+    rootNode.traverse((node) => {
       for (let i = 0; i < node.getDepth(); i++) {
         out += '-';
       }

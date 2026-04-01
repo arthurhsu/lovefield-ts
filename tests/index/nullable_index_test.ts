@@ -23,7 +23,6 @@ import {SimpleComparator} from '../../lib/index/simple_comparator';
 import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_numerical_key';
 import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 
-
 describe('NullableIndex', () => {
   let index: NullableIndex;
   const NULL = null as unknown as Key;

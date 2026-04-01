@@ -89,7 +89,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
 
   createRow(payload: PayloadType): Row {
     const data: PayloadType = {};
-    Object.keys(payload).forEach(key => {
+    Object.keys(payload).forEach((key) => {
       data[key] = IndexedDBRawBackStore.convert(payload[key] as unknown);
     });
     return Row.create(data);
@@ -107,7 +107,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
       promises.push(this.dumpTable(tableName));
     }
 
-    return Promise.all(promises).then(tableDumps => {
+    return Promise.all(promises).then((tableDumps) => {
       const results: PayloadType = {};
       tableDumps.forEach((tableDump, index) => {
         results[tables.item(index) as string] = tableDump;
@@ -158,7 +158,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
     const loopFuncBundle = (cursor: IDBCursorWithValue) => {
       const page = Page.deserialize(cursor.value);
       const data = page.getPayload();
-      Object.keys(data).forEach(rowId => {
+      Object.keys(data).forEach((rowId) => {
         const row = Row.deserialize(data[rowId] as RawRow);
         rowFn(row);
         data[rowId] = row.serialize();
@@ -192,7 +192,7 @@ export class IndexedDBRawBackStore implements RawBackStore {
           if (this.bundleMode) {
             const page = Page.deserialize(cursor.value);
             const data = page.getPayload();
-            Object.keys(data).forEach(rowId => {
+            Object.keys(data).forEach((rowId) => {
               results.push(data[rowId] as RawRow);
             });
           } else {
@@ -208,8 +208,8 @@ export class IndexedDBRawBackStore implements RawBackStore {
   }
 
   private dumpTable(tableName: string): Promise<object[]> {
-    return this.getTableRows(tableName).then(rawRows =>
-      rawRows.map(rawRow => rawRow.value as object)
+    return this.getTableRows(tableName).then((rawRows) =>
+      rawRows.map((rawRow) => rawRow.value as object)
     );
   }
 }

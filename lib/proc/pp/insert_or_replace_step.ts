@@ -30,7 +30,10 @@ import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 export class InsertOrReplaceStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: Table) {
+  constructor(
+    global: Global,
+    private table: Table
+  ) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }

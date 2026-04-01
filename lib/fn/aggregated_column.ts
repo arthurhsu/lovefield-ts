@@ -31,7 +31,10 @@ export class AggregatedColumn
   // Make TypeScript happy.
   [key: string]: unknown;
 
-  constructor(readonly child: Column, readonly aggregatorType: FnType) {
+  constructor(
+    readonly child: Column,
+    readonly aggregatorType: FnType
+  ) {
     super();
     this.alias = null;
   }

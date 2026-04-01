@@ -29,7 +29,10 @@ import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class TableAccessByRowIdStep extends PhysicalQueryPlanNode {
   private cache: Cache;
-  constructor(global: Global, private table: Table) {
+  constructor(
+    global: Global,
+    private table: Table
+  ) {
     super(1, ExecType.FIRST_CHILD);
     this.cache = global.getService(Service.CACHE);
   }
@@ -40,9 +43,9 @@ export class TableAccessByRowIdStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     ctx?: Context
   ): Relation[] {
     return [

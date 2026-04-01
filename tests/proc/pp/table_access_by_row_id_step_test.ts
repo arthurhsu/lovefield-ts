@@ -25,7 +25,6 @@ import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('TableAccessByRowId', () => {
   let schema: DatabaseSchema;
   let env: MockEnv;
@@ -59,7 +58,7 @@ describe('TableAccessByRowId', () => {
     rows[1].assignRowId(1);
     step.addChild(new NoOpStep([Relation.fromRows(rows, [table.getName()])]));
 
-    return step.exec().then(relations => {
+    return step.exec().then((relations) => {
       const relation = relations[0];
       assert.isFalse(relation.isPrefixApplied());
       assert.sameDeepOrderedMembers(
@@ -83,7 +82,7 @@ describe('TableAccessByRowId', () => {
     // Creating a "dummy" child step that will not return any row IDs.
     step.addChild(new NoOpStep([Relation.createEmpty()]));
 
-    return step.exec().then(relations => {
+    return step.exec().then((relations) => {
       assert.equal(0, relations[0].entries.length);
     });
   });

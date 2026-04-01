@@ -23,7 +23,6 @@ import {Table} from '../../../lib/schema/table';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('TableAccessFullStep', () => {
   let schema: DatabaseSchema;
   let env: MockEnv;
@@ -50,7 +49,7 @@ describe('TableAccessFullStep', () => {
     const table = t as BaseTable;
     const step = new TableAccessFullStep(env.global, table);
 
-    return step.exec().then(relations => {
+    return step.exec().then((relations) => {
       const relation = relations[0];
       assert.isFalse(relation.isPrefixApplied());
       assert.sameDeepOrderedMembers(

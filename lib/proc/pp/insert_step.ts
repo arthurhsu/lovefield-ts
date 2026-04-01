@@ -44,7 +44,7 @@ export class InsertStep extends PhysicalQueryPlanNode {
       const max = (index as RuntimeIndex).stats().maxKeyEncountered;
       let maxKey: number = max === null ? 0 : (max as number);
 
-      values.forEach(row => {
+      values.forEach((row) => {
         // A value of 0, null or undefined indicates that a primary key should
         // automatically be assigned.
         const val = row.payload()[pkColumnName];
@@ -58,7 +58,10 @@ export class InsertStep extends PhysicalQueryPlanNode {
 
   private indexStore: IndexStore;
 
-  constructor(global: Global, private table: Table) {
+  constructor(
+    global: Global,
+    private table: Table
+  ) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }

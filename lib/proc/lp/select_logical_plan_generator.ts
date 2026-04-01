@@ -114,7 +114,7 @@ export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<SelectC
       }
     }
 
-    this.tableAccessNodes.forEach(tableAccessNode => {
+    this.tableAccessNodes.forEach((tableAccessNode) => {
       parentOrder[lastExistingParentIndex].addChild(tableAccessNode);
     });
 
@@ -123,7 +123,7 @@ export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<SelectC
 
   private generateTableAccessNodes(): void {
     this.tableAccessNodes = this.query.from.map(
-      table => new TableAccessNode(table)
+      (table) => new TableAccessNode(table)
     );
   }
 
@@ -164,12 +164,12 @@ export class SelectLogicalPlanGenerator extends BaseLogicalPlanGenerator<SelectC
   }
 
   private generateAggregationNode(): void {
-    const aggregatedColumns = this.query.columns.filter(column => {
+    const aggregatedColumns = this.query.columns.filter((column) => {
       return column instanceof AggregatedColumn;
     });
 
     if (this.query.orderBy) {
-      this.query.orderBy.forEach(orderBy => {
+      this.query.orderBy.forEach((orderBy) => {
         if (orderBy.column instanceof AggregatedColumn) {
           aggregatedColumns.push(orderBy.column);
         }

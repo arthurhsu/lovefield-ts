@@ -154,7 +154,7 @@ export class TableBuilder {
   }
 
   addNullable(columns: string[]): TableBuilder {
-    this.normalizeColumns(columns, false).forEach(col =>
+    this.normalizeColumns(columns, false).forEach((col) =>
       this.nullable.add(col.name)
     );
     return this;
@@ -191,7 +191,7 @@ export class TableBuilder {
     this.checkPrimaryKeyNotNullable();
 
     const columns: ColumnDef[] = Array.from(this.columns.keys()).map(
-      colName => {
+      (colName) => {
         return {
           name: colName,
           nullable: this.nullable.has(colName) || false,
@@ -250,7 +250,7 @@ export class TableBuilder {
 
   private checkPrimaryKey(columns: IndexedColumnSpec[]): void {
     let hasAutoIncrement = false;
-    columns.forEach(column => {
+    columns.forEach((column) => {
       const columnType = this.columns.get(column.name);
       hasAutoIncrement =
         hasAutoIncrement || (column.autoIncrement as unknown as boolean);
@@ -275,7 +275,7 @@ export class TableBuilder {
 
     const index = this.indices.get(this.pkName);
     if (index) {
-      const pkColumns = index.map(column => column.name);
+      const pkColumns = index.map((column) => column.name);
       let fkSpecIndex = 0;
       const conflict = this.fkSpecs.some((fkSpec, i) => {
         fkSpecIndex = i;
@@ -330,7 +330,7 @@ export class TableBuilder {
 
     const index = this.indices.get(this.pkName);
     if (index) {
-      index.forEach(indexedColumnSpec => {
+      index.forEach((indexedColumnSpec) => {
         if (this.nullable.has(indexedColumnSpec.name)) {
           // 545: Primary key column {0} can't be marked as nullable
           throw new Exception(
@@ -355,7 +355,7 @@ export class TableBuilder {
       null as unknown as IndexedColumnSpec[];
     if (typeof columns[0] === 'string') {
       const array = columns as string[];
-      normalized = array.map(col => {
+      normalized = array.map((col) => {
         return {
           autoIncrement: autoInc || false,
           name: col,
@@ -366,7 +366,7 @@ export class TableBuilder {
       normalized = columns as IndexedColumnSpec[];
     }
 
-    normalized.forEach(col => {
+    normalized.forEach((col) => {
       if (!this.columns.has(col.name)) {
         // 508: Table {0} does not have column: {1}.
         throw new Exception(ErrorCode.COLUMN_NOT_FOUND, this.name, col.name);
@@ -387,7 +387,7 @@ export class TableBuilder {
   }
 
   private markFkIndexForColumnUnique(column: string): void {
-    this.fkSpecs.forEach(fkSpec => {
+    this.fkSpecs.forEach((fkSpec) => {
       if (fkSpec.childColumn === column) {
         this.uniqueIndices.add(fkSpec.name.split('.')[1]);
       }

@@ -38,13 +38,13 @@ export class LocalStorageTable implements RuntimeTable {
     let results: Row[];
 
     if (ids.length === 0) {
-      results = Object.keys(this.data).map(key => {
+      results = Object.keys(this.data).map((key) => {
         const id = Number(key);
         return new Row(id, this.data[key] as PayloadType);
       }, this);
     } else {
       results = [];
-      ids.forEach(id => {
+      ids.forEach((id) => {
         if (Object.prototype.hasOwnProperty.call(this.data, id.toString())) {
           results.push(new Row(id, this.data[id.toString()] as PayloadType));
         }
@@ -55,7 +55,7 @@ export class LocalStorageTable implements RuntimeTable {
   }
 
   put(rows: Row[]): Promise<void> {
-    rows.forEach(row => {
+    rows.forEach((row) => {
       this.data[row.id().toString()] = row.payload();
     }, this);
 
@@ -64,14 +64,14 @@ export class LocalStorageTable implements RuntimeTable {
 
   remove(
     ids: number[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     if (ids.length === 0 || ids.length === Object.keys(this.data).length) {
       // Remove all.
       this.data = {};
     } else {
-      ids.forEach(id => delete this.data[id]);
+      ids.forEach((id) => delete this.data[id]);
     }
 
     return Promise.resolve();
@@ -88,7 +88,7 @@ export class LocalStorageTable implements RuntimeTable {
     const newIds = Object.keys(newData);
 
     const diff = new TableDiff(this.key);
-    newIds.forEach(id => {
+    newIds.forEach((id) => {
       const rowId = Number(id);
       if (Object.prototype.hasOwnProperty.call(this.data, id)) {
         // A maybe update: the event simply pass back all values of table.
@@ -104,8 +104,8 @@ export class LocalStorageTable implements RuntimeTable {
       }
     }, this);
     oldIds
-      .filter(id => Object.prototype.hasOwnProperty.call(newData, id))
-      .forEach(id => {
+      .filter((id) => Object.prototype.hasOwnProperty.call(newData, id))
+      .forEach((id) => {
         diff.delete(new Row(Number(id), this.data[id] as PayloadType));
       }, this);
     return diff;

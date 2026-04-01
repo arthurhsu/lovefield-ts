@@ -24,7 +24,6 @@ import {IndexImpl} from '../../lib/schema/index_impl';
 import {TableBuilder} from '../../lib/schema/table_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('TableBuilder', () => {
   it('throws_DuplicateColumn', () => {
     // 503: Name {0} is already defined.
@@ -225,7 +224,7 @@ describe('TableBuilder', () => {
     tableBuilder
       .getSchema()
       .getIndices()
-      .forEach(index => indexNames.add((index as IndexImpl).name));
+      .forEach((index) => indexNames.add((index as IndexImpl).name));
     assert.isTrue(indexNames.has('fkEmployeeId'));
     assert.isTrue(indexNames.has('idx_employeeId'));
   });
@@ -396,7 +395,7 @@ describe('TableBuilder', () => {
     const row = tableSchema.createRow();
     tableSchema
       .getIndices()
-      .forEach(indexSchema =>
+      .forEach((indexSchema) =>
         assert.isNull(row.keyOfIndex(indexSchema.getNormalizedName()))
       );
   });

@@ -24,7 +24,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {BaseTable} from '../../lib/schema/base_table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('Conversion', () => {
   let db: RuntimeDatabase;
 

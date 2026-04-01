@@ -28,7 +28,7 @@ export class RelationTransformer {
   // |relations|: The relations to be transformed.
   // |columns|: The columns to include in the transformed relation.
   static transformMany(relations: Relation[], columns: Column[]): Relation {
-    const entries = relations.map(relation => {
+    const entries = relations.map((relation) => {
       const relationTransformer = new RelationTransformer(relation, columns);
       const singleEntryRelation = relationTransformer.getTransformed();
       return singleEntryRelation.entries[0];
@@ -37,7 +37,10 @@ export class RelationTransformer {
     return new Relation(entries, relations[0].getTables());
   }
 
-  constructor(private relation: Relation, private columns: Column[]) {}
+  constructor(
+    private relation: Relation,
+    private columns: Column[]
+  ) {}
 
   // Calculates a transformed Relation based on the columns that are requested.
   // The type of the requested columns affect the output (non-aggregate only VS
@@ -45,7 +48,7 @@ export class RelationTransformer {
   getTransformed(): Relation {
     // Determine whether any aggregated columns have been requested.
     const aggregatedColumnsExist = this.columns.some(
-      column => column instanceof AggregatedColumn
+      (column) => column instanceof AggregatedColumn
     );
 
     return aggregatedColumnsExist
@@ -65,7 +68,7 @@ export class RelationTransformer {
       const distinctRelation: Relation = this.relation.getAggregationResult(
         this.columns[0]
       ) as Relation;
-      const newEntries = distinctRelation.entries.map(e => {
+      const newEntries = distinctRelation.entries.map((e) => {
         const newEntry = new RelationEntry(
           new Row(Row.DUMMY_ID, {}),
           this.relation.isPrefixApplied()
@@ -86,7 +89,7 @@ export class RelationTransformer {
       new Row(Row.DUMMY_ID, {}),
       this.relation.isPrefixApplied()
     );
-    this.columns.forEach(column => {
+    this.columns.forEach((column) => {
       const value =
         column instanceof AggregatedColumn
           ? this.relation.getAggregationResult(column)
@@ -113,7 +116,7 @@ export class RelationTransformer {
         isPrefixApplied
       );
 
-      this.columns.forEach(column => {
+      this.columns.forEach((column) => {
         transformedEntries[index].setField(column, entry.getField(column));
       }, this);
     }, this);

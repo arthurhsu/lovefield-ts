@@ -30,7 +30,10 @@ import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 export class GetRowCountStep extends PhysicalQueryPlanNode {
   private indexStore: IndexStore;
 
-  constructor(global: Global, readonly table: Table) {
+  constructor(
+    global: Global,
+    readonly table: Table
+  ) {
     super(0, ExecType.NO_CHILD);
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
@@ -40,11 +43,10 @@ export class GetRowCountStep extends PhysicalQueryPlanNode {
   }
 
   execInternal(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     const rowIdIndex = this.indexStore.get(

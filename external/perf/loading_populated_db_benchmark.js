@@ -23,8 +23,6 @@ export class LoadingPopulatedDBBenchmark extends DefaultBenchmark {
   }
 
   getTestCases() {
-    return [
-      new TestCase('Init populated DB', this.init.bind(this)),
-    ];
+    return [new TestCase('Init populated DB', this.init.bind(this))];
   }
 }

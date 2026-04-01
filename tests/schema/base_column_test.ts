@@ -20,7 +20,6 @@ import {IndexImpl} from '../../lib/schema/index_impl';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('BaseColumn', () => {
   let schema: DatabaseSchema;
   before(() => {

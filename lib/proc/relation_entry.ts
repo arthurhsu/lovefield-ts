@@ -37,7 +37,7 @@ export class RelationEntry {
     const mergeEntry = (entry: RelationEntry, entryTables: string[]) => {
       if (entry.isPrefixApplied) {
         const payload = entry.row.payload();
-        Array.from(Object.keys(payload)).forEach(prefix => {
+        Array.from(Object.keys(payload)).forEach((prefix) => {
           result[prefix] = payload[prefix];
         });
       } else {
@@ -74,7 +74,10 @@ export class RelationEntry {
   // |isPrefixApplied| Whether the payload in this entry is using prefixes for
   // each attribute. This happens when this entry is the result of a relation
   // join.
-  constructor(readonly row: Row, private isPrefixApplied: boolean) {
+  constructor(
+    readonly row: Row,
+    private isPrefixApplied: boolean
+  ) {
     this.id = RelationEntry.getNextId();
   }
 

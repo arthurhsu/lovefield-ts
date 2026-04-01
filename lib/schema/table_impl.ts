@@ -52,7 +52,7 @@ export class TableImpl implements BaseTable {
     alias?: string
   ) {
     this._columns = [];
-    cols.forEach(col => {
+    cols.forEach((col) => {
       const colSchema = new ColumnImpl(
         this,
         col.name,
@@ -102,7 +102,7 @@ export class TableImpl implements BaseTable {
   }
 
   as(name: string): BaseTable {
-    const colDef = this._columns.map(col => {
+    const colDef = this._columns.map((col) => {
       return {
         name: col.getName(),
         nullable: col.isNullable(),
@@ -143,7 +143,7 @@ export class TableImpl implements BaseTable {
 
   deserializeRow(dbRecord: RawRow): Row {
     const obj: PayloadType = {};
-    this._columns.forEach(col => {
+    this._columns.forEach((col) => {
       const key = col.getName();
       const type = col.getType();
       let value: unknown = dbRecord.value[key];
@@ -176,9 +176,9 @@ export class TableImpl implements BaseTable {
     }
 
     const columnMap = new Map<string, Column>();
-    this._columns.forEach(col => columnMap.set(col.getName(), col));
+    this._columns.forEach((col) => columnMap.set(col.getName(), col));
 
-    this._indices = Array.from(indices.keys()).map(indexName => {
+    this._indices = Array.from(indices.keys()).map((indexName) => {
       return new IndexImpl(
         this._name,
         indexName,
@@ -188,7 +188,7 @@ export class TableImpl implements BaseTable {
     });
 
     this._functionMap = new Map<string, (payload: PayloadType) => Key>();
-    this._indices.forEach(index =>
+    this._indices.forEach((index) =>
       this._functionMap.set(
         index.getNormalizedName(),
         this.getKeyOfIndexFn(columnMap, index)
@@ -205,7 +205,7 @@ export class TableImpl implements BaseTable {
             this.generateIndexedColumns(indices, columnMap, pkName)
           );
     const notNullable = this._columns.filter(
-      col => !nullable.has(col.getName())
+      (col) => !nullable.has(col.getName())
     );
     this._constraint = new Constraint(pk, notNullable, fkSpecs);
   }
@@ -217,7 +217,7 @@ export class TableImpl implements BaseTable {
   ): IndexedColumn[] {
     const index = indices.get(indexName);
     if (index) {
-      return index.map(indexedColumn => {
+      return index.map((indexedColumn) => {
         return {
           autoIncrement: indexedColumn.autoIncrement as unknown as boolean,
           order: indexedColumn.order as unknown as Order,
@@ -246,11 +246,11 @@ export class TableImpl implements BaseTable {
     columnMap: Map<string, Column>,
     columns: IndexedColumn[]
   ): (payload: PayloadType) => Key {
-    const getSingleKeyFunctions = columns.map(col =>
+    const getSingleKeyFunctions = columns.map((col) =>
       this.getSingleKeyFn(columnMap, col.schema)
     );
     return (payload: PayloadType) =>
-      getSingleKeyFunctions.map(fn => fn(payload)) as SingleKey[] as Key;
+      getSingleKeyFunctions.map((fn) => fn(payload)) as SingleKey[] as Key;
   }
 
   private getKeyOfIndexFn(

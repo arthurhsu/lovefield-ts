@@ -30,7 +30,7 @@ export class LogicalPlanRewriter implements LogicalPlanGenerator {
   ) {}
 
   generate(): LogicalQueryPlanNode {
-    this.rewritePasses.forEach(rewritePass => {
+    this.rewritePasses.forEach((rewritePass) => {
       this.rootNode = rewritePass.rewrite(this.rootNode, this.queryContext);
     }, this);
     return this.rootNode;

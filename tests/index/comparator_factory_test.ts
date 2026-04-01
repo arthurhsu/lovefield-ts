@@ -22,13 +22,12 @@ import {BaseTable} from '../../lib/schema/base_table';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('ComparatorFactory', () => {
   const schema = getHrDbSchemaBuilder().getSchema();
 
   const maxSalary = (schema.table('Job') as BaseTable)
     .getIndices()
-    .filter(index => {
+    .filter((index) => {
       return index.getNormalizedName() === 'Job.idx_maxSalary';
     })[0] as IndexImpl;
   assert.isTrue(
@@ -37,7 +36,7 @@ describe('ComparatorFactory', () => {
 
   const uqConstraint = (schema.table('DummyTable') as BaseTable)
     .getIndices()
-    .filter(index => {
+    .filter((index) => {
       return index.getNormalizedName() === 'DummyTable.uq_constraint';
     })[0] as IndexImpl;
   assert.isTrue(

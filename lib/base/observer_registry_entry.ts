@@ -68,7 +68,7 @@ export class ObserverRegistryEntry {
     this.lastResults = newResults;
 
     if (changeRecords.length > 0) {
-      this.observers.forEach(observerFn => observerFn(changeRecords));
+      this.observers.forEach((observerFn) => observerFn(changeRecords));
     }
   }
 }

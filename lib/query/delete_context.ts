@@ -58,7 +58,7 @@ export class DeleteContext extends Context {
     );
     const childTables = Info.from(this.schema).getChildTables(tableName);
     childTables.forEach(scopeSoFar.add.bind(scopeSoFar));
-    cascadeChildTables.forEach(childTable => {
+    cascadeChildTables.forEach((childTable) => {
       this.expandTableScope(childTable.getName(), scopeSoFar);
     }, this);
   }

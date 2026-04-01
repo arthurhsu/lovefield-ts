@@ -19,7 +19,6 @@ import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {TestIndex} from './test_index';
 
-
 export class TestMultiRowNumericalKey extends TestIndex {
   // Values that are added in the index in populateIndex().
   private allValues = [
@@ -146,7 +145,6 @@ export class TestMultiRowNumericalKey extends TestIndex {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   testMultiRange(index: RuntimeIndex): void {
     // TODO(arthurhsu): implement, original code does not have it.
   }

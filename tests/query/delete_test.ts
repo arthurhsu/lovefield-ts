@@ -24,14 +24,13 @@ import {DeleteBuilder} from '../../lib/query/delete_builder';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('DeleteTest', () => {
   let db: DatabaseConnection;
   let global: Global;
   before(() => {
     return getHrDbSchemaBuilder()
       .connect({storeType: DataStoreType.MEMORY})
-      .then(conn => {
+      .then((conn) => {
         db = conn;
         global = (db as RuntimeDatabase).getGlobal();
       });

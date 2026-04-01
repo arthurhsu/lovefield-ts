@@ -50,7 +50,7 @@ export class IndexJoinPass extends RewritePass<PhysicalQueryPlanNode> {
 
     const joinSteps = TreeHelper.find(
       rootNode,
-      node => node instanceof JoinStep
+      (node) => node instanceof JoinStep
     ) as JoinStep[];
     joinSteps.forEach(this.processJoinStep, this);
 

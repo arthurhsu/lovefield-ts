@@ -39,12 +39,12 @@ export class UpdateStep extends PhysicalQueryPlanNode {
     context?: Context
   ): Relation[] {
     const table = this.table as BaseTable;
-    const rows = relations[0].entries.map(entry => {
+    const rows = relations[0].entries.map((entry) => {
       // Need to clone the row here before modifying it, because it is a
       // direct reference to the cache's contents.
       const clone = table.deserializeRow(entry.row.serialize());
 
-      (context as UpdateContext).set.forEach(update => {
+      (context as UpdateContext).set.forEach((update) => {
         clone.payload()[update.column.getName()] = update.value;
       }, this);
       return clone;

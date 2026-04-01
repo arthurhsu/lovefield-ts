@@ -33,12 +33,12 @@ class TodoDemo {
       .addIndex('idxDeadline', ['deadline'], false, lf.Order.DESC);
 
     return schemaBuilder.connect({
-      storeType: lf.DataStoreType.MEMORY
+      storeType: lf.DataStoreType.MEMORY,
     });
   }
 
   fetchData() {
-    const parseXHRResult = xhr => {
+    const parseXHRResult = (xhr) => {
       if (xhr.status === 200) {
         // OK
         return JSON.parse(xhr.responseText);
@@ -61,12 +61,12 @@ class TodoDemo {
 
   insertData(data) {
     this.item = this.db.getSchema().table('Item');
-    const rows = data.map(d =>
+    const rows = data.map((d) =>
       this.item.createRow({
         id: d.id,
         description: d.description,
         deadline: new Date(d.deadline),
-        done: d.done
+        done: d.done,
       })
     );
     return this.db.insertOrReplace().into(this.item).values(rows).exec();
@@ -82,23 +82,27 @@ class TodoDemo {
   }
 
   serve() {
-    this.createDatabase().then(db => {
-      this.db = db;
-      return this.fetchData();
-    }).then(data => {
-      return this.insertData(data);
-    }).then(() => {
-      return this.selectTodoItems();
-    }).then(todoItems => {
-      const dl = document.getElementById('data');
-      let innerHTML = '';
-      todoItems.forEach(t => {
-        innerHTML +=
-          `<dt>${t.description}</dt>` +
-          `<dd>${t.deadline.toLocaleString()}</dd>\n`
+    this.createDatabase()
+      .then((db) => {
+        this.db = db;
+        return this.fetchData();
+      })
+      .then((data) => {
+        return this.insertData(data);
+      })
+      .then(() => {
+        return this.selectTodoItems();
+      })
+      .then((todoItems) => {
+        const dl = document.getElementById('data');
+        let innerHTML = '';
+        todoItems.forEach((t) => {
+          innerHTML +=
+            `<dt>${t.description}</dt>` +
+            `<dd>${t.deadline.toLocaleString()}</dd>\n`;
+        });
+        dl.innerHTML = innerHTML;
       });
-      dl.innerHTML = innerHTML;
-    });
   }
 }
 

@@ -33,7 +33,7 @@ export class Page {
   // Returns distinct page ids containing given row ids.
   static toPageIds(rowIds: number[]): number[] {
     const pageIds = new Set<number>();
-    rowIds.forEach(id => pageIds.add(Page.toPageId(id)));
+    rowIds.forEach((id) => pageIds.add(Page.toPageId(id)));
     return Array.from(pageIds.values());
   }
 
@@ -49,7 +49,10 @@ export class Page {
     ];
   }
 
-  constructor(private id: number, private payload: PayloadType = {}) {}
+  constructor(
+    private id: number,
+    private payload: PayloadType = {}
+  ) {}
 
   getId(): number {
     return this.id;
@@ -60,11 +63,11 @@ export class Page {
   }
 
   setRows(rows: Row[]): void {
-    rows.forEach(row => (this.payload[row.id()] = row.serialize()));
+    rows.forEach((row) => (this.payload[row.id()] = row.serialize()));
   }
 
   removeRows(ids: number[]): void {
-    ids.forEach(id => delete this.payload[id]);
+    ids.forEach((id) => delete this.payload[id]);
   }
 
   serialize(): RawRow {

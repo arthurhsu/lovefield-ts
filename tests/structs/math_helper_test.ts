@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {MathHelper} from '../../lib/structs/math_helper';
 
-
 describe('MathHelper', () => {
   it('longestCommonSequence', () => {
     const func = MathHelper.longestCommonSubsequence;

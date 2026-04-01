@@ -34,7 +34,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('ConstraintChecker', () => {
   let env: MockEnv;
   let checker: ConstraintChecker;
@@ -97,7 +96,7 @@ describe('ConstraintChecker', () => {
     const table = env.schema.table('TableA') as BaseTable;
 
     // Attempting to insert rows that violate the NOT_NULLABLE constraint.
-    const invalidRows = [1, 2, 3].map(primaryKey => {
+    const invalidRows = [1, 2, 3].map((primaryKey) => {
       return table.createRow({id: primaryKey.toString(), email: null});
     });
 
@@ -108,7 +107,7 @@ describe('ConstraintChecker', () => {
     );
 
     // Attempting to insert rows that don't violate the constraint.
-    const validRows = [1, 2, 3].map(primaryKey => {
+    const validRows = [1, 2, 3].map((primaryKey) => {
       return table.createRow({
         id: primaryKey.toString(),
         email: 'emailAddress',
@@ -337,7 +336,7 @@ describe('ConstraintChecker', () => {
     constraintTiming: ConstraintTiming,
     checkFn: (timing: ConstraintTiming) => void
   ): void {
-    TIMINGS.forEach(timing => {
+    TIMINGS.forEach((timing) => {
       if (timing === constraintTiming) {
         // Foreign key constraint violation on constraint {0}.
         TestUtil.assertThrowsError(

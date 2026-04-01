@@ -43,7 +43,10 @@ export class ImportTask extends UniqueId implements Task {
   private cache: Cache;
   private indexStore: IndexStore;
 
-  constructor(private global: Global, private data: PayloadType) {
+  constructor(
+    private global: Global,
+    private data: PayloadType
+  ) {
     super();
     this.schema = global.getService(Service.SCHEMA);
     this.scope = new Set<Table>(this.schema.tables());
@@ -102,7 +105,7 @@ export class ImportTask extends UniqueId implements Task {
   }
 
   private isEmptyDB(): boolean {
-    return this.schema.tables().every(t => {
+    return this.schema.tables().every((t) => {
       const table = t as BaseTable;
       const index = this.indexStore.get(
         table.getRowIdIndexName()
@@ -122,7 +125,7 @@ export class ImportTask extends UniqueId implements Task {
       journal
     );
 
-    Object.keys(this.data['tables'] as PayloadType).forEach(tableName => {
+    Object.keys(this.data['tables'] as PayloadType).forEach((tableName) => {
       const tableSchema = this.schema.table(tableName) as BaseTable;
       const payloads = (this.data['tables'] as PayloadType)[
         tableName
@@ -138,8 +141,8 @@ export class ImportTask extends UniqueId implements Task {
       );
       this.cache.setMany(tableName, rows);
       const indices = this.indexStore.getTableIndices(tableName);
-      rows.forEach(row => {
-        indices.forEach(index => {
+      rows.forEach((row) => {
+        indices.forEach((index) => {
           const key = row.keyOfIndex(index.getName());
           index.add(key, row.id());
         });

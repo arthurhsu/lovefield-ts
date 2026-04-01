@@ -42,7 +42,10 @@ const INDEX_QUERY_THRESHOLD_PERCENT = 0.02;
 export class IndexCostEstimator {
   private indexStore: IndexStore;
 
-  constructor(global: Global, private tableSchema: Table) {
+  constructor(
+    global: Global,
+    private tableSchema: Table
+  ) {
     this.indexStore = global.getService(Service.INDEX_STORE);
   }
 
@@ -99,7 +102,7 @@ export class IndexCostEstimator {
       this.tableSchema as BaseTable
     ).getIndices() as IndexImpl[];
     return indexSchemas
-      .map(indexSchema => {
+      .map((indexSchema) => {
         const indexRangeCandidate = new IndexRangeCandidate(
           this.indexStore,
           indexSchema
@@ -107,7 +110,7 @@ export class IndexCostEstimator {
         indexRangeCandidate.consumePredicates(predicates);
         return indexRangeCandidate;
       }, this)
-      .filter(indexRangeCandidate => indexRangeCandidate.isUsable());
+      .filter((indexRangeCandidate) => indexRangeCandidate.isUsable());
   }
 
   private isCandidate(predicate: Predicate): boolean {

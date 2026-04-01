@@ -54,7 +54,7 @@ export class Runner {
   private consumePending(): void {
     const queue = this.queue.getValues();
 
-    queue.forEach(task => {
+    queue.forEach((task) => {
       // Note: Iterating on a shallow copy of this.queue_, because this.queue_
       // will be modified during iteration and therefore iterating on
       // this.queue_ would not guarantee that every task in the queue will be

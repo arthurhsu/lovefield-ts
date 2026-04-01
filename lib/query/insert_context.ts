@@ -64,7 +64,7 @@ export class InsertContext extends Context {
       if (this.binder instanceof Binder) {
         this.values = values[this.binder.index] as Row[];
       } else {
-        this.values = (this.binder as unknown[]).map(val => {
+        this.values = (this.binder as unknown[]).map((val) => {
           return (val instanceof Binder ? values[val.index] : val) as Row;
         });
       }

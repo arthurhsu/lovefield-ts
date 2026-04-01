@@ -35,7 +35,7 @@ export class ObjectStore implements RuntimeTable {
     // Chrome IndexedDB is slower when using a cursor to iterate through a big
     // table. A faster way is to just get everything individually within a
     // transaction.
-    const promises = ids.map(id => {
+    const promises = ids.map((id) => {
       return new Promise((resolve, reject) => {
         let request: IDBRequest;
         try {
@@ -45,7 +45,7 @@ export class ObjectStore implements RuntimeTable {
           return;
         }
         request.onerror = reject;
-        request.onsuccess = ev => {
+        request.onsuccess = (ev) => {
           resolve(this.deserializeFn((ev.target as IDBRequest).result));
         };
       });
@@ -58,7 +58,7 @@ export class ObjectStore implements RuntimeTable {
       return Promise.resolve();
     }
 
-    const promises = rows.map(row => {
+    const promises = rows.map((row) => {
       return this.performWriteOp(() => {
         // TODO(dpapad): Surround this with try catch, otherwise some errors
         // don't surface to the console.
@@ -76,7 +76,7 @@ export class ObjectStore implements RuntimeTable {
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     const deleteByIdsFn = () => {
-      const promises = ids.map(id =>
+      const promises = ids.map((id) =>
         this.performWriteOp(() => this.store.delete(id))
       );
 
@@ -91,7 +91,7 @@ export class ObjectStore implements RuntimeTable {
 
     return new Promise((resolve, reject) => {
       const request = this.store.count();
-      request.onsuccess = ev => {
+      request.onsuccess = (ev) => {
         if (
           ids.length === 0 ||
           (ev.target as IDBRequest).result === ids.length

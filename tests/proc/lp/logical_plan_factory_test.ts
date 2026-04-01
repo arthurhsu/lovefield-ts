@@ -26,7 +26,6 @@ import {TreeHelper} from '../../../lib/structs/tree_helper';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('LogicalPlanFactory', () => {
   let logicalPlanFactory: LogicalPlanFactory;
   let env: MockEnv;

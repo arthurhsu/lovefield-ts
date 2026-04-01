@@ -22,7 +22,6 @@ import {PayloadType} from '../../../lib/base/row';
 import {schema} from '../../../lib/schema/schema';
 import {Table} from '../../../lib/schema/table';
 
-
 describe('DeleteHarness', () => {
   let db: DatabaseConnection;
   let t1: Table;
@@ -52,13 +51,13 @@ describe('DeleteHarness', () => {
     tablePrefix?: string
   ): void {
     const actual = rows
-      .map(obj => {
+      .map((obj) => {
         const objToCheck = tablePrefix
           ? (obj[tablePrefix] as PayloadType)
           : obj;
         assert.equal(fields.length, Object.keys(objToCheck).length);
         return fields
-          .map(name => (objToCheck[name] as object).toString())
+          .map((name) => (objToCheck[name] as object).toString())
           .join(' ');
       })
       .join(' ');

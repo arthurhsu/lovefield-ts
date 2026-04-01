@@ -20,9 +20,9 @@ import {LogicalQueryPlanNode} from './logical_query_plan_node';
 
 // TODO(arthurhsu): this abstract base class is not necessary. Refactor to
 // remove and simplify code structure.
-export abstract class BaseLogicalPlanGenerator<T extends Context>
-  implements LogicalPlanGenerator
-{
+export abstract class BaseLogicalPlanGenerator<
+  T extends Context,
+> implements LogicalPlanGenerator {
   private rootNode: LogicalQueryPlanNode;
 
   constructor(protected query: T) {

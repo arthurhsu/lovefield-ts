@@ -21,7 +21,6 @@ import {DataStoreType, ErrorCode} from '../../lib/base/enum';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Close', () => {
   let capability: Capability;
   let db: DatabaseConnection;
@@ -44,7 +43,7 @@ describe('Close', () => {
         const schemaBuilder = getHrDbSchemaBuilder();
         schemaBuilder
           .connect({storeType: DataStoreType.MEMORY})
-          .then(conn => (db = conn));
+          .then((conn) => (db = conn));
         schemaBuilder.connect({storeType: DataStoreType.MEMORY});
       }
     );

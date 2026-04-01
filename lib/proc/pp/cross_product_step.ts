@@ -32,9 +32,9 @@ export class CrossProductStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     return this.crossProduct(relations[0], relations[1]);
@@ -49,8 +49,8 @@ export class CrossProductStep extends PhysicalQueryPlanNode {
 
     const leftRelationTableNames = leftRelation.getTables();
     const rightRelationTableNames = rightRelation.getTables();
-    leftRelation.entries.forEach(le => {
-      rightRelation.entries.forEach(re => {
+    leftRelation.entries.forEach((le) => {
+      rightRelation.entries.forEach((re) => {
         const combinedEntry = RelationEntry.combineEntries(
           le,
           leftRelationTableNames,

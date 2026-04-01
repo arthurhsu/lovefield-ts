@@ -28,7 +28,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('MemoryIndexStore', () => {
   let indexStore: IndexStore;
   let schema: DatabaseSchema;
@@ -50,7 +49,7 @@ describe('MemoryIndexStore', () => {
   // Asserts that the indices corresponding to the given index names are of a
   // specific type.
   function assertIndicesType(indexNames: string[], type: string): void {
-    indexNames.forEach(indexName => {
+    indexNames.forEach((indexName) => {
       const index = indexStore.get(indexName) as RuntimeIndex;
       assert.equal(type, index.constructor.name);
     });

@@ -27,8 +27,8 @@ export class ComparatorFactory {
       return new SimpleComparator(indexSchema.columns[0].order);
     }
 
-    const orders = indexSchema.columns.map(col => col.order);
-    const nullable = indexSchema.columns.some(col => col.schema.isNullable());
+    const orders = indexSchema.columns.map((col) => col.order);
+    const nullable = indexSchema.columns.some((col) => col.schema.isNullable());
     return nullable
       ? new MultiKeyComparatorWithNull(orders)
       : new MultiKeyComparator(orders);

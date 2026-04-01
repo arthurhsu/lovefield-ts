@@ -55,6 +55,6 @@ export class CrossProductPass extends RewritePass<LogicalQueryPlanNode> {
       }
     }
 
-    rootNode.getChildren().forEach(child => this.traverse(child));
+    rootNode.getChildren().forEach((child) => this.traverse(child));
   }
 }

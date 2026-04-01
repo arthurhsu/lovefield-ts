@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {Row} from '../../lib/base/row';
 
-
 describe('Row', () => {
   it('create', () => {
     const row1 = Row.create();

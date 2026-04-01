@@ -27,7 +27,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('LocalStorage', () => {
   let db: LocalStorage;
   let cache: Cache;
@@ -57,7 +56,7 @@ describe('LocalStorage', () => {
   // instance that is passed into its constructor.
   it('construct', () => {
     assert.isTrue(schema.tables().length > 0);
-    schema.tables().forEach(table => {
+    schema.tables().forEach((table) => {
       assert.isNotNull(db.getTableInternal(table.getName()));
     });
   });

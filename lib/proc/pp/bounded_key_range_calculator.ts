@@ -76,13 +76,13 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   ): Map<string, SingleKeyRangeSet> {
     const keyRangeMap = new Map<string, SingleKeyRangeSet>();
 
-    Array.from(this.predicateMap.keys()).forEach(columnName => {
+    Array.from(this.predicateMap.keys()).forEach((columnName) => {
       const predicateIds = this.predicateMap.get(columnName) as number[];
-      const predicates = predicateIds.map(predicateId => {
+      const predicates = predicateIds.map((predicateId) => {
         return queryContext.getPredicate(predicateId);
       }, this) as Array<CombinedPredicate | ValuePredicate>;
       let keyRangeSetSoFar = new SingleKeyRangeSet([SingleKeyRange.all()]);
-      predicates.forEach(predicate => {
+      predicates.forEach((predicate) => {
         keyRangeSetSoFar = SingleKeyRangeSet.intersect(
           keyRangeSetSoFar,
           predicate.toKeyRange()
@@ -124,7 +124,7 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
   ): SingleKeyRangeSet[] {
     const sortHelper = new Map<string, number>();
     let priority = 0;
-    this.indexSchema.columns.forEach(column => {
+    this.indexSchema.columns.forEach((column) => {
       sortHelper.set(column.schema.getName(), priority);
       priority++;
     });
@@ -134,7 +134,7 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
     );
 
     return sortedColumnNames.map(
-      columnName => keyRangeMap.get(columnName) as SingleKeyRangeSet
+      (columnName) => keyRangeMap.get(columnName) as SingleKeyRangeSet
     );
   }
 
@@ -152,7 +152,7 @@ export class BoundedKeyRangeCalculator implements IndexKeyRangeCalculator {
       'Should only be called for cross-column indices.'
     );
 
-    const keyRangeSetsAsArrays = keyRangeSets.map(keyRangeSet =>
+    const keyRangeSetsAsArrays = keyRangeSets.map((keyRangeSet) =>
       keyRangeSet.getValues()
     );
     return ArrayHelper.product(keyRangeSetsAsArrays);

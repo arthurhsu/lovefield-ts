@@ -37,7 +37,7 @@ export class CombinedPredicate extends PredicateNode {
   }
 
   eval(relation: Relation): Relation {
-    const results = this.getChildren().map(condition =>
+    const results = this.getChildren().map((condition) =>
       (condition as PredicateNode).eval(relation)
     );
     return this.combineResults(results);
@@ -58,13 +58,13 @@ export class CombinedPredicate extends PredicateNode {
     this.operator = this.operator === Operator.AND ? Operator.OR : Operator.AND;
 
     // Toggling children conditions.
-    this.getChildren().forEach(condition =>
+    this.getChildren().forEach((condition) =>
       (condition as PredicateNode).setComplement(isComplement)
     );
   }
 
   copy(): CombinedPredicate {
-    const copy = TreeHelper.map(this, node => {
+    const copy = TreeHelper.map(this, (node) => {
       if (node instanceof CombinedPredicate) {
         const tempCopy = new CombinedPredicate(node.operator);
         tempCopy.isComplement = node.isComplement;
@@ -79,7 +79,7 @@ export class CombinedPredicate extends PredicateNode {
 
   getColumns(results?: Column[]): Column[] {
     const columns = results || [];
-    this.traverse(child => {
+    this.traverse((child) => {
       if (child === this) {
         return;
       }
@@ -92,7 +92,7 @@ export class CombinedPredicate extends PredicateNode {
 
   getTables(results?: Set<Table>): Set<Table> {
     const tables = results ? results : new Set<Table>();
-    this.traverse(child => {
+    this.traverse((child) => {
       if (child === this) {
         return;
       }
@@ -116,7 +116,7 @@ export class CombinedPredicate extends PredicateNode {
 
     if (this.operator === Operator.OR) {
       const keyRangeSet = new SingleKeyRangeSet();
-      this.getChildren().forEach(child => {
+      this.getChildren().forEach((child) => {
         const childKeyRanges = (child as ValuePredicate)
           .toKeyRange()
           .getValues();
@@ -163,7 +163,7 @@ export class CombinedPredicate extends PredicateNode {
   //  3) All children are key range compatible.
   private isKeyRangeCompatibleOr(): boolean {
     let predicateColumn: Column | null = null;
-    return this.getChildren().every(child => {
+    return this.getChildren().every((child) => {
       const isCandidate =
         child instanceof ValuePredicate && child.isKeyRangeCompatible();
       if (!isCandidate) {

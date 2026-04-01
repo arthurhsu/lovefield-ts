@@ -23,7 +23,6 @@ import {fn} from '../../../lib/fn/fn';
 import {schema} from '../../../lib/schema/schema';
 import {Table} from '../../../lib/schema/table';
 
-
 describe('DeleteHarness', () => {
   let db: DatabaseConnection;
   let t1: Table;
@@ -46,9 +45,9 @@ describe('DeleteHarness', () => {
     fields: string[]
   ): void {
     const actual = rows
-      .map(obj => {
+      .map((obj) => {
         assert.equal(fields.length, Object.keys(obj).length);
-        return fields.map(name => (obj[name] as object).toString()).join(' ');
+        return fields.map((name) => (obj[name] as object).toString()).join(' ');
       })
       .join(' ');
     assert.equal(expected, actual);

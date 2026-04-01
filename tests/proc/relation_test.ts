@@ -26,7 +26,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('Relation', () => {
   let schema: DatabaseSchema;
 
@@ -72,9 +71,9 @@ describe('Relation', () => {
       rows[i] = Row.create();
     }
 
-    const tableNames = tables.map(table => table.getEffectiveName());
+    const tableNames = tables.map((table) => table.getEffectiveName());
     const relation = Relation.fromRows(rows, tableNames);
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       assert.isEmpty(entry.row.payload());
 
       // Tests setting the value when no previous value is specified.
@@ -134,7 +133,7 @@ describe('Relation', () => {
 
     const table = schema.table('tableA');
     const relation = Relation.fromRows(rows, [table.getName()]);
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       assert.isEmpty(entry.row.payload());
 
       const field1 = 'HelloWorld';
@@ -167,7 +166,7 @@ describe('Relation', () => {
     const col = table.col('name').as('nickName');
 
     const relation = Relation.fromRows(rows, [table.getName()]);
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       assert.isEmpty(entry.row.payload());
 
       const field1 = 'HelloWorld';

@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {TreeNode} from '../../lib/structs/tree_node';
 
-
 describe('TreeNode', () => {
   it('ctor', () => {
     const node = new TreeNode();
@@ -97,13 +96,13 @@ describe('TreeNode', () => {
     node2.addChild(node4);
 
     let visitedNodes: TreeNode[] = [];
-    node1.traverse(node => {
+    node1.traverse((node) => {
       visitedNodes.push(node);
     });
     assert.deepEqual([node1, node2, node3, node4], visitedNodes);
 
     visitedNodes = [];
-    node1.traverse(node => {
+    node1.traverse((node) => {
       visitedNodes.push(node);
       return node !== node2; // Cut off at node2.
     });

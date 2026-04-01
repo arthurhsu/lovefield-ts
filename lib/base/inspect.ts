@@ -68,7 +68,7 @@ export class Inspector {
       [key: string]: number;
     }
     const dbList: DBListType = {};
-    global.listServices().forEach(service => {
+    global.listServices().forEach((service) => {
       if (service.substring(0, 3) === 'ns_') {
         const dbName = service.substring(3);
         dbList[dbName] = (Inspector.getGlobal(dbName) as Global)
@@ -92,7 +92,7 @@ export class Inspector {
       global
         .getService(Service.SCHEMA)
         .tables()
-        .forEach(t => {
+        .forEach((t) => {
           const table = t as BaseTable;
           tables[table.getName()] = (
             indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
@@ -126,7 +126,9 @@ export class Inspector {
           indexStore.get(table.getRowIdIndexName()) as RuntimeIndex
         ).getRange(undefined, false, limit, skip);
         if (rowIds.length) {
-          contents = (cache.getMany(rowIds) as Row[]).map(row => row.payload());
+          contents = (cache.getMany(rowIds) as Row[]).map((row) =>
+            row.payload()
+          );
         }
       }
     }

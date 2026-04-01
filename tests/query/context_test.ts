@@ -24,7 +24,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {schema} from '../../lib/schema/schema';
 import {SchemaTestHelper} from '../../testing/schema_test_helper';
 
-
 describe('Context', () => {
   // Returns a schema where no foreign keys exist.
   function getSchemaWithoutForeignKeys(): DatabaseSchema {

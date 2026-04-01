@@ -76,7 +76,7 @@ export class Row {
 
     const uint8Array = new Uint8Array(buffer);
     let s = '';
-    uint8Array.forEach(c => {
+    uint8Array.forEach((c) => {
       const chr = c.toString(16);
       s += chr.length < 2 ? '0' + chr : chr;
     });
@@ -107,7 +107,10 @@ export class Row {
 
   protected payload_: PayloadType;
 
-  constructor(private id_: number, payload?: PayloadType) {
+  constructor(
+    private id_: number,
+    payload?: PayloadType
+  ) {
     this.payload_ = payload || this.defaultPayload();
   }
 

@@ -40,9 +40,12 @@ export class IndexRangeCandidate {
   // query execution. Initialized lazily.
   private keyRangeCalculator: IndexKeyRangeCalculator | null;
 
-  constructor(private indexStore: IndexStore, readonly indexSchema: IndexImpl) {
+  constructor(
+    private indexStore: IndexStore,
+    readonly indexSchema: IndexImpl
+  ) {
     this.indexedColumnNames = new Set<string>(
-      this.indexSchema.columns.map(col => col.schema.getName())
+      this.indexSchema.columns.map((col) => col.schema.getName())
     );
     this.predicateMap = null;
     this.keyRangeCalculator = null;
@@ -68,7 +71,7 @@ export class IndexRangeCandidate {
   // Finds which predicates are related to the index schema corresponding to
   // this IndexRangeCandidate.
   consumePredicates(predicates: ValuePredicate[]): void {
-    predicates.forEach(predicate => {
+    predicates.forEach((predicate) => {
       // If predicate is a ValuePredicate there in only one referred column. If
       // predicate is an OR CombinedPredicate, then it must be referring to a
       // single column (enforced by isKeyRangeCompatible()).
@@ -96,7 +99,7 @@ export class IndexRangeCandidate {
 
     let unboundColumnFound = false;
     let isUsable = true;
-    this.indexSchema.columns.every(column => {
+    this.indexSchema.columns.every((column) => {
       const isBound = (this.predicateMap as MapSet<string, number>).has(
         column.schema.getName()
       );

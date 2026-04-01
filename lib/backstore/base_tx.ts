@@ -32,7 +32,10 @@ export abstract class BaseTx implements Tx {
   private success: boolean;
   private statsObject: TransactionStatsImpl | null;
 
-  constructor(protected txType: TransactionType, journal?: Journal) {
+  constructor(
+    protected txType: TransactionType,
+    journal?: Journal
+  ) {
     this.journal = journal || null;
     this.resolver = new Resolver<unknown>();
     this.success = false;
@@ -74,7 +77,7 @@ export abstract class BaseTx implements Tx {
         let deletedRows = 0;
         let updatedRows = 0;
         let tablesChanged = 0;
-        diff.forEach(tableDiff => {
+        diff.forEach((tableDiff) => {
           tablesChanged++;
           insertedRows += tableDiff.getAdded().size;
           updatedRows += tableDiff.getModified().size;
@@ -99,7 +102,7 @@ export abstract class BaseTx implements Tx {
       return Promise.reject(e);
     }
 
-    return this.mergeIntoBackstore().then(results => {
+    return this.mergeIntoBackstore().then((results) => {
       (this.journal as Journal).commit();
       return results;
     });
@@ -129,10 +132,10 @@ export abstract class BaseTx implements Tx {
         TableType.DATA
       );
       const toDeleteRowIds = Array.from(tableDiff.getDeleted().values()).map(
-        row => row.id()
+        (row) => row.id()
       );
       const toPut = Array.from(tableDiff.getModified().values())
-        .map(modification => modification[1] as Row)
+        .map((modification) => modification[1] as Row)
         .concat(Array.from(tableDiff.getAdded().values()));
       // If we have things to put and delete in the same transaction then we
       // need to disable the clear table optimization the backing store might
@@ -156,7 +159,7 @@ export abstract class BaseTx implements Tx {
   // persisted indices to the backing store.
   private mergeIndexChanges(): void {
     const indices = (this.journal as Journal).getIndexDiff();
-    indices.forEach(index => {
+    indices.forEach((index) => {
       const indexTable = this.getTable(
         index.getName(),
         Row.deserialize,

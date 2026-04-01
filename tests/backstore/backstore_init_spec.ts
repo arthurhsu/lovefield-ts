@@ -26,7 +26,6 @@ import {Builder} from '../../lib/schema/builder';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('BackStoreInit', () => {
   if (!Capability.get().indexedDb) {
     return;
@@ -79,7 +78,7 @@ describe('BackStoreInit', () => {
     schema: DatabaseSchema,
     tableNames: Set<string>
   ): void {
-    schema.tables().forEach(tableSchema => {
+    schema.tables().forEach((tableSchema) => {
       assert.isTrue(tableNames.has(tableSchema.getName()));
     });
   }
@@ -90,9 +89,9 @@ describe('BackStoreInit', () => {
     schema: DatabaseSchema,
     tableNames: Set<string>
   ): void {
-    schema.tables().forEach(tableSchema => {
+    schema.tables().forEach((tableSchema) => {
       const tbl = tableSchema as BaseTable;
-      tbl.getIndices().forEach(indexSchema => {
+      tbl.getIndices().forEach((indexSchema) => {
         assert.equal(
           tbl.persistentIndex(),
           tableNames.has(indexSchema.getNormalizedName())

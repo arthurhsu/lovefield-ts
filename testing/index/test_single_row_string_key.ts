@@ -19,7 +19,6 @@ import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {TestIndex} from './test_index';
 
-
 export class TestSingleRowStringKey extends TestIndex {
   // The key ranges used for testing.
   private keyRanges = [
@@ -68,7 +67,10 @@ export class TestSingleRowStringKey extends TestIndex {
   private minKeyValuePair: [SingleKey, number[]] | null;
 
   // |reverse| means range expectations shall be reversed or not.
-  constructor(constructorFn: () => RuntimeIndex, readonly reverse = false) {
+  constructor(
+    constructorFn: () => RuntimeIndex,
+    readonly reverse = false
+  ) {
     super(constructorFn);
     this.maxKeyValuePair = null;
     this.minKeyValuePair = null;

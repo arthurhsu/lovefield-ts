@@ -33,7 +33,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {schema} from '../../lib/schema/schema';
 import {NestedPayloadType, TestUtil} from '../../testing/test_util';
 
-
 describe('WebSqlRawBackStore', () => {
   let capability: Capability;
   let sandbox: sinon.SinonSandbox;
@@ -197,7 +196,7 @@ describe('WebSqlRawBackStore', () => {
     await runTest(
       builder,
       onUpgrade,
-      results => {
+      (results) => {
         assert.equal(2, results.length);
         assert.equal('nothing', results[0]['something']);
       },
@@ -219,7 +218,7 @@ describe('WebSqlRawBackStore', () => {
     const onUpgrade = (store: RawBackStore) =>
       store.dropTableColumn('A', 'something');
 
-    await runTest(builder, onUpgrade, results => {
+    await runTest(builder, onUpgrade, (results) => {
       assert.equal(2, results.length);
       const payload = results[0];
       assert.isTrue(TestUtil.hasProperty(payload, 'id'));
@@ -242,7 +241,7 @@ describe('WebSqlRawBackStore', () => {
     const onUpgrade = (store: RawBackStore) =>
       store.renameTableColumn('A', 'name', 'lastName');
 
-    await runTest(builder, onUpgrade, results => {
+    await runTest(builder, onUpgrade, (results) => {
       assert.equal(2, results.length);
       assert.equal('world', results[0]['lastName']);
     });
@@ -264,7 +263,7 @@ describe('WebSqlRawBackStore', () => {
     const onUpgrade = (store: RawBackStore) => {
       return store
         .dump()
-        .then(results => (dumpResult = results as PayloadType));
+        .then((results) => (dumpResult = results as PayloadType));
     };
 
     await runTest(builder, onUpgrade, () => {
@@ -295,7 +294,7 @@ describe('WebSqlRawBackStore', () => {
         resolver.reject(e);
         return false;
       };
-      upgradeDb.readTransaction(tx => {
+      upgradeDb.readTransaction((tx) => {
         tx.executeSql(
           'SELECT tbl_name FROM sqlite_master WHERE type="table"',
           [],

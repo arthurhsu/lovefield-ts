@@ -47,7 +47,7 @@ export class RuntimeTransaction implements Transaction {
 
     const taskItems: TaskItem[] = [];
     try {
-      queryBuilders.forEach(queryBuilder => {
+      queryBuilders.forEach((queryBuilder) => {
         queryBuilder.assertExecPreconditions();
         taskItems.push(queryBuilder.getTaskItem());
       });
@@ -58,11 +58,11 @@ export class RuntimeTransaction implements Transaction {
 
     this.task = new UserQueryTask(this.global, taskItems);
     return this.runner.scheduleTask(this.task).then(
-      results => {
+      (results) => {
         this.updateState(TransactionState.FINALIZED);
-        return results.map(relation => relation.getPayloads());
+        return results.map((relation) => relation.getPayloads());
       },
-      e => {
+      (e) => {
         this.updateState(TransactionState.FINALIZED);
         throw e;
       }
@@ -89,11 +89,11 @@ export class RuntimeTransaction implements Transaction {
     }
 
     return (this.task as TransactionTask).attachQuery(query).then(
-      result => {
+      (result) => {
         this.updateState(TransactionState.ACQUIRED_SCOPE);
         return result;
       },
-      e => {
+      (e) => {
         this.updateState(TransactionState.FINALIZED);
         throw e;
       }
@@ -102,7 +102,7 @@ export class RuntimeTransaction implements Transaction {
 
   commit(): Promise<unknown> {
     this.updateState(TransactionState.COMMITTING);
-    return (this.task as TransactionTask).commit().then(res => {
+    return (this.task as TransactionTask).commit().then((res) => {
       this.updateState(TransactionState.FINALIZED);
       return res;
     });
@@ -110,7 +110,7 @@ export class RuntimeTransaction implements Transaction {
 
   rollback(): Promise<unknown> {
     this.updateState(TransactionState.ROLLING_BACK);
-    return (this.task as TransactionTask).rollback().then(res => {
+    return (this.task as TransactionTask).rollback().then((res) => {
       this.updateState(TransactionState.FINALIZED);
       return res;
     });

@@ -37,7 +37,7 @@ export class MemoryIndexStore implements IndexStore {
   init(schema: DatabaseSchema): Promise<void> {
     const tables = schema.tables() as BaseTable[];
 
-    tables.forEach(table => {
+    tables.forEach((table) => {
       const tableIndices: RuntimeIndex[] = [];
       this.tableIndices.set(table.getName(), tableIndices);
 
@@ -48,7 +48,7 @@ export class MemoryIndexStore implements IndexStore {
         tableIndices.push(index);
         this.store.set(rowIdIndexName, index);
       }
-      (table.getIndices() as IndexImpl[]).forEach(indexSchema => {
+      (table.getIndices() as IndexImpl[]).forEach((indexSchema) => {
         const index = this.createIndex(indexSchema);
         tableIndices.push(index);
         this.store.set(indexSchema.getNormalizedName(), index);

@@ -29,7 +29,7 @@ export class PhysicalPlanRewriter {
 
   // Rewrites the physical plan.
   generate(): PhysicalQueryPlanNode {
-    this.rewritePasses.forEach(rewritePass => {
+    this.rewritePasses.forEach((rewritePass) => {
       this.rootNode = rewritePass.rewrite(this.rootNode, this.queryContext);
     }, this);
     return this.rootNode;

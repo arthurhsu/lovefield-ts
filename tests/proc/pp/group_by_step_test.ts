@@ -23,7 +23,6 @@ import {Table} from '../../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../../testing/hr_schema/mock_data_generator';
 
-
 describe('GroupByStep', () => {
   let e: Table;
   let j: Table;
@@ -48,14 +47,14 @@ describe('GroupByStep', () => {
     groupByStep.addChild(childStep);
 
     const employeesPerJob = dataGenerator.employeeGroundTruth.employeesPerJob;
-    return groupByStep.exec().then(relations => {
+    return groupByStep.exec().then((relations) => {
       const jobIds = Array.from(employeesPerJob.keys());
       assert.equal(jobIds.length, relations.length);
-      relations.forEach(relation => {
+      relations.forEach((relation) => {
         const jobId = relation.entries[0].getField(e.col('jobId')) as string;
         const expectedRows = employeesPerJob.get(jobId) as string[];
         assert.equal(expectedRows.length, relation.entries.length);
-        relation.entries.forEach(entry => {
+        relation.entries.forEach((entry) => {
           assert.equal(jobId, entry.getField(e.col('jobId')));
         });
       });
@@ -75,16 +74,16 @@ describe('GroupByStep', () => {
     ]);
     groupByStep.addChild(childStep);
 
-    return groupByStep.exec().then(relations => {
+    return groupByStep.exec().then((relations) => {
       let jobCount = 0;
-      relations.forEach(relation => {
+      relations.forEach((relation) => {
         const groupByMinSalary = relation.entries[0].getField(
           j.col('minSalary')
         );
         const groupByMaxSalary = relation.entries[0].getField(
           j.col('maxSalary')
         );
-        relation.entries.forEach(entry => {
+        relation.entries.forEach((entry) => {
           assert.equal(groupByMinSalary, entry.getField(j.col('minSalary')));
           assert.equal(groupByMaxSalary, entry.getField(j.col('maxSalary')));
           jobCount++;

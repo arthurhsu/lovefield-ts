@@ -41,7 +41,7 @@ export class op {
     predicates: PredicateNode[]
   ): Predicate {
     const condition = new CombinedPredicate(operator);
-    predicates.forEach(predicate => condition.addChild(predicate));
+    predicates.forEach((predicate) => condition.addChild(predicate));
     return condition;
   }
 }

@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {SingleKeyRange} from '../../lib/index/key_range';
 import {SingleKeyRangeSet} from '../../lib/index/single_key_range_set';
 
-
 describe('SingleKeyRangeSet', () => {
   function generateTestRanges(): {[key: string]: SingleKeyRange} {
     return {
@@ -111,7 +110,7 @@ describe('SingleKeyRangeSet', () => {
       [r.r6, r.r2],
       [r.r6, r.r4],
     ];
-    excluding.forEach(pair => check(pair, pair));
+    excluding.forEach((pair) => check(pair, pair));
     check([r.r7, r.r6, r.r5], [r.r5, r.r7, r.r7, r.r6]);
     check([r.upTo1Ex, r.only1, r.r5], [r.upTo1Ex, r.only1, r.r5]);
   });

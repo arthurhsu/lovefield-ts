@@ -21,7 +21,6 @@ import {TableDiff} from '../../lib/cache/table_diff';
 import {Table} from '../../lib/schema/table';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('TableDiff', () => {
   let table: Table;
 

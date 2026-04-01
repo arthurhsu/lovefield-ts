@@ -31,11 +31,10 @@ export class NoOpStep extends PhysicalQueryPlanNode {
   }
 
   execInternal(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     return this.relations;

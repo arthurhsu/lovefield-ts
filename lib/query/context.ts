@@ -29,7 +29,7 @@ export abstract class Context extends UniqueId {
     rootPredicate: PredicateNode
   ): Map<number, Predicate> {
     const predicateMap = new Map<number, Predicate>();
-    rootPredicate.traverse(n => {
+    rootPredicate.traverse((n) => {
       const node = n as PredicateNode as Predicate;
       predicateMap.set(node.getId(), node);
     });
@@ -60,7 +60,6 @@ export abstract class Context extends UniqueId {
     return predicate;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   bind(values: unknown[]): Context {
     assert(this.clonedFrom === null);
     return this;
@@ -69,7 +68,7 @@ export abstract class Context extends UniqueId {
   bindValuesInSearchCondition(values: unknown[]): void {
     const searchCondition: PredicateNode = this.where as PredicateNode;
     if (searchCondition !== null) {
-      searchCondition.traverse(node => {
+      searchCondition.traverse((node) => {
         if (node instanceof ValuePredicate) {
           node.bind(values);
         }

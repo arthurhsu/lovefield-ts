@@ -48,10 +48,10 @@ export class JobDataGenerator {
 
   genSalaries() {
     const salary1Index = Math.floor(
-        Math.random() * JobDataGenerator.SALARY_POOL.length,
+      Math.random() * JobDataGenerator.SALARY_POOL.length
     );
     const salary2Index = Math.floor(
-        Math.random() * JobDataGenerator.SALARY_POOL.length,
+      Math.random() * JobDataGenerator.SALARY_POOL.length
     );
     return [
       JobDataGenerator.SALARY_POOL[salary1Index],

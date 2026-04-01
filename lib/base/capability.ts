@@ -46,9 +46,9 @@ export class Capability {
     this.versionMap = new Map<string, string>();
 
     this.detect();
-    this.webSql = typeof window !== 'undefined' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        typeof (window as any).openDatabase === 'function';
+    this.webSql =
+      typeof window !== 'undefined' &&
+      typeof (window as any).openDatabase === 'function';
   }
 
   getDetection(): string {
@@ -69,7 +69,7 @@ export class Capability {
       return;
     }
 
-    this.version = version.split('.').map(v => {
+    this.version = version.split('.').map((v) => {
       let n = 0;
       try {
         n = Number(v);
@@ -109,7 +109,7 @@ export class Capability {
       this.isIOS.bind(this), // this must be placed after Safari
     ];
 
-    checkSequence.some(fn => fn());
+    checkSequence.some((fn) => fn());
   }
 
   private detectVersion(): void {

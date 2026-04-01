@@ -27,47 +27,65 @@ export class PKTableBenchmark extends DefaultBenchmark {
 
     const testCases = [
       new TestCase(
-          'Init empty DB',
-          this.init.bind(this),
-          this.validateEmpty.bind(this),
-          true),
+        'Init empty DB',
+        this.init.bind(this),
+        this.validateEmpty.bind(this),
+        true
+      ),
       new TestCase(
-          'Load test data',
-          this.loadTestData.bind(
-              this, 'default_benchmark_mock_data_50k.json'), undefined, true),
+        'Load test data',
+        this.loadTestData.bind(this, 'default_benchmark_mock_data_50k.json'),
+        undefined,
+        true
+      ),
     ];
 
     for (let i = 1; i <= 10000; i *= 10) {
       // Each repetition needs to insert 30000 rows.
-      testCases.push(new TestCase(
+      testCases.push(
+        new TestCase(
           'Insert ' + rowCount,
           this.insert.bind(this, rowCount),
           this.validateInsert.bind(this, rowCount),
-          true));
+          true
+        )
+      );
 
       // Checks for partial SCUD via primary keys.
-      testCases.push(new TestCase(
+      testCases.push(
+        new TestCase(
           'Delete ' + i,
           this.deletePartial.bind(this, i),
-          this.validateDeletePartial.bind(this, i)));
-      testCases.push(new TestCase(
+          this.validateDeletePartial.bind(this, i)
+        )
+      );
+      testCases.push(
+        new TestCase(
           'Insert ' + i,
           this.insertPartial.bind(this, i),
-          this.validateInsert.bind(this, rowCount)));
-      testCases.push(new TestCase(
-          'Update ' + i,
-          this.updatePartial.bind(this, i)));
-      testCases.push(new TestCase(
+          this.validateInsert.bind(this, rowCount)
+        )
+      );
+      testCases.push(
+        new TestCase('Update ' + i, this.updatePartial.bind(this, i))
+      );
+      testCases.push(
+        new TestCase(
           'Select ' + i,
           this.selectPartial.bind(this, i),
-          this.validateUpdatePartial.bind(this, i)));
+          this.validateUpdatePartial.bind(this, i)
+        )
+      );
 
       // Resets the table.
-      testCases.push(new TestCase(
+      testCases.push(
+        new TestCase(
           'Delete ' + i,
           this.deleteAll.bind(this),
           this.validateEmpty.bind(this),
-          true));
+          true
+        )
+      );
     }
     return testCases;
   }

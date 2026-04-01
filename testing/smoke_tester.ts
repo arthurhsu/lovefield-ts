@@ -26,7 +26,6 @@ import {Row} from '../lib/base/row';
 import {Service} from '../lib/base/service';
 import {BaseTable} from '../lib/schema/base_table';
 
-
 // Smoke test for the most basic DB operations, Create, Read, Update, Delete.
 export class SmokeTester {
   private db: DatabaseConnection;
@@ -41,7 +40,7 @@ export class SmokeTester {
 
   clearDb(): Promise<unknown> {
     const tables = this.db.getSchema().tables();
-    const deletePromises = tables.map(table => {
+    const deletePromises = tables.map((table) => {
       return this.db.delete().from(table).exec();
     }, this);
 
@@ -136,7 +135,7 @@ export class SmokeTester {
 
     // Issuing multiple queries back to back (no waiting on the previous query
     // to finish). All rows to be inserted have the same primary key.
-    const promises = rows.map(row => {
+    const promises = rows.map((row) => {
       return db.insertOrReplace().into(r).values([row]).exec();
     });
 

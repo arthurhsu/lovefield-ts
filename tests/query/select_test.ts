@@ -29,7 +29,6 @@ import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Select', () => {
   let db: RuntimeDatabase;
 
@@ -496,7 +495,7 @@ describe('Select', () => {
     validAggregators: AggregatedColumn[],
     table: Table
   ): void {
-    invalidAggregators.forEach(aggregator => {
+    invalidAggregators.forEach((aggregator) => {
       const buildQuery = () =>
         new SelectBuilder(db.getGlobal(), [aggregator]).from(table);
 
@@ -504,7 +503,7 @@ describe('Select', () => {
       TestUtil.assertThrowsError(ErrorCode.INVALID_AGGREGATION, buildQuery);
     });
 
-    validAggregators.forEach(aggregator => {
+    validAggregators.forEach((aggregator) => {
       const buildQuery = () =>
         new SelectBuilder(db.getGlobal(), [aggregator]).from(table);
       assert.doesNotThrow(buildQuery);

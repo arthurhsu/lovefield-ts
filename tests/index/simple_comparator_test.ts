@@ -21,7 +21,6 @@ import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {SimpleComparator} from '../../lib/index/simple_comparator';
 import {SimpleComparatorWithNull} from '../../lib/index/simple_comparator_with_null';
 
-
 describe('SimpleComparator', () => {
   const NULL: SingleKey = null as unknown as SingleKey;
 
@@ -184,7 +183,7 @@ describe('SimpleComparator', () => {
     let dupe = ranges.slice();
     let actual = dupe
       .sort(SimpleComparator.orderRangeAscending)
-      .map(range => range.toString());
+      .map((range) => range.toString());
     assert.sameOrderedMembers(expectationAsc, actual);
 
     const expectationDesc = ['[6, 7]', '[5, 5]', '[1, 5)', '[-1, 1)'];
@@ -192,7 +191,7 @@ describe('SimpleComparator', () => {
     dupe = ranges.slice();
     actual = dupe
       .sort(SimpleComparator.orderRangeDescending)
-      .map(range => range.toString());
+      .map((range) => range.toString());
     assert.sameOrderedMembers(expectationDesc, actual);
   });
 
@@ -222,7 +221,7 @@ describe('SimpleComparator', () => {
       SingleKeyRange.upperBound(2, true),
       SingleKeyRange.only(2),
     ];
-    ranges.forEach(range => {
+    ranges.forEach((range) => {
       assert.isFalse(c2.isInRange(NULL, range));
     });
   });
@@ -242,7 +241,7 @@ describe('SimpleComparator', () => {
     const expectations2 = ['(5, unbound]', '[5, 5]', '[unbound, 5)'];
 
     const getActual = (c: SimpleComparator, ranges: SingleKeyRange[]) => {
-      return c.sortKeyRanges(ranges).map(range => range.toString());
+      return c.sortKeyRanges(ranges).map((range) => range.toString());
     };
 
     assert.sameOrderedMembers(expectations1, getActual(c1, keyRanges));

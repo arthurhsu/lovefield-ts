@@ -44,7 +44,7 @@ export class MapSet<K, V> {
 
   setMany(key: K, values: V[]): MapSet<K, V> {
     const valueSet = this.getSet(key);
-    values.forEach(value => {
+    values.forEach((value) => {
       if (!valueSet.has(value)) {
         valueSet.add(value);
         this.count++;
@@ -56,7 +56,7 @@ export class MapSet<K, V> {
   merge(mapSet: MapSet<K, V>): MapSet<K, V> {
     mapSet
       .keys()
-      .forEach(key => this.setMany(key, Array.from(mapSet.getSet(key))));
+      .forEach((key) => this.setMany(key, Array.from(mapSet.getSet(key))));
     return this;
   }
 
@@ -96,7 +96,7 @@ export class MapSet<K, V> {
 
   values(): V[] {
     const results: V[] = [];
-    this.map.forEach(valueSet => results.push(...Array.from(valueSet)));
+    this.map.forEach((valueSet) => results.push(...Array.from(valueSet)));
     return results;
   }
 

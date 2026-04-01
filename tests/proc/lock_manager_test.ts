@@ -20,7 +20,6 @@ import {LockManager} from '../../lib/proc/lock_manager';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('LockManager', () => {
   let j: Set<Table>;
   let lockManager: LockManager;

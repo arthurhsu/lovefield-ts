@@ -50,9 +50,8 @@ export class LocalStorage implements BackStore {
     this.listener = null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void> {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       this.initSync();
       resolve();
     });
@@ -85,7 +84,6 @@ export class LocalStorage implements BackStore {
     window.addEventListener('storage', this.listener, false);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     if (this.listener) {
       window.removeEventListener('storage', this.listener, false);
@@ -106,7 +104,7 @@ export class LocalStorage implements BackStore {
 
   // Flushes changes to local storage.
   commit(): void {
-    this.tables.forEach(table => table.commit());
+    this.tables.forEach((table) => table.commit());
   }
 
   // Synchronous version of init()
@@ -134,12 +132,12 @@ export class LocalStorage implements BackStore {
 
   private loadTables(): void {
     const prefix = this.schema.name() + '.';
-    (this.schema.tables() as BaseTable[]).forEach(table => {
+    (this.schema.tables() as BaseTable[]).forEach((table) => {
       const tableName = table.getName();
       this.tables.set(tableName, new LocalStorageTable(prefix + tableName));
       if (table.persistentIndex()) {
         const indices = table.getIndices();
-        indices.forEach(index => {
+        indices.forEach((index) => {
           const indexName = index.getNormalizedName();
           this.tables.set(indexName, new LocalStorageTable(prefix + indexName));
         }, this);

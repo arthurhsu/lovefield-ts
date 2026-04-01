@@ -29,13 +29,12 @@ import {TestSingleRowNumericalKey} from '../../testing/index/test_single_row_num
 import {TestSingleRowStringKey} from '../../testing/index/test_single_row_string_key';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('BTree', () => {
   let c: SimpleComparator;
   let c2: SimpleComparator;
 
   // Special hack to replace internal private variables.
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -52,7 +51,6 @@ describe('BTree', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
-  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   beforeEach(() => {
     c = new SimpleComparator(Order.ASC);
@@ -422,7 +420,7 @@ describe('BTree', () => {
 
   it('ConstructFromData', () => {
     const key = SEQUENCE.slice(0, 23).sort((a, b) => a - b);
-    const data = key.map(i => ({key: i, value: i}));
+    const data = key.map((i) => ({key: i, value: i}));
     const tree = new BTree('test', c, true, data);
     const expected = [
       '6[21]\n',
@@ -1179,7 +1177,7 @@ describe('BTree', () => {
 
   it('DuplicateKeys_SmokeTest', () => {
     const tree = insertToTree(23, true);
-    SEQUENCE.forEach(s => {
+    SEQUENCE.forEach((s) => {
       assert.equal(2, tree.cost(SingleKeyRange.only(s)));
       assert.sameOrderedMembers([s, s * 1000], tree.get(s));
       assert.sameOrderedMembers(
@@ -1189,7 +1187,7 @@ describe('BTree', () => {
     });
     assert.equal(2 * SEQUENCE.length, tree.cost(SingleKeyRange.all()));
 
-    SEQUENCE.forEach(s => {
+    SEQUENCE.forEach((s) => {
       tree.remove(s, s);
       assert.equal(1, tree.cost(SingleKeyRange.only(s)));
       assert.sameOrderedMembers([s * 1000], tree.get(s));
@@ -1227,7 +1225,7 @@ describe('BTree', () => {
     }
 
     const numbers = Array.from(set.values()).sort((a, b) => a - b);
-    const keys = numbers.map(n => [n, -n]);
+    const keys = numbers.map((n) => [n, -n]);
 
     const comparator = new MultiKeyComparator([Order.ASC, Order.DESC]);
     const tree = new BTree('test', comparator, true);

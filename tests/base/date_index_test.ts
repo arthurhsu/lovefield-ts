@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('DateIndex', () => {
   let db: RuntimeDatabase;
   let holiday: Table;
@@ -83,7 +82,7 @@ describe('DateIndex', () => {
   it('dateIndex', async () => {
     const rows = generateSampleRows();
     const expected = rows
-      .map(row => row.payload()['name'])
+      .map((row) => row.payload()['name'])
       .slice(1)
       .reverse();
 
@@ -97,7 +96,7 @@ describe('DateIndex', () => {
     const results = (await query.exec()) as PayloadType[];
     assert.sameDeepOrderedMembers(
       expected,
-      results.map(row => row['name'])
+      results.map((row) => row['name'])
     );
   });
 });

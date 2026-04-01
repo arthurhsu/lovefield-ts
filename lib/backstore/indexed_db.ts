@@ -64,7 +64,10 @@ export class IndexedDB implements BackStore {
   private db!: IDBDatabase;
   private bundledMode: boolean;
 
-  constructor(private global: Global, private schema: DatabaseSchema) {
+  constructor(
+    private global: Global,
+    private schema: DatabaseSchema
+  ) {
     this.bundledMode = this.schema.pragma().enableBundledMode || false;
   }
 
@@ -75,7 +78,6 @@ export class IndexedDB implements BackStore {
       throw new Exception(ErrorCode.IDB_NOT_PROVIDED);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onUpgrade = upgrade || ((rawDb: RawBackStore) => Promise.resolve());
 
     return new Promise((resolve, reject) => {
@@ -94,7 +96,7 @@ export class IndexedDB implements BackStore {
       //   connection)
       //   --> onsuccess
       // As a result the onblocked event is not handled deliberately.
-      request.onerror = e => {
+      request.onerror = (e) => {
         const error: DOMException = (e.target as IDBRequest)
           .error as DOMException;
         // 361: Unable to open IndexedDB database.
@@ -102,14 +104,14 @@ export class IndexedDB implements BackStore {
           new Exception(ErrorCode.CANT_OPEN_IDB, error.name, error.message)
         );
       };
-      request.onupgradeneeded = ev => {
+      request.onupgradeneeded = (ev) => {
         this.onUpgradeNeeded(onUpgrade, ev).then(() => {
           return;
         }, reject);
       };
-      request.onsuccess = ev => {
+      request.onsuccess = (ev) => {
         this.db = (ev.target as IDBRequest).result as IDBDatabase;
-        this.scanRowId().then(rowId => {
+        this.scanRowId().then((rowId) => {
           Row.setNextIdIfGreater(rowId + 1);
           resolve(this.db);
         });
@@ -135,23 +137,19 @@ export class IndexedDB implements BackStore {
     this.db.close();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getTableInternal(tableName: string): RuntimeTable {
     // 511: IndexedDB tables needs to be acquired from transactions.
     throw new Exception(ErrorCode.CANT_GET_IDB_TABLE);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported yet.
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   notify(changes: TableDiff[]): void {
     // Not supported yet.
   }
@@ -191,7 +189,7 @@ export class IndexedDB implements BackStore {
         storeNames.push(name);
       }
     }
-    storeNames.forEach(store => {
+    storeNames.forEach((store) => {
       try {
         db.deleteObjectStore(store);
       } catch (e) {
@@ -202,7 +200,7 @@ export class IndexedDB implements BackStore {
 
   // Creates tables if they had not existed in the database.
   private createTables(db: IDBDatabase): void {
-    (this.schema.tables() as BaseTable[]).forEach(table => {
+    (this.schema.tables() as BaseTable[]).forEach((table) => {
       this.createObjectStoresForTable(db, table);
     }, this);
   }
@@ -217,7 +215,7 @@ export class IndexedDB implements BackStore {
 
     if (tableSchema.persistentIndex()) {
       const tableIndices = tableSchema.getIndices();
-      tableIndices.forEach(indexSchema => {
+      tableIndices.forEach((indexSchema) => {
         this.createIndexTable(db, indexSchema.getNormalizedName());
       }, this);
 
@@ -236,7 +234,7 @@ export class IndexedDB implements BackStore {
   private getIndexedDBScope(scope: BaseTable[]): string[] {
     const indexedDBScope = new Set<string>();
 
-    scope.forEach(tableSchema => {
+    scope.forEach((tableSchema) => {
       // Adding user-defined table to the scope.
       indexedDBScope.add(tableSchema.getName());
 
@@ -244,7 +242,7 @@ export class IndexedDB implements BackStore {
       // store tables to the scope too.
       if (tableSchema.persistentIndex()) {
         const tableIndices = tableSchema.getIndices();
-        tableIndices.forEach(indexSchema =>
+        tableIndices.forEach((indexSchema) =>
           indexedDBScope.add(indexSchema.getNormalizedName())
         );
 
@@ -257,7 +255,7 @@ export class IndexedDB implements BackStore {
   }
 
   private scanRowId(txIn?: IDBTransaction): Promise<number> {
-    const tableNames = this.schema.tables().map(table => table.getName());
+    const tableNames = this.schema.tables().map((table) => table.getName());
 
     const db = this.db;
     let maxRowId = 0;
@@ -283,7 +281,7 @@ export class IndexedDB implements BackStore {
           reject(e);
           return;
         }
-        req.onsuccess = ev => {
+        req.onsuccess = (ev) => {
           const cursor = (ev.target as IDBRequest).result as IDBCursorWithValue;
           if (cursor) {
             // Since the cursor is traversed in the reverse direction, only the
@@ -305,7 +303,7 @@ export class IndexedDB implements BackStore {
       return scanTableRowId(tableName).then(execSequentially);
     };
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       execSequentially().then(() => resolve(maxRowId));
     });
   }

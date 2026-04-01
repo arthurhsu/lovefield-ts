@@ -39,7 +39,7 @@ export class UpdateContext extends Context {
   getScope(): Set<Table> {
     const scope = new Set<Table>();
     scope.add(this.table);
-    const columns = this.set.map(col => col.column.getNormalizedName());
+    const columns = this.set.map((col) => col.column.getNormalizedName());
     const info = Info.from(this.schema);
     info.getParentTablesByColumns(columns).forEach(scope.add.bind(scope));
     info.getChildTablesByColumns(columns).forEach(scope.add.bind(scope));
@@ -57,7 +57,7 @@ export class UpdateContext extends Context {
   bind(values: unknown[]): UpdateContext {
     super.bind(values);
 
-    this.set.forEach(set => {
+    this.set.forEach((set) => {
       if (set.binding !== undefined && set.binding !== -1) {
         set.value = values[set.binding as number];
       }
@@ -67,7 +67,7 @@ export class UpdateContext extends Context {
   }
 
   private cloneSet(set: UpdateSetContext[]): UpdateSetContext[] {
-    return set.map(src => {
+    return set.map((src) => {
       const clone = {...src};
       return clone;
     });

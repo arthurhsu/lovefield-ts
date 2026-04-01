@@ -27,7 +27,7 @@ export class DefaultCache implements Cache {
     this.map = new Map<number, Row>();
     this.tableRows = new Map<string, Set<number>>();
 
-    dbSchema.tables().forEach(table => {
+    dbSchema.tables().forEach((table) => {
       this.tableRows.set(table.getName(), new Set<number>());
     }, this);
   }
@@ -39,7 +39,7 @@ export class DefaultCache implements Cache {
 
   setMany(tableName: string, rows: Row[]): void {
     const tableSet = this.getTableRowSet(tableName);
-    rows.forEach(row => {
+    rows.forEach((row) => {
       this.map.set(row.id(), row);
       tableSet.add(row.id());
     }, this);
@@ -50,7 +50,7 @@ export class DefaultCache implements Cache {
   }
 
   getMany(ids: number[]): Array<Row | null> {
-    return ids.map(id => this.get(id));
+    return ids.map((id) => this.get(id));
   }
 
   getRange(tableName: string, fromId: number, toId: number): Row[] {
@@ -61,7 +61,7 @@ export class DefaultCache implements Cache {
 
     // Ensure the least number of keys are iterated.
     if (tableSet.size < max - min) {
-      tableSet.forEach(key => {
+      tableSet.forEach((key) => {
         if (key >= min && key <= max) {
           const value = this.map.get(key);
           assert(value !== null && value !== undefined, 'Inconsistent cache 1');
@@ -88,7 +88,7 @@ export class DefaultCache implements Cache {
 
   removeMany(tableName: string, ids: number[]): void {
     const tableSet = this.getTableRowSet(tableName);
-    ids.forEach(id => {
+    ids.forEach((id) => {
       this.map.delete(id);
       tableSet.delete(id);
     }, this);

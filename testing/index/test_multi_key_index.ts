@@ -19,7 +19,6 @@ import {SingleKeyRange} from '../../lib/index/key_range';
 import {RuntimeIndex} from '../../lib/index/runtime_index';
 import {TestIndex} from './test_index';
 
-
 export class TestMultiKeyIndex extends TestIndex {
   private keyRanges = [
     // Get all.

@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {Row} from '../../lib/base/row';
 import {RelationEntry} from '../../lib/proc/relation_entry';
 
-
 describe('RelationEntry', () => {
   it('combineEntries', () => {
     const row1 = new Row(Row.DUMMY_ID, {foo: 'FOO'});

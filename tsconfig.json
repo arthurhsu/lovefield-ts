@@ -2,10 +2,7 @@
   "compilerOptions": {
     "allowJs": false,
     "allowUnreachableCode": false,
-    "lib": [
-      "dom",
-      "es6"
-    ],
+    "lib": ["dom", "es6"],
     "module": "commonjs",
     "moduleResolution": "node",
     "ignoreDeprecations": "6.0",
@@ -20,12 +17,7 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "es6",
-    "types": [
-      "chai",
-      "mocha",
-      "node",
-      "websql"
-    ]
+    "types": ["chai", "mocha", "node", "websql"]
   },
   "exclude": [
     "node_modules",

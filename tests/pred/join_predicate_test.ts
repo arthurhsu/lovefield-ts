@@ -30,7 +30,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 import {NullableDataGenerator} from '../../testing/nullable_data_generator';
 
-
 interface SampleDataType {
   departments: Row[];
   employees: Row[];
@@ -421,7 +420,7 @@ describe('JoinPredicate', () => {
         nullableGenerator.tableAGroundTruth.numNullable,
       result.entries.length
     );
-    result.entries.forEach(entry => {
+    result.entries.forEach((entry) => {
       assert.isTrue(hasNonNullEntry(entry, tableA.getEffectiveName()));
       assert.isFalse(hasNullEntry(entry, tableC.getEffectiveName()));
     });
@@ -465,13 +464,15 @@ describe('JoinPredicate', () => {
       true
     );
     assert.equal(lengthTableA, result.entries.length);
-    result.entries.slice(0, lengthTableA - numNullableTableA).forEach(entry => {
-      assert.isTrue(hasNonNullEntry(entry, tableA.getEffectiveName()));
-    });
-    result.entries.slice(lengthTableA - numNullableTableA).forEach(entry => {
+    result.entries
+      .slice(0, lengthTableA - numNullableTableA)
+      .forEach((entry) => {
+        assert.isTrue(hasNonNullEntry(entry, tableA.getEffectiveName()));
+      });
+    result.entries.slice(lengthTableA - numNullableTableA).forEach((entry) => {
       assert.isTrue(hasNullEntry(entry, tableA.getEffectiveName()));
     });
-    let numNullEntries = result.entries.filter(entry => {
+    let numNullEntries = result.entries.filter((entry) => {
       return hasNullEntry(entry, tableC.getEffectiveName());
     }).length;
     assert.equal(numNullableTableA, numNullEntries);
@@ -483,7 +484,7 @@ describe('JoinPredicate', () => {
       nullableGenerator.sampleTableBRows.length,
       result.entries.length
     );
-    numNullEntries = result.entries.filter(entry => {
+    numNullEntries = result.entries.filter((entry) => {
       return (
         hasNullEntry(entry, tableC.getEffectiveName()) &&
         hasNullEntry(entry, tableB.getEffectiveName())
@@ -497,9 +498,11 @@ describe('JoinPredicate', () => {
   function hasNullEntry(entry: RelationEntry, tableName: string): boolean {
     const keys = Object.keys(entry.row.payload()[tableName] as object);
     assert.isTrue(keys.length > 0);
-    return Object.keys(entry.row.payload()[tableName] as object).every(key => {
-      return (entry.row.payload()[tableName] as PayloadType)[key] === null;
-    });
+    return Object.keys(entry.row.payload()[tableName] as object).every(
+      (key) => {
+        return (entry.row.payload()[tableName] as PayloadType)[key] === null;
+      }
+    );
   }
 
   // Checks that the given combined entry has a non-null entry for table
@@ -508,7 +511,7 @@ describe('JoinPredicate', () => {
     const payload = entry.row.payload()[tableName] as PayloadType;
     const keys = Object.keys(payload);
     assert.isTrue(keys.length > 0);
-    return Object.keys(payload).every(key => payload[key] !== null);
+    return Object.keys(payload).every((key) => payload[key] !== null);
   }
 
   // Checks that the given outer join implementation is correct for the case,
@@ -536,7 +539,7 @@ describe('JoinPredicate', () => {
       true
     );
     assert.equal(sampleRows.employees.length, result.entries.length);
-    const numNullEntries = result.entries.filter(entry =>
+    const numNullEntries = result.entries.filter((entry) =>
       hasNullEntry(entry, 'Job')
     ).length;
     assert.equal(numEmployeesPerJob, numNullEntries);
@@ -709,9 +712,8 @@ describe('JoinPredicate', () => {
   ): void {
     const sampleRows = getSampleRows();
     const lessJobs = sampleRows.jobs.slice(0, sampleRows.jobs.length - 1);
-    sampleRows.employees[sampleRows.employees.length - 1].payload()[
-      'salary'
-    ] = 1;
+    sampleRows.employees[sampleRows.employees.length - 1].payload()['salary'] =
+      1;
     const employeeRelation = Relation.fromRows(sampleRows.employees, [
       e.getName(),
     ]);
@@ -732,7 +734,7 @@ describe('JoinPredicate', () => {
       result.entries.length
     );
     let numNullEntries = 0;
-    result.entries.forEach(entry => {
+    result.entries.forEach((entry) => {
       if (hasNullEntry(entry, 'Job')) {
         numNullEntries++;
       }

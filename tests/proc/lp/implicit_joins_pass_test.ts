@@ -59,7 +59,7 @@ describe('ImplicitJoinsPass', () => {
       const selectNode = new SelectNode(queryContext.where as Predicate);
       const crossProductNode = new CrossProductNode();
       selectNode.addChild(crossProductNode);
-      queryContext.from.forEach(tableSchema => {
+      queryContext.from.forEach((tableSchema) => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 

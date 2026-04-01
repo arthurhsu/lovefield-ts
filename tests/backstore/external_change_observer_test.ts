@@ -32,7 +32,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('ExternalChangeObserver', () => {
   let db: RuntimeDatabase;
   let j: Table;
@@ -74,9 +73,10 @@ describe('ExternalChangeObserver', () => {
     modifiedRow.assignRowId(sampleJobs[0].id());
 
     const extractResultsPk = (res: PayloadType[]) => {
-      return res.map(obj => obj[j.col('id').getName()]);
+      return res.map((obj) => obj[j.col('id').getName()]);
     };
-    const extractRowsPk = (rows: Row[]) => rows.map(row => row.payload()['id']);
+    const extractRowsPk = (rows: Row[]) =>
+      rows.map((row) => row.payload()['id']);
 
     // Simulate an external insertion of rows.
     await simulateInsertionModification(j, sampleJobs);
@@ -133,9 +133,9 @@ describe('ExternalChangeObserver', () => {
     const resolver = new Resolver<void>();
 
     const query = db.select().from(j);
-    db.observe(query, changes => {
+    db.observe(query, (changes) => {
       assert.equal(sampleJobs.length, changes.length);
-      changes.forEach(changeEvent => {
+      changes.forEach((changeEvent) => {
         assert.equal(1, changeEvent.addedCount);
       });
       resolver.resolve();
@@ -155,7 +155,7 @@ describe('ExternalChangeObserver', () => {
 
     const query = db.select().from(j);
     let counter = 0;
-    db.observe(query, changes => {
+    db.observe(query, (changes) => {
       counter++;
       // Expecting the observer to be called twice, once when the db.insert()
       // query is completed, and once when the external change has been merged.
@@ -206,7 +206,7 @@ describe('ExternalChangeObserver', () => {
       TableType.DATA
     );
 
-    const rowIds = rows.map(row => row.id());
+    const rowIds = rows.map((row) => row.id());
     table.remove(rowIds);
     return tx.commit();
   }

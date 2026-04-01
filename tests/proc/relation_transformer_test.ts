@@ -28,7 +28,6 @@ import {EmployeeDataGenerator} from '../../testing/hr_schema/employee_data_gener
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 
-
 describe('RelationTransformer', () => {
   let j: Table;
   let e: Table;
@@ -65,7 +64,7 @@ describe('RelationTransformer', () => {
     const relation = Relation.fromRows(sampleJobs, [j.getName()]);
     const transformer = new RelationTransformer(relation, []);
     const transformedRelation = transformer.getTransformed();
-    transformedRelation.entries.forEach(entry => {
+    transformedRelation.entries.forEach((entry) => {
       assert.isEmpty(entry.row.payload());
     });
   });
@@ -196,8 +195,8 @@ describe('RelationTransformer', () => {
   // Asserts that all requested columns are populated in the given relation's
   // entries.
   function assertColumnsPopulated(columns: Column[], relation: Relation): void {
-    relation.entries.forEach(entry => {
-      columns.forEach(column => {
+    relation.entries.forEach((entry) => {
+      columns.forEach((column) => {
         // Checking that all requested columns are populated.
         const field = entry.getField(column);
         assert.isDefined(field);

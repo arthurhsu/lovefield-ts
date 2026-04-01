@@ -35,7 +35,10 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
   private runner: Runner;
   private plan!: PhysicalQueryPlan;
 
-  constructor(protected global: Global, context: Context) {
+  constructor(
+    protected global: Global,
+    context: Context
+  ) {
     this.queryEngine = global.getService(Service.QUERY_ENGINE);
     this.runner = global.getService(Service.RUNNER);
     this.query = context as CONTEXT;
@@ -52,7 +55,7 @@ export class BaseBuilder<CONTEXT extends Context> implements QueryBuilder {
       const queryTask = new UserQueryTask(this.global, [this.getTaskItem()]);
       this.runner
         .scheduleTask(queryTask)
-        .then(results => resolve(results[0].getPayloads()), reject);
+        .then((results) => resolve(results[0].getPayloads()), reject);
     });
   }
 

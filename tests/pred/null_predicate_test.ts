@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {BaseColumn} from '../../lib/schema/base_column';
 
-
 describe('NullPredicate', () => {
   let db: RuntimeDatabase;
 
@@ -40,7 +39,9 @@ describe('NullPredicate', () => {
   // Deletes the contents of all tables.
   async function clearDb(): Promise<void> {
     const tables = db.getSchema().tables();
-    const deletePromises = tables.map(table => db.delete().from(table).exec());
+    const deletePromises = tables.map((table) =>
+      db.delete().from(table).exec()
+    );
 
     return Promise.all(deletePromises).then(() => {
       return;

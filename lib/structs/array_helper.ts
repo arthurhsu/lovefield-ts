@@ -73,7 +73,7 @@ export class ArrayHelper {
     const CHUNK_SIZE = 8192;
 
     const result: unknown[] = [];
-    arr.forEach(element => {
+    arr.forEach((element) => {
       if (Array.isArray(element)) {
         for (let c = 0; c < element.length; c += CHUNK_SIZE) {
           const chunk = element.slice(c, c + CHUNK_SIZE);
@@ -91,7 +91,7 @@ export class ArrayHelper {
   // combination of one element chosen from each set.  For example,
   // ([1, 2], [3, 4]) gives ([1, 3], [1, 4], [2, 3], [2, 4]).
   static product<T>(arrays: T[][]): T[][] {
-    const someArrayEmpty = arrays.some(arr => !arr.length);
+    const someArrayEmpty = arrays.some((arr) => !arr.length);
     if (someArrayEmpty || arrays.length === 0) {
       return [];
     }
@@ -136,7 +136,7 @@ export class ArrayHelper {
     }
     const bucket: BucketType = {};
 
-    arr.forEach(v => {
+    arr.forEach((v) => {
       const key = sorter(v);
       if (bucket[key] === undefined) {
         bucket[key] = [];

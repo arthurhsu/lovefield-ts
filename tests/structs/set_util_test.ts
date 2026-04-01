@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {isSubset, setEquals} from '../../lib/structs/set_util';
 
-
 describe('SetUtil', () => {
   it('isSubSet', () => {
     function checker<T>(

@@ -157,7 +157,7 @@ export class BTree implements RuntimeIndex {
 
     // For all cross-column indices, use filter to handle non-continuous blocks.
     const useFilter = this.comparator().keyDimensions() > 1;
-    sortedKeyRanges.forEach(range => {
+    sortedKeyRanges.forEach((range) => {
       const keys = this.comparator().rangeToKeys(range);
       const key = this.comparator().isLeftOpen(range) ? leftMostKey : keys[0];
       let start = this.root.getContainingLeaf(key);
@@ -367,7 +367,7 @@ export class BTreeNode {
   // Returns new root node.
   static deserialize(rows: Row[], tree: BTree): BTreeNode {
     const stats = tree.stats();
-    const leaves = rows.map(row => {
+    const leaves = rows.map((row) => {
       const node = new BTreeNode(row.id(), tree);
       node.keys = row.payload()['k'] as Key[];
       node.values = row.payload()['v'] as number[][];
@@ -411,7 +411,7 @@ export class BTreeNode {
   // Returns key and contents string in pair.
   private static dumpLevel(node: BTreeNode): string[] {
     let key = `${node.id}[${node.keys.join('|')}]`;
-    const children = node.children.map(n => n.id).join('|');
+    const children = node.children.map((n) => n.id).join('|');
     const values = node.values.join('/');
     const getNodeId = (n: BTreeNode | null) => {
       return n !== null && n !== undefined ? n.id.toString() : '_';
@@ -447,8 +447,8 @@ export class BTreeNode {
     return remaining >= maxLen + minLen
       ? maxLen
       : remaining >= minLen && remaining <= maxLen
-      ? remaining
-      : minLen;
+        ? remaining
+        : minLen;
   }
 
   // Create leaf nodes from given data.
@@ -464,8 +464,8 @@ export class BTreeNode {
     while (remaining > 0) {
       const nodeLen = BTreeNode.calcNodeLen(remaining);
       const target = data.slice(dataIndex, dataIndex + nodeLen);
-      curNode.keys = target.map(e => e.key);
-      curNode.values = target.map(e => e.value);
+      curNode.keys = target.map((e) => e.key);
+      curNode.values = target.map((e) => e.value);
       dataIndex += nodeLen;
       remaining -= nodeLen;
       if (remaining > 0) {
@@ -546,7 +546,10 @@ export class BTreeNode {
   private parent: BTreeNode | null;
   private children: BTreeNode[];
 
-  constructor(private id: number, private tree: BTree) {
+  constructor(
+    private id: number,
+    private tree: BTree
+  ) {
     this.height = 0;
     this.parent = null;
     this.prev = null;
@@ -1036,7 +1039,7 @@ export class BTreeNode {
       myChildren = this.values;
     } else {
       myChildren = this.children;
-      myChildren.forEach(node => (node.parent = mergeTo));
+      myChildren.forEach((node) => (node.parent = mergeTo));
     }
     if (mergeTo.isLeaf()) {
       mergeTo.values.splice(childOffset, 0, ...(myChildren as number[]));
@@ -1090,7 +1093,7 @@ export class BTreeNode {
     right.height = this.height;
     right.keys = this.keys.splice(half);
     right.children = this.children.splice(half + 1);
-    right.children.forEach(node => (node.parent = right));
+    right.children.forEach((node) => (node.parent = right));
 
     this.parent = root;
     BTreeNode.associate(right, this.next);
@@ -1136,7 +1139,7 @@ export class BTreeNode {
         // unbounded key. As a result, we need to check if any dimension of the
         // key contains unbound.
         const hasUnbound = key.some(
-          dimension => dimension === SingleKeyRange.UNBOUND_VALUE
+          (dimension) => dimension === SingleKeyRange.UNBOUND_VALUE
         );
         if (!hasUnbound) {
           pos++;

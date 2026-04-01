@@ -44,11 +44,14 @@ export abstract class QueryTask extends UniqueId implements Task {
   private resolver: Resolver<Relation[]>;
   private tx!: Tx;
 
-  constructor(protected global: Global, items: TaskItem[]) {
+  constructor(
+    protected global: Global,
+    items: TaskItem[]
+  ) {
     super();
     this.backStore = global.getService(Service.BACK_STORE);
-    this.queries = items.map(item => item.context);
-    this.plans = items.map(item => item.plan);
+    this.queries = items.map((item) => item.context);
+    this.plans = items.map((item) => item.plan);
     this.combinedScope = PhysicalQueryPlan.getCombinedScope(this.plans);
     this.txType = this.detectType();
     this.resolver = new Resolver<Relation[]>();
@@ -71,7 +74,7 @@ export abstract class QueryTask extends UniqueId implements Task {
         return plan
           .getRoot()
           .exec(journal, queryContext)
-          .then(relations => {
+          .then((relations) => {
             results.push(relations[0]);
             return sequentiallyExec();
           });
@@ -93,7 +96,7 @@ export abstract class QueryTask extends UniqueId implements Task {
           this.onSuccess(results);
           return results;
         },
-        e => {
+        (e) => {
           if (journal) {
             journal.rollback();
           }
@@ -132,13 +135,13 @@ export abstract class QueryTask extends UniqueId implements Task {
   // Executes after all queries have finished successfully. Default
   // implementation is a no-op. Subclasses should override this method as
   // necessary.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   protected onSuccess(results: Relation[]): void {
     // Default implementation is a no-op.
   }
 
   private detectType(): TransactionType {
-    return this.queries.some(query => !(query instanceof SelectContext))
+    return this.queries.some((query) => !(query instanceof SelectContext))
       ? TransactionType.READ_WRITE
       : TransactionType.READ_ONLY;
   }

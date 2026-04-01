@@ -79,8 +79,8 @@ export class ColumnImpl implements BaseColumn {
   }
 
   getIndices(): IndexImpl[] {
-    (this.table.getIndices() as IndexImpl[]).forEach(index => {
-      const colNames = index.columns.map(col => col.schema.getName());
+    (this.table.getIndices() as IndexImpl[]).forEach((index) => {
+      const colNames = index.columns.map((col) => col.schema.getName());
       if (colNames.indexOf(this.name) !== -1) {
         this.indices.push(index);
       }
@@ -93,7 +93,7 @@ export class ColumnImpl implements BaseColumn {
     // skipped if this.index has been set to null by a previous execution of
     // getIndex().
     if (this.index === undefined) {
-      const indices = this.getIndices().filter(indexSchema => {
+      const indices = this.getIndices().filter((indexSchema) => {
         if (indexSchema.columns.length !== 1) {
           return false;
         }

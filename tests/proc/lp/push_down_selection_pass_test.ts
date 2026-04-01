@@ -86,7 +86,7 @@ describe('ImplicitJoinsPass', () => {
       selectNode2.addChild(selectNode3);
       const crossProductNode = new CrossProductNode();
       selectNode3.addChild(crossProductNode);
-      queryContext.from.forEach(tableSchema => {
+      queryContext.from.forEach((tableSchema) => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 
@@ -177,7 +177,7 @@ describe('ImplicitJoinsPass', () => {
       orderByNode.addChild(selectNode);
       const crossProductNode = new CrossProductNode();
       selectNode.addChild(crossProductNode);
-      queryContext.from.forEach(tableSchema =>
+      queryContext.from.forEach((tableSchema) =>
         crossProductNode.addChild(new TableAccessNode(tableSchema))
       );
 
@@ -580,7 +580,7 @@ describe('ImplicitJoinsPass', () => {
       orderByNode.addChild(selectNode1);
       selectNode1.addChild(selectNode2);
       selectNode2.addChild(crossProductNode);
-      queryContext.from.forEach(tableSchema => {
+      queryContext.from.forEach((tableSchema) => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 

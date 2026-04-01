@@ -18,7 +18,6 @@ import {assert} from 'chai';
 import {Page} from '../../lib/backstore/page';
 import {Row} from '../../lib/base/row';
 
-
 describe('Page', () => {
   const MAGIC = Math.pow(2, Page.BUNDLE_EXPONENT);
 
@@ -50,7 +49,7 @@ describe('Page', () => {
     for (let i = 0; i <= 4; ++i) {
       pages.set(i, new Page(i));
     }
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const page = pages.get(Page.toPageId(row.id())) as Page;
       page.setRows([row]);
     });

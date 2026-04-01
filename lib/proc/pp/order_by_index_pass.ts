@@ -182,7 +182,7 @@ export class OrderByIndexPass extends RewritePass<PhysicalQueryPlanNode> {
 
     return TreeHelper.find(
       rootNode,
-      node => node instanceof OrderByStep
+      (node) => node instanceof OrderByStep
     )[0] as OrderByStep;
   }
 

@@ -36,7 +36,7 @@ export class RowId implements RuntimeIndex {
   static deserialize(name: string, rows: Row[]): RowId {
     const index = new RowId(name);
     const rowIds: number[] = rows[0].payload()['v'] as number[];
-    rowIds.forEach(rowId => index.add(rowId, rowId));
+    rowIds.forEach((rowId) => index.add(rowId, rowId));
     return index;
   }
 
@@ -54,7 +54,6 @@ export class RowId implements RuntimeIndex {
     return this.name;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   add(key: Key, value: number): void {
     if (typeof key !== 'number') {
       // 103: Row id must be numbers.
@@ -67,7 +66,6 @@ export class RowId implements RuntimeIndex {
     this.add(key, value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   remove(key: Key, rowId?: number): void {
     this.rows.delete(key as SingleKey);
   }
@@ -84,7 +82,6 @@ export class RowId implements RuntimeIndex {
     return this.minMax(this.comparatorObj.max.bind(this.comparatorObj));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cost(keyRange?: SingleKeyRange | KeyRange): number {
     // Give the worst case so that this index is not used unless necessary.
     return this.rows.size;
@@ -99,8 +96,8 @@ export class RowId implements RuntimeIndex {
     const keyRanges: SingleKeyRange[] = (range as SingleKeyRange[]) || [
       SingleKeyRange.all(),
     ];
-    const values: number[] = Array.from(this.rows.values()).filter(value => {
-      return keyRanges.some(r => this.comparatorObj.isInRange(value, r));
+    const values: number[] = Array.from(this.rows.values()).filter((value) => {
+      return keyRanges.some((r) => this.comparatorObj.isInRange(value, r));
     }, this) as number[];
     return IndexHelper.slice(values, reverseOrder, limit, skip);
   }

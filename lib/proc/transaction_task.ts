@@ -52,7 +52,10 @@ export class TransactionTask extends UniqueId implements Task {
   private acquireScopeResolver: Resolver<void>;
   private tx!: Tx;
 
-  constructor(private global: Global, scope: Table[]) {
+  constructor(
+    private global: Global,
+    scope: Table[]
+  ) {
     super();
     this.backStore = global.getService(Service.BACK_STORE);
     this.runner = global.getService(Service.RUNNER);
@@ -104,10 +107,10 @@ export class TransactionTask extends UniqueId implements Task {
       .getRoot()
       .exec(this.journal, taskItem.context)
       .then(
-        relations => {
+        (relations) => {
           return relations[0].getPayloads();
         },
-        e => {
+        (e) => {
           this.journal.rollback();
 
           // Need to resolve execResolver here such that all locks acquired
@@ -135,7 +138,7 @@ export class TransactionTask extends UniqueId implements Task {
         this.scheduleObserverTask();
         this.execResolver.resolve();
       },
-      e => {
+      (e) => {
         this.journal.rollback();
         this.execResolver.reject(e);
       }

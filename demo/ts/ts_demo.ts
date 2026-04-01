@@ -78,7 +78,7 @@ class TodoDemo {
 
   private insertData(data: RawDataType[]): Promise<unknown> {
     this.item = this.db.getSchema().table('Item');
-    const rows = data.map(d =>
+    const rows = data.map((d) =>
       this.item.createRow({
         id: d.id,
         description: d.description,
@@ -100,20 +100,20 @@ class TodoDemo {
 
   serve() {
     this.createDatabase()
-      .then(db => {
+      .then((db) => {
         this.db = db;
         return this.fetchData();
       })
-      .then(data => {
+      .then((data) => {
         return this.insertData(data);
       })
       .then(() => {
         return this.selectTodoItems();
       })
-      .then(todoItems => {
+      .then((todoItems) => {
         const dl = document.getElementById('data');
         let innerHTML = '';
-        todoItems.forEach(t => {
+        todoItems.forEach((t) => {
           innerHTML +=
             `<dt>${t.description}</dt>` +
             `<dd>${t.deadline.toLocaleString()}</dd>\n`;

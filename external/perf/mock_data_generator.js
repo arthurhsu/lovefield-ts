@@ -40,7 +40,7 @@ export class MockDataGenerator {
 
     const employeeSchema = schema.table('Employee');
     const employees = data.employees.map((obj) =>
-      deserialize(employeeSchema, obj),
+      deserialize(employeeSchema, obj)
     );
 
     const jobSchema = schema.table('Job');
@@ -48,7 +48,7 @@ export class MockDataGenerator {
 
     const departmentSchema = schema.table('Department');
     const departments = data.departments.map((obj) =>
-      deserialize(departmentSchema, obj),
+      deserialize(departmentSchema, obj)
     );
 
     const generator = new MockDataGenerator();
@@ -120,11 +120,11 @@ export class MockDataGenerator {
 
   exportData() {
     const employeesPayloads = this.sampleEmployees.map((employee) =>
-      employee.toDbPayload(),
+      employee.toDbPayload()
     );
     const jobsPayloads = this.sampleJobs.map((job) => job.toDbPayload());
     const departmentsPayloads = this.sampleDepartments.map((department) =>
-      department.toDbPayload(),
+      department.toDbPayload()
     );
 
     return {
@@ -143,36 +143,36 @@ export class MockDataGenerator {
       maxMinSalary: this.findJobMax(minSalary),
       distinctMinSalary: this.findJobDistinct(minSalary),
       sumDistinctMinSalary: MathHelper.sum.apply(
-          null,
-          this.findJobDistinct(minSalary),
+        null,
+        this.findJobDistinct(minSalary)
       ),
       countDistinctMinSalary: this.findJobDistinct(minSalary).length,
       avgDistinctMinSalary: MathHelper.average.apply(
-          null,
-          this.findJobDistinct(minSalary),
+        null,
+        this.findJobDistinct(minSalary)
       ),
       stddevDistinctMinSalary: MathHelper.standardDeviation.apply(
-          null,
-          this.findJobDistinct(minSalary),
+        null,
+        this.findJobDistinct(minSalary)
       ),
       minMaxSalary: this.findJobMin(maxSalary),
       maxMaxSalary: this.findJobMax(maxSalary),
       distinctMaxSalary: this.findJobDistinct(maxSalary),
       sumDistinctMaxSalary: MathHelper.sum.apply(
-          null,
-          this.findJobDistinct(maxSalary),
+        null,
+        this.findJobDistinct(maxSalary)
       ),
       countDistinctMaxSalary: this.findJobDistinct(maxSalary).length,
       avgDistinctMaxSalary: MathHelper.average.apply(
-          null,
-          this.findJobDistinct(maxSalary),
+        null,
+        this.findJobDistinct(maxSalary)
       ),
       stddevDistinctMaxSalary: MathHelper.standardDeviation.apply(
-          null,
-          this.findJobDistinct(maxSalary),
+        null,
+        this.findJobDistinct(maxSalary)
       ),
       geomeanDistinctMaxSalary: this.findGeomean(
-          this.findJobDistinct(maxSalary),
+        this.findJobDistinct(maxSalary)
       ),
       selfJoinSalary: this.findSelfJoinSalary(),
     };
@@ -187,7 +187,8 @@ export class MockDataGenerator {
       maxSalary: 0,
       avgSalary: MathHelper.average(...this.sampleEmployees.map(salary)),
       stddevSalary: MathHelper.standardDeviation(
-          ...this.sampleEmployees.map(salary)),
+        ...this.sampleEmployees.map(salary)
+      ),
       countSalary: 0,
       distinctHireDates: this.findDistinct(hireDate, this.sampleEmployees),
       minHireDate: this.findEmployeeMinDate(),
@@ -199,16 +200,16 @@ export class MockDataGenerator {
   // Finds the MIN of a given attribute in the Job table.
   findJobMin(getterFn) {
     const jobsSorted = this.sampleJobs
-        .slice()
-        .sort((job1, job2) => getterFn(job1) - getterFn(job2));
+      .slice()
+      .sort((job1, job2) => getterFn(job1) - getterFn(job2));
     return getterFn(jobsSorted[0]);
   }
 
   // Finds the MAX of a given attribute in the Job table.
   findJobMax(getterFn) {
     const jobsSorted = this.sampleJobs
-        .slice()
-        .sort((job1, job2) => getterFn(job2) - getterFn(job1));
+      .slice()
+      .sort((job1, job2) => getterFn(job2) - getterFn(job1));
     return getterFn(jobsSorted[0]);
   }
 
@@ -261,8 +262,8 @@ export class MockDataGenerator {
 
   findGeomean(values) {
     const reduced = values.reduce(
-        (soFar, value) => (soFar += Math.log(value)),
-        0,
+      (soFar, value) => (soFar += Math.log(value)),
+      0
     );
     return Math.pow(Math.E, reduced / values.length);
   }
@@ -285,24 +286,24 @@ export class MockDataGenerator {
   // Find the MIN hireDate attribute in the Employee table.
   findEmployeeMinDate() {
     const employeesSorted = this.sampleEmployees
-        .slice()
-        .sort(
-            (employee1, employee2) =>
-              (employee1.payload()['hireDate']).getTime() -
-          (employee2.payload()['hireDate']).getTime(),
-        );
+      .slice()
+      .sort(
+        (employee1, employee2) =>
+          employee1.payload()['hireDate'].getTime() -
+          employee2.payload()['hireDate'].getTime()
+      );
     return employeesSorted[0].payload()['hireDate'];
   }
 
   // Find the MAX hireDate attribute in the Employee table.
   findEmployeeMaxDate() {
     const employeesSorted = this.sampleEmployees
-        .slice()
-        .sort(
-            (employee1, employee2) =>
-              (employee2.payload()['hireDate']).getTime() -
-          (employee1.payload()['hireDate']).getTime(),
-        );
+      .slice()
+      .sort(
+        (employee1, employee2) =>
+          employee2.payload()['hireDate'].getTime() -
+          employee1.payload()['hireDate'].getTime()
+      );
     return employeesSorted[0].payload()['hireDate'];
   }
 
@@ -317,8 +318,7 @@ export class MockDataGenerator {
       this.sampleJobs.forEach((job) => {
         if (
           employee.payload()['jobId'] === job.payload()['id'] &&
-          (employee.payload()['salary']) >
-            (job.payload()['maxSalary'])
+          employee.payload()['salary'] > job.payload()['maxSalary']
         ) {
           employeeIds.push(employee.payload()['id']);
         }

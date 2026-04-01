@@ -24,7 +24,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('MemoryStore', () => {
   let db: Memory;
   let cache: DefaultCache;
@@ -50,7 +49,7 @@ describe('MemoryStore', () => {
   it('construction', () => {
     assert.isTrue(schema.tables().length > 0);
 
-    schema.tables().forEach(table => {
+    schema.tables().forEach((table) => {
       assert.isNotNull(db.getTableInternal(table.getName()));
     });
   });

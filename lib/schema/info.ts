@@ -59,13 +59,13 @@ export class Info {
     this.restrictChildren = new MapSet();
     this.colChild = new MapSet();
 
-    this.dbSchema.tables().forEach(t => {
+    this.dbSchema.tables().forEach((t) => {
       const table = t as BaseTable;
       const tableName = table.getName();
       table
         .getConstraint()
         .getForeignKeys()
-        .forEach(fkSpec => {
+        .forEach((fkSpec) => {
           this.parents.set(tableName, this.dbSchema.table(fkSpec.parentTable));
           this.children.set(fkSpec.parentTable, table);
           if (fkSpec.action === ConstraintAction.RESTRICT) {
@@ -117,14 +117,14 @@ export class Info {
   // Looks up parent tables for a given column set.
   getParentTablesByColumns(colNames: string[]): Table[] {
     const tableNames = new Set<string>();
-    colNames.forEach(col => {
+    colNames.forEach((col) => {
       const table = this.colParent.get(col);
       if (table) {
         tableNames.add(table);
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map(tableName => this.dbSchema.table(tableName));
+    return tables.map((tableName) => this.dbSchema.table(tableName));
   }
 
   // Looks up child tables for given tables.
@@ -144,14 +144,14 @@ export class Info {
   // Looks up child tables for a given column set.
   getChildTablesByColumns(colNames: string[]): Table[] {
     const tableNames = new Set<string>();
-    colNames.forEach(col => {
+    colNames.forEach((col) => {
       const children = this.colChild.get(col);
       if (children) {
-        children.forEach(child => tableNames.add(child));
+        children.forEach((child) => tableNames.add(child));
       }
     }, this);
     const tables = Array.from(tableNames.values());
-    return tables.map(tableName => this.dbSchema.table(tableName));
+    return tables.map((tableName) => this.dbSchema.table(tableName));
   }
 
   private expandScope(tableName: string, map: MapSet<string, Table>): Table[] {

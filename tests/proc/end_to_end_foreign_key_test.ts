@@ -30,7 +30,6 @@ import {schema} from '../../lib/schema/schema';
 import {Table} from '../../lib/schema/table';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('EndToEndForeignKey', () => {
   let db: RuntimeDatabase;
   let global: Global;

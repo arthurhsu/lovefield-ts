@@ -126,7 +126,7 @@ export class JoinPredicate extends PredicateNode {
   }
 
   eval(relation: Relation): Relation {
-    const entries = relation.entries.filter(entry => {
+    const entries = relation.entries.filter((entry) => {
       const leftValue = entry.getField(this.leftColumn);
       const rightValue = entry.getField(this.rightColumn);
       return this.evaluatorFn(leftValue, rightValue);
@@ -261,7 +261,7 @@ export class JoinPredicate extends PredicateNode {
     const map = new MapSet<string, RelationEntry>();
     const combinedEntries: RelationEntry[] = [];
 
-    minRelation.entries.forEach(entry => {
+    minRelation.entries.forEach((entry) => {
       const key = String(entry.getField(minColumn));
       map.set(key, entry);
     });
@@ -269,11 +269,11 @@ export class JoinPredicate extends PredicateNode {
     const minRelationTableNames = minRelation.getTables();
     const maxRelationTableNames = maxRelation.getTables();
 
-    maxRelation.entries.forEach(entry => {
+    maxRelation.entries.forEach((entry) => {
       const value = entry.getField(maxColumn);
       const key = String(value);
       if (value !== null && map.has(key)) {
-        (map.get(key) as unknown as RelationEntry[]).forEach(innerEntry => {
+        (map.get(key) as unknown as RelationEntry[]).forEach((innerEntry) => {
           const combinedEntry = RelationEntry.combineEntries(
             entry,
             maxRelationTableNames,
@@ -337,7 +337,7 @@ export class JoinPredicate extends PredicateNode {
       combinedEntries.push(combinedEntry);
     }
 
-    outerRelation.entries.forEach(entry => {
+    outerRelation.entries.forEach((entry) => {
       const keyOfIndex = this.keyOfIndexFn(
         entry.getField(indexJoinInfo.nonIndexedColumn) as IndexableType
       );
@@ -352,7 +352,7 @@ export class JoinPredicate extends PredicateNode {
         pushCombinedEntry(entry, cache.get(matchingRowIds[0]) as Row);
       } else {
         const rows = cache.getMany(matchingRowIds);
-        rows.forEach(r => pushCombinedEntry(entry, r as Row));
+        rows.forEach((r) => pushCombinedEntry(entry, r as Row));
       }
     }, this);
 
@@ -362,7 +362,6 @@ export class JoinPredicate extends PredicateNode {
     return new Relation(combinedEntries, srcTables);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setComplement(isComplement: boolean): void {
     throw new Exception(
       ErrorCode.ASSERTION,
@@ -474,7 +473,7 @@ export class JoinPredicate extends PredicateNode {
   // Creates a row with null columns with column names obtained from the table.
   private createNullPayload(table: BaseTable): PayloadType {
     const payload: PayloadType = {};
-    table.getColumns().forEach(column => (payload[column.getName()] = null));
+    table.getColumns().forEach((column) => (payload[column.getName()] = null));
     return payload;
   }
 

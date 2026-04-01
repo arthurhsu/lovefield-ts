@@ -30,7 +30,6 @@ import {Table} from '../../lib/schema/table';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('Prefetcher', () => {
   let env: MockEnv;
   let sandbox: sinon.SinonSandbox;
@@ -101,7 +100,7 @@ describe('Prefetcher', () => {
     const indices = env.indexStore
       .getTableIndices(tableSchema.getName())
       .slice(1);
-    indices.forEach(index => {
+    indices.forEach((index) => {
       assert.isTrue(index instanceof BTree);
       assert.equal(rows.length, index.getRange().length);
     });
@@ -129,7 +128,7 @@ describe('Prefetcher', () => {
     const indices = env.indexStore
       .getTableIndices(tableSchema.getName())
       .slice(1);
-    indices.forEach(index => {
+    indices.forEach((index) => {
       assert.isTrue(index instanceof NullableIndex);
       assert.equal(rows.length, index.getRange().length);
       assert.equal(nullKeyRows, index.get(null as unknown as Key).length);
@@ -187,14 +186,14 @@ describe('Prefetcher', () => {
     const tempIndexStore = new MemoryIndexStore();
     return tempIndexStore.init(env.schema).then(() => {
       const indices = tempIndexStore.getTableIndices(tableSchema.getName());
-      tableRows.forEach(row => {
-        indices.forEach(index => {
+      tableRows.forEach((row) => {
+        indices.forEach((index) => {
           const key = row.keyOfIndex(index.getName());
           index.add(key, row.id());
         });
       });
 
-      const serializedIndices = indices.map(index => {
+      const serializedIndices = indices.map((index) => {
         return index.serialize();
       });
       const whenIndexTablesPopulated = indices.map((index, i) => {

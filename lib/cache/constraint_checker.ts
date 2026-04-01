@@ -84,8 +84,8 @@ export class ConstraintChecker {
   // |rows|: the rows being inserted
   checkNotNullable(table: BaseTable, rows: Row[]): void {
     const notNullable = table.getConstraint().getNotNullable();
-    rows.forEach(row => {
-      notNullable.forEach(column => {
+    rows.forEach((row) => {
+      notNullable.forEach((column) => {
         const target = row.payload()[column.getName()];
         if (!(target !== null && target !== undefined)) {
           // 202: Attempted to insert NULL value to non-nullable field {0}.
@@ -111,7 +111,7 @@ export class ConstraintChecker {
       modifications,
       (foreignKeySpec, childIndex, parentKey, modification) => {
         const childRowIds = childIndex.get(parentKey as Key);
-        childRowIds.forEach(rowId => {
+        childRowIds.forEach((rowId) => {
           cascadedUpdates.set(rowId, {
             fkSpec: foreignKeySpec,
             originalUpdatedRow: modification[1] as Row,
@@ -134,7 +134,7 @@ export class ConstraintChecker {
       return;
     }
 
-    const modifications = rows.map(row => {
+    const modifications = rows.map((row) => {
       return [null /* rowBefore */, row /* rowNow */] as Modification;
     });
     this.checkReferredKeys(table, modifications, constraintTiming);
@@ -173,7 +173,7 @@ export class ConstraintChecker {
       return;
     }
 
-    const modifications = rows.map(row => {
+    const modifications = rows.map((row) => {
       return [row /* rowBefore */, null /* rowNow */] as Modification;
     });
     this.checkReferringKeys(table, modifications, constraintTiming);
@@ -192,15 +192,15 @@ export class ConstraintChecker {
     let lastRowIdsToDelete = new MapSet<string, number>();
     lastRowIdsToDelete.setMany(
       table.getName(),
-      rows.map(row => row.id())
+      rows.map((row) => row.id())
     );
 
     do {
       const newRowIdsToDelete = new MapSet<string, number>();
-      lastRowIdsToDelete.keys().forEach(tableName => {
+      lastRowIdsToDelete.keys().forEach((tableName) => {
         const tbl = this.schema.table(tableName) as BaseTable;
         const rowIds = lastRowIdsToDelete.get(tableName) as number[];
-        const modifications = rowIds.map(rowId => {
+        const modifications = rowIds.map((rowId) => {
           const row = this.cache.get(rowId);
           return [row /* rowBefore */, null /* rowNow */] as Modification;
         }, this);
@@ -242,7 +242,7 @@ export class ConstraintChecker {
     constraintTiming: ConstraintTiming
   ): void {
     const foreignKeySpecs = table.getConstraint().getForeignKeys();
-    foreignKeySpecs.forEach(foreignKeySpec => {
+    foreignKeySpecs.forEach((foreignKeySpec) => {
       if (foreignKeySpec.timing === constraintTiming) {
         this.checkReferredKey(foreignKeySpec, modifications);
       }
@@ -254,7 +254,7 @@ export class ConstraintChecker {
     modifications: Modification[]
   ): void {
     const parentIndex = this.getParentIndex(foreignKeySpec);
-    modifications.forEach(modification => {
+    modifications.forEach((modification) => {
       const didColumnValueChange = ConstraintChecker.didColumnValueChange(
         modification[0] as Row,
         modification[1] as Row,
@@ -324,7 +324,7 @@ export class ConstraintChecker {
 
     // TODO(dpapad): Enhance lf.schema.Info#getReferencingForeignKeys to filter
     // based on constraint timing, such that this linear search is avoided.
-    foreignKeySpecs = foreignKeySpecs.filter(foreignKeySpec => {
+    foreignKeySpecs = foreignKeySpecs.filter((foreignKeySpec) => {
       return foreignKeySpec.timing === constraintTiming;
     });
 
@@ -386,12 +386,12 @@ export class ConstraintChecker {
       modification: Modification
     ) => void
   ): void {
-    foreignKeySpecs.forEach(foreignKeySpec => {
+    foreignKeySpecs.forEach((foreignKeySpec) => {
       const childIndex = this.indexStore.get(
         foreignKeySpec.name
       ) as RuntimeIndex;
       const parentIndex = this.getParentIndex(foreignKeySpec);
-      modifications.forEach(modification => {
+      modifications.forEach((modification) => {
         const didColumnValueChange = ConstraintChecker.didColumnValueChange(
           modification[0] as Row,
           modification[1] as Row,

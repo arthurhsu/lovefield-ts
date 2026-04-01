@@ -22,7 +22,6 @@ import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Builder} from '../../lib/schema/builder';
 import {schema} from '../../lib/schema/schema';
 
-
 describe('Inspect', () => {
   let expectedDate: Date;
 

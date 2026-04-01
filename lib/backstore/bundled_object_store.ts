@@ -71,8 +71,8 @@ export class BundledObjectStore implements RuntimeTable {
     if (ids.length === 0) {
       return this.getAll();
     }
-    return this.getPagesByRowIds(ids).then(pages => {
-      return ids.map(id => {
+    return this.getPagesByRowIds(ids).then((pages) => {
+      return ids.map((id) => {
         const page = pages.get(Page.toPageId(id)) as Page;
         assert(page !== undefined, 'Containing page is empty');
         return this.deserializeFn(page.getPayload()[id] as RawRow);
@@ -86,7 +86,7 @@ export class BundledObjectStore implements RuntimeTable {
     }
 
     const pages = new Map<number, Page>();
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const pageId = Page.toPageId(row.id());
       let page = pages.get(pageId) || null;
       if (page === null) {
@@ -96,7 +96,7 @@ export class BundledObjectStore implements RuntimeTable {
       pages.set(pageId, page);
     }, this);
 
-    const promises = Array.from(pages.values()).map(page => {
+    const promises = Array.from(pages.values()).map((page) => {
       return this.performWriteOp(() => {
         return this.store.put(page.serialize());
       });
@@ -109,7 +109,7 @@ export class BundledObjectStore implements RuntimeTable {
 
   remove(
     ids: number[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     if (ids.length === 0) {
@@ -118,7 +118,7 @@ export class BundledObjectStore implements RuntimeTable {
     }
 
     const pages = new Map<number, Page>();
-    ids.forEach(id => {
+    ids.forEach((id) => {
       const pageId = Page.toPageId(id);
       let page = pages.get(pageId) || null;
       if (page === null) {
@@ -128,7 +128,7 @@ export class BundledObjectStore implements RuntimeTable {
       pages.set(pageId, page);
     }, this);
 
-    const promises = Array.from(pages.values()).map(page => {
+    const promises = Array.from(pages.values()).map((page) => {
       return this.performWriteOp(() => {
         return Object.keys(page.getPayload()).length === 0
           ? this.store.delete(page.getId())
@@ -149,7 +149,7 @@ export class BundledObjectStore implements RuntimeTable {
     // Chrome IndexedDB is slower when using a cursor to iterate through a big
     // table. A faster way is to just get everything individually within a
     // transaction.
-    const promises = pageIds.map(id => {
+    const promises = pageIds.map((id) => {
       return new Promise((resolve, reject) => {
         let request: IDBRequest;
         try {
@@ -159,7 +159,7 @@ export class BundledObjectStore implements RuntimeTable {
           return;
         }
         request.onerror = reject;
-        request.onsuccess = ev => {
+        request.onsuccess = (ev) => {
           const page = Page.deserialize((ev.target as IDBRequest).result);
           results.set(page.getId(), page);
           resolve(undefined);
@@ -189,7 +189,7 @@ export class BundledObjectStore implements RuntimeTable {
         if (cursor) {
           const page = Page.deserialize(cursor.value);
           const data = page.getPayload();
-          Object.keys(data).forEach(key =>
+          Object.keys(data).forEach((key) =>
             rows.push(this.deserializeFn(data[key] as RawRow))
           );
           cursor.continue();

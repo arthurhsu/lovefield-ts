@@ -25,7 +25,6 @@ import {MockEnv} from '../../../testing/mock_env';
 import {MockKeyRangeCalculator} from '../../../testing/mock_key_range_calculator';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('IndexRangeScanStep', () => {
   let env: MockEnv;
   let schema: DatabaseSchema;
@@ -62,7 +61,7 @@ describe('IndexRangeScanStep', () => {
       false
     );
 
-    return step.exec().then(relations => {
+    return step.exec().then((relations) => {
       const relation = relations[0];
       assert.equal(4, relation.entries.length);
       relation.entries.forEach((entry, j) => {

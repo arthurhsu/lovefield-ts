@@ -37,8 +37,8 @@ export class IndexStats {
       this.maxKeyEncountered === null
         ? key
         : key > this.maxKeyEncountered
-        ? key
-        : this.maxKeyEncountered;
+          ? key
+          : this.maxKeyEncountered;
   }
 
   // Signals that row(s) had been removed from index.
@@ -55,6 +55,6 @@ export class IndexStats {
   // Combines stats given and put the results into current object.
   updateFromList(statsList: IndexStats[]): void {
     this.clear();
-    statsList.forEach(stats => (this.totalRows += stats.totalRows));
+    statsList.forEach((stats) => (this.totalRows += stats.totalRows));
   }
 }

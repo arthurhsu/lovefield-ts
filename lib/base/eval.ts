@@ -17,7 +17,6 @@
 import {ErrorCode, Type} from './enum';
 import {Exception} from './exception';
 
-/* eslint-disable no-unused-vars */
 export enum EvalType {
   BETWEEN = 'between',
   EQ = 'eq',
@@ -29,12 +28,11 @@ export enum EvalType {
   MATCH = 'match',
   NEQ = 'neq',
 }
-/* eslint-enable */
 
 type ValueType = boolean | number | string;
 
 // ComparisonFunction is a special type that needs to allow any.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export type ComparisonFunction = (l: any, r: any) => boolean;
 export type IndexableType = ValueType | Date;
 export type KeyOfIndexFunction = (key: IndexableType) => ValueType;
@@ -178,7 +176,7 @@ function buildDateEvaluatorMap(): Map<EvalType, ComparisonFunction> {
     return a === null || b === null ? false : a.getTime() > b.getTime();
   });
   map.set(EvalType.IN, (targetValue: Date, values: Date[]) => {
-    return values.some(value => value.getTime() === targetValue.getTime());
+    return values.some((value) => value.getTime() === targetValue.getTime());
   });
   map.set(EvalType.LTE, (a: Date, b: Date) => {
     return a === null || b === null ? false : a.getTime() <= b.getTime();

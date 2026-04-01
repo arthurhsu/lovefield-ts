@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {IndexHelper} from '../../lib/index/index_helper';
 
-
 describe('IndexHelper', () => {
   it('hashCode', () => {
     assert.equal(0, IndexHelper.hashCode(''));

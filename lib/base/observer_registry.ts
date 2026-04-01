@@ -72,13 +72,13 @@ export class ObserverRegistry {
   // tables.
   getTaskItemsForTables(tables: Table[]): TaskItem[] {
     const tableSet = new Set<string>();
-    tables.forEach(table => tableSet.add(table.getName()));
+    tables.forEach((table) => tableSet.add(table.getName()));
 
     const items: TaskItem[] = [];
-    this.entries.forEach(entry => {
+    this.entries.forEach((entry) => {
       const item = entry.getTaskItem();
-      const refersToTables = (item.context as SelectContext).from.some(table =>
-        tableSet.has(table.getName())
+      const refersToTables = (item.context as SelectContext).from.some(
+        (table) => tableSet.has(table.getName())
       );
       if (refersToTables) {
         items.push(item);

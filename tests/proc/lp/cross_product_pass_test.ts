@@ -77,7 +77,7 @@ describe('CrossProductPass', () => {
       );
 
       const crossProductNode = new CrossProductNode();
-      queryContext.from.forEach(tableSchema => {
+      queryContext.from.forEach((tableSchema) => {
         crossProductNode.addChild(new TableAccessNode(tableSchema));
       });
 

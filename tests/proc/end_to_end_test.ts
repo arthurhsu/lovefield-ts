@@ -33,7 +33,6 @@ import {JobDataGenerator} from '../../testing/hr_schema/job_data_generator';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 import {TestUtil} from '../../testing/test_util';
 
-
 type Connector = () => Promise<DatabaseConnection>;
 
 describe('EndToEndTest', () => {
@@ -342,7 +341,7 @@ describe('EndToEndTest', () => {
         .from(table)
         .orderBy(table.col('integer1'))
         .exec()) as unknown[];
-      const expected = rows.map(row => row.payload());
+      const expected = rows.map((row) => row.payload());
       assert.sameDeepOrderedMembers(expected, results);
     });
 
@@ -456,7 +455,7 @@ describe('EndToEndTest', () => {
 
       await queryBuilder.exec();
       const results = await TestUtil.selectAll(getGlobal(db), j);
-      results.forEach(row => {
+      results.forEach((row) => {
         assert.equal(minSalary, row.payload()[minSalaryName]);
         assert.equal(maxSalary, row.payload()[maxSalaryName]);
       });
@@ -513,7 +512,7 @@ describe('EndToEndTest', () => {
       await queryBuilder.exec();
       const results = await TestUtil.selectAll(getGlobal(db), j);
       let verified = false;
-      results.some(row => {
+      results.some((row) => {
         if (row.payload()['id'] === jobId) {
           assert.equal(10000, row.payload()['minSalary']);
           assert.equal(20000, row.payload()['maxSalary']);
@@ -547,7 +546,7 @@ describe('EndToEndTest', () => {
         .set(j.col('maxSalary'), bind(1))
         .where(j.col('id').eq(bind(2)));
 
-      const promises = bindValues.map(values => query.bind(values).exec());
+      const promises = bindValues.map((values) => query.bind(values).exec());
       await Promise.all(promises);
       const results = (await db
         .select()

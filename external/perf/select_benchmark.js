@@ -22,8 +22,9 @@ import {TestCase} from './test_case.js';
 export class SelectBenchmark {
   async init(volatile) {
     const options = {
-      storeType: volatile ?
-          lf.DataStoreType.MEMORY : lf.DataStoreType.INDEXED_DB,
+      storeType: volatile
+        ? lf.DataStoreType.MEMORY
+        : lf.DataStoreType.INDEXED_DB,
       enableInspector: true,
     };
 
@@ -56,39 +57,43 @@ export class SelectBenchmark {
     const queryData = {};
     const sampleEmployees = this.dataGenerator.sampleEmployees;
 
-    const employeeIdIndex =
-        Math.floor(Math.random() * sampleEmployees.length);
-    const employeeEmailIndex =
-        Math.floor(Math.random() * sampleEmployees.length);
+    const employeeIdIndex = Math.floor(Math.random() * sampleEmployees.length);
+    const employeeEmailIndex = Math.floor(
+      Math.random() * sampleEmployees.length
+    );
 
     queryData.employeeId = sampleEmployees[employeeIdIndex].payload()['id'];
     queryData.employeeEmail =
-        sampleEmployees[employeeEmailIndex].payload()['email'];
+      sampleEmployees[employeeEmailIndex].payload()['email'];
 
     // Randomly select an employee somewhere in the first half.
-    const employeeIndex1 =
-        Math.floor(Math.random() * (sampleEmployees.length / 2));
+    const employeeIndex1 = Math.floor(
+      Math.random() * (sampleEmployees.length / 2)
+    );
     // Randomly select an employee somewhere in the second half.
     const employeeIndex2 = Math.floor(
-        (sampleEmployees.length / 2) +
-            Math.random() * (sampleEmployees.length / 2));
+      sampleEmployees.length / 2 + Math.random() * (sampleEmployees.length / 2)
+    );
     queryData.employeeIds = [
       sampleEmployees[employeeIndex1].payload()['id'],
-      sampleEmployees[Math.floor((employeeIndex1 + employeeIndex2) / 2)]
-          .payload()['id'],
+      sampleEmployees[
+        Math.floor((employeeIndex1 + employeeIndex2) / 2)
+      ].payload()['id'],
       sampleEmployees[employeeIndex2].payload()['id'],
     ];
 
     queryData.employeeSalariesSpacedOut = [];
     queryData.employeeHireDatesSpacedOut = [];
     const step = Math.floor(
-        this.dataGenerator.sampleEmployees.length /
-        this.employeeResultCount);
+      this.dataGenerator.sampleEmployees.length / this.employeeResultCount
+    );
     for (let i = 0; i < sampleEmployees.length; i += step) {
       queryData.employeeSalariesSpacedOut.push(
-          sampleEmployees[i].payload()['salary']);
+        sampleEmployees[i].payload()['salary']
+      );
       queryData.employeeHireDatesSpacedOut.push(
-          sampleEmployees[i].payload()['hireDate']);
+        sampleEmployees[i].payload()['hireDate']
+      );
     }
 
     // Sorting employees by hireDate.
@@ -96,28 +101,28 @@ export class SelectBenchmark {
       return emp1.payload()['hireDate'] - emp2.payload()['hireDate'];
     });
     let employee1Index = Math.floor(
-        Math.random() * (sampleEmployees.length / 2));
+      Math.random() * (sampleEmployees.length / 2)
+    );
     let employee2Index = employee1Index + this.employeeResultCount - 1;
     // Selecting hireDateStart and hireDateEnd such that the amount of results
     // falling within the range is EMPLOYEE_RESULT_COUNT.
     queryData.employeeHireDateStart =
-        sampleEmployees[employee1Index].payload()['hireDate'];
+      sampleEmployees[employee1Index].payload()['hireDate'];
     queryData.employeeHireDateEnd =
-        sampleEmployees[employee2Index].payload()['hireDate'];
+      sampleEmployees[employee2Index].payload()['hireDate'];
 
     // Sorting employees by salary.
     sampleEmployees.sort((emp1, emp2) => {
       return emp1.payload()['salary'] - emp2.payload()['salary'];
     });
-    employee1Index = Math.floor(
-        Math.random() * (sampleEmployees.length / 2));
+    employee1Index = Math.floor(Math.random() * (sampleEmployees.length / 2));
     employee2Index = employee1Index + this.employeeResultCount - 1;
     // Selecting employeeSalaryStart and employeeSalaryEnd such that the amount
     // of results falling within the range is EMPLOYEE_RESULT_COUNT.
     queryData.employeeSalaryStart =
-        sampleEmployees[employee1Index].payload()['salary'];
+      sampleEmployees[employee1Index].payload()['salary'];
     queryData.employeeSalaryEnd =
-        sampleEmployees[employee2Index].payload()['salary'];
+      sampleEmployees[employee2Index].payload()['salary'];
     queryData.employeeLimit = 5;
     queryData.employeeSkip = 2000;
 
@@ -126,51 +131,52 @@ export class SelectBenchmark {
 
   async insertSampleData() {
     const insertEmployees = this.db
-        .insert()
-        .into(this.e)
-        .values(this.dataGenerator.sampleEmployees)
-        .exec();
+      .insert()
+      .into(this.e)
+      .values(this.dataGenerator.sampleEmployees)
+      .exec();
 
     const insertJobs = this.db
-        .insert()
-        .into(this.j)
-        .values(this.dataGenerator.sampleJobs)
-        .exec();
+      .insert()
+      .into(this.j)
+      .values(this.dataGenerator.sampleJobs)
+      .exec();
 
     const crossColumnTableRows = [];
     for (let i = 0; i < 200; i++) {
       for (let j = 0; j < 200; j++) {
-        crossColumnTableRows.push(this.cct.createRow({
-          integer1: i,
-          integer2: j,
-        }));
+        crossColumnTableRows.push(
+          this.cct.createRow({
+            integer1: i,
+            integer2: j,
+          })
+        );
       }
     }
     const insertCrossColumnTable = this.db
-        .insert()
-        .into(this.cct)
-        .values(crossColumnTableRows)
-        .exec();
+      .insert()
+      .into(this.cct)
+      .values(crossColumnTableRows)
+      .exec();
 
     return Promise.all([insertJobs, insertEmployees, insertCrossColumnTable]);
   }
 
   async tearDown() {
     const tx = this.db.createTransaction();
-    return tx.exec([
-      this.db.delete().from(this.e),
-      this.db.delete().from(this.j),
-    ]).then(() => {
-      this.db.close();
-    });
+    return tx
+      .exec([this.db.delete().from(this.e), this.db.delete().from(this.j)])
+      .then(() => {
+        this.db.close();
+      });
   }
 
   async querySingleRowIndexed() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['id'].eq(this.queryData.employeeId))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(this.e['id'].eq(this.queryData.employeeId))
+      .exec();
   }
 
   async verifySingleRowIndexed(results) {
@@ -183,10 +189,10 @@ export class SelectBenchmark {
 
   async querySingleRowNonIndexed() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['email'].eq(this.queryData.employeeEmail))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(this.e['email'].eq(this.queryData.employeeEmail))
+      .exec();
   }
 
   async verifySingleRowNonIndexed(results) {
@@ -194,8 +200,9 @@ export class SelectBenchmark {
       return Promise.resolve(false);
     }
 
-    const validated =
-        results.every((obj) => obj['email'] == this.queryData.employeeEmail);
+    const validated = results.every(
+      (obj) => obj['email'] == this.queryData.employeeEmail
+    );
     return Promise.resolve(validated);
   }
 
@@ -208,26 +215,31 @@ export class SelectBenchmark {
     // Selecting a value purposefully high such that all rows satisfy this
     // predicate, whereas the other predicate is satisfied by only one row.
     const salaryThreshold =
-        2 * this.dataGenerator.employeeGroundTruth.avgSalary;
+      2 * this.dataGenerator.employeeGroundTruth.avgSalary;
 
     const q = this.db
-        .select()
-        .from(this.e)
-        .orderBy(this.e['id'], lf.Order.ASC)
-        .where(lf.op.and(
-            this.e['id'].eq(this.queryData.employeeId),
-            this.e['salary'].lt(salaryThreshold)));
+      .select()
+      .from(this.e)
+      .orderBy(this.e['id'], lf.Order.ASC)
+      .where(
+        lf.op.and(
+          this.e['id'].eq(this.queryData.employeeId),
+          this.e['salary'].lt(salaryThreshold)
+        )
+      );
 
     return q.exec();
   }
 
   async verifySingleRowMultipleIndices(results) {
     const salaryThreshold =
-        2 * this.dataGenerator.employeeGroundTruth.avgSalary;
+      2 * this.dataGenerator.employeeGroundTruth.avgSalary;
 
     const validated = results.every((obj) => {
-      return obj[this.e['id'].getName()] == this.queryData.employeeId &&
-          obj[this.e['salary'].getName()] < salaryThreshold;
+      return (
+        obj[this.e['id'].getName()] == this.queryData.employeeId &&
+        obj[this.e['salary'].getName()] < salaryThreshold
+      );
     });
 
     return Promise.resolve(validated);
@@ -235,10 +247,10 @@ export class SelectBenchmark {
 
   async queryMultiRowIndexedSpacedOut() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['salary'].in(this.queryData.employeeSalariesSpacedOut))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(this.e['salary'].in(this.queryData.employeeSalariesSpacedOut))
+      .exec();
   }
 
   async verifyMultiRowIndexedSpacedOut(results) {
@@ -248,28 +260,33 @@ export class SelectBenchmark {
     }
 
     const salariesSet = new Set(this.queryData.employeeSalariesSpacedOut);
-    const errorsExist =
-        results.some((obj, index) => !salariesSet.has(obj.salary));
+    const errorsExist = results.some(
+      (obj, index) => !salariesSet.has(obj.salary)
+    );
 
     return Promise.resolve(!errorsExist);
   }
 
   async queryMultiRowIndexedRange() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['salary'].between(
-            this.queryData.employeeSalaryStart,
-            this.queryData.employeeSalaryEnd,
-        ))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(
+        this.e['salary'].between(
+          this.queryData.employeeSalaryStart,
+          this.queryData.employeeSalaryEnd
+        )
+      )
+      .exec();
   }
 
   async verifyMultiRowIndexedRange(results) {
     const employeeIdSet = new Set();
     this.dataGenerator.sampleEmployees.forEach((employee) => {
-      if (employee.payload()['salary'] >= this.queryData.employeeSalaryStart &&
-          employee.payload()['salary'] <= this.queryData.employeeSalaryEnd) {
+      if (
+        employee.payload()['salary'] >= this.queryData.employeeSalaryStart &&
+        employee.payload()['salary'] <= this.queryData.employeeSalaryEnd
+      ) {
         employeeIdSet.add(employee.payload()['id']);
       }
     });
@@ -284,10 +301,10 @@ export class SelectBenchmark {
 
   async queryMultiRowNonIndexedSpacedOut() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['hireDate'].in(this.queryData.employeeHireDatesSpacedOut))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(this.e['hireDate'].in(this.queryData.employeeHireDatesSpacedOut))
+      .exec();
   }
 
   async verifyMultiRowNonIndexedSpacedOut(results) {
@@ -309,22 +326,26 @@ export class SelectBenchmark {
 
   async queryMultiRowNonIndexedRange() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['hireDate'].between(
-            this.queryData.employeeHireDateStart,
-            this.queryData.employeeHireDateEnd,
-        ))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(
+        this.e['hireDate'].between(
+          this.queryData.employeeHireDateStart,
+          this.queryData.employeeHireDateEnd
+        )
+      )
+      .exec();
   }
 
   async verifyMultiRowNonIndexedRange(results) {
     const employeeHireDateSet = new Set();
     this.dataGenerator.sampleEmployees.forEach((employee) => {
-      if (employee.payload()['hireDate'].getTime() >=
+      if (
+        employee.payload()['hireDate'].getTime() >=
           this.queryData.employeeHireDateStart.getTime() &&
-          employee.payload()['hireDate'].getTime() <=
-          this.queryData.employeeHireDateEnd.getTime()) {
+        employee.payload()['hireDate'].getTime() <=
+          this.queryData.employeeHireDateEnd.getTime()
+      ) {
         employeeHireDateSet.add(employee.payload()['hireDate']);
       }
     });
@@ -333,8 +354,9 @@ export class SelectBenchmark {
       return Promise.resolve(false);
     }
 
-    const validated =
-       results.every((obj) => employeeHireDateSet.has(obj.hireDate));
+    const validated = results.every((obj) =>
+      employeeHireDateSet.has(obj.hireDate)
+    );
     return Promise.resolve(validated);
   }
 
@@ -344,10 +366,10 @@ export class SelectBenchmark {
     });
 
     return this.db
-        .select()
-        .from(this.e)
-        .where(lf.op.or(...predicates))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(lf.op.or(...predicates))
+      .exec();
   }
 
   async verifyIndexedOrPredicate(results) {
@@ -355,10 +377,12 @@ export class SelectBenchmark {
       return Promise.resolve(false);
     }
 
-    const actualIds =
-        new Set(results.map((obj) => obj[this.e['id'].getName()]));
-    const validated =
-        this.queryData.employeeIds.every((id) => actualIds.has(id));
+    const actualIds = new Set(
+      results.map((obj) => obj[this.e['id'].getName()])
+    );
+    const validated = this.queryData.employeeIds.every((id) =>
+      actualIds.has(id)
+    );
     return Promise.resolve(validated);
   }
 
@@ -368,13 +392,15 @@ export class SelectBenchmark {
     const targetId = this.queryData.employeeId;
 
     return this.db
-        .select()
-        .from(this.e)
-        .where(lf.op.or(
-            this.e['id'].eq(targetId),
-            this.e['salary'].in([targetSalary1, targetSalary2]),
-        ))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(
+        lf.op.or(
+          this.e['id'].eq(targetId),
+          this.e['salary'].in([targetSalary1, targetSalary2])
+        )
+      )
+      .exec();
   }
 
   async verifyIndexedOrPredicateMultiColumn(results) {
@@ -387,27 +413,29 @@ export class SelectBenchmark {
     const targetId = this.queryData.employeeId;
 
     const validated = results.every((obj) => {
-      return obj['id'] == targetId ||
-          obj['salary'] == targetSalary1 ||
-          obj['salary'] == targetSalary2;
+      return (
+        obj['id'] == targetId ||
+        obj['salary'] == targetSalary1 ||
+        obj['salary'] == targetSalary2
+      );
     });
     return Promise.resolve(validated);
   }
 
   async queryIndexedInPredicate() {
     return this.db
-        .select()
-        .from(this.e)
-        .where(this.e['id'].in(this.queryData.employeeIds))
-        .exec();
+      .select()
+      .from(this.e)
+      .where(this.e['id'].in(this.queryData.employeeIds))
+      .exec();
   }
 
   async queryOrderByIndexed() {
     return this.db
-        .select()
-        .from(this.e)
-        .orderBy(this.e['salary'], lf.Order.DESC)
-        .exec();
+      .select()
+      .from(this.e)
+      .orderBy(this.e['salary'], lf.Order.DESC)
+      .exec();
   }
 
   async verifyOrderByIndexed(results) {
@@ -418,9 +446,13 @@ export class SelectBenchmark {
     for (let i = 1; i < results.length; i++) {
       const salary1 = results[i]['salary'];
       const salary0 = results[i - 1]['salary'];
-      if (salary1 === undefined || salary1 === null ||
-          salary0 === undefined || salary0 === null ||
-          salary1 > salary0) {
+      if (
+        salary1 === undefined ||
+        salary1 === null ||
+        salary0 === undefined ||
+        salary0 === null ||
+        salary1 > salary0
+      ) {
         return Promise.resolve(false);
       }
     }
@@ -430,11 +462,11 @@ export class SelectBenchmark {
 
   async queryOrderByIndexedCrossColumn() {
     return this.db
-        .select()
-        .from(this.cct)
-        .orderBy(this.cct['integer1'], lf.Order.ASC)
-        .orderBy(this.cct['integer2'], lf.Order.DESC)
-        .exec();
+      .select()
+      .from(this.cct)
+      .orderBy(this.cct['integer1'], lf.Order.ASC)
+      .orderBy(this.cct['integer2'], lf.Order.DESC)
+      .exec();
   }
 
   async verifyOrderByIndexedCrossColumn(results) {
@@ -445,8 +477,10 @@ export class SelectBenchmark {
     let objCounter = 0;
     for (let i = 0; i < 200; i++) {
       for (let j = 199; j >= 0; j--, objCounter++) {
-        if (results[objCounter]['integer1'] != i ||
-            results[objCounter]['integer2'] != j) {
+        if (
+          results[objCounter]['integer1'] != i ||
+          results[objCounter]['integer2'] != j
+        ) {
           return Promise.resolve(false);
         }
       }
@@ -457,10 +491,10 @@ export class SelectBenchmark {
 
   async queryOrderByNonIndexed() {
     return this.db
-        .select()
-        .from(this.e)
-        .orderBy(this.e['commissionPercent'], lf.Order.DESC)
-        .exec();
+      .select()
+      .from(this.e)
+      .orderBy(this.e['commissionPercent'], lf.Order.DESC)
+      .exec();
   }
 
   async verifyOrderByNonIndexed(results) {
@@ -471,9 +505,13 @@ export class SelectBenchmark {
     for (let i = 1; i < results.length; i++) {
       const cpt1 = results[i]['commissionPercent'];
       const cpt0 = results[i - 1]['commissionPercent'];
-      if (cpt1 === undefined || cpt1 === null ||
-          cpt0 === undefined || cpt0 === null ||
-          cpt1 > cpt0) {
+      if (
+        cpt1 === undefined ||
+        cpt1 === null ||
+        cpt0 === undefined ||
+        cpt0 === null ||
+        cpt1 > cpt0
+      ) {
         return Promise.resolve(false);
       }
     }
@@ -483,12 +521,12 @@ export class SelectBenchmark {
 
   async queryLimitSkipIndexed() {
     return this.db
-        .select()
-        .from(this.e)
-        .orderBy(this.e['salary'], lf.Order.DESC)
-        .limit(this.queryData.employeeLimit)
-        .skip(this.queryData.employeeSkip)
-        .exec();
+      .select()
+      .from(this.e)
+      .orderBy(this.e['salary'], lf.Order.DESC)
+      .limit(this.queryData.employeeLimit)
+      .skip(this.queryData.employeeSkip)
+      .exec();
   }
 
   async verifyLimitSkipIndexed(results) {
@@ -502,8 +540,8 @@ export class SelectBenchmark {
     });
 
     const expectedEmployees = this.dataGenerator.sampleEmployees.slice(
-        this.queryData.employeeSkip,
-        this.queryData.employeeSkip + this.queryData.employeeLimit,
+      this.queryData.employeeSkip,
+      this.queryData.employeeSkip + this.queryData.employeeLimit
     );
 
     const validated = expectedEmployees.every((employee, index) => {
@@ -516,9 +554,9 @@ export class SelectBenchmark {
 
   async queryProjectNonAggregatedColumns() {
     return this.db
-        .select(this.e['email'], this.e['salary'])
-        .from(this.e)
-        .exec();
+      .select(this.e['email'], this.e['salary'])
+      .from(this.e)
+      .exec();
   }
 
   async verifyProjectNonAggregatedColumns(results) {
@@ -536,9 +574,9 @@ export class SelectBenchmark {
 
   async queryProjectAggregateIndexed() {
     return this.db
-        .select(lf.fn.avg(this.e['salary']), lf.fn.stddev(this.e['salary']))
-        .from(this.e)
-        .exec();
+      .select(lf.fn.avg(this.e['salary']), lf.fn.stddev(this.e['salary']))
+      .from(this.e)
+      .exec();
   }
 
   async verifyProjectAggregateIndexed(results) {
@@ -553,21 +591,25 @@ export class SelectBenchmark {
     };
 
     const validated =
-        approx(results[0][avgSalaryColumn.getName()],
-            this.dataGenerator.employeeGroundTruth.avgSalary,
-            SelectBenchmark.EPSILON) &&
-        approx(results[0][stddevSalaryColumn.getName()],
-            this.dataGenerator.employeeGroundTruth.stddevSalary,
-            SelectBenchmark.EPSILON);
+      approx(
+        results[0][avgSalaryColumn.getName()],
+        this.dataGenerator.employeeGroundTruth.avgSalary,
+        SelectBenchmark.EPSILON
+      ) &&
+      approx(
+        results[0][stddevSalaryColumn.getName()],
+        this.dataGenerator.employeeGroundTruth.stddevSalary,
+        SelectBenchmark.EPSILON
+      );
 
     return Promise.resolve(validated);
   }
 
   async queryProjectAggregateNonIndexed() {
     return this.db
-        .select(lf.fn.min(this.e['hireDate']), lf.fn.max(this.e['hireDate']))
-        .from(this.e)
-        .exec();
+      .select(lf.fn.min(this.e['hireDate']), lf.fn.max(this.e['hireDate']))
+      .from(this.e)
+      .exec();
   }
 
   async verifyProjectAggregateNonIndexed(results) {
@@ -579,20 +621,20 @@ export class SelectBenchmark {
     const maxHireDateColumn = lf.fn.max(this.e['hireDate']);
 
     const validated =
-        results[0][minHireDateColumn.getName()].getTime() ==
-            this.dataGenerator.employeeGroundTruth.minHireDate.getTime() &&
-        results[0][maxHireDateColumn.getName()].getTime() ==
-            this.dataGenerator.employeeGroundTruth.maxHireDate.getTime();
+      results[0][minHireDateColumn.getName()].getTime() ==
+        this.dataGenerator.employeeGroundTruth.minHireDate.getTime() &&
+      results[0][maxHireDateColumn.getName()].getTime() ==
+        this.dataGenerator.employeeGroundTruth.maxHireDate.getTime();
 
     return Promise.resolve(validated);
   }
 
   async queryJoinEqui() {
     return this.db
-        .select()
-        .from(this.e, this.j)
-        .where(this.e['jobId'].eq(this.j['id']))
-        .exec();
+      .select()
+      .from(this.e, this.j)
+      .where(this.e['jobId'].eq(this.j['id']))
+      .exec();
   }
 
   async verifyJoinEqui(results) {
@@ -606,9 +648,13 @@ export class SelectBenchmark {
       }
       const e = obj['Employee'];
       const j = obj['Job'];
-      if (e === undefined || e === null ||
-          j === undefined || j === null ||
-          e['jobId'] !== j['id']) {
+      if (
+        e === undefined ||
+        e === null ||
+        j === undefined ||
+        j === null ||
+        e['jobId'] !== j['id']
+      ) {
         return false;
       }
       return true;
@@ -619,92 +665,133 @@ export class SelectBenchmark {
 
   async queryJoinTheta() {
     return this.db
-        .select()
-        .from(this.j, this.e)
-        .orderBy(this.e['id'], lf.Order.ASC)
-        .where(lf.op.and(
-            this.e['jobId'].eq(this.j['id']),
-            this.e['salary'].gt(this.j['maxSalary']),
-        ))
-        .exec();
+      .select()
+      .from(this.j, this.e)
+      .orderBy(this.e['id'], lf.Order.ASC)
+      .where(
+        lf.op.and(
+          this.e['jobId'].eq(this.j['id']),
+          this.e['salary'].gt(this.j['maxSalary'])
+        )
+      )
+      .exec();
   }
 
   async verifyJoinTheta(results) {
-    if (results.length !=
-        this.dataGenerator.employeeGroundTruth.thetaJoinSalaryIds.length) {
+    if (
+      results.length !=
+      this.dataGenerator.employeeGroundTruth.thetaJoinSalaryIds.length
+    ) {
       return Promise.resolve(false);
     }
 
     const validated = results.every((obj, i) => {
-      return obj['Employee']['id'] ==
-          this.dataGenerator.employeeGroundTruth.thetaJoinSalaryIds[i];
+      return (
+        obj['Employee']['id'] ==
+        this.dataGenerator.employeeGroundTruth.thetaJoinSalaryIds[i]
+      );
     });
 
     return Promise.resolve(validated);
   }
 
   async queryCountStar() {
-    return this.db
-        .select(lf.fn.count())
-        .from(this.e)
-        .exec();
+    return this.db.select(lf.fn.count()).from(this.e).exec();
   }
 
   async verifyCountStar(results) {
     const aggregatedColumn = lf.fn.count();
-    const validated = (1 == results.length &&
-        this.dataGenerator.sampleEmployees.length ==
-            results[0][aggregatedColumn]);
+    const validated =
+      1 == results.length &&
+      this.dataGenerator.sampleEmployees.length == results[0][aggregatedColumn];
 
     return Promise.resolve(validated);
   }
 
   getTestCases() {
     const testCases = [
-      ['SingleRowIndexed',
-        this.querySingleRowIndexed, this.verifySingleRowIndexed],
-      ['SingleRowNonIndexed',
-        this.querySingleRowNonIndexed, this.verifySingleRowNonIndexed],
-      ['SingleRowMultipleIndices',
+      [
+        'SingleRowIndexed',
+        this.querySingleRowIndexed,
+        this.verifySingleRowIndexed,
+      ],
+      [
+        'SingleRowNonIndexed',
+        this.querySingleRowNonIndexed,
+        this.verifySingleRowNonIndexed,
+      ],
+      [
+        'SingleRowMultipleIndices',
         this.querySingleRowMultipleIndices,
-        this.verifySingleRowMultipleIndices],
-      ['MultiRowIndexedRange',
-        this.queryMultiRowIndexedRange, this.verifyMultiRowIndexedRange],
-      ['MultiRowIndexedSpacedOut',
+        this.verifySingleRowMultipleIndices,
+      ],
+      [
+        'MultiRowIndexedRange',
+        this.queryMultiRowIndexedRange,
+        this.verifyMultiRowIndexedRange,
+      ],
+      [
+        'MultiRowIndexedSpacedOut',
         this.queryMultiRowIndexedSpacedOut,
-        this.verifyMultiRowIndexedSpacedOut],
-      ['MultiRowNonIndexedRange',
-        this.queryMultiRowNonIndexedRange, this.verifyMultiRowNonIndexedRange],
-      ['MultiRowNonIndexedSpacedOut',
+        this.verifyMultiRowIndexedSpacedOut,
+      ],
+      [
+        'MultiRowNonIndexedRange',
+        this.queryMultiRowNonIndexedRange,
+        this.verifyMultiRowNonIndexedRange,
+      ],
+      [
+        'MultiRowNonIndexedSpacedOut',
         this.queryMultiRowNonIndexedSpacedOut,
-        this.verifyMultiRowNonIndexedSpacedOut],
-      ['IndexedOrPredicate',
+        this.verifyMultiRowNonIndexedSpacedOut,
+      ],
+      [
+        'IndexedOrPredicate',
         this.queryIndexedOrPredicate,
-        this.verifyIndexedOrPredicate],
-      ['IndexedOrPredicateMultiColumn',
+        this.verifyIndexedOrPredicate,
+      ],
+      [
+        'IndexedOrPredicateMultiColumn',
         this.queryIndexedOrPredicateMultiColumn,
-        this.verifyIndexedOrPredicateMultiColumn],
-      ['IndexedInPredicate',
+        this.verifyIndexedOrPredicateMultiColumn,
+      ],
+      [
+        'IndexedInPredicate',
         this.queryIndexedInPredicate,
         // Intentionally using the same verification method as with the OR case.
-        this.verifyIndexedOrPredicate],
+        this.verifyIndexedOrPredicate,
+      ],
       ['OrderByIndexed', this.queryOrderByIndexed, this.verifyOrderByIndexed],
-      ['OrderByNonIndexed',
-        this.queryOrderByNonIndexed, this.verifyOrderByNonIndexed],
-      ['OrderByIndexedCrossColumn',
+      [
+        'OrderByNonIndexed',
+        this.queryOrderByNonIndexed,
+        this.verifyOrderByNonIndexed,
+      ],
+      [
+        'OrderByIndexedCrossColumn',
         this.queryOrderByIndexedCrossColumn,
-        this.verifyOrderByIndexedCrossColumn],
-      ['LimitSkipIndexed',
-        this.queryLimitSkipIndexed, this.verifyLimitSkipIndexed],
-      ['ProjectNonAggregatedColumns',
+        this.verifyOrderByIndexedCrossColumn,
+      ],
+      [
+        'LimitSkipIndexed',
+        this.queryLimitSkipIndexed,
+        this.verifyLimitSkipIndexed,
+      ],
+      [
+        'ProjectNonAggregatedColumns',
         this.queryProjectNonAggregatedColumns,
-        this.verifyProjectNonAggregatedColumns],
-      ['ProjectAggregateIndexed',
+        this.verifyProjectNonAggregatedColumns,
+      ],
+      [
+        'ProjectAggregateIndexed',
         this.queryProjectAggregateIndexed,
-        this.verifyProjectAggregateIndexed],
-      ['ProjectAggregateNonIndexed',
+        this.verifyProjectAggregateIndexed,
+      ],
+      [
+        'ProjectAggregateNonIndexed',
         this.queryProjectAggregateNonIndexed,
-        this.verifyProjectAggregateNonIndexed],
+        this.verifyProjectAggregateNonIndexed,
+      ],
       ['JoinEqui', this.queryJoinEqui, this.verifyJoinEqui],
       ['JoinTheta', this.queryJoinTheta, this.verifyJoinTheta],
       ['CountStar', this.queryCountStar, this.verifyCountStar],
@@ -720,12 +807,13 @@ export class SelectBenchmark {
 
   static async fromJson(jsonFileName, volatile) {
     const sampleData =
-        await SelectBenchmark.loadSampleDataFromJson(jsonFileName);
+      await SelectBenchmark.loadSampleDataFromJson(jsonFileName);
     const selectBenchmark = new SelectBenchmark();
     const db = await selectBenchmark.init(volatile);
 
     const dataGenerator = MockDataGenerator.fromExportData(
-        db.getSchema(), sampleData,
+      db.getSchema(),
+      sampleData
     );
     selectBenchmark.genData(dataGenerator);
     return Promise.resolve(selectBenchmark);

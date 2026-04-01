@@ -30,7 +30,6 @@ import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 import {ChangeRecord} from '../../lib/base/change_record';
 
-
 describe('DiffCalculator', () => {
   let dbSchema: DatabaseSchema;
 
@@ -101,7 +100,7 @@ describe('DiffCalculator', () => {
           assert.equal(4, changes.length);
           assert.equal(7, changes[0].object.length);
 
-          changes.forEach(change => assert.equal(1, change['addedCount']));
+          changes.forEach((change) => assert.equal(1, change['addedCount']));
 
           assert.equal(0, changes[0].index); // row1
           assert.equal(3, changes[1].index); // row4

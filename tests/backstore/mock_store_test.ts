@@ -34,7 +34,6 @@ import {MockStore} from '../../testing/backstore/mock_store';
 import {ScudTester} from '../../testing/backstore/scud_tester';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('MockStore', () => {
   let actualStore: ObservableStore;
   let mockStore: MockStore;
@@ -64,7 +63,7 @@ describe('MockStore', () => {
   it('construction', () => {
     assert.isTrue(schema.tables().length > 0);
 
-    schema.tables().forEach(table => {
+    schema.tables().forEach((table) => {
       assert.isNotNull(mockStore.getTableInternal(table.getName()));
     });
   });
@@ -95,7 +94,7 @@ describe('MockStore', () => {
 
     // Adding an observer in the actual backstore (the one that is registered in
     // Global).
-    actualStore.subscribe(tableDiffs => {
+    actualStore.subscribe((tableDiffs) => {
       assert.equal(1, tableDiffs.length);
       assert.equal(tableSchema.getName(), tableDiffs[0].getName());
       assert.equal(5, tableDiffs[0].getAdded().size);
@@ -124,7 +123,7 @@ describe('MockStore', () => {
       await table.put(rows);
 
       // Delete the last 5 rows.
-      const rowIds = rows.slice(rows.length / 2).map(row => row.id());
+      const rowIds = rows.slice(rows.length / 2).map((row) => row.id());
       await table.remove(rowIds);
       await tx.commit();
     } catch (e) {

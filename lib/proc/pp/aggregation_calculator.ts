@@ -33,7 +33,7 @@ export class AggregationCalculator {
   // Calculates all requested aggregations. Results are stored within
   // this.relation.
   calculate(): void {
-    this.columns.forEach(column => {
+    this.columns.forEach((column) => {
       const reverseColumnChain = column.getColumnChain().reverse();
       for (let i = 1; i < reverseColumnChain.length; i++) {
         const currentColumn = reverseColumnChain[i] as AggregatedColumn;
@@ -156,7 +156,7 @@ export class AggregationCalculator {
   // returned. If the table is empty, null is returned.
   private stddev(relation: Relation, column: Column): number | null {
     const values: number[] = [];
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       const value = entry.getField(column);
       if (value !== null) {
         values.push(value as number);
@@ -193,7 +193,7 @@ export class AggregationCalculator {
   private distinct(relation: Relation, column: Column): Relation {
     const distinctMap = new Map<unknown, RelationEntry>();
 
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       const value = entry.getField(column);
       distinctMap.set(value, entry);
     });

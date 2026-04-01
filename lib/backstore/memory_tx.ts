@@ -23,7 +23,11 @@ import {BaseTx} from './base_tx';
 import {Memory} from './memory';
 
 export class MemoryTx extends BaseTx {
-  constructor(private store: Memory, type: TransactionType, journal?: Journal) {
+  constructor(
+    private store: Memory,
+    type: TransactionType,
+    journal?: Journal
+  ) {
     super(type, journal);
     if (type === TransactionType.READ_ONLY) {
       this.resolver.resolve();
@@ -32,9 +36,9 @@ export class MemoryTx extends BaseTx {
 
   getTable(
     tableName: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     deserializeFn: (value: RawRow) => Row,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     tableType?: TableType
   ): RuntimeTable {
     return this.store.getTableInternal(tableName);

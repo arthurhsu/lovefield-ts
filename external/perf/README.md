@@ -22,6 +22,7 @@ original Lovefield.
 npm i
 npm run server
 ```
+
 Then browse http://localhost:8080 using the browser you wanted to test on.
 
 ## Run with lovefield
@@ -31,7 +32,10 @@ Then browse http://localhost:8080 using the browser you wanted to test on.
    the index.html's body as the following:
 
 ```html
-<script type="text/javascript" src="./node_modules/lovefield/dist/lovefield.js"></script>
+<script
+  type="text/javascript"
+  src="./node_modules/lovefield/dist/lovefield.js"
+></script>
 <script type="text/javascript">
   lf.DataStoreType = lf.schema.DataStoreType;
   window.top['#lfRowId'] = lf.Row.getNextId;
@@ -43,16 +47,18 @@ Then browse http://localhost:8080 using the browser you wanted to test on.
    missing `lf.Row.prototype.payload()` around line 3919:
 
    Find this code block first:
+
    ```javascript
-   lf.Row.getNextId = function() {
+   lf.Row.getNextId = function () {
      return lf.Row.nextId_++;
    };
    ```
 
    Add this code block below it:
+
    ```javascript
-   goog.exportSymbol("lf.Row.getNextId", lf.Row.getNextId);
-   lf.Row.prototype.payload = function() {
+   goog.exportSymbol('lf.Row.getNextId', lf.Row.getNextId);
+   lf.Row.prototype.payload = function () {
      return this.payload_;
    };
    ```

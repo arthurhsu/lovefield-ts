@@ -32,7 +32,6 @@ import {BaseTable} from '../../lib/schema/base_table';
 import {IndexImpl} from '../../lib/schema/index_impl';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('PersistentIndex', () => {
   let db: RuntimeDatabase;
   let table: Table;
@@ -42,7 +41,7 @@ describe('PersistentIndex', () => {
   let sampleRows2: Row[];
 
   // This is a hack to access private variables and change it.
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+
   const maxCount = (BTreeNode as any).MAX_COUNT;
   const maxKeyLen = (BTreeNode as any).MAX_KEY_LEN;
   const minKeyLen = (BTreeNode as any).MIN_KEY_LEN;
@@ -59,7 +58,6 @@ describe('PersistentIndex', () => {
     (BTreeNode as any).MAX_KEY_LEN = maxKeyLen;
     (BTreeNode as any).MIN_KEY_LEN = minKeyLen;
   }
-  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   before(() => {
     stubBTreeParam();
@@ -199,7 +197,7 @@ describe('PersistentIndex', () => {
     ]);
 
     const tableIndices = targetTable.getIndices();
-    const promises = tableIndices.map(indexSchema => {
+    const promises = tableIndices.map((indexSchema) => {
       const indexName = indexSchema.getNormalizedName();
       return tx.getTable(indexName, Row.deserialize, TableType.INDEX).get([]);
     });
@@ -213,7 +211,7 @@ describe('PersistentIndex', () => {
         .get([])
     );
 
-    return Promise.all(promises).then(results => {
+    return Promise.all(promises).then((results) => {
       const rowIdIndexResults = results.splice(results.length - 1, 1)[0];
       assertRowIdIndex(targetTable, rowIdIndexResults, rows.length);
 
@@ -245,7 +243,7 @@ describe('PersistentIndex', () => {
     );
     assert.equal(dataRows.length, btreeIndex.getRange().length);
 
-    dataRows.forEach(row => {
+    dataRows.forEach((row) => {
       const expectedKey = row.keyOfIndex(
         indexSchema.getNormalizedName()
       ) as Key;

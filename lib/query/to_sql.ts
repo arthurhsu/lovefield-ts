@@ -95,10 +95,10 @@ export class SqlHelper {
     let prefix = query.allowReplace ? 'INSERT OR REPLACE' : 'INSERT';
     const columns = (query.into as BaseTable).getColumns();
     prefix += ' INTO ' + query.into.getName() + '(';
-    prefix += columns.map(col => col.getName()).join(', ');
+    prefix += columns.map((col) => col.getName()).join(', ');
     prefix += ') VALUES (';
-    const sqls = query.values.map(row => {
-      const values = columns.map(col => {
+    const sqls = query.values.map((row) => {
+      const values = columns.map((col) => {
         const rawVal = row.payload()[col.getName()];
         return stripValueInfo
           ? rawVal !== undefined && rawVal !== null
@@ -152,7 +152,7 @@ export class SqlHelper {
       return `'${(value as V).toString()}'`;
     } else if (op === EvalType.IN) {
       const array = value as V[];
-      const vals = array.map(e => SqlHelper.escapeSqlValue(type, e));
+      const vals = array.map((e) => SqlHelper.escapeSqlValue(type, e));
       return `(${vals.join(', ')})`;
     } else if (op === EvalType.BETWEEN) {
       return (
@@ -190,7 +190,7 @@ export class SqlHelper {
     pred: CombinedPredicate,
     stripValueInfo: boolean
   ): string {
-    const children = pred.getChildren().map(childNode => {
+    const children = pred.getChildren().map((childNode) => {
       return (
         '(' +
         SqlHelper.parseSearchCondition(
@@ -257,7 +257,7 @@ export class SqlHelper {
   ): string {
     let sql = 'UPDATE ' + query.table.getName() + ' SET ';
     sql += query.set
-      .map(set => {
+      .map((set) => {
         const c = set.column as BaseColumn;
         const setter = c.getNormalizedName() + ' = ';
         if (set.binding !== -1) {
@@ -282,7 +282,7 @@ export class SqlHelper {
     let colList = '*';
     if (query.columns.length) {
       colList = query.columns
-        .map(c => {
+        .map((c) => {
           const col = c as BaseColumn;
           if (col.getAlias()) {
             return col.getNormalizedName() + ' AS ' + col.getAlias();
@@ -305,7 +305,7 @@ export class SqlHelper {
 
     if (query.orderBy) {
       const orderBy = query.orderBy
-        .map(order => {
+        .map((order) => {
           return (
             order.column.getNormalizedName() +
             (order.order === Order.DESC ? ' DESC' : ' ASC')
@@ -317,7 +317,7 @@ export class SqlHelper {
 
     if (query.groupBy) {
       const groupBy = query.groupBy
-        .map(col => col.getNormalizedName())
+        .map((col) => col.getNormalizedName())
         .join(', ');
       sql += ' GROUP BY ' + groupBy;
     }
@@ -387,7 +387,7 @@ export class SqlHelper {
 
   private static getFromListForInnerJoin(
     query: SelectContext,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     stripValueInfo: boolean
   ): string {
     return query.from.map(SqlHelper.getTableNameToSql).join(', ');

@@ -29,7 +29,6 @@ import {TreeNode} from '../../lib/structs/tree_node';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {HRSchemaSampleData} from '../../testing/hr_schema/hr_schema_sample_data';
 
-
 describe('CombinedPredicate', () => {
   let db: DatabaseConnection;
   let e: Table;
@@ -39,7 +38,7 @@ describe('CombinedPredicate', () => {
   before(() => {
     return getHrDbSchemaBuilder()
       .connect({storeType: DataStoreType.MEMORY})
-      .then(conn => {
+      .then((conn) => {
         db = conn;
         d = db.getSchema().table('Department');
         e = db.getSchema().table('Employee');
@@ -123,12 +122,12 @@ describe('CombinedPredicate', () => {
 
     // Asserting that the copy tree holds new instances for each node.
     const originalTraversedNodes: TreeNode[] = [];
-    original.traverse(node => {
+    original.traverse((node) => {
       originalTraversedNodes.push(node);
       return true;
     });
 
-    copy.traverse(node => {
+    copy.traverse((node) => {
       const originalNode = originalTraversedNodes.shift();
       assert.notEqual(originalNode, node);
       return true;
@@ -242,7 +241,7 @@ describe('CombinedPredicate', () => {
       op.or(e.col('salary').lte(200), e.col('salary').gte(600)),
       op.or(e.col('salary').eq(200)),
     ];
-    keyRangeCompatiblePredicates.forEach(p => {
+    keyRangeCompatiblePredicates.forEach((p) => {
       assert.isTrue((p as CombinedPredicate).isKeyRangeCompatible());
     });
 
@@ -256,7 +255,7 @@ describe('CombinedPredicate', () => {
       op.or(e.col('salary').isNull(), e.col('salary').eq(600)),
       op.or(e.col('firstName').eq('Foo'), e.col('lastName').eq('Bar')),
     ];
-    notKeyRangeCompatiblePredicates.forEach(p => {
+    notKeyRangeCompatiblePredicates.forEach((p) => {
       assert.isFalse((p as CombinedPredicate).isKeyRangeCompatible());
     });
   });
@@ -278,7 +277,7 @@ describe('CombinedPredicate', () => {
       [op.or(e.col('salary').eq(200), e.col('salary').eq(200)), '[200, 200]'],
     ];
 
-    testCases.forEach(testCase => {
+    testCases.forEach((testCase) => {
       const predicate = testCase[0] as CombinedPredicate;
       const expected = testCase[1];
       assert.equal(expected, predicate.toKeyRange().toString());
@@ -293,7 +292,7 @@ describe('CombinedPredicate', () => {
     expectedSalariesComplement: number[]
   ): void {
     const extractSalaries = (relation: Relation) => {
-      return relation.entries.map(entry => entry.row.payload()['salary']);
+      return relation.entries.map((entry) => entry.row.payload()['salary']);
     };
 
     const inputRelation = Relation.fromRows(getSampleRows(sampleRowCount), [

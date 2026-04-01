@@ -21,7 +21,6 @@ import {Info} from '../../lib/schema/info';
 import {Table} from '../../lib/schema/table';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 // TODO(arthurhsu): add static builders when available.
 describe('Info', () => {
   let dynamicInfo: Info;
@@ -38,7 +37,7 @@ describe('Info', () => {
     const refs = info.getReferencingForeignKeys(tableName, constraintAction);
     return refs === null
       ? (null as unknown as string[])
-      : refs.map(ref => ref.name);
+      : refs.map((ref) => ref.name);
   }
 
   it('getReferencingForeignKeys', () => {
@@ -60,14 +59,14 @@ describe('Info', () => {
   });
 
   function invoke(toTest: (arg: string) => Table[], arg: string): string[] {
-    return toTest(arg).map(table => table.getName());
+    return toTest(arg).map((table) => table.getName());
   }
 
   function invoke2(
     toTest: (arg: string[]) => Table[],
     arg: string[]
   ): string[] {
-    return toTest(arg).map(table => table.getName());
+    return toTest(arg).map((table) => table.getName());
   }
 
   it('getParentTables', () => {

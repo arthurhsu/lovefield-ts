@@ -137,7 +137,7 @@ export class TreeNode {
   // this node, and visits the descendant nodes depth-first, in preorder.
   traverse(f: (node: TreeNode) => boolean | void): void {
     if (f(this) !== false) {
-      this.getChildren().forEach(child => child.traverse(f));
+      this.getChildren().forEach((child) => child.traverse(f));
     }
   }
 }

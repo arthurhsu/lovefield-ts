@@ -37,14 +37,17 @@ export class ExternalChangeTask extends UniqueId implements Task {
   private scope: Set<Table>;
   private resolver: Resolver<Relation[]>;
 
-  constructor(private global: Global, private tableDiffs: TableDiff[]) {
+  constructor(
+    private global: Global,
+    private tableDiffs: TableDiff[]
+  ) {
     super();
     this.observerRegistry = this.global.getService(Service.OBSERVER_REGISTRY);
     this.runner = this.global.getService(Service.RUNNER);
     this.inMemoryUpdater = new InMemoryUpdater(this.global);
 
     const dbSchema = this.global.getService(Service.SCHEMA);
-    const tableSchemas = this.tableDiffs.map(td =>
+    const tableSchemas = this.tableDiffs.map((td) =>
       dbSchema.table(td.getName())
     );
     this.scope = new Set<Table>(tableSchemas);

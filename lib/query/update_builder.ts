@@ -59,7 +59,7 @@ export class UpdateBuilder extends BaseBuilder<UpdateContext> {
       throw new Exception(ErrorCode.INVALID_UPDATE);
     }
 
-    const notBound = this.query.set.some(set => set.value instanceof Binder);
+    const notBound = this.query.set.some((set) => set.value instanceof Binder);
     if (notBound) {
       // 501: Value is not bounded.
       throw new Exception(ErrorCode.UNBOUND_VALUE);

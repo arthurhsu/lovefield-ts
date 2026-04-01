@@ -17,10 +17,10 @@
 export class Runner {
   static get LogLevel() {
     return {
-      'ERROR': 3,
-      'WARNING': 2,
-      'INFO': 1,
-      'FINE': 0,
+      ERROR: 3,
+      WARNING: 2,
+      INFO: 1,
+      FINE: 0,
     };
   }
 
@@ -64,8 +64,9 @@ export class Runner {
       const durations = this.results.get(test.name) || [];
       if (durations.length > 0) {
         const sum = durations.reduce((a, b) => a + b, 0);
-        result[test.name] =
-          Number(sum / durations.length).toFixed(3).toString();
+        result[test.name] = Number(sum / durations.length)
+          .toFixed(3)
+          .toString();
       } else {
         result[test.name] = 'unavailable';
       }

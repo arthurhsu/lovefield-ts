@@ -19,7 +19,6 @@ import {Global} from '../../lib/base/global';
 import {ServiceId} from '../../lib/base/service_id';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Global', () => {
   let global: Global;
 

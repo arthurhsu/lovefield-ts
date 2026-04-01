@@ -22,14 +22,14 @@ export class SingleKeyRangeSet {
     s0: SingleKeyRangeSet,
     s1: SingleKeyRangeSet
   ): SingleKeyRangeSet {
-    const ranges = s0.getValues().map(r0 => {
-      return s1.getValues().map(r1 => SingleKeyRange.and(r0, r1));
+    const ranges = s0.getValues().map((r0) => {
+      return s1.getValues().map((r1) => SingleKeyRange.and(r0, r1));
     });
 
     let results: SingleKeyRange[] = [];
-    ranges.forEach(dimension => (results = results.concat(dimension)));
+    ranges.forEach((dimension) => (results = results.concat(dimension)));
 
-    return new SingleKeyRangeSet(results.filter(r => r !== null));
+    return new SingleKeyRangeSet(results.filter((r) => r !== null));
   }
 
   private ranges: SingleKeyRange[];
@@ -42,11 +42,11 @@ export class SingleKeyRangeSet {
   }
 
   toString(): string {
-    return this.ranges.map(r => r.toString()).join(',');
+    return this.ranges.map((r) => r.toString()).join(',');
   }
 
   containsKey(key: SingleKey): boolean {
-    return this.ranges.some(r => r.contains(key));
+    return this.ranges.some((r) => r.contains(key));
   }
 
   getValues(): SingleKeyRange[] {

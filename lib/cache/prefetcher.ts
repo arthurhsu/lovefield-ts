@@ -70,7 +70,7 @@ export class Prefetcher {
       table.deserializeRow.bind(table),
       TableType.DATA
     );
-    const promise = store.get([]).then(results => {
+    const promise = store.get([]).then((results) => {
       this.cache.setMany(table.getName(), results);
       this.reconstructNonPersistentIndices(table, results);
     });
@@ -84,8 +84,8 @@ export class Prefetcher {
     tableRows: Row[]
   ): void {
     const indices = this.indexStore.getTableIndices(tableSchema.getName());
-    tableRows.forEach(row => {
-      indices.forEach(index => {
+    tableRows.forEach((row) => {
+      indices.forEach((index) => {
         const key = row.keyOfIndex(index.getName()) as Key;
         index.add(key, row.id());
       });
@@ -106,7 +106,7 @@ export class Prefetcher {
       tableSchema.deserializeRow,
       TableType.DATA
     );
-    const whenTableContentsFetched = store.get([]).then(results => {
+    const whenTableContentsFetched = store.get([]).then((results) => {
       this.cache.setMany(tableSchema.getName(), results);
     });
 
@@ -135,7 +135,7 @@ export class Prefetcher {
       TableType.INDEX
     );
     const comparator = ComparatorFactory.create(indexSchema);
-    return indexTable.get([]).then(serializedRows => {
+    return indexTable.get([]).then((serializedRows) => {
       // No need to replace the index if there is no index contents.
       if (serializedRows.length > 0) {
         if (indexSchema.hasNullableColumn()) {
@@ -173,7 +173,7 @@ export class Prefetcher {
       Row.deserialize,
       TableType.INDEX
     );
-    return indexTable.get([]).then(serializedRows => {
+    return indexTable.get([]).then((serializedRows) => {
       // No need to replace the index if there is no index contents.
       if (serializedRows.length > 0) {
         const rowIdIndex = RowId.deserialize(

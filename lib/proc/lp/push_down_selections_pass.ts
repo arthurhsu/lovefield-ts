@@ -133,7 +133,7 @@ export class PushDownSelectionsPass extends RewritePass<LogicalQueryPlanNode> {
 
       // Recursively pushing down the nodes that were just added to the tree as
       // a result of pushing down "node", if any.
-      newNodes.forEach(newNode =>
+      newNodes.forEach((newNode) =>
         this.pushDownNodeRec(queryContext, newNode, shouldPushDownFn)
       );
     }
@@ -150,7 +150,7 @@ export class PushDownSelectionsPass extends RewritePass<LogicalQueryPlanNode> {
     // Finding all tables that are involved in the subtree starting at the given
     // root.
     const referredTables = new Set<Table>();
-    TreeHelper.getLeafNodes(root).forEach(tableAccessNode =>
+    TreeHelper.getLeafNodes(root).forEach((tableAccessNode) =>
       referredTables.add((tableAccessNode as TableAccessNode).table)
     );
 

@@ -27,7 +27,6 @@ import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {MockEnv} from '../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../testing/mock_schema_builder';
 
-
 describe('ObservableRegistry', () => {
   let registry: ObserverRegistry;
   let schema: DatabaseSchema;
@@ -48,7 +47,6 @@ describe('ObservableRegistry', () => {
     const builder = new SelectBuilder(env.global, []);
     builder.from(table);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const callback = (changes: ChangeRecord[]) => promiseResolver.resolve();
 
     registry.addObserver(builder, callback);
@@ -103,7 +101,7 @@ describe('ObservableRegistry', () => {
     const getQueriesForTables = (targetSet: Set<Table>): SelectContext[] => {
       return registry
         .getTaskItemsForTables(Array.from(targetSet.values()))
-        .map(item => item.context as SelectContext);
+        .map((item) => item.context as SelectContext);
     };
 
     const scope1 = new Set<Table>();

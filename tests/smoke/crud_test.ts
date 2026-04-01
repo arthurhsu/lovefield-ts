@@ -28,7 +28,6 @@ import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {SmokeTester} from '../../testing/smoke_tester';
 import {TestUtil} from '../../testing/test_util';
 
-
 type Connector = () => Promise<DatabaseConnection>;
 
 describe('CRUD', () => {

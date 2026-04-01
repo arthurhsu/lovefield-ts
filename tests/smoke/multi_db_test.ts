@@ -24,7 +24,6 @@ import {schema} from '../../lib/schema/schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {SmokeTester} from '../../testing/smoke_tester';
 
-
 describe('MultiDB', () => {
   let capability: Capability;
   let hrTester: SmokeTester;
@@ -99,13 +98,13 @@ describe('MultiDB', () => {
     let sampleRows = createNewTableARows();
     assert.sameOrderedMembers(
       [1, 2, 3],
-      sampleRows.map(r => r.id())
+      sampleRows.map((r) => r.id())
     );
     await schemaBuilder2.connect(options);
     sampleRows = createNewTableARows();
     assert.sameOrderedMembers(
       [4, 5, 6],
-      sampleRows.map(r => r.id())
+      sampleRows.map((r) => r.id())
     );
   });
 });

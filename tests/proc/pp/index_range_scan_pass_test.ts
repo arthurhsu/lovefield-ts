@@ -63,7 +63,7 @@ describe('IndexRangeScanPass', () => {
     const option = {storeType: DataStoreType.MEMORY};
     return getHrDbSchemaBuilder()
       .connect(option)
-      .then(conn => {
+      .then((conn) => {
         db = conn;
         schema = db.getSchema();
         e = schema.table('Employee');

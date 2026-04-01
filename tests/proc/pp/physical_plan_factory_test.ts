@@ -34,7 +34,6 @@ import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 import {TestUtil} from '../../../testing/test_util';
 
-
 describe('PhysicalPlanFactory', () => {
   let sandbox: sinon.SinonSandbox;
   let physicalPlanFactory: PhysicalPlanFactory;

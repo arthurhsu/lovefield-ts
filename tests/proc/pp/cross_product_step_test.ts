@@ -24,7 +24,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {MockEnv} from '../../../testing/mock_env';
 import {getMockSchemaBuilder} from '../../../testing/mock_schema_builder';
 
-
 describe('CrossProductStep', () => {
   let schema: DatabaseSchema;
   let env: MockEnv;
@@ -67,7 +66,7 @@ describe('CrossProductStep', () => {
     const relation = relations[0];
     const isDefAndNotNull = (a: unknown) => a !== undefined && a !== null;
     assert.equal(leftRowCount * rightRowCount, relation.entries.length);
-    relation.entries.forEach(entry => {
+    relation.entries.forEach((entry) => {
       assert.isTrue(isDefAndNotNull(entry.getField(leftTable.col('id'))));
       assert.isTrue(isDefAndNotNull(entry.getField(leftTable.col('name'))));
       assert.isTrue(isDefAndNotNull(entry.getField(rightTable.col('id'))));
@@ -127,7 +126,7 @@ describe('CrossProductStep', () => {
       result.entries.length
     );
     const isDefAndNotNull = (a: unknown) => a !== undefined && a !== null;
-    result.entries.forEach(entry => {
+    result.entries.forEach((entry) => {
       assert.isTrue(isDefAndNotNull(entry.getField(table1.col('id'))));
       assert.isTrue(isDefAndNotNull(entry.getField(table1.col('name'))));
       assert.isTrue(isDefAndNotNull(entry.getField(table2.col('id'))));

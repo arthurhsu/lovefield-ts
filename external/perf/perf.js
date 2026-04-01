@@ -44,15 +44,14 @@ async function runTest(ms, test) {
       reject(new Error('Test timed out'));
     }, ms);
   });
-  return Promise.race([
-    test(),
-    timeout,
-  ]);
+  return Promise.race([test(), timeout]);
 }
 
 async function selectRunner(name, volatile) {
-  const selectBenchmark =
-      await SelectBenchmark.fromJson('test4_mock_data_30k.json', volatile);
+  const selectBenchmark = await SelectBenchmark.fromJson(
+    'test4_mock_data_30k.json',
+    volatile
+  );
   await selectBenchmark.insertSampleData();
   const runner = new Runner(name);
   runner.schedule(selectBenchmark);
@@ -63,9 +62,10 @@ async function selectRunner(name, volatile) {
 async function test1LoadingEmptyDB() {
   const benchmark = new LoadingEmptyDBBenchmark();
   const runner = new Runner(
-      'Loading Empty DB',
-      setUp,
-      benchmark.close.bind(benchmark));
+    'Loading Empty DB',
+    setUp,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }
@@ -73,9 +73,10 @@ async function test1LoadingEmptyDB() {
 async function test2FullTableOps() {
   const benchmark = new FullTableBenchmark();
   const runner = new Runner(
-      'Full table SCUD',
-      setUp,
-      benchmark.close.bind(benchmark));
+    'Full table SCUD',
+    setUp,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }
@@ -83,9 +84,10 @@ async function test2FullTableOps() {
 async function test2FullTableOpsMem() {
   const benchmark = new FullTableBenchmark(true);
   const runner = new Runner(
-      'Full table SCUD mem',
-      undefined,
-      benchmark.close.bind(benchmark));
+    'Full table SCUD mem',
+    undefined,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }
@@ -93,9 +95,10 @@ async function test2FullTableOpsMem() {
 async function test3PKTableOps() {
   const benchmark = new PKTableBenchmark();
   const runner = new Runner(
-      'PK-based SCUD',
-      setUp,
-      benchmark.close.bind(benchmark));
+    'PK-based SCUD',
+    setUp,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }
@@ -103,9 +106,10 @@ async function test3PKTableOps() {
 async function test3PKTableOpsMem() {
   const benchmark = new PKTableBenchmark(true);
   const runner = new Runner(
-      'PK-based SCUD',
-      undefined,
-      benchmark.close.bind(benchmark));
+    'PK-based SCUD',
+    undefined,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }
@@ -123,7 +127,7 @@ async function test5LoadingPopulatedDB() {
   const rowCount = 20000;
   const benchmark = new LoadingPopulatedDBBenchmark();
 
-  const preRunSetup = async function() {
+  const preRunSetup = async function () {
     await benchmark.init();
     await benchmark.close();
     await benchmark.init();
@@ -133,9 +137,10 @@ async function test5LoadingPopulatedDB() {
   };
 
   const runner = new Runner(
-      'Loading Populated DB',
-      preRunSetup,
-      benchmark.close.bind(benchmark));
+    'Loading Populated DB',
+    preRunSetup,
+    benchmark.close.bind(benchmark)
+  );
   runner.schedule(benchmark);
   overallResults.push(await runner.run(REPETITIONS));
 }

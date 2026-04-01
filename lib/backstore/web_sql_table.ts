@@ -59,7 +59,7 @@ export class WebSqlTable implements RuntimeTable {
     }
 
     const sql = `INSERT OR REPLACE INTO ${this.name} (id, value) VALUES (?, ?)`;
-    rows.forEach(row => {
+    rows.forEach((row) => {
       this.tx.queue(sql, [row.id(), JSON.stringify(row.payload())]);
     }, this);
 
@@ -68,7 +68,7 @@ export class WebSqlTable implements RuntimeTable {
 
   remove(
     ids: number[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     disableClearTableOptimization?: boolean
   ): Promise<void> {
     const where = ids.length === 0 ? '' : `WHERE id IN (${ids.join(',')})`;

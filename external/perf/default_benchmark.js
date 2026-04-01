@@ -24,8 +24,9 @@ export class DefaultBenchmark {
 
   async init() {
     const options = {
-      storeType: this.volatile ?
-          lf.DataStoreType.MEMORY : lf.DataStoreType.INDEXED_DB,
+      storeType: this.volatile
+        ? lf.DataStoreType.MEMORY
+        : lf.DataStoreType.INDEXED_DB,
       enableInspector: true,
     };
 
@@ -71,8 +72,8 @@ export class DefaultBenchmark {
         const rawData = JSON.parse(xhr.responseText);
         this.data = rawData.map((obj) => {
           return this.e.deserializeRow({
-            'id': window.top['#lfRowId'](),
-            'value': obj,
+            id: window.top['#lfRowId'](),
+            value: obj,
           });
         });
         return;
@@ -99,11 +100,11 @@ export class DefaultBenchmark {
   }
 
   async select() {
-    return this.db.
-        select().
-        from(this.e).
-        orderBy(this.e.id, lf.Order.ASC).
-        exec();
+    return this.db
+      .select()
+      .from(this.e)
+      .orderBy(this.e.id, lf.Order.ASC)
+      .exec();
   }
 
   async updateAll() {
@@ -121,14 +122,13 @@ export class DefaultBenchmark {
 
   async deletePartial(rowCount) {
     if (rowCount == 1) {
-      return this.db.
-          delete().from(this.e).where(this.e.id.eq('010000')).exec();
+      return this.db.delete().from(this.e).where(this.e.id.eq('010000')).exec();
     } else {
-      return this.db.
-          delete().
-          from(this.e).
-          where(this.e.id.between('010000', this.getRangeEnd(rowCount))).
-          exec();
+      return this.db
+        .delete()
+        .from(this.e)
+        .where(this.e.id.between('010000', this.getRangeEnd(rowCount)))
+        .exec();
     }
   }
 
@@ -139,24 +139,29 @@ export class DefaultBenchmark {
 
   async updatePartial(rowCount) {
     if (rowCount == 1) {
-      return this.db.
-          update(this.e).set(this.e.salary, 50000).where(
-              this.e.id.eq('010000')).exec();
+      return this.db
+        .update(this.e)
+        .set(this.e.salary, 50000)
+        .where(this.e.id.eq('010000'))
+        .exec();
     } else {
-      return this.db.
-          update(this.e).set(this.e.salary, 50000).where(
-              this.e.id.between('010000', this.getRangeEnd(rowCount))).exec();
+      return this.db
+        .update(this.e)
+        .set(this.e.salary, 50000)
+        .where(this.e.id.between('010000', this.getRangeEnd(rowCount)))
+        .exec();
     }
   }
 
   async selectPartial(rowCount) {
     if (rowCount == 1) {
-      return this.db.
-          select().from(this.e).where(this.e.id.eq('010000')).exec();
+      return this.db.select().from(this.e).where(this.e.id.eq('010000')).exec();
     } else {
-      return this.db.
-          select().from(this.e).where(
-              this.e.id.between('010000', this.getRangeEnd(rowCount))).exec();
+      return this.db
+        .select()
+        .from(this.e)
+        .where(this.e.id.between('010000', this.getRangeEnd(rowCount)))
+        .exec();
     }
   }
 
@@ -167,13 +172,15 @@ export class DefaultBenchmark {
       }
 
       const data = this.data.slice(0, rowCount);
-      return data.every(function(expected, index) {
+      return data.every(function (expected, index) {
         const row = results[index];
         const payload = expected.payload();
-        return payload['id'] == row['id'] &&
-            payload['firstName'] == row['firstName'] &&
-            payload['lastName'] == row['lastName'] &&
-            payload['salary'] == row['salary'];
+        return (
+          payload['id'] == row['id'] &&
+          payload['firstName'] == row['firstName'] &&
+          payload['lastName'] == row['lastName'] &&
+          payload['salary'] == row['salary']
+        );
       });
     });
   }
@@ -185,13 +192,15 @@ export class DefaultBenchmark {
       }
 
       const data = this.data.slice(0, rowCount);
-      return data.every(function(expected, index) {
+      return data.every(function (expected, index) {
         const row = results[index];
         const payload = expected.payload();
-        return payload['id'] == row['id'] &&
-            payload['firstName'] == row['firstName'] &&
-            payload['lastName'] == row['lastName'] &&
-            50000 == row['salary'];
+        return (
+          payload['id'] == row['id'] &&
+          payload['firstName'] == row['firstName'] &&
+          payload['lastName'] == row['lastName'] &&
+          50000 == row['salary']
+        );
       });
     });
   }
@@ -217,10 +226,12 @@ export class DefaultBenchmark {
     const validated = data.every((expected, index) => {
       const row = rows[index];
       const payload = expected.payload();
-      return payload['id'] == row['id'] &&
-          payload['firstName'] == row['firstName'] &&
-          payload['lastName'] == row['lastName'] &&
-          50000 == row['salary'];
+      return (
+        payload['id'] == row['id'] &&
+        payload['firstName'] == row['firstName'] &&
+        payload['lastName'] == row['lastName'] &&
+        50000 == row['salary']
+      );
     });
     return Promise.resolve(validated);
   }

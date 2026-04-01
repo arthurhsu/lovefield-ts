@@ -72,14 +72,14 @@ export class WebSqlRawBackStore implements RawBackStore {
   ): Promise<void> {
     const value = IndexedDBRawBackStore.convert(defaultValue);
 
-    return this.transformColumn(tableName, row => {
+    return this.transformColumn(tableName, (row) => {
       row.value[columnName] = value;
       return row;
     });
   }
 
   dropTableColumn(tableName: string, columnName: string): Promise<void> {
-    return this.transformColumn(tableName, row => {
+    return this.transformColumn(tableName, (row) => {
       delete row.value[columnName];
       return row;
     });
@@ -90,7 +90,7 @@ export class WebSqlRawBackStore implements RawBackStore {
     oldColumnName: string,
     newColumnName: string
   ): Promise<void> {
-    return this.transformColumn(tableName, row => {
+    return this.transformColumn(tableName, (row) => {
       row.value[newColumnName] = row.value[oldColumnName];
       delete row.value[oldColumnName];
       return row;
@@ -99,7 +99,7 @@ export class WebSqlRawBackStore implements RawBackStore {
 
   createRow(payload: PayloadType): Row {
     const data: PayloadType = {};
-    Object.keys(payload).forEach(key => {
+    Object.keys(payload).forEach((key) => {
       data[key] = IndexedDBRawBackStore.convert(payload[key]);
     });
 
@@ -117,13 +117,15 @@ export class WebSqlRawBackStore implements RawBackStore {
     WebSqlRawBackStore.queueListTables(tx);
 
     const ret: PayloadType = {};
-    tx.commit().then(res => {
+    tx.commit().then((res) => {
       const results = res as string[][];
       const tables: string[] = results[0].filter((name: string) => {
         return name !== '__lf_ver' && name !== '__WebKitDatabaseInfoTable__';
       });
-      const promises = tables.map(tableName => {
-        return this.dumpTable(tableName).then(rows => (ret[tableName] = rows));
+      const promises = tables.map((tableName) => {
+        return this.dumpTable(tableName).then(
+          (rows) => (ret[tableName] = rows)
+        );
       }, this);
       Promise.all(promises).then(() => resolver.resolve(ret));
     });
@@ -142,7 +144,7 @@ export class WebSqlRawBackStore implements RawBackStore {
   private dumpTable(tableName: string): Promise<RawRow[]> {
     const tx = this.createTx();
     tx.queue(`SELECT id, value FROM ${tableName}`, []);
-    return tx.commit().then(res => {
+    return tx.commit().then((res) => {
       const results = res as SQLResultSet[];
       const length = results[0].rows.length;
       const rows: RawRow[] = new Array(length);
@@ -163,8 +165,8 @@ export class WebSqlRawBackStore implements RawBackStore {
   ): Promise<void> {
     const tx = this.createTx();
     const sql = `UPDATE ${tableName} SET value=? WHERE id=?`;
-    return this.dumpTable(tableName).then(rows => {
-      rows.forEach(row => {
+    return this.dumpTable(tableName).then((rows) => {
+      rows.forEach((row) => {
         const newRow = transformer(row);
         tx.queue(sql, [JSON.stringify(newRow.value), newRow.id]);
       });

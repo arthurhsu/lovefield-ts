@@ -43,9 +43,9 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
 
     const tableAccessFullSteps = TreeHelper.find(
       rootNode,
-      node => node instanceof TableAccessFullStep
+      (node) => node instanceof TableAccessFullStep
     ) as TableAccessFullStep[];
-    tableAccessFullSteps.forEach(tableAccessFullStep => {
+    tableAccessFullSteps.forEach((tableAccessFullStep) => {
       const selectStepsCandidates = this.findSelectSteps(tableAccessFullStep);
       if (selectStepsCandidates.length === 0) {
         return;
@@ -57,7 +57,9 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
       );
       const indexRangeCandidate = costEstimator.chooseIndexFor(
         queryContext,
-        selectStepsCandidates.map(c => queryContext.getPredicate(c.predicateId))
+        selectStepsCandidates.map((c) =>
+          queryContext.getPredicate(c.predicateId)
+        )
       );
       if (indexRangeCandidate === null) {
         // No SelectStep could be optimized for this table.
@@ -68,7 +70,7 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
       // the predicates that can be replaced by an index-range scan can be
       // mapped back to SelectStep nodes.
       const predicateToSelectStepMap = new Map<number, SelectStep>();
-      selectStepsCandidates.forEach(selectStep => {
+      selectStepsCandidates.forEach((selectStep) => {
         predicateToSelectStepMap.set(selectStep.predicateId, selectStep);
       }, this);
 
@@ -109,7 +111,7 @@ export class IndexRangeScanPass extends RewritePass<PhysicalQueryPlanNode> {
     tableAccessFullStep: TableAccessFullStep
   ): PhysicalQueryPlanNode {
     const predicateIds = indexRangeCandidate.getPredicateIds();
-    const selectSteps = predicateIds.map(predicateId => {
+    const selectSteps = predicateIds.map((predicateId) => {
       return predicateToSelectStepMap.get(predicateId) as SelectStep;
     });
     selectSteps.forEach(TreeHelper.removeNode);

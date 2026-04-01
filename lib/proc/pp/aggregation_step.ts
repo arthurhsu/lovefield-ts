@@ -28,7 +28,7 @@ export class AggregationStep extends PhysicalQueryPlanNode {
   }
 
   toString(): string {
-    const columnNames = this.aggregatedColumns.map(column =>
+    const columnNames = this.aggregatedColumns.map((column) =>
       column.getNormalizedName()
     );
 
@@ -37,12 +37,12 @@ export class AggregationStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
-    relations.forEach(relation => {
+    relations.forEach((relation) => {
       const calculator = new AggregationCalculator(
         relation,
         this.aggregatedColumns

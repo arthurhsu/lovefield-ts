@@ -20,7 +20,6 @@ import {BaseTable} from '../../lib/schema/base_table';
 import {DatabaseSchema} from '../../lib/schema/database_schema';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('Table', () => {
   const checkAlias = (schema: DatabaseSchema) => {
     const noAliasTable = schema.table('Job') as BaseTable;

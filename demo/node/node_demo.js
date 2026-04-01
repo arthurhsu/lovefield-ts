@@ -39,7 +39,7 @@ async function createDatabase() {
 async function insertData(db) {
   const data = JSON.parse(fs.readFileSync('node_demo.json'));
   const item = db.getSchema().table('Item');
-  const rows = data.map(d =>
+  const rows = data.map((d) =>
     item.createRow({
       id: d.id,
       description: d.description,
@@ -64,7 +64,7 @@ async function main() {
   const db = await createDatabase();
   await insertData(db);
   const res = await selectTodoItems(db);
-  res.forEach(r => {
+  res.forEach((r) => {
     console.log(
       'Finish [',
       r.description,

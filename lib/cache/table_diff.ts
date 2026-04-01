@@ -96,9 +96,9 @@ export class TableDiff {
 
   // Merge another diff into this one.
   merge(other: TableDiff): void {
-    other.added.forEach(row => this.add(row));
-    other.modified.forEach(modification => this.modify(modification));
-    other.deleted.forEach(row => this.delete(row));
+    other.added.forEach((row) => this.add(row));
+    other.modified.forEach((modification) => this.modify(modification));
+    other.deleted.forEach((row) => this.delete(row));
   }
 
   // Transforms each changes included in this diff (insertion, modification,
@@ -109,11 +109,11 @@ export class TableDiff {
   getAsModifications(): Modification[] {
     const modifications: Modification[] = [];
 
-    this.added.forEach(row =>
+    this.added.forEach((row) =>
       modifications.push([/* then */ null, /* now */ row])
     );
-    this.modified.forEach(modification => modifications.push(modification));
-    this.deleted.forEach(row =>
+    this.modified.forEach((modification) => modifications.push(modification));
+    this.deleted.forEach((row) =>
       modifications.push([/* then */ row, /* now */ null])
     );
 
@@ -133,9 +133,9 @@ export class TableDiff {
   getReverse(): TableDiff {
     const reverseDiff = new TableDiff(this.name);
 
-    this.added.forEach(row => reverseDiff.delete(row));
-    this.deleted.forEach(row => reverseDiff.add(row));
-    this.modified.forEach(modification => {
+    this.added.forEach((row) => reverseDiff.delete(row));
+    this.deleted.forEach((row) => reverseDiff.add(row));
+    this.modified.forEach((modification) => {
       reverseDiff.modify([modification[1], modification[0]]);
     });
 

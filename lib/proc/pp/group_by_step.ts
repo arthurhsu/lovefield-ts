@@ -30,7 +30,7 @@ export class GroupByStep extends PhysicalQueryPlanNode {
   }
 
   toString(): string {
-    const columnNames = this.groupByColumns.map(column =>
+    const columnNames = this.groupByColumns.map((column) =>
       column.getNormalizedName()
     );
     return `groupBy(${columnNames.toString()})`;
@@ -38,9 +38,9 @@ export class GroupByStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     ctx?: Context
   ): Relation[] {
     return this.calculateGroupedRelations(relations[0]);
@@ -52,12 +52,12 @@ export class GroupByStep extends PhysicalQueryPlanNode {
     const groupMap = new MapSet<string, RelationEntry>();
 
     const getKey = (entry: RelationEntry) => {
-      const keys = this.groupByColumns.map(column => entry.getField(column));
+      const keys = this.groupByColumns.map((column) => entry.getField(column));
       return keys.join(',');
     };
 
-    relation.entries.forEach(entry => groupMap.set(getKey(entry), entry));
-    return groupMap.keys().map(key => {
+    relation.entries.forEach((entry) => groupMap.set(getKey(entry), entry));
+    return groupMap.keys().map((key) => {
       return new Relation(
         groupMap.get(key) as RelationEntry[],
         relation.getTables()

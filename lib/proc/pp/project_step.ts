@@ -24,7 +24,10 @@ import {RelationTransformer} from '../relation_transformer';
 import {PhysicalQueryPlanNode} from './physical_query_plan_node';
 
 export class ProjectStep extends PhysicalQueryPlanNode {
-  constructor(private columns: Column[], private groupByColumns: Column[]) {
+  constructor(
+    private columns: Column[],
+    private groupByColumns: Column[]
+  ) {
     super(PhysicalQueryPlanNode.ANY, ExecType.FIRST_CHILD);
   }
 
@@ -32,7 +35,7 @@ export class ProjectStep extends PhysicalQueryPlanNode {
     let postfix = '';
     if (this.groupByColumns) {
       const groupBy = this.groupByColumns
-        .map(col => col.getNormalizedName())
+        .map((col) => col.getNormalizedName())
         .join(', ');
       postfix = `, groupBy(${groupBy})`;
     }
@@ -41,9 +44,9 @@ export class ProjectStep extends PhysicalQueryPlanNode {
 
   execInternal(
     relations: Relation[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     journal?: Journal,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     context?: Context
   ): Relation[] {
     if (relations.length === 0) {
@@ -58,7 +61,7 @@ export class ProjectStep extends PhysicalQueryPlanNode {
   // Returns whether any aggregators (either columns or groupBy) have been
   // specified.
   hasAggregators(): boolean {
-    const hasAggregators = this.columns.some(column => {
+    const hasAggregators = this.columns.some((column) => {
       return column instanceof AggregatedColumn;
     });
     return hasAggregators || this.groupByColumns !== null;

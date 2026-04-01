@@ -58,7 +58,6 @@ export class WebSql implements BackStore {
       throw new Exception(ErrorCode.WEBSQL_NOT_PROVIDED);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const defaultUpgrade = (rawDb: RawBackStore) => Promise.resolve();
     const onUpgrade = upgrade || defaultUpgrade;
 
@@ -75,7 +74,7 @@ export class WebSql implements BackStore {
           () => {
             this.scanRowId().then(resolve, reject);
           },
-          e => {
+          (e) => {
             if (e instanceof Exception) {
               throw e;
             }
@@ -106,23 +105,19 @@ export class WebSql implements BackStore {
     // WebSQL does not support closing a database connection.
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getTableInternal(tableName: string): RuntimeTable {
     // 512: WebSQL tables needs to be acquired from transactions.
     throw new Exception(ErrorCode.CANT_GET_WEBSQL_TABLE);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     this.notSupported();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     this.notSupported();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   notify(changes: TableDiff[]): void {
     this.notSupported();
   }
@@ -207,24 +202,24 @@ export class WebSql implements BackStore {
       this.schema.version(),
     ]);
     WebSqlRawBackStore.queueListTables(tx);
-    return tx.commit().then(res => {
+    return tx.commit().then((res) => {
       const results = res as string[][];
       const existingTables: string[] = results[1];
       // Delete all existing persisted indices.
       existingTables
-        .filter(name => name.indexOf(WebSqlTx.INDEX_MARK) !== -1)
-        .forEach(name => tx2.queue('DROP TABLE ' + WebSql.escape(name), []));
+        .filter((name) => name.indexOf(WebSqlTx.INDEX_MARK) !== -1)
+        .forEach((name) => tx2.queue('DROP TABLE ' + WebSql.escape(name), []));
 
       // Create new tables.
       const newTables: string[] = [];
       const persistentIndices: string[] = [];
       const rowIdIndices: string[] = [];
-      tables.map(table => {
+      tables.map((table) => {
         if (existingTables.indexOf(table.getName()) === -1) {
           newTables.push(table.getName());
         }
         if (table.persistentIndex()) {
-          table.getIndices().forEach(index => {
+          table.getIndices().forEach((index) => {
             const idxTableName = WebSqlTx.escapeTableName(
               index.getNormalizedName()
             );
@@ -239,7 +234,7 @@ export class WebSql implements BackStore {
         }
       });
 
-      newTables.forEach(name => {
+      newTables.forEach((name) => {
         tx2.queue(
           `CREATE TABLE ${WebSql.escape(name)}` +
             '(id INTEGER PRIMARY KEY, value TEXT)',
@@ -259,7 +254,7 @@ export class WebSql implements BackStore {
     const selectIdFromTable = (tableName: string): Promise<void> => {
       const tx = new WebSqlTx(this.db, TransactionType.READ_ONLY);
       tx.queue(`SELECT MAX(id) FROM ${WebSql.escape(tableName)}`, []);
-      return tx.commit().then(res => {
+      return tx.commit().then((res) => {
         const results = res as SQLResultSet[];
         const id: number = results[0].rows.item(0)['MAX(id)'];
         maxRowId = Math.max(id, maxRowId);
@@ -268,14 +263,14 @@ export class WebSql implements BackStore {
 
     const promises = this.schema
       .tables()
-      .map(table => selectIdFromTable(table.getName()));
+      .map((table) => selectIdFromTable(table.getName()));
 
     Promise.all(promises).then(
       () => {
         Row.setNextIdIfGreater(maxRowId + 1);
         resolver.resolve();
       },
-      e => {
+      (e) => {
         resolver.reject(e);
       }
     );

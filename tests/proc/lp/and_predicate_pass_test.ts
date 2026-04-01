@@ -23,7 +23,6 @@ import {DatabaseSchema} from '../../../lib/schema/database_schema';
 import {TreeHelper} from '../../../lib/structs/tree_helper';
 import {getHrDbSchemaBuilder} from '../../../testing/hr_schema/hr_schema_builder';
 
-
 describe('AndPredicatePass', () => {
   let schema: DatabaseSchema;
 

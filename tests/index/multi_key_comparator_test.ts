@@ -21,12 +21,11 @@ import {SingleKey, SingleKeyRange} from '../../lib/index/key_range';
 import {MultiKeyComparator} from '../../lib/index/multi_key_comparator';
 import {MultiKeyComparatorWithNull} from '../../lib/index/multi_key_comparator_with_null';
 
-
 describe('MultiKeyComparator', () => {
   function shuffleAndTest(testFn: (c: MultiKeyComparator) => void): void {
     const ORDER = [Order.DESC, Order.ASC];
-    ORDER.forEach(o1 => {
-      ORDER.forEach(o2 => {
+    ORDER.forEach((o1) => {
+      ORDER.forEach((o2) => {
         const c = new MultiKeyComparator([o1, o2]);
         testFn(c);
       });
@@ -206,7 +205,7 @@ describe('MultiKeyComparator', () => {
       '(90, unbound],(X, unbound]',
     ];
 
-    const actual = c.sortKeyRanges(keyRanges).map(range => range.toString());
+    const actual = c.sortKeyRanges(keyRanges).map((range) => range.toString());
     assert.sameOrderedMembers(expectations, actual);
   });
 
@@ -232,7 +231,7 @@ describe('MultiKeyComparator', () => {
       '(24, unbound],[unbound, B)',
     ];
 
-    const actual = c.sortKeyRanges(keyRanges).map(range => range.toString());
+    const actual = c.sortKeyRanges(keyRanges).map((range) => range.toString());
     assert.sameOrderedMembers(expectations, actual);
   });
 
@@ -250,8 +249,8 @@ describe('MultiKeyComparator', () => {
 
     // Shuffle of valid conditions shall result in covering both ends.
     const ranges = [all, only2, lowerBound, upperBound];
-    ranges.forEach(r1 => {
-      ranges.forEach(r2 => {
+    ranges.forEach((r1) => {
+      ranges.forEach((r2) => {
         assert.sameOrderedMembers([true, true], c.compareRange(key, [r1, r2]));
       });
     });

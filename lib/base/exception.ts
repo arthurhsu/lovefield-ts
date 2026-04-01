@@ -21,7 +21,10 @@ export class Exception {
   readonly message: string;
   readonly args: string[];
 
-  constructor(readonly code: ErrorCode, ...args: string[]) {
+  constructor(
+    readonly code: ErrorCode,
+    ...args: string[]
+  ) {
     this.args = args;
     this.message = Global.get().getOptions().exceptionUrl + code.toString();
 

@@ -105,7 +105,7 @@ export class IndexRangeScanStep extends PhysicalQueryPlanNode {
       );
     }
 
-    const rows = rowIds.map(rowId => new Row(rowId, {}));
+    const rows = rowIds.map((rowId) => new Row(rowId, {}));
 
     return [Relation.fromRows(rows, [this.index.tableName])];
   }

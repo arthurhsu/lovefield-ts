@@ -31,7 +31,6 @@ import {Info} from '../../lib/schema/info';
 import {SchemaBuilder} from '../../lib/schema/schema_builder';
 import {TestUtil} from '../../testing/test_util';
 
-
 describe('Builder', () => {
   const createBuilder = () => {
     const schemaBuilder = new SchemaBuilder('hr', 1);
@@ -452,14 +451,14 @@ describe('Builder', () => {
     // Test case of DESC index.
     const job = schema.table('Job') as BaseTable;
     const maxSalaryIndexSchema = (job.getIndices() as IndexImpl[]).filter(
-      indexSchema => indexSchema.name === 'idx_maxSalary'
+      (indexSchema) => indexSchema.name === 'idx_maxSalary'
     )[0];
     assert.equal(Order.DESC, maxSalaryIndexSchema.columns[0].order);
 
     // Test case of ASC index.
     const dummyTable = schema.table('DummyTable') as BaseTable;
     const stringIndexSchema = (dummyTable.getIndices() as IndexImpl[]).filter(
-      indexSchema => indexSchema.name === 'idx_string'
+      (indexSchema) => indexSchema.name === 'idx_string'
     )[0];
     assert.equal(Order.ASC, stringIndexSchema.columns[0].order);
   });

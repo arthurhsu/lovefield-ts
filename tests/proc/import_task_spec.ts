@@ -23,7 +23,6 @@ import {ConnectOptions} from '../../lib/schema/connect_options';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 import {MockDataGenerator} from '../../testing/hr_schema/mock_data_generator';
 
-
 describe('ImportTask', () => {
   let capability: Capability;
   before(() => {
@@ -126,7 +125,7 @@ describe('ImportTask', () => {
       const db = await builder.connect({storeType: DataStoreType.MEMORY});
       const j = db.getSchema().table('Job');
       start = performance.now();
-      const rows = jobs.map(data => j.createRow(data));
+      const rows = jobs.map((data) => j.createRow(data));
       await db.insert().into(j).values(rows).exec();
       const end = performance.now();
       results.push(end - start);

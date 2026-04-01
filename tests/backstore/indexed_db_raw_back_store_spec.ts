@@ -174,7 +174,7 @@ test('IndexedDBRawBackStore', () => {
 
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareTxForTableA(rawDb);
       })
       .then(() => {
@@ -183,10 +183,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTable(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         assert.equal(date.getTime(), results[0].payload()['dob']);
         assert.equal(date.getTime(), results[1].payload()['dob']);
@@ -204,7 +204,7 @@ test('IndexedDBRawBackStore', () => {
 
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareBundledTxForTableA(rawDb);
       })
       .then(() => {
@@ -213,10 +213,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTableBundled(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
         const newRow2 = Row.deserialize(
@@ -240,7 +240,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareTxForTableA(rawDb);
       })
       .then(() => {
@@ -249,10 +249,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init(upgradeDropTableColumn);
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTable(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
         assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
@@ -268,7 +268,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareBundledTxForTableA(rawDb);
       })
       .then(() => {
@@ -277,10 +277,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init(upgradeDropTableColumn);
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTableBundled(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
         const newRow2 = Row.deserialize(
@@ -304,7 +304,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareTxForTableA(rawDb);
       })
       .then(() => {
@@ -313,10 +313,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init(upgradeRenameTableColumn);
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTable(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
         assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
@@ -334,7 +334,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareBundledTxForTableA(rawDb);
       })
       .then(() => {
@@ -343,10 +343,10 @@ test('IndexedDBRawBackStore', () => {
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init(upgradeRenameTableColumn);
       })
-      .then(newDb => {
+      .then((newDb) => {
         return dumpTableBundled(newDb, 'tableA_');
       })
-      .then(results => {
+      .then((results) => {
         assert.equal(2, results.length);
         const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
         const newRow2 = Row.deserialize(
@@ -372,14 +372,14 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         assert.equal(2, rawDb.objectStoreNames.length);
         (db as IndexedDB).close();
         db = null;
         db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
         return db.init(upgradeDropTable);
       })
-      .then(rawDb => {
+      .then((rawDb) => {
         assert.equal(1, rawDb.objectStoreNames.length);
       });
   });
@@ -387,7 +387,7 @@ test('IndexedDBRawBackStore', () => {
   function upgradeDumping(dbInterface: RawBackStore): Promise<void> {
     const db = dbInterface as IndexedDBRawBackStore;
     assert.equal(1, db.getVersion());
-    return db.dump().then(res => {
+    return db.dump().then((res) => {
       const results = res as PayloadType;
       assert.sameDeepMembers(
         [CONTENTS, CONTENTS2],
@@ -404,7 +404,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareTxForTableA(rawDb);
       })
       .then(() => {
@@ -424,7 +424,7 @@ test('IndexedDBRawBackStore', () => {
     );
     return db
       .init()
-      .then(rawDb => {
+      .then((rawDb) => {
         return prepareBundledTxForTableA(rawDb);
       })
       .then(() => {

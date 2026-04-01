@@ -145,8 +145,8 @@ export class SingleKeyRange {
           ? r1
           : r2
         : favor !== Favor.RHS
-        ? r1
-        : r2;
+          ? r1
+          : r2;
 
     // right side boundary test is different, null is considered greater.
     let right: SingleKeyRange;
@@ -160,8 +160,8 @@ export class SingleKeyRange {
             ? r1
             : r2
           : favor === Favor.RHS
-          ? r1
-          : r2;
+            ? r1
+            : r2;
     }
     return new SingleKeyRange(
       left.from,
@@ -221,8 +221,8 @@ export class SingleKeyRange {
       !SingleKeyRange.xor(excludeL, excludeR)
         ? Favor.TIE
         : excludeL
-        ? flip(Favor.LHS)
-        : flip(Favor.RHS);
+          ? flip(Favor.LHS)
+          : flip(Favor.RHS);
 
     if (SingleKeyRange.isUnbound(l)) {
       return !SingleKeyRange.isUnbound(r) ? flip(Favor.RHS) : tieLogic();
@@ -230,10 +230,10 @@ export class SingleKeyRange {
     return SingleKeyRange.isUnbound(r)
       ? flip(Favor.LHS)
       : l < r
-      ? Favor.RHS
-      : l === r
-      ? tieLogic()
-      : Favor.LHS;
+        ? Favor.RHS
+        : l === r
+          ? tieLogic()
+          : Favor.LHS;
   }
 
   readonly excludeLower: boolean;
@@ -300,7 +300,7 @@ export class SingleKeyRange {
       );
     }
 
-    return [keyRangeLow, keyRangeHigh].filter(keyRange => keyRange !== null);
+    return [keyRangeLow, keyRangeHigh].filter((keyRange) => keyRange !== null);
   }
 
   // Reverses a keyRange such that "lower" refers to larger values and "upper"

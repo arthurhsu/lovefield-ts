@@ -131,7 +131,7 @@ export class SimpleComparator implements Comparator {
 
   sortKeyRanges(keyRanges: SingleKeyRange[]): SingleKeyRange[] {
     return keyRanges
-      .filter(range => range !== null)
+      .filter((range) => range !== null)
       .sort((lhs, rhs) => this.orderKeyRange(lhs, rhs));
   }
 

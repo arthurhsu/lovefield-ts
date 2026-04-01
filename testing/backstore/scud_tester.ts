@@ -128,7 +128,7 @@ export class ScudTester {
     if (this.reload !== null) {
       this.db = this.reload();
     }
-    return this.selectAll().then(results => {
+    return this.selectAll().then((results) => {
       assert.equal(rows.length, results.length);
       rows.forEach((row, index) => {
         const retrievedRow = results[index];

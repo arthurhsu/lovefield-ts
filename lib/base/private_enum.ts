@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-unused-vars */
-
 // The comparison result constant. This must be consistent with the constant
 // required by the sort function of Array.prototype.sort.
 export enum Favor {

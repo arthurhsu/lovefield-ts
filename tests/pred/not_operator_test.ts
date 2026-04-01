@@ -21,7 +21,6 @@ import {op} from '../../lib/fn/op';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {getHrDbSchemaBuilder} from '../../testing/hr_schema/hr_schema_builder';
 
-
 describe('NotOperator', () => {
   let db: RuntimeDatabase;
   const rowCount = 8;
@@ -40,7 +39,9 @@ describe('NotOperator', () => {
   // Deletes the contents of all tables.
   async function clearDb(): Promise<void> {
     const tables = db.getSchema().tables();
-    const deletePromises = tables.map(table => db.delete().from(table).exec());
+    const deletePromises = tables.map((table) =>
+      db.delete().from(table).exec()
+    );
 
     return Promise.all(deletePromises).then(() => {
       return;
@@ -83,7 +84,7 @@ describe('NotOperator', () => {
     };
 
     const results = await selectFn();
-    const actualIds = results.map(result => result['string']);
+    const actualIds = results.map((result) => result['string']);
     assert.sameMembers(expectedIds, actualIds);
   });
 
@@ -105,7 +106,7 @@ describe('NotOperator', () => {
 
     const results = await selectFn();
     assert.equal(rowCount - 1, results.length);
-    assert.isFalse(results.some(result => result['string'] === excludedId));
+    assert.isFalse(results.some((result) => result['string'] === excludedId));
   });
 
   it('and_Not', async () => {
@@ -129,7 +130,7 @@ describe('NotOperator', () => {
     const results = await selectFn();
     assert.equal(2, results.length);
 
-    const actualIds = results.map(result => result['string']);
+    const actualIds = results.map((result) => result['string']);
     assert.sameMembers(actualIds, ['string2', 'string3']);
   });
 
@@ -155,7 +156,7 @@ describe('NotOperator', () => {
     };
 
     const results = await selectFn();
-    const actualValues = results.map(result => result['integer']);
+    const actualValues = results.map((result) => result['integer']);
     const expectedValues = [0, 100, 700];
     assert.sameMembers(expectedValues, actualValues);
   });
@@ -181,7 +182,7 @@ describe('NotOperator', () => {
     };
 
     const results = await selectFn();
-    const actualValues = results.map(result => result['integer']);
+    const actualValues = results.map((result) => result['integer']);
     const expectedValues = [500, 400, 300];
     assert.sameMembers(expectedValues, actualValues);
   });

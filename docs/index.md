@@ -2,12 +2,12 @@
 
 ## How to use this library?
 
-* [Quick start](quick_start.md)
-* [FAQ](faq.md)
-* [Lovefield 101: Fundamentals](lf101.md)
-* [Lovefield 102: Advanced usage](lf102.md)
-* [Lovefield 103: In-field features](lf103.md)
-* [Lovefield 145: Data-heavy web apps design](lf145.md)
+- [Quick start](quick_start.md)
+- [FAQ](faq.md)
+- [Lovefield 101: Fundamentals](lf101.md)
+- [Lovefield 102: Advanced usage](lf102.md)
+- [Lovefield 103: In-field features](lf103.md)
+- [Lovefield 145: Data-heavy web apps design](lf145.md)
 
 ## How to contribute to this library?
 
@@ -21,4 +21,4 @@ Fukuzawa Yukichi.
 
 Or you can try to create some pull requests and embrace the harsh code review:
 
-* [Developing lovefield-ts](dev.md)
+- [Developing lovefield-ts](dev.md)

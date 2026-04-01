@@ -72,15 +72,15 @@ export class MockDataGenerator {
     };
 
     const employeeSchema = schema.table('Employee');
-    const employees = data.employees.map(obj =>
+    const employees = data.employees.map((obj) =>
       deserialize(employeeSchema, obj)
     );
 
     const jobSchema = schema.table('Job');
-    const jobs = data.jobs.map(obj => deserialize(jobSchema, obj));
+    const jobs = data.jobs.map((obj) => deserialize(jobSchema, obj));
 
     const departmentSchema = schema.table('Department');
-    const departments = data.departments.map(obj =>
+    const departments = data.departments.map((obj) =>
       deserialize(departmentSchema, obj)
     );
 
@@ -174,11 +174,11 @@ export class MockDataGenerator {
   }
 
   exportData(): ExportData {
-    const employeesPayloads = this.sampleEmployees.map(employee =>
+    const employeesPayloads = this.sampleEmployees.map((employee) =>
       employee.toDbPayload()
     );
-    const jobsPayloads = this.sampleJobs.map(job => job.toDbPayload());
-    const departmentsPayloads = this.sampleDepartments.map(department =>
+    const jobsPayloads = this.sampleJobs.map((job) => job.toDbPayload());
+    const departmentsPayloads = this.sampleDepartments.map((department) =>
       department.toDbPayload()
     );
 
@@ -275,7 +275,7 @@ export class MockDataGenerator {
   // Finds the DISTINCT of a given attribute in the Job table.
   private findDistinct<T>(getterFn: (row: Row) => T, rows: Row[]): T[] {
     const valueSet = new Set<T>();
-    rows.forEach(row => valueSet.add(getterFn(row)));
+    rows.forEach((row) => valueSet.add(getterFn(row)));
     return Array.from(valueSet.values());
   }
 
@@ -287,8 +287,8 @@ export class MockDataGenerator {
   private findSelfJoinSalary(): Row[][] {
     const result: Row[][] = [];
 
-    this.sampleJobs.forEach(job1 => {
-      this.sampleJobs.forEach(job2 => {
+    this.sampleJobs.forEach((job1) => {
+      this.sampleJobs.forEach((job2) => {
         if (job1.payload()['minSalary'] === job2.payload()['maxSalary']) {
           result.push([job1, job2]);
         }
@@ -330,7 +330,7 @@ export class MockDataGenerator {
   // Find the association between Jobs and Employees.
   private findEmployeesPerJob(): Map<string, string[]> {
     const employeesPerJob = new Map<string, string[]>();
-    this.sampleEmployees.forEach(employee => {
+    this.sampleEmployees.forEach((employee) => {
       const key = employee.payload()['jobId'] as string;
       const value = employee.payload()['id'] as string;
       if (!employeesPerJob.has(key)) {
@@ -373,8 +373,8 @@ export class MockDataGenerator {
   private findThetaJoinSalaryIds(): string[] {
     const employeeIds: string[] = [];
 
-    this.sampleEmployees.forEach(employee => {
-      this.sampleJobs.forEach(job => {
+    this.sampleEmployees.forEach((employee) => {
+      this.sampleJobs.forEach((job) => {
         if (
           employee.payload()['jobId'] === job.payload()['id'] &&
           (employee.payload()['salary'] as number) >

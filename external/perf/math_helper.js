@@ -36,9 +36,9 @@ export class MathHelper {
     }
     for (i = 1; i < length1 + 1; ++i) {
       for (j = 1; j < length2 + 1; ++j) {
-        arr[i][j] = compare(array1[i - 1], array2[j - 1]) ?
-          arr[i - 1][j - 1] + 1 :
-          Math.max(arr[i - 1][j], arr[i][j - 1]);
+        arr[i][j] = compare(array1[i - 1], array2[j - 1])
+          ? arr[i - 1][j - 1] + 1
+          : Math.max(arr[i - 1][j], arr[i][j - 1]);
       }
     }
 

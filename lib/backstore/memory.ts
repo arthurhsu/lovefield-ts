@@ -35,11 +35,10 @@ export class Memory implements BackStore {
     this.tables = new Map<string, MemoryTable>();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   init(onUpgrade?: (db: RawBackStore) => Promise<void>): Promise<void> {
     // Memory does not uses raw back store, just ignore the onUpgrade function.
     (this.schema.tables() as BaseTable[]).forEach(
-      table => this.initTable(table),
+      (table) => this.initTable(table),
       this
     );
     return Promise.resolve();
@@ -62,19 +61,18 @@ export class Memory implements BackStore {
     // No op.
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   subscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported.
   }
 
   // Unsubscribe current change handler.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   unsubscribe(handler: (diffs: TableDiff[]) => void): void {
     // Not supported.
   }
 
   // Notifies registered observers with table diffs.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   notify(changes: TableDiff[]): void {
     // Not supported.
   }
@@ -100,7 +98,7 @@ export class Memory implements BackStore {
     this.createTable(tableSchema.getName());
 
     if (tableSchema.persistentIndex()) {
-      tableSchema.getIndices().forEach(indexSchema => {
+      tableSchema.getIndices().forEach((indexSchema) => {
         this.createTable(indexSchema.getNormalizedName());
       }, this);
 

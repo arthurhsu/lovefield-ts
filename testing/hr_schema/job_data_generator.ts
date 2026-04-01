@@ -32,7 +32,7 @@ export class JobDataGenerator {
   generate(count: number): Row[] {
     const j = getHrDbSchemaBuilder().getSchema().table('Job');
     const rawData = this.generateRaw(count);
-    return rawData.map(object => j.createRow(object));
+    return rawData.map((object) => j.createRow(object));
   }
 
   private generateRaw(count: number): object[] {

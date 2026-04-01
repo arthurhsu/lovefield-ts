@@ -17,7 +17,6 @@
 import {assert} from 'chai';
 import {MapSet} from '../../lib/structs/map_set';
 
-
 describe('MapSet', () => {
   function getSampleMapSet(): MapSet<number, number> {
     const mapSet = new MapSet<number, number>();

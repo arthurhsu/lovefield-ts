@@ -27,7 +27,10 @@ export class DatabaseSchemaImpl implements DatabaseSchema {
   private _info: Info;
   private tableMap: Map<string, Table>;
 
-  constructor(readonly _name: string, readonly _version: number) {
+  constructor(
+    readonly _name: string,
+    readonly _version: number
+  ) {
     this.tableMap = new Map<string, Table>();
     this._pragma = {enableBundledMode: false};
     // Lazy initialization

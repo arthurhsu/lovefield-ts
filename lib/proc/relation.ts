@@ -49,9 +49,9 @@ export class Relation {
 
     // Creating a map [entry.id --> entry] for each relation, and at the same
     // time populating the allEntries array.
-    const relationMaps = relations.map(relation => {
+    const relationMaps = relations.map((relation) => {
       const map = new Map<number, RelationEntry>();
-      relation.entries.forEach(entry => {
+      relation.entries.forEach((entry) => {
         allEntries[entryCounter++] = entry;
         map.set(entry.id, entry);
       });
@@ -59,8 +59,8 @@ export class Relation {
     });
 
     const intersection = new Map<number, RelationEntry>();
-    allEntries.forEach(entry => {
-      const existsInAll = relationMaps.every(relation =>
+    allEntries.forEach((entry) => {
+      const existsInAll = relationMaps.every((relation) =>
         relation.has(entry.id)
       );
       if (existsInAll) {
@@ -81,9 +81,9 @@ export class Relation {
     }
 
     const union = new Map<number, RelationEntry>();
-    relations.forEach(relation => {
+    relations.forEach((relation) => {
       Relation.assertCompatible(relations[0], relation);
-      relation.entries.forEach(entry => union.set(entry.id, entry));
+      relation.entries.forEach((entry) => union.set(entry.id, entry));
     });
 
     return new Relation(
@@ -95,7 +95,7 @@ export class Relation {
   // Creates an lf.proc.Relation instance from a set of lf.Row instances.
   static fromRows(rows: Row[], tables: string[]): Relation {
     const isPrefixApplied = tables.length > 1;
-    const entries = rows.map(row => new RelationEntry(row, isPrefixApplied));
+    const entries = rows.map((row) => new RelationEntry(row, isPrefixApplied));
     return new Relation(entries, tables);
   }
 
@@ -118,7 +118,10 @@ export class Relation {
   // 'COUNT(*)' or 'MIN(Employee.salary)'.
   private aggregationResults: Map<string, AggregationResult>;
 
-  constructor(readonly entries: RelationEntry[], tables: string[]) {
+  constructor(
+    readonly entries: RelationEntry[],
+    tables: string[]
+  ) {
     this.tables = new Set(tables);
     this.aggregationResults = null as unknown as Map<string, AggregationResult>;
   }
@@ -140,11 +143,11 @@ export class Relation {
   }
 
   getPayloads(): object[] {
-    return this.entries.map(entry => entry.row.payload());
+    return this.entries.map((entry) => entry.row.payload());
   }
 
   getRowIds(): number[] {
-    return this.entries.map(entry => entry.row.id());
+    return this.entries.map((entry) => entry.row.id());
   }
 
   // Adds an aggregated result to this relation.

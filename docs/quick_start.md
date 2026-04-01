@@ -49,24 +49,24 @@ class TodoDemo {
 
 window.onload = () => {
   // window.onload event hook.
-}
+};
 ```
 
 Lovefield is a relational database. Relational database treats each entry of
-data as *row*. Inside the row there are data fields called *columns*. Data
+data as _row_. Inside the row there are data fields called _columns_. Data
 corresponding to a specific column always has the same data type.
 
-When the rows of the same columns are grouped together, they are called *table*.
+When the rows of the same columns are grouped together, they are called _table_.
 One can think that this is the sheet in any spreadsheet program. The definition
-of how a table "looked like" is called *schema*. A schema defines:
+of how a table "looked like" is called _schema_. A schema defines:
 
-* All columns in a table, i.e. their *name* and *type*
-* Constraints of a table
-  * Can a column be null (a.k.a nullable)?
-  * Will all values in this column be unique (a.k.a. uniqueness)?
-* Indices of a table to accelerate search
+- All columns in a table, i.e. their _name_ and _type_
+- Constraints of a table
+  - Can a column be null (a.k.a nullable)?
+  - Will all values in this column be unique (a.k.a. uniqueness)?
+- Indices of a table to accelerate search
 
-A *database* is a collection of tables. So, a *database schema* means the
+A _database_ is a collection of tables. So, a _database schema_ means the
 collection of all table schemas belonging to this database.
 
 In this demo, our database is defined as following:
@@ -103,23 +103,23 @@ The code above defines a database named `todo` and it has one table `Item`.
 Inside `Item`, each row will have four fields `id`, `description`, `deadline`,
 and `done`. There are two indices for this table:
 
-* Primary key on column `id`.
-* Additional index on column `deadline`.
+- Primary key on column `id`.
+- Additional index on column `deadline`.
 
-A *primary key* means that this field is *unique* and serves as the main index
+A _primary key_ means that this field is _unique_ and serves as the main index
 of this table. This implies
 
-* Every row will have a unique value for this column.
-* Using this column to perform search in a table will be fast.
+- Every row will have a unique value for this column.
+- Using this column to perform search in a table will be fast.
 
-Once the schema is defined, the database still needs to be *instantiated* to
-start storing data and accept *queries*. This is done by invoking the `connect`
+Once the schema is defined, the database still needs to be _instantiated_ to
+start storing data and accept _queries_. This is done by invoking the `connect`
 method of the builder:
 
 ```javascript
 // Instantiate the database instance, promise-based.
 return schemaBuilder.connect({
-  storeType: lf.DataStoreType.MEMORY
+  storeType: lf.DataStoreType.MEMORY,
 });
 ```
 
@@ -130,12 +130,12 @@ demanding quite some CPU and I/O cycles.
 
 If the database is brand new, Lovefield will create it using the schema. If the
 database already exists, Lovefield will attempt to identify the instance using
-database name specified in the schema, and *connect* to it, that's why this
+database name specified in the schema, and _connect_ to it, that's why this
 method is named `connect()`.
 
-Currently the schema persistence is not implemented yet, therefore you *MUST*
+Currently the schema persistence is not implemented yet, therefore you _MUST_
 define schema every time before being able to connect to an existing database.
-The schema *MUST be exactly the same* as the persisted database.
+The schema _MUST be exactly the same_ as the persisted database.
 
 After getting some data from the server, let's persist it into the database:
 
@@ -144,12 +144,12 @@ After getting some data from the server, let's persist it into the database:
 this.item = this.db.getSchema().table('Item');
 
 // Create rows to be inserted into database.
-const rows = data.map(d =>
+const rows = data.map((d) =>
   this.item.createRow({
     id: d.id,
     description: d.description,
     deadline: new Date(d.deadline),
-    done: d.done
+    done: d.done,
   })
 );
 
@@ -177,14 +177,14 @@ this.db
   .exec();
 ```
 
-In this simple example, the returned *rows* are actually array of JavaScript
+In this simple example, the returned _rows_ are actually array of JavaScript
 objects, within each object there are fields matching the column name. Therefore
 you can consume them directly like this:
 
 ```javascript
 const dl = document.getElementById('data');
 let innerHTML = '';
-todoItems.forEach(t => {
+todoItems.forEach((t) => {
   /*
     t looks like:
     {
@@ -195,8 +195,7 @@ todoItems.forEach(t => {
     }
   */
   innerHTML +=
-    `<dt>${t.description}</dt>` +
-    `<dd>${t.deadline.toLocaleString()}</dd>\n`
+    `<dt>${t.description}</dt>` + `<dd>${t.deadline.toLocaleString()}</dd>\n`;
 });
 dl.innerHTML = innerHTML;
 ```
@@ -222,8 +221,10 @@ yet. Here's a quick hack to still use Lovefield-TS in your projects:
   <script type="text/javascript">
     var exports = {};
   </script>
-  <script type="text/javascript" src="./node_modules/lovefield-ts/dist/es5/lf.js">
-  </script>
+  <script
+    type="text/javascript"
+    src="./node_modules/lovefield-ts/dist/es5/lf.js"
+  ></script>
   <!-- your script continues here -->
 </body>
 ```
@@ -231,7 +232,7 @@ yet. Here's a quick hack to still use Lovefield-TS in your projects:
 ## Node.js users
 
 The demo can be found at `demo/node`. Given Node.js does not provide
-transactional storage yet, all Lovefield databases are *in-memory only*.
+transactional storage yet, all Lovefield databases are _in-memory only_.
 
 To start using Lovefield-TS, run the `npm` command:
 

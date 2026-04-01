@@ -65,7 +65,7 @@ export class Journal {
 
   constructor(global: Global, txScope: Set<Table>) {
     this.scope = new Map<string, Table>();
-    txScope.forEach(tableSchema =>
+    txScope.forEach((tableSchema) =>
       this.scope.set(tableSchema.getName(), tableSchema)
     );
 
@@ -87,16 +87,16 @@ export class Journal {
   // TODO(dpapad): Indices currently can't provide a diff, therefore the entire
   // index is flushed into disk every time, even if only one leaf-node changed.
   getIndexDiff(): RuntimeIndex[] {
-    const tableSchemas = Array.from(this.tableDiffs.keys()).map(tableName =>
+    const tableSchemas = Array.from(this.tableDiffs.keys()).map((tableName) =>
       this.scope.get(tableName)
     );
 
     const indices: RuntimeIndex[] = [];
-    tableSchemas.forEach(tblSchema => {
+    tableSchemas.forEach((tblSchema) => {
       const tableSchema = tblSchema as BaseTable;
       if (tableSchema.persistentIndex()) {
         const tableIndices = tableSchema.getIndices();
-        tableIndices.forEach(indexSchema => {
+        tableIndices.forEach((indexSchema) => {
           indices.push(
             this.indexStore.get(indexSchema.getNormalizedName()) as RuntimeIndex
           );
@@ -124,7 +124,7 @@ export class Journal {
       ConstraintTiming.IMMEDIATE
     );
 
-    rows.forEach(row => {
+    rows.forEach((row) => {
       this.modifyRow(table, [null /* rowBefore */, row /* rowNow */]);
     }, this);
   }
@@ -135,7 +135,7 @@ export class Journal {
     this.checkScope(table);
     this.constraintChecker.checkNotNullable(table, rows);
 
-    const modifications: Modification[] = rows.map(row => {
+    const modifications: Modification[] = rows.map((row) => {
       const rowBefore = this.cache.get(row.id());
       return [rowBefore /* rowBefore */, row /* rowNow */] as Modification;
     }, this);
@@ -146,7 +146,9 @@ export class Journal {
       modifications,
       ConstraintTiming.IMMEDIATE
     );
-    modifications.forEach(modification => this.modifyRow(table, modification));
+    modifications.forEach((modification) =>
+      this.modifyRow(table, modification)
+    );
   }
 
   insertOrReplace(t: Table, rows: Row[]): void {
@@ -155,7 +157,7 @@ export class Journal {
     this.checkScope(table);
     this.constraintChecker.checkNotNullable(table, rows);
 
-    rows.forEach(rowNow => {
+    rows.forEach((rowNow) => {
       let rowBefore = null;
 
       const existingRowId = this.constraintChecker.findExistingRowIdInPkIndex(
@@ -196,13 +198,13 @@ export class Journal {
       ConstraintTiming.IMMEDIATE
     );
 
-    rows.forEach(row => {
+    rows.forEach((row) => {
       this.modifyRow(table, [row /* rowBefore */, null /* rowNow */]);
     }, this);
   }
 
   checkDeferredConstraints(): void {
-    this.tableDiffs.forEach(tableDiff => {
+    this.tableDiffs.forEach((tableDiff) => {
       const table = this.scope.get(tableDiff.getName()) as BaseTable;
       this.constraintChecker.checkForeignKeysForInsert(
         table,
@@ -233,7 +235,7 @@ export class Journal {
   rollback(): void {
     assert(!this.terminated, 'Attempted to rollback a terminated journal.');
 
-    const reverseDiffs = Array.from(this.tableDiffs.values()).map(tableDiff =>
+    const reverseDiffs = Array.from(this.tableDiffs.values()).map((tableDiff) =>
       tableDiff.getReverse()
     );
     this.inMemoryUpdater.update(reverseDiffs);
@@ -308,9 +310,9 @@ export class Journal {
       modifications,
       foreignKeySpecs
     );
-    cascadedUpdates.keys().forEach(rowId => {
+    cascadedUpdates.keys().forEach((rowId) => {
       const updates = cascadedUpdates.get(rowId) as CascadeUpdateItem[];
-      updates.forEach(update => {
+      updates.forEach((update) => {
         const tbl = this.schema.table(update.fkSpec.childTable) as BaseTable;
         const rowBefore = this.cache.get(rowId) as Row;
         // TODO(dpapad): Explore faster ways to clone an lf.Row.
@@ -342,9 +344,9 @@ export class Journal {
     );
     const cascadeRowIds = cascadeDeletion.rowIdsPerTable;
 
-    cascadeDeletion.tableOrder.forEach(tableName => {
+    cascadeDeletion.tableOrder.forEach((tableName) => {
       const tbl = this.schema.table(tableName) as BaseTable;
-      const rows = (cascadeRowIds.get(tableName) as number[]).map(rowId => {
+      const rows = (cascadeRowIds.get(tableName) as number[]).map((rowId) => {
         return this.cache.get(rowId) as Row;
       }, this);
       this.constraintChecker.checkForeignKeysForDelete(
@@ -352,7 +354,7 @@ export class Journal {
         rows,
         ConstraintTiming.IMMEDIATE
       );
-      rows.forEach(row => {
+      rows.forEach((row) => {
         this.modifyRow(tbl, [row /* rowBefore */, null /* rowNow */]);
       }, this);
     }, this);
