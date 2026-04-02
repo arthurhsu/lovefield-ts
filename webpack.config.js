@@ -17,7 +17,6 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   externals: {
-    chai: 'chai',
   },
   output: {
     filename: 'test_bundle.js',

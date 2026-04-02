@@ -8,7 +8,6 @@
   <body>
     <div id="mocha"></div>
     <script src="../../node_modules/mocha/mocha.js"></script>
-    <script src="../../node_modules/chai/chai.js"></script>
     <script>
       mocha.setup('bdd');
       // Global mocha results collector
@@ -24,10 +23,17 @@
     <script>
       const runner = mocha.run();
       runner.on('test end', (test) => {
-        window.mochaResults.tests.push({
+        const testResult = {
           title: test.fullTitle(),
           state: test.state,
-        });
+        };
+        if (test.state === 'failed') {
+          testResult.err = {
+            message: test.err.message,
+            stack: test.err.stack,
+          };
+        }
+        window.mochaResults.tests.push(testResult);
       });
       runner.on('end', () => {
         window.mochaResults.finished = true;

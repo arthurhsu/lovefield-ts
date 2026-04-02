@@ -45,10 +45,22 @@ async function runTests() {
       )
       .then(() => page.evaluate(() => (window as any).mochaResults));
 
-    const {failures, passes} = results as any;
+    const {failures, passes, tests} = results as any;
     console.log(`Tests finished: ${passes} passed, ${failures} failed.`);
 
     if (failures > 0) {
+      console.log('\nFailing tests:');
+      tests.forEach((test: any) => {
+        if (test.state === 'failed') {
+          console.log(`\n✖ ${test.title}`);
+          if (test.err) {
+            console.log(`  ${test.err.message}`);
+            if (test.err.stack) {
+              console.log(`  ${test.err.stack}`);
+            }
+          }
+        }
+      });
       process.exit(1);
     }
   } catch (error) {

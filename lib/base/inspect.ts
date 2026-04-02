@@ -71,9 +71,12 @@ export class Inspector {
     global.listServices().forEach((service) => {
       if (service.substring(0, 3) === 'ns_') {
         const dbName = service.substring(3);
-        dbList[dbName] = (Inspector.getGlobal(dbName) as Global)
-          .getService(Service.SCHEMA)
-          .version();
+        const namespacedGlobal = Inspector.getGlobal(dbName);
+        if (namespacedGlobal && namespacedGlobal.isRegistered(Service.SCHEMA)) {
+          dbList[dbName] = namespacedGlobal
+            .getService(Service.SCHEMA)
+            .version();
+        }
       }
     });
     return Inspector.toString(dbList);

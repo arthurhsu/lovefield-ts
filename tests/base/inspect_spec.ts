@@ -17,6 +17,7 @@
 import {assert} from 'chai';
 
 import {DataStoreType, Type} from '../../lib/base/enum';
+import {Global} from '../../lib/base/global';
 import {Inspector} from '../../lib/base/inspect';
 import {RuntimeDatabase} from '../../lib/proc/runtime_database';
 import {Builder} from '../../lib/schema/builder';
@@ -24,6 +25,10 @@ import {schema} from '../../lib/schema/schema';
 
 describe('Inspect', () => {
   let expectedDate: Date;
+
+  before(() => {
+    Global.get().clear();
+  });
 
   function createSchemaBuilders(): Builder[] {
     const dsHr = schema.create('hr', 2);
