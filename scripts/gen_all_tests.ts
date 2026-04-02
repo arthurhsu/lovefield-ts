@@ -7,7 +7,7 @@ function genAllTests() {
   const content = files
     .filter(
       (f) =>
-        !f.endsWith('selenium_runner.ts') &&
+        !f.endsWith('playwright_runner.ts') &&
         !f.includes('tests/harness/') &&
         !f.endsWith('all_tests.ts')
     )

@@ -22,7 +22,7 @@ Use `npm run` to see available commands or refer to the list below:
 
 ### Testing Tasks
 
-- `npm run test`: Runs the full test suite in a headless Chrome browser via Selenium.
+- `npm run test`: Runs the full test suite in a headless Chrome browser via Playwright.
 - `npm run test:node`: Runs the subset of tests that are compatible with Node.js via Mocha.
 - `npm run test:prepare`: Generates the test bundle (`tests/harness/test_bundle.js`) required for browser testing.
 

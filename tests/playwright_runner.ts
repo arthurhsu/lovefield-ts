@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 The Lovefield Project Authors. All Rights Reserved.
+ * Copyright 2026 The Lovefield Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,39 +14,36 @@
  * limitations under the License.
  */
 
-import 'chromedriver';
+import {chromium} from 'playwright';
 import * as path from 'path';
-import {Builder, WebDriver} from 'selenium-webdriver';
-import {Options} from 'selenium-webdriver/chrome';
 
-// A simple Selenium runner that opens the test harness HTML and waits for Mocha results.
+// A simple Playwright runner that opens the test harness HTML and waits for Mocha results.
 async function runTests() {
-  const options = new Options();
-  options.addArguments('--headless');
-  options.addArguments('--disable-gpu');
-  options.addArguments('--no-sandbox');
-  options.addArguments('--disable-dev-shm-usage');
-
-  const driver: WebDriver = await new Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage'],
+  });
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
   try {
     const harnessPath =
       'file://' + path.resolve(__dirname, 'harness/test_harness.html');
     console.log('Opening test harness:', harnessPath);
-    await driver.get(harnessPath);
+    await page.goto(harnessPath);
 
     console.log('Waiting for tests to finish...');
+
     // Poll window.mochaResults until finished is true
-    const results = await driver.wait(async () => {
-      const res = await driver.executeScript('return window.mochaResults;');
-      if (res && (res as any).finished) {
-        return res;
-      }
-      return false;
-    }, 60000); // 60 seconds timeout
+    const results = await page
+      .waitForFunction(
+        () => {
+          const res = (window as any).mochaResults;
+          return res && res.finished;
+        },
+        {timeout: 60000}
+      )
+      .then(() => page.evaluate(() => (window as any).mochaResults));
 
     const {failures, passes} = results as any;
     console.log(`Tests finished: ${passes} passed, ${failures} failed.`);
@@ -58,7 +55,7 @@ async function runTests() {
     console.error('An error occurred during test execution:', error);
     process.exit(1);
   } finally {
-    await driver.quit();
+    await browser.close();
   }
 }
 
