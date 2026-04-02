@@ -8,9 +8,9 @@
     "server": "http-server"
   },
   "dependencies": {
-    "lovefield-ts": "^0.7.0"
+    "lovefield-ts": "^0.8.0"
   },
   "devDependencies": {
-    "http-server": "^0.12.1"
+    "http-server": "^14.1.1"
   }
 }

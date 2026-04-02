@@ -17,7 +17,7 @@
 // This is a simple demo showing how to use Lovefield in a web page.
 // Error handlings are deliberately omitted to make the flow clear.
 
-import * as lf from './node_modules/lovefield-ts/dist/es6/lf.js';
+import * as lf from './node_modules/lovefield-ts/dist/lovefield.esm.js';
 
 class TodoDemo {
   createDatabase() {
