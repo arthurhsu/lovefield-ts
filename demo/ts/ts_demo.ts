@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 The Lovefield Project Authors. All Rights Reserved.
+ * Copyright 2026 The Lovefield Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-// This is a simple demo showing how to use Lovefield in node.js.
-// Error handlings are deliberately omitted to make the flow clear.
+// This is a simple demo showing how to use Lovefield in TypeScript.
 
-import * as lf from './node_modules/lovefield-ts/dist/es6/lf';
+import * as lf from 'lovefield-ts';
 
 interface RawDataType {
   id: number;
@@ -34,12 +33,12 @@ interface DataType {
 }
 
 class TodoDemo {
-  private db: lf.DatabaseConnection;
-  private item: lf.Table;
+  private db!: lf.DatabaseConnection;
+  private item!: lf.Table;
 
-  constructor(readonly body: HTMLElement) {}
+  constructor() {}
 
-  private createDatabase(): Promise<lf.DatabaseConnection> {
+  private async createDatabase(): Promise<lf.DatabaseConnection> {
     const schemaBuilder = lf.schema.create('todo', 1);
 
     schemaBuilder
@@ -54,29 +53,15 @@ class TodoDemo {
     return schemaBuilder.connect();
   }
 
-  private fetchData(): Promise<RawDataType[]> {
-    const parseXHRResult = (xhr: XMLHttpRequest): RawDataType[] => {
-      if (xhr.status === 200) {
-        // OK
-        return JSON.parse(xhr.responseText) as RawDataType[];
-      }
-      throw `ERROR: Received: ${xhr.responseText}`;
-    };
-
-    return new Promise<RawDataType[]>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'ts_demo.json');
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          resolve(parseXHRResult(xhr));
-        }
-      };
-      xhr.onerror = reject;
-      xhr.send();
-    });
+  private async fetchData(): Promise<RawDataType[]> {
+    const response = await fetch('ts_demo.json');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return (await response.json()) as RawDataType[];
   }
 
-  private insertData(data: RawDataType[]): Promise<unknown> {
+  private async insertData(data: RawDataType[]): Promise<void> {
     this.item = this.db.getSchema().table('Item');
     const rows = data.map((d) =>
       this.item.createRow({
@@ -86,32 +71,27 @@ class TodoDemo {
         done: d.done,
       })
     );
-    return this.db.insertOrReplace().into(this.item).values(rows).exec();
+    await this.db.insertOrReplace().into(this.item).values(rows).exec();
   }
 
-  private selectTodoItems(): Promise<DataType[]> {
-    return this.db
+  private async selectTodoItems(): Promise<DataType[]> {
+    return (await this.db
       .select()
       .from(this.item)
       .where(this.item.col('done').eq(false))
       .orderBy(this.item.col('deadline'))
-      .exec() as Promise<DataType[]>;
+      .exec()) as DataType[];
   }
 
-  serve() {
-    this.createDatabase()
-      .then((db) => {
-        this.db = db;
-        return this.fetchData();
-      })
-      .then((data) => {
-        return this.insertData(data);
-      })
-      .then(() => {
-        return this.selectTodoItems();
-      })
-      .then((todoItems) => {
-        const dl = document.getElementById('data');
+  async serve() {
+    try {
+      this.db = await this.createDatabase();
+      const data = await this.fetchData();
+      await this.insertData(data);
+      const todoItems = await this.selectTodoItems();
+
+      const dl = document.getElementById('data');
+      if (dl) {
         let innerHTML = '';
         todoItems.forEach((t) => {
           innerHTML +=
@@ -119,10 +99,13 @@ class TodoDemo {
             `<dd>${t.deadline.toLocaleString()}</dd>\n`;
         });
         dl.innerHTML = innerHTML;
-      });
+      }
+    } catch (e) {
+      console.error('An error occurred during TodoDemo execution:', e);
+    }
   }
 }
 
-window.onload = () => {
-  new TodoDemo(document.body).serve();
-};
+window.addEventListener('DOMContentLoaded', () => {
+  new TodoDemo().serve();
+});

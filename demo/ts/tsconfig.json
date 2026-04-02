@@ -3,17 +3,19 @@
   "compilerOptions": {
     "allowJs": false,
     "allowUnreachableCode": false,
-    "lib": ["dom", "es6"],
-    "module": "es6",
+    "lib": ["dom", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "newLine": "lf",
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "rootDir": ".",
     "removeComments": true,
-    "sourceMap": false,
-    "target": "es6",
+    "sourceMap": true,
+    "target": "esnext",
+    "strict": true,
     "types": ["node", "websql"]
   }
 }
