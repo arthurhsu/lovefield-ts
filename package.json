@@ -1,8 +1,10 @@
 {
   "name": "lovefield-ts",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Lovefield-TS: a relational database in TypeScript",
   "main": "index.js",
+  "module": "dist/lovefield.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf out dist coverage tests/all_tests.ts tests/harness/test_bundle.js tests/harness/test_bundle.js.map",
     "build": "tsc -p tsconfig.json",
@@ -14,7 +16,8 @@
     "lint": "eslint .",
     "fix": "eslint . --fix",
     "format": "prettier --write .",
-    "pre-commit": "npm run build && npm run lint && npm run format"
+    "pre-commit": "npm run build && npm run lint && npm run format",
+    "prepublishOnly": "npm run clean && npm run build:dist"
   },
   "files": [
     "index.js",
