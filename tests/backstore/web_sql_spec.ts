@@ -55,9 +55,9 @@ describe('WebSql', () => {
     global.registerService(Service.SCHEMA, dbSchema);
   });
 
-  it('SCUD', () => {
+  it('SCUD', async () => {
     if (!capability.webSql) {
-      return Promise.resolve();
+      return;
     }
 
     // The dbSchema name is on purpose padded with a timestamp to workaround the
@@ -66,13 +66,13 @@ describe('WebSql', () => {
     const db = new WebSql(Global.get(), dbSchema);
     const scudTester = new ScudTester(db, Global.get());
 
-    return scudTester.run();
+    await scudTester.run();
   });
 
   // Tests scanRowId() for the case where all tables are empty.
   it('rowId_Empty', async () => {
     if (!capability.webSql) {
-      return Promise.resolve();
+      return;
     }
 
     await schema.create(`foo${Date.now()}`, 1).connect({
@@ -91,7 +91,7 @@ describe('WebSql', () => {
   // They must run in the given order.
   it('addRow', async () => {
     if (!capability.webSql) {
-      return Promise.resolve();
+      return;
     }
 
     const db = await getSchemaBuilder().connect({
@@ -112,13 +112,13 @@ describe('WebSql', () => {
     assert.equal(2, Row.getNextId());
   });
 
-  it('persistentIndex', () => {
+  it('persistentIndex', async () => {
     if (!capability.webSql) {
-      return Promise.resolve();
+      return;
     }
 
     const builder = getMockSchemaBuilder(`foo${Date.now()}`, true);
-    return builder.connect({storeType: DataStoreType.WEB_SQL});
+    await builder.connect({storeType: DataStoreType.WEB_SQL});
   });
 
   it('reservedWordAsTableName', async () => {

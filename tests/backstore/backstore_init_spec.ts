@@ -31,18 +31,18 @@ describe('BackStoreInit', () => {
     return;
   }
 
-  it('init_IndexedDB_NonBundled', () => {
+  it('init_IndexedDB_NonBundled', async () => {
     const builder = getHrDbSchemaBuilder();
-    return checkInit_IndexedDB(builder);
+    await checkInit_IndexedDB(builder);
   });
 
-  it('init_IndexedDB_Bundled', () => {
+  it('init_IndexedDB_Bundled', async () => {
     const builder = getHrDbSchemaBuilder();
     builder.setPragma({enableBundledMode: true});
     const cache = new DefaultCache(builder.getSchema());
     builder.getGlobal().registerService(Service.CACHE, cache);
 
-    return checkInit_IndexedDB(builder);
+    await checkInit_IndexedDB(builder);
   });
 
   // Initializes a DB with the given schema and performs assertions on the

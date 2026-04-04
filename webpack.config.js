@@ -16,8 +16,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  externals: {
-  },
+  externals: {},
   output: {
     filename: 'test_bundle.js',
     path: path.resolve(__dirname, 'tests/harness'),

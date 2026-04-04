@@ -40,7 +40,7 @@ describe('MockStore', () => {
   let cache: Cache;
   let schema: DatabaseSchema;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const indexStore = new MemoryIndexStore();
     schema = getMockSchemaBuilder().getSchema();
     cache = new DefaultCache(schema);
@@ -53,7 +53,7 @@ describe('MockStore', () => {
     actualStore = new ObservableStore(schema);
     mockStore = new MockStore(actualStore);
 
-    return mockStore.init();
+    await mockStore.init();
   });
 
   afterEach(() => Global.get().clear());
@@ -72,9 +72,9 @@ describe('MockStore', () => {
     assert.throws(() => mockStore.getTableInternal('nonExistingTableName'));
   });
 
-  it('SCUD', () => {
+  it('SCUD', async () => {
     const scudTester = new ScudTester(mockStore, Global.get());
-    return scudTester.run();
+    await scudTester.run();
   });
 
   // Tests that when a backstore change is submitted via the MockStore

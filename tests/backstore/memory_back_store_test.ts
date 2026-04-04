@@ -29,7 +29,7 @@ describe('MemoryStore', () => {
   let cache: DefaultCache;
   let schema: DatabaseSchema;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const indexStore = new MemoryIndexStore();
     schema = getMockSchemaBuilder().getSchema();
     cache = new DefaultCache(schema);
@@ -41,7 +41,7 @@ describe('MemoryStore', () => {
 
     db = new Memory(schema);
 
-    return db.init();
+    await db.init();
   });
 
   // Tests that the backstore.Memory is instantiated according to the schema
@@ -58,8 +58,8 @@ describe('MemoryStore', () => {
     assert.throw(db.getTableInternal.bind(db, 'nonExistingTableName'));
   });
 
-  it('SCUD', () => {
+  it('SCUD', async () => {
     const scudTester = new ScudTester(db, Global.get());
-    return scudTester.run();
+    await scudTester.run();
   });
 });

@@ -23,10 +23,10 @@ describe('LocalStorageTable', () => {
     return;
   }
 
-  it('LocalStorageTable', () => {
+  it('LocalStorageTable', async () => {
     const tester = new TableTester(() => {
       return new LocalStorageTable('foo.bar');
     });
-    return tester.run();
+    await tester.run();
   });
 });

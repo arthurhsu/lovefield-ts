@@ -129,7 +129,7 @@ describe('ExternalChangeObserver', () => {
 
   // Tests that Lovefield observers are firing as a result of an external
   // backstore change.
-  it('dbObserversFired', () => {
+  it('dbObserversFired', async () => {
     const resolver = new Resolver<void>();
 
     const query = db.select().from(j);
@@ -142,12 +142,12 @@ describe('ExternalChangeObserver', () => {
     });
 
     simulateInsertionModification(j, sampleJobs);
-    return resolver.promise;
+    await resolver.promise;
   });
 
   // Ensures that even in the case of an external change, Lovefield observers
   // are fired after every READ_WRITE transaction.
-  it('order_Observer_ExternalChange', () => {
+  it('order_Observer_ExternalChange', async () => {
     const resolver = new Resolver<void>();
 
     const sampleJobs1 = sampleJobs.slice(0, sampleJobs.length / 2 - 1);
@@ -171,11 +171,11 @@ describe('ExternalChangeObserver', () => {
       db.insert().into(j).values(sampleJobs1).exec(),
       simulateInsertionModification(j, sampleJobs2),
     ]);
-    return resolver.promise;
+    await resolver.promise;
   });
 
   // Simulates an external insertion/modification change.
-  function simulateInsertionModification(
+  async function simulateInsertionModification(
     tableSchema: Table,
     rows: Row[]
   ): Promise<unknown> {
@@ -194,7 +194,10 @@ describe('ExternalChangeObserver', () => {
   }
 
   // Simulates an external deletion change.
-  function simulateDeletion(tableSchema: Table, rows: Row[]): Promise<unknown> {
+  async function simulateDeletion(
+    tableSchema: Table,
+    rows: Row[]
+  ): Promise<unknown> {
     const tx = mockStore.createTx(
       TransactionType.READ_WRITE,
       [tableSchema],

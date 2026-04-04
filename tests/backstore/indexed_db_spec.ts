@@ -62,7 +62,7 @@ test('IndexedDB', () => {
     setUpEnv();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     sandbox.restore();
     if (db) {
       // Clearing all tables.
@@ -82,29 +82,28 @@ test('IndexedDB', () => {
         return tx.commit();
       });
 
-      return Promise.all(promises);
+      await Promise.all(promises);
     }
-    return Promise.resolve();
   });
 
   function createJournal(tables: BaseTable[]): Journal {
     return new Journal(Global.get(), new Set<BaseTable>(tables));
   }
 
-  it('SCUD', () => {
+  it('SCUD', async () => {
     db = new IndexedDB(Global.get(), schema);
     const scudTester = new ScudTester(db, Global.get());
 
-    return scudTester.run();
+    await scudTester.run();
   });
 
-  it('SCUD_Bundled', () => {
+  it('SCUD_Bundled', async () => {
     schema.setName(schema.name() + '_bundled');
     schema.setBundledMode(true);
     db = new IndexedDB(Global.get(), schema);
     const scudTester = new ScudTester(db, Global.get());
 
-    return scudTester.run();
+    await scudTester.run();
   });
 
   it('twoTableInserts_Bundled', async () => {

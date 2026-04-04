@@ -36,7 +36,7 @@ describe('LocalStorage', () => {
     return; // skip this test.
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const indexStore = new MemoryIndexStore();
     schema = getMockSchemaBuilder().getSchema();
     cache = new DefaultCache(schema);
@@ -49,7 +49,7 @@ describe('LocalStorage', () => {
     window.localStorage.clear();
     db = new LocalStorage(schema);
 
-    return db.init();
+    await db.init();
   });
 
   // Tests that the backstore.Memory is instantiated according to the schema
@@ -65,13 +65,13 @@ describe('LocalStorage', () => {
     assert.throws(() => db.getTableInternal('nonExistingTableName'));
   });
 
-  it('SCUD', () => {
+  it('SCUD', async () => {
     const scudTester = new ScudTester(db, Global.get(), () => {
       const newDb = new LocalStorage(schema);
       newDb.init();
       return newDb;
     });
 
-    return scudTester.run();
+    await scudTester.run();
   });
 });

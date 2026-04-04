@@ -76,16 +76,15 @@ test('IndexedDBRawBackStore', () => {
 
   // Tests that onUpgrade function is still called with version 0 for a new DB
   // instance.
-  it('newDBInstance', () => {
+  it('newDBInstance', async () => {
     const onUpgrade = sinon.spy((rawDb: RawBackStore) => {
       assert.equal(0, rawDb.getVersion());
       return Promise.resolve();
     });
 
     const db = new IndexedDB(builder1.getGlobal(), builder1.getSchema());
-    return db.init(onUpgrade).then(() => {
-      assert.equal(1, onUpgrade.callCount);
-    });
+    await db.init(onUpgrade);
+    assert.equal(1, onUpgrade.callCount);
   });
 
   function dumpDB<T>(
@@ -165,35 +164,28 @@ test('IndexedDBRawBackStore', () => {
     });
   }
 
-  it('addTableColumn', () => {
+  it('addTableColumn', async () => {
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
     const date = new Date();
 
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
-      })
-      .then((newDb) => {
-        return dumpTable(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        assert.equal(date.getTime(), results[0].payload()['dob']);
-        assert.equal(date.getTime(), results[1].payload()['dob']);
-      });
+    const rawDb = await db.init();
+    await prepareTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init((raw: RawBackStore) =>
+      upgradeAddTableColumn(date, raw)
+    );
+    const results = await dumpTable(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    assert.equal(date.getTime(), results[0].payload()['dob']);
+    assert.equal(date.getTime(), results[1].payload()['dob']);
   });
 
-  it('addTableColumn_Bundled', () => {
+  it('addTableColumn_Bundled', async () => {
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
@@ -202,29 +194,20 @@ test('IndexedDBRawBackStore', () => {
     );
     const date = new Date();
 
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareBundledTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init((raw: RawBackStore) => upgradeAddTableColumn(date, raw));
-      })
-      .then((newDb) => {
-        return dumpTableBundled(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
-        const newRow2 = Row.deserialize(
-          results[1].getPayload()[MAGIC] as RawRow
-        );
-        assert.equal(date.getTime(), newRow.payload()['dob']);
-        assert.equal(date.getTime(), newRow2.payload()['dob']);
-      });
+    const rawDb = await db.init();
+    await prepareBundledTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init((raw: RawBackStore) =>
+      upgradeAddTableColumn(date, raw)
+    );
+    const results = await dumpTableBundled(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+    const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC] as RawRow);
+    assert.equal(date.getTime(), newRow.payload()['dob']);
+    assert.equal(date.getTime(), newRow2.payload()['dob']);
   });
 
   function upgradeDropTableColumn(dbInterface: RawBackStore): Promise<void> {
@@ -233,62 +216,42 @@ test('IndexedDBRawBackStore', () => {
     return db.dropTableColumn('tableA_', 'name');
   }
 
-  it('dropTableColumn', () => {
+  it('dropTableColumn', async () => {
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeDropTableColumn);
-      })
-      .then((newDb) => {
-        return dumpTable(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
-        assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
-      });
+    const rawDb = await db.init();
+    await prepareTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init(upgradeDropTableColumn);
+    const results = await dumpTable(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
+    assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
   });
 
-  it('dropTableColumn_Bundled', () => {
+  it('dropTableColumn_Bundled', async () => {
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareBundledTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeDropTableColumn);
-      })
-      .then((newDb) => {
-        return dumpTableBundled(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
-        const newRow2 = Row.deserialize(
-          results[1].getPayload()[MAGIC] as RawRow
-        );
-        assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
-        assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
-      });
+    const rawDb = await db.init();
+    await prepareBundledTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init(upgradeDropTableColumn);
+    const results = await dumpTableBundled(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+    const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC] as RawRow);
+    assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
+    assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
   });
 
   function upgradeRenameTableColumn(dbInterface: RawBackStore): Promise<void> {
@@ -297,66 +260,46 @@ test('IndexedDBRawBackStore', () => {
     return db.renameTableColumn('tableA_', 'name', 'username');
   }
 
-  it('renameTableColumn', () => {
+  it('renameTableColumn', async () => {
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeRenameTableColumn);
-      })
-      .then((newDb) => {
-        return dumpTable(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
-        assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
-        assert.equal('world', results[0].payload()['username']);
-        assert.equal('world2', results[1].payload()['username']);
-      });
+    const rawDb = await db.init();
+    await prepareTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init(upgradeRenameTableColumn);
+    const results = await dumpTable(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    assert.isFalse(TestUtil.hasProperty(results[0].payload(), 'name'));
+    assert.isFalse(TestUtil.hasProperty(results[1].payload(), 'name'));
+    assert.equal('world', results[0].payload()['username']);
+    assert.equal('world2', results[1].payload()['username']);
   });
 
-  it('renameTableColumn_Bundled', () => {
+  it('renameTableColumn_Bundled', async () => {
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareBundledTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeRenameTableColumn);
-      })
-      .then((newDb) => {
-        return dumpTableBundled(newDb, 'tableA_');
-      })
-      .then((results) => {
-        assert.equal(2, results.length);
-        const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
-        const newRow2 = Row.deserialize(
-          results[1].getPayload()[MAGIC] as RawRow
-        );
-        assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
-        assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
-        assert.equal('world', newRow.payload()['username']);
-        assert.equal('world2', newRow2.payload()['username']);
-      });
+    const rawDb = await db.init();
+    await prepareBundledTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const newDb = await db.init(upgradeRenameTableColumn);
+    const results = await dumpTableBundled(newDb, 'tableA_');
+    assert.equal(2, results.length);
+    const newRow = Row.deserialize(results[0].getPayload()[0] as RawRow);
+    const newRow2 = Row.deserialize(results[1].getPayload()[MAGIC] as RawRow);
+    assert.isFalse(TestUtil.hasProperty(newRow, 'name'));
+    assert.isFalse(TestUtil.hasProperty(newRow2, 'name'));
+    assert.equal('world', newRow.payload()['username']);
+    assert.equal('world2', newRow2.payload()['username']);
   });
 
   function upgradeDropTable(dbInterface: RawBackStore): Promise<void> {
@@ -365,73 +308,57 @@ test('IndexedDBRawBackStore', () => {
     return db.dropTable('tableB_');
   }
 
-  it('dropTable', () => {
+  it('dropTable', async () => {
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        assert.equal(2, rawDb.objectStoreNames.length);
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeDropTable);
-      })
-      .then((rawDb) => {
-        assert.equal(1, rawDb.objectStoreNames.length);
-      });
+    const rawDb = await db.init();
+    assert.equal(2, rawDb.objectStoreNames.length);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    const rawDb2 = await db.init(upgradeDropTable);
+    assert.equal(1, rawDb2.objectStoreNames.length);
   });
 
-  function upgradeDumping(dbInterface: RawBackStore): Promise<void> {
+  async function upgradeDumping(dbInterface: RawBackStore): Promise<void> {
     const db = dbInterface as IndexedDBRawBackStore;
     assert.equal(1, db.getVersion());
-    return db.dump().then((res) => {
-      const results = res as PayloadType;
-      assert.sameDeepMembers(
-        [CONTENTS, CONTENTS2],
-        results['tableA_'] as unknown[]
-      );
-      assert.sameDeepMembers([], results['tableB_'] as unknown[]);
-    });
+    const res = await db.dump();
+    const results = res as PayloadType;
+    assert.sameDeepMembers(
+      [CONTENTS, CONTENTS2],
+      results['tableA_'] as unknown[]
+    );
+    assert.sameDeepMembers([], results['tableB_'] as unknown[]);
   }
 
-  it('dump', () => {
+  it('dump', async () => {
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeDumping);
-      });
+    const rawDb = await db.init();
+    await prepareTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    await db.init(upgradeDumping);
   });
 
-  it('dump_Bundled', () => {
+  it('dump_Bundled', async () => {
     builder1.setPragma({enableBundledMode: true});
     builder2.setPragma({enableBundledMode: true});
     let db: IndexedDB | null = new IndexedDB(
       builder1.getGlobal(),
       builder1.getSchema()
     );
-    return db
-      .init()
-      .then((rawDb) => {
-        return prepareBundledTxForTableA(rawDb);
-      })
-      .then(() => {
-        (db as IndexedDB).close();
-        db = null;
-        db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
-        return db.init(upgradeDumping);
-      });
+    const rawDb = await db.init();
+    await prepareBundledTxForTableA(rawDb);
+    (db as IndexedDB).close();
+    db = null;
+    db = new IndexedDB(builder2.getGlobal(), builder2.getSchema());
+    await db.init(upgradeDumping);
   });
 });

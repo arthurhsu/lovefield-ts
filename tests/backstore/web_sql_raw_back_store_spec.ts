@@ -88,9 +88,9 @@ describe('WebSqlRawBackStore', () => {
 
   // Tests that onUpgrade function is still called with version 0 for a new DB
   // instance.
-  it('newDBInstance', () => {
+  it('newDBInstance', async () => {
     if (!capability.webSql) {
-      return Promise.resolve();
+      return;
     }
 
     const schema = getOldSchema();
@@ -103,9 +103,8 @@ describe('WebSqlRawBackStore', () => {
     });
 
     const db = new WebSql(Global.get(), getOldSchema());
-    return db.init(onUpgrade).then(() => {
-      assert.isTrue(onUpgrade.calledOnce);
-    });
+    await db.init(onUpgrade);
+    assert.isTrue(onUpgrade.calledOnce);
   });
 
   async function populateOldData(): Promise<void> {
@@ -260,10 +259,9 @@ describe('WebSqlRawBackStore', () => {
 
     let dumpResult: PayloadType;
 
-    const onUpgrade = (store: RawBackStore) => {
-      return store
-        .dump()
-        .then((results) => (dumpResult = results as PayloadType));
+    const onUpgrade = async (store: RawBackStore) => {
+      const results = await store.dump();
+      dumpResult = results as PayloadType;
     };
 
     await runTest(builder, onUpgrade, () => {
@@ -288,7 +286,7 @@ describe('WebSqlRawBackStore', () => {
       return store.dropTable('A');
     };
 
-    await runTest(builder, onUpgrade, () => {
+    await runTest(builder, onUpgrade, async () => {
       const resolver = new Resolver();
       const reject = (tx: SQLTransaction, e: SQLError) => {
         resolver.reject(e);
@@ -310,7 +308,7 @@ describe('WebSqlRawBackStore', () => {
           reject
         );
       });
-      return resolver.promise;
+      await resolver.promise;
     });
   });
 });

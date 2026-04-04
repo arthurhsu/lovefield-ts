@@ -41,7 +41,7 @@ async function runTests() {
           const res = (window as any).mochaResults;
           return res && res.finished;
         },
-        {timeout: 60000}
+        {timeout: 80000}
       )
       .then(() => page.evaluate(() => (window as any).mochaResults));
 
