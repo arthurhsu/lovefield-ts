@@ -36,4 +36,6 @@ export interface Builder {
 
   createTable(tableName: string): TableBuilder;
   setPragma(pragma: Pragma): Builder;
+  serialize(): object;
+  deserialize(data: object): void;
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {ErrorCode} from '../base/enum';
+import {Exception} from '../base/exception';
 import {Builder} from './builder';
 import {SchemaBuilder} from './schema_builder';
 
@@ -29,5 +31,19 @@ export class schema {
   // needs to construct a new builder for doing so.
   static create(name: string, version: number): Builder {
     return new SchemaBuilder(name, version) as unknown as Builder;
+  }
+
+  static createFrom(data: object): Builder {
+    const schemaData = data as any;
+    if (
+      typeof schemaData.name !== 'string' ||
+      typeof schemaData.version !== 'number'
+    ) {
+      // 100: Data error.
+      throw new Exception(ErrorCode.DATA_ERROR);
+    }
+    const builder = new SchemaBuilder(schemaData.name, schemaData.version);
+    builder.deserialize(data);
+    return builder;
   }
 }

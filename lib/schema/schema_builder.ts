@@ -30,6 +30,8 @@ import {GraphNode} from './graph_node';
 import {Pragma} from './pragma';
 import {TableBuilder} from './table_builder';
 import {Builder} from './builder';
+import {BaseTable} from './base_table';
+import {IndexImpl} from './index_impl';
 
 export class SchemaBuilder implements Builder {
   private schema: DatabaseSchemaImpl;
@@ -44,6 +46,186 @@ export class SchemaBuilder implements Builder {
     this.finalized = false;
     this.db = null as unknown as RuntimeDatabase;
     this.connectInProgress = false;
+  }
+
+  serialize(): object {
+    const schemaInstance = this.getSchema();
+    return {
+      name: schemaInstance.name(),
+      version: schemaInstance.version(),
+      tables: schemaInstance.tables().map((t) => {
+        const table = t as BaseTable;
+        return {
+          columns: table.getColumns().map((col) => {
+            return {
+              name: col.getName(),
+              nullable: col.isNullable(),
+              type: col.getType(),
+              unique: col.isUnique(),
+            };
+          }),
+          constraints: {
+            foreignKeys: table
+              .getConstraint()
+              .getForeignKeys()
+              .map((fk) => {
+                return {
+                  action: fk.action,
+                  local: fk.childColumn,
+                  name: fk.name,
+                  ref: `${fk.parentTable}.${fk.parentColumn}`,
+                  timing: fk.timing,
+                };
+              }),
+            notNullable: table
+              .getConstraint()
+              .getNotNullable()
+              .map((col) => col.getName()),
+            primaryKey: table.getConstraint().getPrimaryKey()
+              ? {
+                  columns: table
+                    .getConstraint()
+                    .getPrimaryKey()
+                    .columns.map((ic) => {
+                      return {
+                        autoIncrement: ic.autoIncrement,
+                        name: ic.schema.getName(),
+                        order: ic.order,
+                      };
+                    }),
+                  name: table.getConstraint().getPrimaryKey().name,
+                }
+              : null,
+          },
+          indices: table.getIndices().map((index) => {
+            const indexImpl = index as IndexImpl;
+            return {
+              columns: indexImpl.columns.map((ic) => {
+                return {
+                  autoIncrement: ic.autoIncrement || false,
+                  name: ic.schema.getName(),
+                  order: ic.order,
+                };
+              }),
+              name: indexImpl.name,
+              unique: indexImpl.isUnique,
+            };
+          }),
+          name: table.getName(),
+          persistentIndex: table.persistentIndex(),
+        };
+      }),
+    };
+  }
+
+  deserialize(data: object): void {
+    const schemaData = data as any;
+    schemaData.tables.forEach((tableData: any) => {
+      const tableBuilder = this.createTable(tableData.name);
+      tableData.columns.forEach((col: any) => {
+        tableBuilder.addColumn(col.name, col.type);
+      });
+
+      if (tableData.constraints) {
+        if (tableData.constraints.primaryKey) {
+          tableBuilder.addPrimaryKey(
+            tableData.constraints.primaryKey.columns,
+            tableData.constraints.primaryKey.columns.some(
+              (c: any) => c.autoIncrement
+            )
+          );
+        }
+        if (tableData.constraints.notNullable) {
+          tableBuilder.addNullable(
+            tableData.columns
+              .filter(
+                (c: any) => !tableData.constraints.notNullable.includes(c.name)
+              )
+              .map((c: any) => c.name)
+          );
+        }
+        // Restore uniqueness for columns that are unique but not part of PK.
+        tableData.columns.forEach((col: any) => {
+          if (col.unique) {
+            // Check if it is already unique via PK.
+            const isPk =
+              tableData.constraints.primaryKey &&
+              tableData.constraints.primaryKey.columns.length === 1 &&
+              tableData.constraints.primaryKey.columns[0].name === col.name;
+            if (!isPk) {
+              // We need to find the unique index name that covers only this
+              // column.
+              const uniqueIndex = tableData.indices.find(
+                (idx: any) =>
+                  idx.unique &&
+                  idx.columns.length === 1 &&
+                  idx.columns[0].name === col.name
+              );
+              if (uniqueIndex) {
+                tableBuilder.addUnique(uniqueIndex.name, [col.name]);
+              }
+            }
+          }
+        });
+
+        if (tableData.constraints.foreignKeys) {
+          tableData.constraints.foreignKeys.forEach((fk: any) => {
+            const name = fk.name.substring(fk.name.lastIndexOf('.') + 1);
+            tableBuilder.addForeignKey(name, {
+              action: fk.action,
+              local: fk.local,
+              ref: fk.ref,
+              timing: fk.timing,
+            });
+          });
+        }
+      }
+
+      if (tableData.indices) {
+        tableData.indices.forEach((index: any) => {
+          // Primary key is also an index, but it's already added.
+          if (
+            tableData.constraints &&
+            tableData.constraints.primaryKey &&
+            index.name === tableData.constraints.primaryKey.name
+          ) {
+            return;
+          }
+          // Foreign keys are also indices, but they are already added.
+          if (
+            tableData.constraints &&
+            tableData.constraints.foreignKeys &&
+            tableData.constraints.foreignKeys.some((fk: any) =>
+              fk.name.endsWith('.' + index.name)
+            )
+          ) {
+            return;
+          }
+          // Unique constraints are also indices, but they are already added.
+          // We only add non-unique indices or multi-column unique indices here
+          // if they weren't added via addUnique.
+          // Wait, addUnique actually adds the index.
+          // If the index is unique and was already added via addUnique, we
+          // should skip it.
+          if (index.unique && index.columns.length === 1) {
+            // This was likely handled by addUnique logic above.
+            // Let's check if it was indeed unique and not PK.
+            const col = tableData.columns.find(
+              (c: any) => c.name === index.columns[0].name
+            );
+            if (col && col.unique) {
+              return;
+            }
+          }
+
+          tableBuilder.addIndex(index.name, index.columns, index.unique);
+        });
+      }
+
+      if (tableData.persistentIndex) {
+        tableBuilder.persistentIndex(tableData.persistentIndex);
+      }
+    });
   }
 
   getSchema(): DatabaseSchema {
